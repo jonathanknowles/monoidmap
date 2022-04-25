@@ -52,6 +52,20 @@ import qualified Data.MonoidMap as MonoidMap
 spec :: Spec
 spec =
     parallel $ describe "Class instances obey laws" $ do
+        testLawsMany @(MonoidMap Int String)
+            [ eqLaws
+            , isListLaws
+            , leftCancellativeLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
         testLawsMany @(MonoidMap Int (Sum Natural))
             [ cancellativeLaws
             , commutativeLaws
@@ -70,14 +84,18 @@ spec =
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap Int String)
-            [ eqLaws
+        testLawsMany @(MonoidMap Int (MonoidMap Int (Sum Natural)))
+            [ cancellativeLaws
+            , commutativeLaws
+            , eqLaws
             , isListLaws
             , leftCancellativeLaws
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
+            , monusLaws
             , overlappingGCDMonoidLaws
+            , reductiveLaws
             , rightCancellativeLaws
             , rightReductiveLaws
             , semigroupLaws
