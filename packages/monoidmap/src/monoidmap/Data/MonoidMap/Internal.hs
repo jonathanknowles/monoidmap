@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
@@ -29,8 +28,6 @@ import Data.Map.Strict
     ( Map )
 import Data.Maybe
     ( fromMaybe )
-import GHC.Generics
-    ( Generic )
 
 import qualified Data.Map.Strict as Map
 
@@ -40,7 +37,7 @@ import qualified Data.Map.Strict as Map
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
-    deriving (Eq, Foldable, Generic)
+    deriving (Eq, Foldable)
     deriving newtype (Read, Show)
 
 --------------------------------------------------------------------------------

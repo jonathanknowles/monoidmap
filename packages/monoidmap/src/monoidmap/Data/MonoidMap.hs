@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
@@ -61,8 +60,6 @@ import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (..) )
-import GHC.Generics
-    ( Generic )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
@@ -74,7 +71,7 @@ import qualified Data.MonoidMap.Internal as Internal
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Internal.MonoidMap k v }
-    deriving (Eq, Foldable, Generic)
+    deriving (Eq, Foldable)
     deriving newtype (Read, Show)
 
 --------------------------------------------------------------------------------
