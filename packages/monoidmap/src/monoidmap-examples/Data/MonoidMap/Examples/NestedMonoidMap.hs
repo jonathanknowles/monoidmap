@@ -16,11 +16,15 @@ module Data.MonoidMap.Examples.NestedMonoidMap
 
 --  * Construction
     , fromFlatList
+    , fromFlatMap
     , fromNestedList
+    , fromNestedMap
 
 --  * Deconstruction
     , toFlatList
+    , toFlatMap
     , toNestedList
+    , toNestedMap
 
 --  * Queries
     , get
@@ -36,6 +40,8 @@ module Data.MonoidMap.Examples.NestedMonoidMap
 
 import Algebra.PartialOrd
     ( PartialOrd (..) )
+import Data.Map.Strict
+    ( Map )
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.Monus
@@ -52,6 +58,7 @@ import GHC.Exts
     ( IsList (..) )
 
 import qualified Data.Foldable as F
+import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
@@ -87,12 +94,24 @@ fromFlatList = F.foldl' acc mempty
   where
     acc m (k, v) = adjust m k (<> v)
 
+fromFlatMap
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
+    => (Map (k1, k2) v)
+    -> NestedMonoidMap k1 k2 v
+fromFlatMap = fromFlatList . Map.toList
+
 fromNestedList
     :: (Ord k1, Ord k2, Eq v, Monoid v)
     => [(k1, [(k2, v)])]
     -> NestedMonoidMap k1 k2 v
 fromNestedList entries =
     fromFlatList [((k1, k2), v) | (k1, n) <- entries, (k2, v) <- n]
+
+fromNestedMap
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
+    => (Map k1 (Map k2 v))
+    -> NestedMonoidMap k1 k2 v
+fromNestedMap = NestedMonoidMap . MonoidMap.fromMap . fmap MonoidMap.fromMap
 
 --------------------------------------------------------------------------------
 -- Deconstruction
@@ -104,11 +123,23 @@ toFlatList
     -> [((k1, k2), v)]
 toFlatList m = [((k1, k2), v) | (k1, n) <- toNestedList m, (k2, v) <- toList n]
 
+toFlatMap
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
+    => NestedMonoidMap k1 k2 v
+    -> (Map (k1, k2) v)
+toFlatMap = Map.fromList . toFlatList
+
 toNestedList
     :: (Ord k1, Ord k2, Eq v, Monoid v)
     => NestedMonoidMap k1 k2 v
     -> [(k1, [(k2, v)])]
 toNestedList (NestedMonoidMap m) = fmap toList <$> toList m
+
+toNestedMap
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
+    => NestedMonoidMap k1 k2 v
+    -> (Map k1 (Map k2 v))
+toNestedMap (NestedMonoidMap m) = MonoidMap.toMap <$> MonoidMap.toMap m
 
 --------------------------------------------------------------------------------
 -- Queries
