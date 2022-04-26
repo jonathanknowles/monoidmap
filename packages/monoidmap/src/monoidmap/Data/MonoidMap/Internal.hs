@@ -40,7 +40,7 @@ import qualified Data.Map.Strict as Map
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
-    deriving (Eq, Generic)
+    deriving (Eq, Foldable, Generic)
     deriving newtype (Read, Show)
 
 --------------------------------------------------------------------------------

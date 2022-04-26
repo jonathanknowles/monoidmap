@@ -74,7 +74,7 @@ import qualified Data.MonoidMap.Internal as Internal
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Internal.MonoidMap k v }
-    deriving (Eq, Generic)
+    deriving (Eq, Foldable, Generic)
     deriving newtype (Read, Show)
 
 --------------------------------------------------------------------------------
