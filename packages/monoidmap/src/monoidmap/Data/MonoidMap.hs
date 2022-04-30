@@ -70,6 +70,7 @@ import GHC.Exts
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap.Internal as Internal
+import qualified Data.Set as Set
 
 --------------------------------------------------------------------------------
 -- Type
@@ -121,22 +122,22 @@ instance (Ord k, Eq v, Monoid v, Cancellative v) =>
 instance (Ord k, Eq v, Monoid v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
-    gcd = unionWith gcd
+    gcd = intersectionWith gcd
 
 instance (Ord k, Eq v, Monoid v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
-    commonPrefix = unionWith commonPrefix
+    commonPrefix = intersectionWith commonPrefix
 
 instance (Ord k, Eq v, Monoid v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
-    commonSuffix = unionWith commonSuffix
+    commonSuffix = intersectionWith commonSuffix
 
 instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
-    overlap = unionWith overlap
+    overlap = intersectionWith overlap
     stripPrefixOverlap = unionWith stripPrefixOverlap
     stripSuffixOverlap = unionWith stripSuffixOverlap
     stripOverlap m1 m2 =
@@ -259,14 +260,31 @@ set = ((MonoidMap .) .) . Internal.set . unMonoidMap
 -- Binary operations
 --------------------------------------------------------------------------------
 
+mergeWith
+    :: forall k v. (Ord k, Eq v, Monoid v)
+    => (Set k -> Set k -> Set k)
+    -> (v -> v -> v)
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+mergeWith f g m1 m2 =
+    fromList $ keyValue <$> F.toList (f (keys m1) (keys m2))
+  where
+    keyValue :: k -> (k, v)
+    keyValue k = (k, g (m1 `get` k) (m2 `get` k))
+
+intersectionWith
+    :: forall k v. (Ord k, Eq v, Monoid v)
+    => (v -> v -> v)
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+intersectionWith = mergeWith Set.intersection
+
 unionWith
     :: forall k v. (Ord k, Eq v, Monoid v)
     => (v -> v -> v)
     -> MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-unionWith f m1 m2 =
-    fromList $ keyValue <$> F.toList (keys m1 <> keys m2)
-  where
-    keyValue :: k -> (k, v)
-    keyValue k = (k, f (m1 `get` k) (m2 `get` k))
+unionWith = mergeWith Set.union
