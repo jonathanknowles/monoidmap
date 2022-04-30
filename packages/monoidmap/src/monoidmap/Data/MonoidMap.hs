@@ -35,7 +35,7 @@ module Data.MonoidMap
     where
 
 import Prelude hiding
-    ( null, subtract )
+    ( gcd, null, subtract )
 
 import Algebra.PartialOrd
     ( PartialOrd (..) )
@@ -44,7 +44,11 @@ import Control.Monad
 import Data.Map.Strict
     ( Map )
 import Data.Monoid.GCD
-    ( LeftGCDMonoid (..), OverlappingGCDMonoid (..), RightGCDMonoid (..) )
+    ( GCDMonoid (..)
+    , LeftGCDMonoid (..)
+    , OverlappingGCDMonoid (..)
+    , RightGCDMonoid (..)
+    )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -113,6 +117,15 @@ instance (Ord k, Eq v, Monoid v, RightCancellative v) =>
 
 instance (Ord k, Eq v, Monoid v, Cancellative v) =>
     Cancellative (MonoidMap k v)
+
+instance (Ord k, Eq v, Monoid v, GCDMonoid v) =>
+    GCDMonoid (MonoidMap k v)
+  where
+    gcd m1 m2 =
+        fromList $ keyGCD <$> F.toList (keys m1 <> keys m2)
+      where
+        keyGCD :: k -> (k, v)
+        keyGCD k = (k, gcd (m1 `get` k) (m2 `get` k))
 
 instance (Ord k, Eq v, Monoid v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
