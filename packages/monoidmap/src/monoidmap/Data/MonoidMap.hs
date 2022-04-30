@@ -66,6 +66,8 @@ import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (..) )
+import Text.Read
+    ( Read (..) )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
@@ -79,11 +81,16 @@ import qualified Data.Set as Set
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Internal.MonoidMap k v }
     deriving (Eq, Foldable)
-    deriving newtype (Read, Show)
+    deriving newtype Show
 
 --------------------------------------------------------------------------------
 -- Instances
 --------------------------------------------------------------------------------
+
+instance (Ord k, Read k, Eq v, Monoid v, Read v) =>
+    Read (MonoidMap k v)
+  where
+    readPrec = fromMap <$> readPrec
 
 instance (Ord k, Eq v, Monoid v) =>
     MonoidNull (MonoidMap k v)
