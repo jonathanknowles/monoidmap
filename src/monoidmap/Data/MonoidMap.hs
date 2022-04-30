@@ -29,7 +29,6 @@ module Data.MonoidMap
 
 --  * Modification
     , adjust
-    , adjustF
     , delete
     , set
     )
@@ -40,8 +39,6 @@ import Prelude hiding
 
 import Algebra.PartialOrd
     ( PartialOrd (..) )
-import Control.Monad
-    ( foldM )
 import Data.Functor.Identity
     ( Identity (..) )
 import Data.Map.Strict
@@ -223,14 +220,6 @@ adjust
     -> MonoidMap k v
 adjust m k a = set m k $ a (get m k)
 
-adjustF
-    :: (Functor f, Ord k, Eq v, Monoid v)
-    => MonoidMap k v
-    -> k
-    -> (v -> f v)
-    -> f (MonoidMap k v)
-adjustF m k a = set m k <$> a (get m k)
-
 adjustMany
     :: (Ord k, Eq v, Monoid v, IsList many, Item many ~ (k, v))
     => (v -> v -> v)
@@ -241,17 +230,6 @@ adjustMany f m1 m2 =
     F.foldl' acc m1 (toList m2)
   where
     acc m (k, v) = adjust m k (f v)
-
-adjustManyF
-    :: (Ord k, Eq v, Monoid v, IsList many, Item many ~ (k, v))
-    => (v -> v -> Maybe v)
-    -> MonoidMap k v
-    -> many
-    -> Maybe (MonoidMap k v)
-adjustManyF f m1 m2 =
-    foldM acc m1 (toList m2)
-  where
-    acc m (k, v) = adjustF m k (f v)
 
 delete :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> MonoidMap k v
 delete m k = set m k mempty
