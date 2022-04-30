@@ -2,6 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# OPTIONS_GHC -Wno-redundant-constraints #-}
 
@@ -41,6 +42,8 @@ import Algebra.PartialOrd
     ( PartialOrd (..) )
 import Control.Monad
     ( foldM )
+import Data.Functor.Identity
+    ( Identity (..) )
 import Data.Map.Strict
     ( Map )
 import Data.Monoid.GCD
@@ -267,11 +270,21 @@ mergeWith
     -> MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-mergeWith f g m1 m2 =
-    fromList $ keyValue <$> F.toList (f (keys m1) (keys m2))
+mergeWith mergeKeys mergeValue m1 m2 =
+    runIdentity $ mergeWithF mergeKeys (fmap (fmap Identity) mergeValue) m1 m2
+
+mergeWithF
+    :: forall f k v. (Applicative f, Ord k, Eq v, Monoid v)
+    => (Set k -> Set k -> Set k)
+    -> (v -> v -> f v)
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> f (MonoidMap k v)
+mergeWithF mergeKeys mergeValue m1 m2 =
+    fmap fromList $ traverse merge $ F.toList $ mergeKeys (keys m1) (keys m2)
   where
-    keyValue :: k -> (k, v)
-    keyValue k = (k, g (m1 `get` k) (m2 `get` k))
+    merge :: k -> f (k, v)
+    merge k = (k,) <$> mergeValue (m1 `get` k) (m2 `get` k)
 
 intersectionWith
     :: forall k v. (Ord k, Eq v, Monoid v)
@@ -281,6 +294,14 @@ intersectionWith
     -> MonoidMap k v
 intersectionWith = mergeWith Set.intersection
 
+intersectionWithF
+    :: forall f k v. (Applicative f, Ord k, Eq v, Monoid v)
+    => (v -> v -> f v)
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> f (MonoidMap k v)
+intersectionWithF = mergeWithF Set.intersection
+
 unionWith
     :: forall k v. (Ord k, Eq v, Monoid v)
     => (v -> v -> v)
@@ -288,3 +309,11 @@ unionWith
     -> MonoidMap k v
     -> MonoidMap k v
 unionWith = mergeWith Set.union
+
+unionWithF
+    :: forall f k v. (Applicative f, Ord k, Eq v, Monoid v)
+    => (v -> v -> f v)
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> f (MonoidMap k v)
+unionWithF = mergeWithF Set.union
