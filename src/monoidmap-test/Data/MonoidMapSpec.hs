@@ -38,12 +38,14 @@ import Test.QuickCheck.Monoid.Subclasses
     ( cancellativeLaws
     , commutativeLaws
     , leftCancellativeLaws
+    , leftGCDMonoidLaws
     , leftReductiveLaws
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
+    , rightGCDMonoidLaws
     , rightReductiveLaws
     )
 
@@ -56,11 +58,13 @@ spec =
             [ eqLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
             , overlappingGCDMonoidLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
             , semigroupMonoidLaws
@@ -72,6 +76,7 @@ spec =
             , eqLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
@@ -79,6 +84,7 @@ spec =
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
             , semigroupMonoidLaws
@@ -90,6 +96,7 @@ spec =
             , eqLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
@@ -97,6 +104,7 @@ spec =
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
             , semigroupMonoidLaws

@@ -43,8 +43,10 @@ import Control.Monad
     ( foldM )
 import Data.Map.Strict
     ( Map )
+import Data.Monoid.GCD
+    ( LeftGCDMonoid (..), OverlappingGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Monus
-    ( Monus (..), OverlappingGCDMonoid (..) )
+    ( Monus (..) )
 import Data.Monoid.Null
     ( MonoidNull (..) )
 import Data.Semigroup.Cancellative
@@ -111,6 +113,24 @@ instance (Ord k, Eq v, Monoid v, RightCancellative v) =>
 
 instance (Ord k, Eq v, Monoid v, Cancellative v) =>
     Cancellative (MonoidMap k v)
+
+instance (Ord k, Eq v, Monoid v, LeftGCDMonoid v) =>
+    LeftGCDMonoid (MonoidMap k v)
+  where
+    commonPrefix m1 m2 =
+        fromList $ keyCommonPrefix <$> F.toList (keys m1 <> keys m2)
+      where
+        keyCommonPrefix :: k -> (k, v)
+        keyCommonPrefix k = (k, commonPrefix (m1 `get` k) (m2 `get` k))
+
+instance (Ord k, Eq v, Monoid v, RightGCDMonoid v) =>
+    RightGCDMonoid (MonoidMap k v)
+  where
+    commonSuffix m1 m2 =
+        fromList $ keyCommonSuffix <$> F.toList (keys m1 <> keys m2)
+      where
+        keyCommonSuffix :: k -> (k, v)
+        keyCommonSuffix k = (k, commonSuffix (m1 `get` k) (m2 `get` k))
 
 instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
