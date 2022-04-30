@@ -121,41 +121,24 @@ instance (Ord k, Eq v, Monoid v, Cancellative v) =>
 instance (Ord k, Eq v, Monoid v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
-    gcd m1 m2 =
-        fromList $ keyGCD <$> F.toList (keys m1 <> keys m2)
-      where
-        keyGCD :: k -> (k, v)
-        keyGCD k = (k, gcd (m1 `get` k) (m2 `get` k))
+    gcd = unionWith gcd
 
 instance (Ord k, Eq v, Monoid v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
-    commonPrefix m1 m2 =
-        fromList $ keyCommonPrefix <$> F.toList (keys m1 <> keys m2)
-      where
-        keyCommonPrefix :: k -> (k, v)
-        keyCommonPrefix k = (k, commonPrefix (m1 `get` k) (m2 `get` k))
+    commonPrefix = unionWith commonPrefix
 
 instance (Ord k, Eq v, Monoid v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
-    commonSuffix m1 m2 =
-        fromList $ keyCommonSuffix <$> F.toList (keys m1 <> keys m2)
-      where
-        keyCommonSuffix :: k -> (k, v)
-        keyCommonSuffix k = (k, commonSuffix (m1 `get` k) (m2 `get` k))
+    commonSuffix = unionWith commonSuffix
 
 instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
-    overlap m1 m2 = fromList $ keyOverlap <$> F.toList (keys m1 <> keys m2)
-      where
-        keyOverlap :: k -> (k, v)
-        keyOverlap k = (k, (m1 `get` k) `overlap` (m2 `get` k))
-
-    stripPrefixOverlap = flip (adjustMany stripPrefixOverlap)
-    stripSuffixOverlap = flip (adjustMany stripSuffixOverlap)
-
+    overlap = unionWith overlap
+    stripPrefixOverlap = unionWith stripPrefixOverlap
+    stripSuffixOverlap = unionWith stripSuffixOverlap
     stripOverlap m1 m2 =
         ( stripSuffixOverlap m2 m1
         , m1 `overlap` m2
@@ -271,3 +254,19 @@ delete m k = set m k mempty
 
 set :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Internal.set . unMonoidMap
+
+--------------------------------------------------------------------------------
+-- Binary operations
+--------------------------------------------------------------------------------
+
+unionWith
+    :: forall k v. (Ord k, Eq v, Monoid v)
+    => (v -> v -> v)
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+unionWith f m1 m2 =
+    fromList $ keyValue <$> F.toList (keys m1 <> keys m2)
+  where
+    keyValue :: k -> (k, v)
+    keyValue k = (k, f (m1 `get` k) (m2 `get` k))
