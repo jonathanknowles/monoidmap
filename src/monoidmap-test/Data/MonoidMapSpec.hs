@@ -14,6 +14,8 @@ import Data.Monoid
     ( Sum (..) )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.Set
+    ( Set )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
@@ -84,6 +86,23 @@ spec =
             , overlappingGCDMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap Int (Set Int))
+            [ commutativeLaws
+            , eqLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , reductiveLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
