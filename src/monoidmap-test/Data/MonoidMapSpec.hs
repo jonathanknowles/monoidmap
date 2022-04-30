@@ -37,7 +37,8 @@ import Test.QuickCheck.Classes.Hspec
 import Test.QuickCheck.Instances.Natural
     ()
 import Test.QuickCheck.Monoid.Subclasses
-    ( cancellativeLaws
+    ( cancellativeGCDMonoidLaws
+    , cancellativeLaws
     , commutativeLaws
     , gcdMonoidLaws
     , leftCancellativeLaws
@@ -74,7 +75,8 @@ spec =
             , showReadLaws
             ]
         testLawsMany @(MonoidMap Int (Sum Natural))
-            [ cancellativeLaws
+            [ cancellativeGCDMonoidLaws
+            , cancellativeLaws
             , commutativeLaws
             , eqLaws
             , gcdMonoidLaws
@@ -113,7 +115,8 @@ spec =
             , showReadLaws
             ]
         testLawsMany @(MonoidMap Int (MonoidMap Int (Sum Natural)))
-            [ cancellativeLaws
+            [ cancellativeGCDMonoidLaws
+            , cancellativeLaws
             , commutativeLaws
             , eqLaws
             , gcdMonoidLaws
