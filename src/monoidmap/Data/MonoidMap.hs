@@ -100,18 +100,18 @@ instance (Ord k, Eq v, Monoid v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isSubmapOfBy isPrefixOf
-    stripPrefix = flip (adjustManyF stripPrefix)
+    stripPrefix = unionWithF stripPrefix
 
 instance (Ord k, Eq v, Monoid v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSubmapOfBy isSuffixOf
-    stripSuffix = flip (adjustManyF stripSuffix)
+    stripSuffix = unionWithF stripSuffix
 
 instance (Ord k, Eq v, Monoid v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = adjustManyF (flip (</>))
+    (</>) = unionWithF (</>)
 
 instance (Ord k, Eq v, Monoid v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -152,7 +152,7 @@ instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
 instance (Ord k, Eq v, Monoid v, Monus v) =>
     Monus (MonoidMap k v)
   where
-    (<\>) = adjustMany (flip (<\>))
+    (<\>) = unionWith (<\>)
 
 instance (Ord k, Eq v, Monoid v) => IsList (MonoidMap k v)
   where
