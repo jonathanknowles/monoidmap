@@ -39,6 +39,7 @@ import Test.QuickCheck.Instances.Natural
 import Test.QuickCheck.Monoid.Subclasses
     ( cancellativeLaws
     , commutativeLaws
+    , gcdMonoidLaws
     , leftCancellativeLaws
     , leftGCDMonoidLaws
     , leftReductiveLaws
@@ -76,6 +77,7 @@ spec =
             [ cancellativeLaws
             , commutativeLaws
             , eqLaws
+            , gcdMonoidLaws
             , isListLaws
             , leftCancellativeLaws
             , leftGCDMonoidLaws
@@ -95,6 +97,7 @@ spec =
         testLawsMany @(MonoidMap Int (Set Int))
             [ commutativeLaws
             , eqLaws
+            , gcdMonoidLaws
             , isListLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
@@ -113,6 +116,7 @@ spec =
             [ cancellativeLaws
             , commutativeLaws
             , eqLaws
+            , gcdMonoidLaws
             , isListLaws
             , leftCancellativeLaws
             , leftGCDMonoidLaws
