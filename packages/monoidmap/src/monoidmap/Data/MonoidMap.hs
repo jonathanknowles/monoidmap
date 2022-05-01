@@ -38,8 +38,6 @@ module Data.MonoidMap
 import Prelude hiding
     ( gcd, lookup, null, subtract )
 
-import Algebra.PartialOrd
-    ( PartialOrd (..) )
 import Data.Functor.Identity
     ( Identity (..) )
 import Data.Map.Strict
@@ -168,11 +166,6 @@ instance (Ord k, Eq v, Monoid v) => IsList (MonoidMap k v)
 instance (Ord k, Eq v, Monoid v) => Monoid (MonoidMap k v)
   where
     mempty = MonoidMap Internal.empty
-
-instance (Ord k, Monoid v, PartialOrd v) =>
-    PartialOrd (MonoidMap k v)
-  where
-    leq = isSubmapOfBy leq
 
 instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
   where

@@ -30,7 +30,6 @@ library
     build-depends:
         base >=4.7 && <5
       , containers
-      , lattices
       , monoid-subclasses
 
 library monoidmap-examples
@@ -43,7 +42,6 @@ library monoidmap-examples
     build-depends:
         base >=4.7 && <5
       , containers
-      , lattices
       , monoidmap
       , monoid-subclasses
 

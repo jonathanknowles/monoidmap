@@ -38,8 +38,6 @@ module Data.MonoidMap.Examples.NestedMonoidMap
     )
     where
 
-import Algebra.PartialOrd
-    ( PartialOrd )
 import Data.Map.Strict
     ( Map )
 import Data.Monoid
@@ -93,7 +91,6 @@ newtype NestedMonoidMap k1 k2 v =
         , MonoidNull
         , Monus
         , OverlappingGCDMonoid
-        , PartialOrd
         , Reductive
         , RightCancellative
         , RightGCDMonoid
