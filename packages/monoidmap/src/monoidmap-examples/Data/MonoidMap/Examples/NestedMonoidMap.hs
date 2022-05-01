@@ -39,19 +39,32 @@ module Data.MonoidMap.Examples.NestedMonoidMap
     where
 
 import Algebra.PartialOrd
-    ( PartialOrd (..) )
+    ( PartialOrd )
 import Data.Map.Strict
     ( Map )
 import Data.Monoid
     ( Sum (..) )
+import Data.Monoid.GCD
+    ( GCDMonoid
+    , LeftGCDMonoid
+    , OverlappingGCDMonoid
+    , RightGCDMonoid
+    )
 import Data.Monoid.Monus
-    ( Monus, OverlappingGCDMonoid )
+    ( Monus )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
 import Data.Semigroup.Cancellative
-    ( Commutative, LeftReductive, RightReductive )
+    ( Cancellative
+    , Commutative
+    , LeftCancellative
+    , LeftReductive
+    , Reductive
+    , RightCancellative
+    , RightReductive
+    )
 import Data.Set
     ( Set )
 import GHC.Exts
@@ -70,13 +83,20 @@ newtype NestedMonoidMap k1 k2 v =
     NestedMonoidMap (MonoidMap k1 (MonoidMap k2 v))
     deriving stock Eq
     deriving newtype
-        ( Commutative
+        ( Cancellative
+        , Commutative
+        , GCDMonoid
+        , LeftCancellative
+        , LeftGCDMonoid
         , LeftReductive
         , Monoid
         , MonoidNull
         , Monus
         , OverlappingGCDMonoid
         , PartialOrd
+        , Reductive
+        , RightCancellative
+        , RightGCDMonoid
         , RightReductive
         , Semigroup
         , Show
