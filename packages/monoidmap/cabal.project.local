@@ -2,7 +2,10 @@ ignore-project: False
 tests: True
 test-show-details: direct
 
+package *
+  ghc-options: -Wall -j +RTS -A256m -n4m -RTS
+
 source-repository-package
     type: git
-    location: git@github.com:jonathanknowles/quickcheck-monoid-subclasses.git
-    tag: da2817eca26bbab0563c8f3f5e65cd80e3fd85f3
+    location: git@github.com:jonathanknowles/quickcheck-classes-semigroup.git
+    tag: 1af2182c837b8bc257fec6d7624e6b52cee0cab6

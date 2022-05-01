@@ -34,9 +34,7 @@ import Test.QuickCheck.Classes
     )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Monoid.Subclasses
+import Test.QuickCheck.Classes.Semigroup
     ( cancellativeGCDMonoidLaws
     , cancellativeLaws
     , commutativeLaws
@@ -52,6 +50,8 @@ import Test.QuickCheck.Monoid.Subclasses
     , rightGCDMonoidLaws
     , rightReductiveLaws
     )
+import Test.QuickCheck.Instances.Natural
+    ()
 
 import qualified Data.MonoidMap as MonoidMap
 
