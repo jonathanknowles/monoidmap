@@ -28,8 +28,6 @@ library
         Haskell2010
     build-depends:
         base >=4.7 && <5
-      , containers
-      , monoid-subclasses
       , monoidmap-internal
 
 library monoidmap-examples
@@ -50,11 +48,13 @@ library monoidmap-internal
         src/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
+        Data.MonoidMap.Internal.Core
     default-language:
         Haskell2010
     build-depends:
         base >=4.7 && <5
       , containers
+      , monoid-subclasses
 
 test-suite monoidmap-test
     main-is:
