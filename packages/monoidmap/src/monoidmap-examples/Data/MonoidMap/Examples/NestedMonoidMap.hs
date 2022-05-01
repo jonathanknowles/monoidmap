@@ -150,8 +150,10 @@ get :: (Ord k1, Ord k2, Eq v, Monoid v)
     -> (k1, k2)
     -> v
 get (NestedMonoidMap m) (k1, k2) = m
-    `MonoidMap.get` k1
-    `MonoidMap.get` k2
+    `mget` k1
+    `mget` k2
+  where
+    mget m' = flip MonoidMap.lookup m'
 
 keys
     :: (Ord k1, Ord k2, Eq v, Monoid v)
@@ -187,6 +189,9 @@ set :: (Ord k1, Ord k2, Eq v, Monoid v)
     -> v
     -> NestedMonoidMap k1 k2 v
 set (NestedMonoidMap m) (k1, k2) v = NestedMonoidMap
-    $ (m `MonoidMap.set` k1)
-    $ (m `MonoidMap.get` k1) `MonoidMap.set` k2
+    $ (m `mset` k1)
+    $ (m `mget` k1) `mset` k2
     $ v
+  where
+    mget m' = flip MonoidMap.lookup m'
+    mset m' k a = MonoidMap.insert k a m'

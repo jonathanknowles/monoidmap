@@ -23,19 +23,20 @@ module Data.MonoidMap
     , toMap
 
 --  * Queries
-    , get
-    , keys
+    , keysSet
+    , lookup
+    , member
     , size
 
 --  * Modification
     , adjust
     , delete
-    , set
+    , insert
     )
     where
 
 import Prelude hiding
-    ( gcd, null, subtract )
+    ( gcd, lookup, null, subtract )
 
 import Algebra.PartialOrd
     ( PartialOrd (..) )
@@ -198,11 +199,17 @@ toMap = Internal.toMap . unMonoidMap
 -- Queries
 --------------------------------------------------------------------------------
 
+lookup :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
+lookup = flip get
+
+member :: Ord k => k -> MonoidMap k a -> Bool
+member k = Map.member k . toMap
+
 get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
 get = Internal.get . unMonoidMap
 
-keys :: MonoidMap k v -> Set k
-keys = Map.keysSet . toMap
+keysSet :: MonoidMap k v -> Set k
+keysSet = Map.keysSet . toMap
 
 size :: MonoidMap k v -> Int
 size = Map.size . toMap
@@ -221,11 +228,11 @@ isSubmapOfBy f m1 m2 = Map.isSubmapOfBy f (toMap m1) (toMap m2)
 
 adjust
     :: (Ord k, Eq v, Monoid v)
-    => MonoidMap k v
+    => (v -> v)
     -> k
-    -> (v -> v)
     -> MonoidMap k v
-adjust m k a = set m k $ a (get m k)
+    -> MonoidMap k v
+adjust f k m = set m k $ f (get m k)
 
 adjustMany
     :: (Ord k, Eq v, Monoid v, IsList many, Item many ~ (k, v))
@@ -236,10 +243,13 @@ adjustMany
 adjustMany f m1 m2 =
     F.foldl' acc m1 (toList m2)
   where
-    acc m (k, v) = adjust m k (f v)
+    acc m (k, v) = adjust (f v) k m
 
-delete :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> MonoidMap k v
-delete m k = set m k mempty
+delete :: (Ord k, Eq v, Monoid v) => k -> MonoidMap k v -> MonoidMap k v
+delete k m = set m k mempty
+
+insert :: (Ord k, Eq v, Monoid v) => k -> v -> MonoidMap k v -> MonoidMap k v
+insert k v m = set m k v
 
 set :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Internal.set . unMonoidMap
@@ -265,8 +275,11 @@ mergeWithF
     -> MonoidMap k v
     -> MonoidMap k v
     -> f (MonoidMap k v)
-mergeWithF mergeKeys mergeValue m1 m2 =
-    fmap fromList $ traverse merge $ F.toList $ mergeKeys (keys m1) (keys m2)
+mergeWithF mergeKeys mergeValue m1 m2
+    = fmap fromList
+    $ traverse merge
+    $ F.toList
+    $ mergeKeys (keysSet m1) (keysSet m2)
   where
     merge :: k -> f (k, v)
     merge k = (k,) <$> mergeValue (m1 `get` k) (m2 `get` k)
