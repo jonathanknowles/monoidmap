@@ -43,11 +43,7 @@ import Data.Map.Strict
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
-    ( GCDMonoid
-    , LeftGCDMonoid
-    , OverlappingGCDMonoid
-    , RightGCDMonoid
-    )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
