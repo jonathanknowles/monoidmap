@@ -11,33 +11,33 @@
 --
 module Data.MonoidMap.Internal
     (
---  * Type
+    -- * Type
       MonoidMap
 
---  * Construction
+    -- * Construction
     , fromList
     , fromListWith
     , fromMap
     , singleton
 
---  * Deconstruction
+    -- * Deconstruction
     , toList
     , toMap
 
---  * Queries
+    -- * Queries
     , keysSet
     , lookup
     , null
     , member
     , size
 
---  * Modification
+    -- * Modification
     , adjust
     , delete
     , insert
     , insertWith
 
---  * Combination
+    -- * Combination
     , mergeWith
     , mergeWithF
     , intersectionWith
