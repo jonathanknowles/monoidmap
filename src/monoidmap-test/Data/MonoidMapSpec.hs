@@ -164,6 +164,8 @@ spec = do
             prop_toMap_fromMap & property
 
     parallel $ describe "Deletions" $ do
+        it "prop_delete_keysSet" $
+            prop_delete_keysSet & property
         it "prop_delete_lookup" $
             prop_delete_lookup & property
         it "prop_delete_member" $
@@ -225,6 +227,14 @@ prop_toMap_fromMap m =
 --------------------------------------------------------------------------------
 -- Deletions
 --------------------------------------------------------------------------------
+
+prop_delete_keysSet :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_delete_keysSet m k =
+    Set.member k (MonoidMap.keysSet (MonoidMap.delete k m)) === False
+    & cover 10
+        (MonoidMap.member k m)
+        "MonoidMap.member k m"
+    & checkCoverage
 
 prop_delete_lookup :: MonoidMap Int (Sum Int) -> Int -> Property
 prop_delete_lookup m k =
