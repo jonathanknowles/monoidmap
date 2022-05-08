@@ -174,6 +174,8 @@ spec = do
     parallel $ describe "Insertions" $ do
         it "prop_insert_keysSet" $
             prop_insert_keysSet & property
+        it "prop_insert_lookup" $
+            prop_insert_lookup & property
         it "prop_insert_member" $
             prop_insert_member & property
         it "prop_insert_toList" $
@@ -260,6 +262,17 @@ prop_insert_keysSet :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
 prop_insert_keysSet m k v =
     Set.member k (MonoidMap.keysSet (MonoidMap.insert k v m)) ===
         (v /= mempty)
+
+prop_insert_lookup :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_lookup m k v =
+    MonoidMap.lookup k (MonoidMap.insert k v m) === v
+    & cover 10
+        (MonoidMap.member k m)
+        "MonoidMap.member k m"
+    & cover 10
+        (not (MonoidMap.member k m))
+        "not (MonoidMap.member k m)"
+    & checkCoverage
 
 prop_insert_member :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
 prop_insert_member m k v =
