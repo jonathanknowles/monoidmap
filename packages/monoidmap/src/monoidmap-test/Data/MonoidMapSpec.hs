@@ -181,6 +181,10 @@ spec = do
         it "prop_insert_toList" $
             prop_insert_toList & property
 
+    parallel $ describe "Keys" $ do
+        it "prop_keysSet_lookup" $
+            prop_keysSet_lookup & property
+
     parallel $ describe "Lookups" $ do
         it "prop_lookup_keysSet" $
             prop_lookup_keysSet & property
@@ -292,6 +296,17 @@ prop_insert_toList m k v =
         if v == mempty
         then []
         else [(k, v)]
+
+--------------------------------------------------------------------------------
+-- Keys
+--------------------------------------------------------------------------------
+
+prop_keysSet_lookup :: MonoidMap Key Value -> Property
+prop_keysSet_lookup m =
+    fmap
+        (\k -> (k, MonoidMap.lookup k m))
+        (Set.toList (MonoidMap.keysSet m))
+    === MonoidMap.toList m
 
 --------------------------------------------------------------------------------
 -- Lookups
