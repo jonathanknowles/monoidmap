@@ -53,6 +53,7 @@ library monoidmap-examples
         src/monoidmap-examples
     exposed-modules:
         Data.MonoidMap.Examples.NestedMonoidMap
+        Data.MonoidMap.Examples.RecoveredMap
     default-language:
         Haskell2010
     build-depends:
@@ -60,6 +61,29 @@ library monoidmap-examples
       , containers
       , monoidmap
       , monoid-subclasses
+
+test-suite monoidmap-examples-test
+    import:
+        common-extensions
+    main-is:
+        Spec.hs
+    hs-source-dirs:
+        src/monoidmap-examples-test
+    other-modules:
+        Data.MonoidMap.Examples.RecoveredMapSpec
+    type: exitcode-stdio-1.0
+    default-language:
+        Haskell2010
+    build-tool-depends:
+        hspec-discover:hspec-discover ==2.*
+    build-depends:
+        base >=4.7 && <5
+      , containers
+      , hspec
+      , monoidmap-examples
+      , monoid-subclasses
+      , QuickCheck
+      , quickcheck-instances
 
 library monoidmap-internal
     import:
