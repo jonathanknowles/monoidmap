@@ -169,6 +169,10 @@ spec = do
         it "prop_delete_member" $
             prop_delete_member & property
 
+    parallel $ describe "Insertions" $ do
+        it "prop_insert_toList" $
+            prop_insert_toList & property
+
     parallel $ describe "Lookups" $ do
         it "prop_lookup_keysSet" $
             prop_lookup_keysSet & property
@@ -233,6 +237,17 @@ prop_delete_member m k =
         (MonoidMap.member k m)
         "MonoidMap.member k m"
     & checkCoverage
+
+--------------------------------------------------------------------------------
+-- Insertions
+--------------------------------------------------------------------------------
+
+prop_insert_toList :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_toList m k v =
+    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.insert k v m)) ===
+        if v == mempty
+        then []
+        else [(k, v)]
 
 --------------------------------------------------------------------------------
 -- Lookups
