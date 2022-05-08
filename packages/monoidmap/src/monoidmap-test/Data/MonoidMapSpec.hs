@@ -10,6 +10,10 @@ module Data.MonoidMapSpec
 
 import Prelude
 
+import Data.Function
+    ( (&) )
+import Data.Map.Strict
+    ( Map )
 import Data.Monoid
     ( Sum (..) )
 import Data.MonoidMap
@@ -21,9 +25,9 @@ import GHC.Exts
 import Numeric.Natural
     ( Natural )
 import Test.Hspec
-    ( Spec, describe, parallel )
+    ( Spec, describe, it, parallel )
 import Test.QuickCheck
-    ( Arbitrary (..), listOf, shrinkMapBy )
+    ( Arbitrary (..), Property, listOf, property, shrinkMapBy, (===) )
 import Test.QuickCheck.Classes
     ( eqLaws
     , isListLaws
@@ -53,10 +57,11 @@ import Test.QuickCheck.Classes.Semigroup
 import Test.QuickCheck.Instances.Natural
     ()
 
+import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
-spec =
+spec = do
     parallel $ describe "Class instances obey laws" $ do
         testLawsMany @(MonoidMap Int String)
             [ eqLaws
@@ -136,6 +141,28 @@ spec =
             , semigroupMonoidLaws
             , showReadLaws
             ]
+
+    parallel $ describe "Conversion to and from ordinary maps" $ do
+        it "prop_fromMap_toMap" $
+            prop_fromMap_toMap & property
+        it "prop_toMap_fromMap" $
+            prop_toMap_fromMap & property
+
+--------------------------------------------------------------------------------
+-- Conversion to and from ordinary maps
+--------------------------------------------------------------------------------
+
+prop_fromMap_toMap :: Map Int (Sum Int) -> Property
+prop_fromMap_toMap m =
+    MonoidMap.toMap (MonoidMap.fromMap m) === Map.filter (/= mempty) m
+
+prop_toMap_fromMap :: MonoidMap Int (Sum Int) -> Property
+prop_toMap_fromMap m =
+    MonoidMap.fromMap (MonoidMap.toMap m) === m
+
+--------------------------------------------------------------------------------
+-- Arbitrary instances
+--------------------------------------------------------------------------------
 
 instance (Arbitrary k, Ord k, Arbitrary v, Eq v, Monoid v) =>
     Arbitrary (MonoidMap k v)
