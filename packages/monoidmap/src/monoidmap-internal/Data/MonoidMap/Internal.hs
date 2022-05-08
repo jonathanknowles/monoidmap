@@ -186,7 +186,14 @@ instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
 --------------------------------------------------------------------------------
 
 fromList :: (Ord k, Eq v, Monoid v) => [(k, v)] -> MonoidMap k v
-fromList = adjustMany (<>) mempty
+fromList = fromListWith (<>)
+
+fromListWith
+    :: (Ord k, Eq v, Monoid v)
+    => (v -> v -> v)
+    -> [(k, v)]
+    -> MonoidMap k v
+fromListWith f = adjustMany f mempty
 
 fromMap :: (Ord k, Eq v, Monoid v) => Map k v -> MonoidMap k v
 fromMap = fromList . Map.toList
