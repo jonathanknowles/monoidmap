@@ -170,6 +170,8 @@ spec = do
             prop_delete_member & property
 
     parallel $ describe "Insertions" $ do
+        it "prop_insert_keysSet" $
+            prop_insert_keysSet & property
         it "prop_insert_toList" $
             prop_insert_toList & property
 
@@ -241,6 +243,11 @@ prop_delete_member m k =
 --------------------------------------------------------------------------------
 -- Insertions
 --------------------------------------------------------------------------------
+
+prop_insert_keysSet :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_keysSet m k v =
+    Set.member k (MonoidMap.keysSet (MonoidMap.insert k v m)) ===
+        (v /= mempty)
 
 prop_insert_toList :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
 prop_insert_toList m k v =
