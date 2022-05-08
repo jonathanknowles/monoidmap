@@ -156,6 +156,8 @@ spec = do
             prop_toMap_fromMap & property
 
     parallel $ describe "Singletons" $ do
+        it "prop_singleton_delete" $
+            prop_singleton_delete & property
         it "prop_singleton_keysSet" $
             prop_singleton_keysSet & property
         it "prop_singleton_lookup" $
@@ -195,6 +197,10 @@ prop_toMap_fromMap m =
 --------------------------------------------------------------------------------
 -- Singletons
 --------------------------------------------------------------------------------
+
+prop_singleton_delete :: Int -> Sum Int -> Property
+prop_singleton_delete k v =
+    MonoidMap.delete k (MonoidMap.singleton k v) === mempty
 
 prop_singleton_keysSet :: Int -> Sum Int -> Property
 prop_singleton_keysSet k v =
