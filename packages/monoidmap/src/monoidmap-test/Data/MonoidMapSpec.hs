@@ -202,15 +202,22 @@ spec = do
             prop_singleton_toList & property
 
 --------------------------------------------------------------------------------
+-- Test types
+--------------------------------------------------------------------------------
+
+type Key = Int
+type Value = Sum Int
+
+--------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
 
-prop_fromList_toList :: [(Int, Sum Int)] -> Property
+prop_fromList_toList :: [(Key, Value)] -> Property
 prop_fromList_toList xs =
     MonoidMap.toList (MonoidMap.fromList xs) ===
     Map.toList (Map.filter (/= mempty) (Map.fromListWith (<>) xs))
 
-prop_toList_fromList :: MonoidMap Int (Sum Int) -> Property
+prop_toList_fromList :: MonoidMap Key Value -> Property
 prop_toList_fromList xs =
     MonoidMap.fromList (MonoidMap.toList xs) === xs
 
@@ -218,11 +225,11 @@ prop_toList_fromList xs =
 -- Conversion to and from ordinary maps
 --------------------------------------------------------------------------------
 
-prop_fromMap_toMap :: Map Int (Sum Int) -> Property
+prop_fromMap_toMap :: Map Key Value -> Property
 prop_fromMap_toMap m =
     MonoidMap.toMap (MonoidMap.fromMap m) === Map.filter (/= mempty) m
 
-prop_toMap_fromMap :: MonoidMap Int (Sum Int) -> Property
+prop_toMap_fromMap :: MonoidMap Key Value -> Property
 prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
 
@@ -230,7 +237,7 @@ prop_toMap_fromMap m =
 -- Deletions
 --------------------------------------------------------------------------------
 
-prop_delete_keysSet :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_delete_keysSet :: MonoidMap Key Value -> Key -> Property
 prop_delete_keysSet m k =
     Set.member k (MonoidMap.keysSet (MonoidMap.delete k m)) === False
     & cover 10
@@ -238,7 +245,7 @@ prop_delete_keysSet m k =
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_lookup :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_delete_lookup :: MonoidMap Key Value -> Key -> Property
 prop_delete_lookup m k =
     MonoidMap.lookup k (MonoidMap.delete k m) === mempty
     & cover 10
@@ -246,7 +253,7 @@ prop_delete_lookup m k =
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_member :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_delete_member :: MonoidMap Key Value -> Key -> Property
 prop_delete_member m k =
     MonoidMap.member k (MonoidMap.delete k m) === False
     & cover 10
@@ -258,12 +265,12 @@ prop_delete_member m k =
 -- Insertions
 --------------------------------------------------------------------------------
 
-prop_insert_keysSet :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_keysSet :: MonoidMap Key Value -> Key -> Value -> Property
 prop_insert_keysSet m k v =
     Set.member k (MonoidMap.keysSet (MonoidMap.insert k v m)) ===
         (v /= mempty)
 
-prop_insert_lookup :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_lookup :: MonoidMap Key Value -> Key -> Value -> Property
 prop_insert_lookup m k v =
     MonoidMap.lookup k (MonoidMap.insert k v m) === v
     & cover 10
@@ -274,12 +281,12 @@ prop_insert_lookup m k v =
         "not (MonoidMap.member k m)"
     & checkCoverage
 
-prop_insert_member :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_member :: MonoidMap Key Value -> Key -> Value -> Property
 prop_insert_member m k v =
     MonoidMap.member k (MonoidMap.insert k v m) ===
         (v /= mempty)
 
-prop_insert_toList :: MonoidMap Int (Sum Int) -> Int -> Sum Int -> Property
+prop_insert_toList :: MonoidMap Key Value -> Key -> Value -> Property
 prop_insert_toList m k v =
     filter ((== k) . fst) (MonoidMap.toList (MonoidMap.insert k v m)) ===
         if v == mempty
@@ -290,7 +297,7 @@ prop_insert_toList m k v =
 -- Lookups
 --------------------------------------------------------------------------------
 
-prop_lookup_keysSet :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_lookup_keysSet :: MonoidMap Key Value -> Key -> Property
 prop_lookup_keysSet m k =
     Set.member k (MonoidMap.keysSet m) === (MonoidMap.lookup k m /= mempty)
     & cover 10
@@ -301,7 +308,7 @@ prop_lookup_keysSet m k =
         "not (MonoidMap.member k m)"
     & checkCoverage
 
-prop_lookup_member :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_lookup_member :: MonoidMap Key Value -> Key -> Property
 prop_lookup_member m k =
     MonoidMap.member k m === (MonoidMap.lookup k m /= mempty)
     & cover 10
@@ -316,33 +323,33 @@ prop_lookup_member m k =
 -- Singletons
 --------------------------------------------------------------------------------
 
-prop_singleton_delete :: Int -> Sum Int -> Property
+prop_singleton_delete :: Key -> Value -> Property
 prop_singleton_delete k v =
     MonoidMap.delete k (MonoidMap.singleton k v) === mempty
 
-prop_singleton_keysSet :: Int -> Sum Int -> Property
+prop_singleton_keysSet :: Key -> Value -> Property
 prop_singleton_keysSet k v =
     MonoidMap.keysSet (MonoidMap.singleton k v) ===
         if v == mempty
         then Set.empty
         else Set.singleton k
 
-prop_singleton_lookup :: Int -> Sum Int -> Property
+prop_singleton_lookup :: Key -> Value -> Property
 prop_singleton_lookup k v =
     MonoidMap.lookup k (MonoidMap.singleton k v) === v
 
-prop_singleton_member :: Int -> Sum Int -> Property
+prop_singleton_member :: Key -> Value -> Property
 prop_singleton_member k v =
     MonoidMap.member k (MonoidMap.singleton k v) === (v /= mempty)
 
-prop_singleton_size :: Int -> Sum Int -> Property
+prop_singleton_size :: Key -> Value -> Property
 prop_singleton_size k v =
     MonoidMap.size (MonoidMap.singleton k v) ===
         if v == mempty
         then 0
         else 1
 
-prop_singleton_toList :: Int -> Sum Int -> Property
+prop_singleton_toList :: Key -> Value -> Property
 prop_singleton_toList k v =
     MonoidMap.toList (MonoidMap.singleton k v) ===
         if v == mempty
