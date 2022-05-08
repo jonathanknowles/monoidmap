@@ -59,6 +59,7 @@ import Test.QuickCheck.Instances.Natural
 
 import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
+import qualified Data.Set as Set
 
 spec :: Spec
 spec = do
@@ -155,6 +156,8 @@ spec = do
             prop_toMap_fromMap & property
 
     parallel $ describe "Singletons" $ do
+        it "prop_singleton_keysSet" $
+            prop_singleton_keysSet & property
         it "prop_singleton_lookup" $
             prop_singleton_lookup & property
         it "prop_singleton_toList" $
@@ -188,6 +191,13 @@ prop_toMap_fromMap m =
 --------------------------------------------------------------------------------
 -- Singletons
 --------------------------------------------------------------------------------
+
+prop_singleton_keysSet :: Int -> Sum Int -> Property
+prop_singleton_keysSet k v =
+    MonoidMap.keysSet (MonoidMap.singleton k v) ===
+        if v == mempty
+        then Set.empty
+        else Set.singleton k
 
 prop_singleton_lookup :: Int -> Sum Int -> Property
 prop_singleton_lookup k v =
