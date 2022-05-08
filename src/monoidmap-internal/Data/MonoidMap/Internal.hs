@@ -15,6 +15,7 @@ module Data.MonoidMap.Internal
       MonoidMap
 
     -- * Construction
+    , empty
     , fromList
     , fromListWith
     , fromMap
@@ -179,7 +180,7 @@ instance (Ord k, Eq v, Monoid v) => IsList (MonoidMap k v)
 
 instance (Ord k, Eq v, Monoid v) => Monoid (MonoidMap k v)
   where
-    mempty = MonoidMap Core.empty
+    mempty = empty
 
 instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
   where
@@ -188,6 +189,9 @@ instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
 --------------------------------------------------------------------------------
 -- Construction
 --------------------------------------------------------------------------------
+
+empty :: MonoidMap k v
+empty = MonoidMap Core.empty
 
 fromList :: (Ord k, Eq v, Monoid v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
