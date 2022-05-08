@@ -169,6 +169,10 @@ spec = do
         it "prop_delete_member" $
             prop_delete_member & property
 
+    parallel $ describe "Lookups" $ do
+        it "prop_lookup_member" $
+            prop_lookup_member & property
+
     parallel $ describe "Singletons" $ do
         it "prop_singleton_delete" $
             prop_singleton_delete & property
@@ -226,6 +230,21 @@ prop_delete_member m k =
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
+    & checkCoverage
+
+--------------------------------------------------------------------------------
+-- Lookups
+--------------------------------------------------------------------------------
+
+prop_lookup_member :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_lookup_member m k =
+    MonoidMap.member k m === (MonoidMap.lookup k m /= mempty)
+    & cover 10
+        (MonoidMap.member k m)
+        "MonoidMap.member k m"
+    & cover 10
+        (not (MonoidMap.member k m))
+        "not (MonoidMap.member k m)"
     & checkCoverage
 
 --------------------------------------------------------------------------------
