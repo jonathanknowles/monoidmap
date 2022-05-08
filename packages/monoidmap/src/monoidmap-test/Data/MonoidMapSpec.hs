@@ -163,7 +163,7 @@ spec = do
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap & property
 
-    parallel $ describe "Deletions" $ do
+    parallel $ describe "Deletion" $ do
         it "prop_delete_keysSet" $
             prop_delete_keysSet & property
         it "prop_delete_lookup" $
@@ -171,7 +171,7 @@ spec = do
         it "prop_delete_member" $
             prop_delete_member & property
 
-    parallel $ describe "Insertions" $ do
+    parallel $ describe "Insertion" $ do
         it "prop_insert_keysSet" $
             prop_insert_keysSet & property
         it "prop_insert_lookup" $
@@ -185,13 +185,13 @@ spec = do
         it "prop_keysSet_lookup" $
             prop_keysSet_lookup & property
 
-    parallel $ describe "Lookups" $ do
+    parallel $ describe "Lookup" $ do
         it "prop_lookup_keysSet" $
             prop_lookup_keysSet & property
         it "prop_lookup_member" $
             prop_lookup_member & property
 
-    parallel $ describe "Singletons" $ do
+    parallel $ describe "Singleton" $ do
         it "prop_singleton_delete" $
             prop_singleton_delete & property
         it "prop_singleton_keysSet" $
@@ -238,7 +238,7 @@ prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
 
 --------------------------------------------------------------------------------
--- Deletions
+-- Deletion
 --------------------------------------------------------------------------------
 
 prop_delete_keysSet :: MonoidMap Key Value -> Key -> Property
@@ -266,7 +266,7 @@ prop_delete_member m k =
     & checkCoverage
 
 --------------------------------------------------------------------------------
--- Insertions
+-- Insertion
 --------------------------------------------------------------------------------
 
 prop_insert_keysSet :: MonoidMap Key Value -> Key -> Value -> Property
@@ -309,7 +309,7 @@ prop_keysSet_lookup m =
     === MonoidMap.toList m
 
 --------------------------------------------------------------------------------
--- Lookups
+-- Lookup
 --------------------------------------------------------------------------------
 
 prop_lookup_keysSet :: MonoidMap Key Value -> Key -> Property
@@ -335,7 +335,7 @@ prop_lookup_member m k =
     & checkCoverage
 
 --------------------------------------------------------------------------------
--- Singletons
+-- Singleton
 --------------------------------------------------------------------------------
 
 prop_singleton_delete :: Key -> Value -> Property
