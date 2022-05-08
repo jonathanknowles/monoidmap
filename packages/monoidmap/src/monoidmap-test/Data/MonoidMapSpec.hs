@@ -142,11 +142,30 @@ spec = do
             , showReadLaws
             ]
 
+    parallel $ describe "Conversion to and from lists" $ do
+        it "prop_fromList_toList" $
+            prop_fromList_toList & property
+        it "prop_toList_fromList" $
+            prop_toList_fromList & property
+
     parallel $ describe "Conversion to and from ordinary maps" $ do
         it "prop_fromMap_toMap" $
             prop_fromMap_toMap & property
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap & property
+
+--------------------------------------------------------------------------------
+-- Conversion to and from lists
+--------------------------------------------------------------------------------
+
+prop_fromList_toList :: [(Int, Sum Int)] -> Property
+prop_fromList_toList xs =
+    MonoidMap.toList (MonoidMap.fromList xs) ===
+    Map.toList (Map.filter (/= mempty) (Map.fromListWith (<>) xs))
+
+prop_toList_fromList :: MonoidMap Int (Sum Int) -> Property
+prop_toList_fromList xs =
+    MonoidMap.fromList (MonoidMap.toList xs) === xs
 
 --------------------------------------------------------------------------------
 -- Conversion to and from ordinary maps
