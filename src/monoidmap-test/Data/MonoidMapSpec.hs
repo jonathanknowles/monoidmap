@@ -152,6 +152,8 @@ spec = do
             ]
 
     parallel $ describe "Conversion to and from lists" $ do
+        it "prop_fromList_toMap" $
+            prop_fromList_toMap & property
         it "prop_fromList_toList" $
             prop_fromList_toList & property
         it "prop_toList_fromList" $
@@ -215,6 +217,11 @@ type Value = Sum Int
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
+
+prop_fromList_toMap :: [(Key, Value)] -> Property
+prop_fromList_toMap kvs =
+    MonoidMap.toMap (MonoidMap.fromList kvs) ===
+    Map.filter (/= mempty) (Map.fromListWith (<>) kvs)
 
 prop_fromList_toList :: [(Key, Value)] -> Property
 prop_fromList_toList kvs =
