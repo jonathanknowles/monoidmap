@@ -3,7 +3,8 @@ tests: True
 test-show-details: direct
 
 package *
-  ghc-options: -Wall -j +RTS -A256m -n4m -RTS
+    documentation: True
+    ghc-options: -Wall -j +RTS -A256m -n4m -RTS
 
 source-repository-package
     type: git
