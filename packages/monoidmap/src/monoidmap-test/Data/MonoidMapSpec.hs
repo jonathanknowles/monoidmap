@@ -202,6 +202,8 @@ spec = do
             prop_singleton_lookup & property
         it "prop_singleton_member" $
             prop_singleton_member & property
+        it "prop_singleton_null" $
+            prop_singleton_null & property
         it "prop_singleton_size" $
             prop_singleton_size & property
         it "prop_singleton_toList" $
@@ -363,6 +365,10 @@ prop_singleton_lookup k v =
 prop_singleton_member :: Key -> Value -> Property
 prop_singleton_member k v =
     MonoidMap.member k (MonoidMap.singleton k v) === (v /= mempty)
+
+prop_singleton_null :: Key -> Value -> Property
+prop_singleton_null k v =
+    MonoidMap.null (MonoidMap.singleton k v) === (v == mempty)
 
 prop_singleton_size :: Key -> Value -> Property
 prop_singleton_size k v =

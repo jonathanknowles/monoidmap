@@ -27,6 +27,7 @@ module Data.MonoidMap.Internal
 --  * Queries
     , keysSet
     , lookup
+    , null
     , member
     , size
 
@@ -62,7 +63,7 @@ import Data.Monoid.GCD
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
-    ( MonoidNull (..) )
+    ( MonoidNull )
 import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
@@ -81,6 +82,7 @@ import Text.Read
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
+import qualified Data.Monoid.Null as Null
 import qualified Data.MonoidMap.Internal.Core as Core
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
@@ -106,7 +108,7 @@ instance (Ord k, Read k, Eq v, Monoid v, Read v) =>
 instance (Ord k, Eq v, Monoid v) =>
     MonoidNull (MonoidMap k v)
   where
-    null = null . toMap
+    null = null
 
 instance (Ord k, Eq v, Monoid v, Commutative v) =>
     Commutative (MonoidMap k v)
@@ -222,6 +224,9 @@ lookup = flip get
 
 member :: Ord k => k -> MonoidMap k a -> Bool
 member k = Map.member k . toMap
+
+null :: MonoidMap k a -> Bool
+null = Map.null . toMap
 
 get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
 get = Core.get . unMonoidMap
