@@ -4,27 +4,27 @@
 --
 module Data.MonoidMap
     (
---  * Type
+    -- * Type
       MonoidMap
 
---  * Construction
+    -- * Construction
     , fromList
     , fromListWith
     , fromMap
     , singleton
 
---  * Deconstruction
+    -- * Deconstruction
     , toList
     , toMap
 
---  * Queries
+    -- * Queries
     , keysSet
     , lookup
     , member
     , null
     , size
 
---  * Modification
+    -- * Modification
     , adjust
     , delete
     , insert
