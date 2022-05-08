@@ -27,7 +27,15 @@ import Numeric.Natural
 import Test.Hspec
     ( Spec, describe, it, parallel )
 import Test.QuickCheck
-    ( Arbitrary (..), Property, listOf, property, shrinkMapBy, (===) )
+    ( Arbitrary (..)
+    , Property
+    , checkCoverage
+    , cover
+    , listOf
+    , property
+    , shrinkMapBy
+    , (===)
+    )
 import Test.QuickCheck.Classes
     ( eqLaws
     , isListLaws
@@ -155,6 +163,10 @@ spec = do
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap & property
 
+    parallel $ describe "Deletions" $ do
+        it "prop_delete_lookup" $
+            prop_delete_lookup & property
+
     parallel $ describe "Singletons" $ do
         it "prop_singleton_delete" $
             prop_singleton_delete & property
@@ -193,6 +205,18 @@ prop_fromMap_toMap m =
 prop_toMap_fromMap :: MonoidMap Int (Sum Int) -> Property
 prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
+
+--------------------------------------------------------------------------------
+-- Deletions
+--------------------------------------------------------------------------------
+
+prop_delete_lookup :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_delete_lookup m k =
+    MonoidMap.lookup k (MonoidMap.delete k m) === mempty
+    & cover 10
+        (MonoidMap.member k m)
+        "MonoidMap.member k m"
+    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Singletons
