@@ -15,7 +15,7 @@ import Data.Function
 import Data.Map.Strict
     ( Map )
 import Data.Monoid
-    ( Sum (..) )
+    ( Product (..), Sum (..) )
 import Data.MonoidMap
     ( MonoidMap )
 import Data.Set
@@ -82,6 +82,24 @@ spec = do
             , monoidNullLaws
             , overlappingGCDMonoidLaws
             , rightCancellativeLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap Int (Product Natural))
+            [ commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , reductiveLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
