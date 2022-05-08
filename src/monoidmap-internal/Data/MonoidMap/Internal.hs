@@ -34,6 +34,7 @@ module Data.MonoidMap.Internal
     , adjust
     , delete
     , insert
+    , insertWith
 
 --  * Combination
     , mergeWith
@@ -266,7 +267,16 @@ delete :: (Ord k, Eq v, Monoid v) => k -> MonoidMap k v -> MonoidMap k v
 delete k m = set m k mempty
 
 insert :: (Ord k, Eq v, Monoid v) => k -> v -> MonoidMap k v -> MonoidMap k v
-insert k v m = set m k v
+insert = insertWith const
+
+insertWith
+    :: (Ord k, Eq v, Monoid v)
+    => (v -> v -> v)
+    -> k
+    -> v
+    -> MonoidMap k v
+    -> MonoidMap k v
+insertWith f k v m = set m k $ f v (get m k)
 
 set :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Core.set . unMonoidMap

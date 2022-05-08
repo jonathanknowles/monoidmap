@@ -27,6 +27,7 @@ module Data.MonoidMap
     , adjust
     , delete
     , insert
+    , insertWith
     )
     where
 
