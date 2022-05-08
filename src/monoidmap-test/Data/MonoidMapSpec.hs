@@ -170,6 +170,8 @@ spec = do
             prop_delete_member & property
 
     parallel $ describe "Lookups" $ do
+        it "prop_lookup_keysSet" $
+            prop_lookup_keysSet & property
         it "prop_lookup_member" $
             prop_lookup_member & property
 
@@ -235,6 +237,17 @@ prop_delete_member m k =
 --------------------------------------------------------------------------------
 -- Lookups
 --------------------------------------------------------------------------------
+
+prop_lookup_keysSet :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_lookup_keysSet m k =
+    Set.member k (MonoidMap.keysSet m) === (MonoidMap.lookup k m /= mempty)
+    & cover 10
+        (MonoidMap.member k m)
+        "MonoidMap.member k m"
+    & cover 10
+        (not (MonoidMap.member k m))
+        "not (MonoidMap.member k m)"
+    & checkCoverage
 
 prop_lookup_member :: MonoidMap Int (Sum Int) -> Int -> Property
 prop_lookup_member m k =
