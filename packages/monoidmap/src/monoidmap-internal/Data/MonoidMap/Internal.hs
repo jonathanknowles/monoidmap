@@ -16,6 +16,7 @@ module Data.MonoidMap.Internal
 
 --  * Construction
     , fromList
+    , fromListWith
     , fromMap
     , singleton
 
