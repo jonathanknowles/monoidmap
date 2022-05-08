@@ -9,6 +9,7 @@ module Data.MonoidMap
 
 --  * Construction
     , fromList
+    , fromListWith
     , fromMap
     , singleton
 

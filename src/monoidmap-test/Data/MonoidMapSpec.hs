@@ -217,13 +217,13 @@ type Value = Sum Int
 --------------------------------------------------------------------------------
 
 prop_fromList_toList :: [(Key, Value)] -> Property
-prop_fromList_toList xs =
-    MonoidMap.toList (MonoidMap.fromList xs) ===
-    Map.toList (Map.filter (/= mempty) (Map.fromListWith (<>) xs))
+prop_fromList_toList kvs =
+    MonoidMap.toList (MonoidMap.fromList kvs) ===
+    Map.toList (Map.filter (/= mempty) (Map.fromListWith (<>) kvs))
 
 prop_toList_fromList :: MonoidMap Key Value -> Property
-prop_toList_fromList xs =
-    MonoidMap.fromList (MonoidMap.toList xs) === xs
+prop_toList_fromList m =
+    MonoidMap.fromList (MonoidMap.toList m) === m
 
 --------------------------------------------------------------------------------
 -- Conversion to and from ordinary maps
