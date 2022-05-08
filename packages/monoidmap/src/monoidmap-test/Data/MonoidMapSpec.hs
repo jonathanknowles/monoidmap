@@ -154,6 +154,10 @@ spec = do
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap & property
 
+    parallel $ describe "Singletons" $ do
+        it "prop_singleton_toList" $
+            prop_singleton_toList & property
+
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
@@ -178,6 +182,17 @@ prop_fromMap_toMap m =
 prop_toMap_fromMap :: MonoidMap Int (Sum Int) -> Property
 prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
+
+--------------------------------------------------------------------------------
+-- Singletons
+--------------------------------------------------------------------------------
+
+prop_singleton_toList :: Int -> Sum Int -> Property
+prop_singleton_toList k v =
+    MonoidMap.toList (MonoidMap.singleton k v) ===
+        if v == mempty
+        then []
+        else [(k, v)]
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
