@@ -8,10 +8,12 @@ module Data.MonoidMap
       MonoidMap
 
 --  * Construction
+    , fromList
     , fromMap
     , singleton
 
 --  * Deconstruction
+    , toList
     , toMap
 
 --  * Queries

@@ -15,10 +15,12 @@ module Data.MonoidMap.Internal
       MonoidMap
 
 --  * Construction
+    , fromList
     , fromMap
     , singleton
 
 --  * Deconstruction
+    , toList
     , toMap
 
 --  * Queries
@@ -71,7 +73,7 @@ import Data.Semigroup.Cancellative
 import Data.Set
     ( Set )
 import GHC.Exts
-    ( IsList (..) )
+    ( IsList (Item) )
 import Text.Read
     ( Read (..) )
 
@@ -79,6 +81,7 @@ import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap.Internal.Core as Core
 import qualified Data.Set as Set
+import qualified GHC.Exts as GHC
 
 --------------------------------------------------------------------------------
 -- Type
@@ -167,8 +170,8 @@ instance (Ord k, Eq v, Monoid v, Monus v) =>
 instance (Ord k, Eq v, Monoid v) => IsList (MonoidMap k v)
   where
     type Item (MonoidMap k v) = (k, v)
-    fromList = adjustMany (<>) mempty
-    toList = Map.toList . Core.toMap . unMonoidMap
+    fromList = fromList
+    toList = toList
 
 instance (Ord k, Eq v, Monoid v) => Monoid (MonoidMap k v)
   where
@@ -182,6 +185,9 @@ instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
 -- Construction
 --------------------------------------------------------------------------------
 
+fromList :: (Ord k, Eq v, Monoid v) => [(k, v)] -> MonoidMap k v
+fromList = adjustMany (<>) mempty
+
 fromMap :: (Ord k, Eq v, Monoid v) => Map k v -> MonoidMap k v
 fromMap = fromList . Map.toList
 
@@ -191,6 +197,9 @@ singleton = set mempty
 --------------------------------------------------------------------------------
 -- Deconstruction
 --------------------------------------------------------------------------------
+
+toList :: MonoidMap k v -> [(k, v)]
+toList = Map.toList . Core.toMap . unMonoidMap
 
 toMap :: MonoidMap k v -> Map k v
 toMap = Core.toMap . unMonoidMap
@@ -241,7 +250,7 @@ adjustMany
     -> many
     -> MonoidMap k v
 adjustMany f m1 m2 =
-    F.foldl' acc m1 (toList m2)
+    F.foldl' acc m1 (GHC.toList m2)
   where
     acc m (k, v) = adjust (f v) k m
 
