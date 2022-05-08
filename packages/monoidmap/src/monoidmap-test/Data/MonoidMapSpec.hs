@@ -166,6 +166,8 @@ spec = do
     parallel $ describe "Deletions" $ do
         it "prop_delete_lookup" $
             prop_delete_lookup & property
+        it "prop_delete_member" $
+            prop_delete_member & property
 
     parallel $ describe "Singletons" $ do
         it "prop_singleton_delete" $
@@ -213,6 +215,14 @@ prop_toMap_fromMap m =
 prop_delete_lookup :: MonoidMap Int (Sum Int) -> Int -> Property
 prop_delete_lookup m k =
     MonoidMap.lookup k (MonoidMap.delete k m) === mempty
+    & cover 10
+        (MonoidMap.member k m)
+        "MonoidMap.member k m"
+    & checkCoverage
+
+prop_delete_member :: MonoidMap Int (Sum Int) -> Int -> Property
+prop_delete_member m k =
+    MonoidMap.member k (MonoidMap.delete k m) === False
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
