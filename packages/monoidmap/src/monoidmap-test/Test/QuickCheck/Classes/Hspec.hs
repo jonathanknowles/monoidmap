@@ -1,6 +1,4 @@
 {-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
 
 -- |
 -- Copyright: © 2022 Jonathan Knowles
