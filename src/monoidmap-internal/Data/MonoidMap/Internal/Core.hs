@@ -19,12 +19,15 @@ module Data.MonoidMap.Internal.Core
     )
     where
 
-import Prelude
+import Prelude hiding
+    ( null )
 
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
     ( fromMaybe )
+import Data.Monoid.Null
+    ( MonoidNull (..) )
 
 import qualified Data.Map.Strict as Map
 
@@ -58,7 +61,7 @@ toMap = unMonoidMap
 get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
 get m k = fromMaybe mempty $ Map.lookup k $ toMap m
 
-set :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> v -> MonoidMap k v
+set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set m k v
-    | v == mempty = MonoidMap $ Map.delete k   $ unMonoidMap m
-    | otherwise   = MonoidMap $ Map.insert k v $ unMonoidMap m
+    | null v    = MonoidMap $ Map.delete k   $ unMonoidMap m
+    | otherwise = MonoidMap $ Map.insert k v $ unMonoidMap m
