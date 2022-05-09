@@ -86,6 +86,7 @@ test-suite monoidmap-test
     other-modules:
         Data.MonoidMapSpec
         Test.QuickCheck.Classes.Hspec
+        Test.Hspec.Unit
     type: exitcode-stdio-1.0
     default-language:
         Haskell2010
