@@ -8,6 +8,7 @@ module Data.MonoidMap
       MonoidMap
 
     -- * Construction
+    , empty
     , fromList
     , fromListWith
     , fromMap
