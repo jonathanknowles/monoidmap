@@ -38,6 +38,9 @@ module Data.MonoidMap.Internal
     , insert
     , insertWith
 
+    -- * Traversal
+    , map
+
     -- * Combination
     , mergeWith
     , mergeWithF
@@ -49,7 +52,7 @@ module Data.MonoidMap.Internal
     where
 
 import Prelude hiding
-    ( gcd, lookup, null, subtract )
+    ( gcd, lookup, map, null, subtract )
 
 import Data.Functor.Identity
     ( Identity (..) )
@@ -292,6 +295,17 @@ insertWith f k v m = set m k $ f v (get m k)
 
 set :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Core.set . unMonoidMap
+
+--------------------------------------------------------------------------------
+-- Traversal
+--------------------------------------------------------------------------------
+
+map
+    :: (Ord k, Eq v2, Monoid v2)
+    => (v1 -> v2)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+map f = fromList . fmap (fmap f) . toList
 
 --------------------------------------------------------------------------------
 -- Binary operations

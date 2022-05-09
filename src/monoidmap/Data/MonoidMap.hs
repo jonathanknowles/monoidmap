@@ -29,9 +29,12 @@ module Data.MonoidMap
     , delete
     , insert
     , insertWith
+
+    -- * Traversal
+    , map
     )
     where
 
 import Data.MonoidMap.Internal
 import Prelude hiding
-    ( lookup, null )
+    ( lookup, map, null )
