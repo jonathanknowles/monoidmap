@@ -97,64 +97,64 @@ newtype MonoidMap k v = MonoidMap
 -- Instances
 --------------------------------------------------------------------------------
 
-instance (Ord k, Read k, Eq v, Monoid v, Read v) =>
+instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
 
-instance (Ord k, Eq v, Monoid v) =>
+instance (Ord k, MonoidNull v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
 
-instance (Ord k, Eq v, PositiveMonoid v) =>
+instance (Ord k, PositiveMonoid v) =>
     PositiveMonoid (MonoidMap k v)
 
-instance (Ord k, Eq v, Monoid v, Commutative v) =>
+instance (Ord k, MonoidNull v, Commutative v) =>
     Commutative (MonoidMap k v)
 
-instance (Ord k, Eq v, Monoid v, LeftReductive v) =>
+instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isSubmapOfBy isPrefixOf
     stripPrefix = unionWithF stripPrefix
 
-instance (Ord k, Eq v, Monoid v, RightReductive v) =>
+instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSubmapOfBy isSuffixOf
     stripSuffix = unionWithF stripSuffix
 
-instance (Ord k, Eq v, Monoid v, Reductive v) =>
+instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
     (</>) = unionWithF (</>)
 
-instance (Ord k, Eq v, Monoid v, LeftCancellative v) =>
+instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
 
-instance (Ord k, Eq v, Monoid v, RightCancellative v) =>
+instance (Ord k, MonoidNull v, RightCancellative v) =>
     RightCancellative (MonoidMap k v)
 
-instance (Ord k, Eq v, Monoid v, Cancellative v) =>
+instance (Ord k, MonoidNull v, Cancellative v) =>
     Cancellative (MonoidMap k v)
 
-instance (Ord k, Eq v, Monoid v, GCDMonoid v) =>
+instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = intersectionWith gcd
 
-instance (Ord k, Eq v, Monoid v, LeftGCDMonoid v) =>
+instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = intersectionWith commonPrefix
 
-instance (Ord k, Eq v, Monoid v, RightGCDMonoid v) =>
+instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = intersectionWith commonSuffix
 
-instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
+instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
     overlap = intersectionWith overlap
@@ -166,22 +166,22 @@ instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
         , stripPrefixOverlap m1 m2
         )
 
-instance (Ord k, Eq v, Monoid v, Monus v) =>
+instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
     (<\>) = unionWith (<\>)
 
-instance (Ord k, Eq v, Monoid v) => IsList (MonoidMap k v)
+instance (Ord k, MonoidNull v) => IsList (MonoidMap k v)
   where
     type Item (MonoidMap k v) = (k, v)
     fromList = fromList
     toList = toList
 
-instance (Ord k, Eq v, Monoid v) => Monoid (MonoidMap k v)
+instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
   where
     mempty = empty
 
-instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
+instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
   where
     (<>) = adjustMany (flip (<>))
 
@@ -192,20 +192,20 @@ instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
 empty :: MonoidMap k v
 empty = MonoidMap Core.empty
 
-fromList :: (Ord k, Eq v, Monoid v) => [(k, v)] -> MonoidMap k v
+fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
 fromListWith
-    :: (Ord k, Eq v, Monoid v)
+    :: (Ord k, MonoidNull v)
     => (v -> v -> v)
     -> [(k, v)]
     -> MonoidMap k v
 fromListWith f = adjustMany f mempty
 
-fromMap :: (Ord k, Eq v, Monoid v) => Map k v -> MonoidMap k v
+fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
 fromMap = fromList . Map.toList
 
-singleton :: (Ord k, Eq v, Monoid v) => k -> v -> MonoidMap k v
+singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton = set mempty
 
 --------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ isSubmapOfBy f m1 m2 = Map.isSubmapOfBy f (toMap m1) (toMap m2)
 --------------------------------------------------------------------------------
 
 adjust
-    :: (Ord k, Eq v, Monoid v)
+    :: (Ord k, MonoidNull v)
     => (v -> v)
     -> k
     -> MonoidMap k v
@@ -261,7 +261,7 @@ adjust
 adjust f k m = set m k $ f (get m k)
 
 adjustMany
-    :: (Ord k, Eq v, Monoid v, IsList many, Item many ~ (k, v))
+    :: (Ord k, MonoidNull v, IsList many, Item many ~ (k, v))
     => (v -> v -> v)
     -> MonoidMap k v
     -> many
@@ -271,14 +271,14 @@ adjustMany f m1 m2 =
   where
     acc m (k, v) = adjust (f v) k m
 
-delete :: (Ord k, Eq v, Monoid v) => k -> MonoidMap k v -> MonoidMap k v
+delete :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
 delete k m = set m k mempty
 
-insert :: (Ord k, Eq v, Monoid v) => k -> v -> MonoidMap k v -> MonoidMap k v
+insert :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 insert = insertWith const
 
 insertWith
-    :: (Ord k, Eq v, Monoid v)
+    :: (Ord k, MonoidNull v)
     => (v -> v -> v)
     -> k
     -> v
@@ -286,7 +286,7 @@ insertWith
     -> MonoidMap k v
 insertWith f k v m = set m k $ f v (get m k)
 
-set :: (Ord k, Eq v, Monoid v) => MonoidMap k v -> k -> v -> MonoidMap k v
+set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Core.set . unMonoidMap
 
 --------------------------------------------------------------------------------
@@ -294,7 +294,7 @@ set = ((MonoidMap .) .) . Core.set . unMonoidMap
 --------------------------------------------------------------------------------
 
 map
-    :: (Ord k, Eq v2, Monoid v2)
+    :: (Ord k, MonoidNull v2)
     => (v1 -> v2)
     -> MonoidMap k v1
     -> MonoidMap k v2
@@ -305,7 +305,7 @@ map f = fromList . fmap (fmap f) . toList
 --------------------------------------------------------------------------------
 
 mergeWith
-    :: forall k v. (Ord k, Eq v, Monoid v)
+    :: forall k v. (Ord k, MonoidNull v)
     => (Set k -> Set k -> Set k)
     -> (v -> v -> v)
     -> MonoidMap k v
@@ -315,7 +315,7 @@ mergeWith mergeKeys mergeValue m1 m2 =
     runIdentity $ mergeWithF mergeKeys (fmap (fmap Identity) mergeValue) m1 m2
 
 mergeWithF
-    :: forall f k v. (Applicative f, Ord k, Eq v, Monoid v)
+    :: forall f k v. (Applicative f, Ord k, MonoidNull v)
     => (Set k -> Set k -> Set k)
     -> (v -> v -> f v)
     -> MonoidMap k v
@@ -331,7 +331,7 @@ mergeWithF mergeKeys mergeValue m1 m2
     merge k = (k,) <$> mergeValue (m1 `get` k) (m2 `get` k)
 
 intersectionWith
-    :: forall k v. (Ord k, Eq v, Monoid v)
+    :: forall k v. (Ord k, MonoidNull v)
     => (v -> v -> v)
     -> MonoidMap k v
     -> MonoidMap k v
@@ -339,7 +339,7 @@ intersectionWith
 intersectionWith = mergeWith Set.intersection
 
 intersectionWithF
-    :: forall f k v. (Applicative f, Ord k, Eq v, Monoid v)
+    :: forall f k v. (Applicative f, Ord k, MonoidNull v)
     => (v -> v -> f v)
     -> MonoidMap k v
     -> MonoidMap k v
@@ -347,7 +347,7 @@ intersectionWithF
 intersectionWithF = mergeWithF Set.intersection
 
 unionWith
-    :: forall k v. (Ord k, Eq v, Monoid v)
+    :: forall k v. (Ord k, MonoidNull v)
     => (v -> v -> v)
     -> MonoidMap k v
     -> MonoidMap k v
@@ -355,7 +355,7 @@ unionWith
 unionWith = mergeWith Set.union
 
 unionWithF
-    :: forall f k v. (Applicative f, Ord k, Eq v, Monoid v)
+    :: forall f k v. (Applicative f, Ord k, MonoidNull v)
     => (v -> v -> f v)
     -> MonoidMap k v
     -> MonoidMap k v

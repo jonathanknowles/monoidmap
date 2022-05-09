@@ -16,6 +16,8 @@ import Data.Map.Strict
     ( Map )
 import Data.Monoid
     ( Product (..), Sum (..) )
+import Data.Monoid.Null
+    ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
 import Data.Semigroup.Cancellative
@@ -421,7 +423,7 @@ prop_singleton_toList k v =
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-instance (Arbitrary k, Ord k, Arbitrary v, Eq v, Monoid v) =>
+instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     Arbitrary (MonoidMap k v)
   where
     arbitrary = fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)
