@@ -443,12 +443,12 @@ unitTestData_isPrefixOf_String :: UnitTestData2
     (MonoidMap LatinChar String)
     (Bool)
 unitTestData_isPrefixOf_String = unitTestData2
-    [ ( [ (A, "A"   ), (B, "B"   ), (C, "C"   ) ]
-      , [ (A, "A123"), (B, "B123"), (C, "C123") ]
+    [ ( [A ➤ "A"   , B ➤ "B"   , C ➤ "C"   ]
+      , [A ➤ "A123", B ➤ "B123", C ➤ "C123"]
       , True
       )
-    , ( [ (A, "A123"), (B, "B123"), (C, "C123") ]
-      , [ (A, "A"   ), (B, "B"   ), (C, "C"   ) ]
+    , ( [A ➤ "A123", B ➤ "B123", C ➤ "C123"]
+      , [A ➤ "A"   , B ➤ "B"   , C ➤ "C"   ]
       , False
       )
     ]
@@ -465,19 +465,22 @@ unitTestData_isSuffixOf_String :: UnitTestData2
     (MonoidMap LatinChar String)
     (Bool)
 unitTestData_isSuffixOf_String = unitTestData2
-    [ ( [ (A,    "A"), (B,    "B"), (C,    "C") ]
-      , [ (A, "123A"), (B, "123B"), (C, "123C") ]
+    [ ( [A ➤    "A", B ➤    "B", C ➤    "C"]
+      , [A ➤ "123A", B ➤ "123B", C ➤ "123C"]
       , True
       )
-    , ( [ (A, "123A"), (B, "123B"), (C, "123C") ]
-      , [ (A,    "A"), (B,    "B"), (C,    "C") ]
+    , ( [A ➤ "123A", B ➤ "123B", C ➤ "123C"]
+      , [A ➤    "A", B ➤    "B", C ➤    "C"]
       , False
       )
     ]
 
 --------------------------------------------------------------------------------
--- Latin characters
+-- Utilities
 --------------------------------------------------------------------------------
+
+(➤) :: a -> b -> (a, b)
+a ➤ b = (a, b)
 
 data LatinChar
     = A | B | C | D | E | F | G | H | I | J | K | L | M
