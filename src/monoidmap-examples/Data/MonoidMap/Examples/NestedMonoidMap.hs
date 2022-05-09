@@ -42,7 +42,7 @@ import Data.Monoid.GCD
 import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
-    ( MonoidNull )
+    ( MonoidNull, PositiveMonoid )
 import Data.MonoidMap
     ( MonoidMap )
 import Data.Semigroup.Cancellative
@@ -82,6 +82,7 @@ newtype NestedMonoidMap k1 k2 v =
         , MonoidNull
         , Monus
         , OverlappingGCDMonoid
+        , PositiveMonoid
         , Reductive
         , RightCancellative
         , RightGCDMonoid
