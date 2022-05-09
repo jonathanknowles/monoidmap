@@ -15,11 +15,27 @@ description:
 extra-source-files:
     README.md
 
+common common-extensions
+    default-extensions:
+        DerivingStrategies
+        FlexibleContexts
+        FlexibleInstances
+        GeneralizedNewtypeDeriving
+        LambdaCase
+        PolyKinds
+        ScopedTypeVariables
+        TupleSections
+        TypeApplications
+        TypeFamilies
+        ViewPatterns
+
 source-repository head
     type: git
     location: https://github.com/jonathanknowles/monoidmap
 
 library
+    import:
+        common-extensions
     hs-source-dirs:
         src/monoidmap
     exposed-modules:
@@ -31,6 +47,8 @@ library
       , monoidmap-internal
 
 library monoidmap-examples
+    import:
+        common-extensions
     hs-source-dirs:
         src/monoidmap-examples
     exposed-modules:
@@ -44,6 +62,8 @@ library monoidmap-examples
       , monoid-subclasses
 
 library monoidmap-internal
+    import:
+        common-extensions
     hs-source-dirs:
         src/monoidmap-internal
     exposed-modules:
@@ -57,6 +77,8 @@ library monoidmap-internal
       , monoid-subclasses
 
 test-suite monoidmap-test
+    import:
+        common-extensions
     main-is:
         Spec.hs
     hs-source-dirs:
