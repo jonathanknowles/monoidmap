@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedLists #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- |
@@ -17,6 +18,8 @@ import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.Semigroup.Cancellative
+    ( LeftReductive (..), RightReductive (..) )
 import Data.Set
     ( Set )
 import GHC.Exts
@@ -25,6 +28,8 @@ import Numeric.Natural
     ( Natural )
 import Test.Hspec
     ( Spec, describe, it, parallel )
+import Test.Hspec.Unit
+    ( UnitTestData2, unitTestData2, unitTestSpec )
 import Test.QuickCheck
     ( Arbitrary (..)
     , Property
@@ -232,6 +237,11 @@ spec = do
         it "prop_singleton_toList" $
             prop_singleton_toList & property
 
+    parallel $ describe "Unit tests" $ do
+
+        unitTestSpec_isPrefixOf_String
+        unitTestSpec_isSuffixOf_String
+
 --------------------------------------------------------------------------------
 -- Test types
 --------------------------------------------------------------------------------
@@ -416,3 +426,60 @@ instance (Arbitrary k, Ord k, Arbitrary v, Eq v, Monoid v) =>
   where
     arbitrary = fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)
     shrink = shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+
+--------------------------------------------------------------------------------
+-- Unit tests
+--------------------------------------------------------------------------------
+
+unitTestSpec_isPrefixOf_String :: Spec
+unitTestSpec_isPrefixOf_String = unitTestSpec
+    "isPrefixOf String"
+    "isPrefixOf"
+    (isPrefixOf)
+    (unitTestData_isPrefixOf_String)
+
+unitTestData_isPrefixOf_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (Bool)
+unitTestData_isPrefixOf_String = unitTestData2
+    [ ( [ (A, "A"   ), (B, "B"   ), (C, "C"   ) ]
+      , [ (A, "A123"), (B, "B123"), (C, "C123") ]
+      , True
+      )
+    , ( [ (A, "A123"), (B, "B123"), (C, "C123") ]
+      , [ (A, "A"   ), (B, "B"   ), (C, "C"   ) ]
+      , False
+      )
+    ]
+
+unitTestSpec_isSuffixOf_String :: Spec
+unitTestSpec_isSuffixOf_String = unitTestSpec
+    "isSuffixOf String"
+    "isSuffixOf"
+    (isSuffixOf)
+    (unitTestData_isSuffixOf_String)
+
+unitTestData_isSuffixOf_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (Bool)
+unitTestData_isSuffixOf_String = unitTestData2
+    [ ( [ (A,    "A"), (B,    "B"), (C,    "C") ]
+      , [ (A, "123A"), (B, "123B"), (C, "123C") ]
+      , True
+      )
+    , ( [ (A, "123A"), (B, "123B"), (C, "123C") ]
+      , [ (A,    "A"), (B,    "B"), (C,    "C") ]
+      , False
+      )
+    ]
+
+--------------------------------------------------------------------------------
+-- Latin characters
+--------------------------------------------------------------------------------
+
+data LatinChar
+    = A | B | C | D | E | F | G | H | I | J | K | L | M
+    | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+    deriving (Bounded, Enum, Eq, Ord, Show)
