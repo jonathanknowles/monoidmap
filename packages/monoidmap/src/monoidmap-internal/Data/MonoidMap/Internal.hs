@@ -64,7 +64,7 @@ import Data.Monoid.GCD
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
-    ( MonoidNull )
+    ( MonoidNull, PositiveMonoid )
 import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
@@ -110,6 +110,9 @@ instance (Ord k, Eq v, Monoid v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
+
+instance (Ord k, Eq v, PositiveMonoid v) =>
+    PositiveMonoid (MonoidMap k v)
 
 instance (Ord k, Eq v, Monoid v, Commutative v) =>
     Commutative (MonoidMap k v)

@@ -57,6 +57,7 @@ import Test.QuickCheck.Classes.Semigroup
     , monoidNullLaws
     , monusLaws
     , overlappingGCDMonoidLaws
+    , positiveMonoidLaws
     , reductiveLaws
     , rightCancellativeLaws
     , rightGCDMonoidLaws
@@ -81,6 +82,7 @@ spec = do
             , monoidLaws
             , monoidNullLaws
             , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
             , rightCancellativeLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
@@ -99,6 +101,7 @@ spec = do
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
             , reductiveLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
@@ -120,6 +123,7 @@ spec = do
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
             , rightGCDMonoidLaws
@@ -139,6 +143,7 @@ spec = do
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
             , reductiveLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
@@ -160,6 +165,7 @@ spec = do
             , monoidNullLaws
             , monusLaws
             , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
             , rightGCDMonoidLaws
