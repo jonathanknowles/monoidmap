@@ -22,6 +22,8 @@ module Data.MonoidMap.Internal.Core
 import Prelude hiding
     ( null )
 
+import Data.Bifoldable
+    ( Bifoldable )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -38,7 +40,7 @@ import qualified Data.Map.Strict as Map
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
     deriving (Eq, Foldable)
-    deriving newtype Show
+    deriving newtype (Bifoldable, Show)
 
 --------------------------------------------------------------------------------
 -- Construction
