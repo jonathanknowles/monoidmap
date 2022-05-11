@@ -22,7 +22,7 @@ common common-extensions
         FlexibleInstances
         GeneralizedNewtypeDeriving
         LambdaCase
-        PolyKinds
+        MultiParamTypeClasses
         ScopedTypeVariables
         TupleSections
         TypeApplications
