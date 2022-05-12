@@ -12,6 +12,8 @@ import Prelude
 
 import Data.Function
     ( (&) )
+import Data.Group
+    ( Group (..) )
 import Data.Map.Strict
     ( Map )
 import Data.Monoid
@@ -20,6 +22,8 @@ import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.Ratio
+    ( (%) )
 import Data.Semigroup.Cancellative
     ( LeftReductive (..), RightReductive (..) )
 import Data.Set
@@ -31,7 +35,12 @@ import Numeric.Natural
 import Test.Hspec
     ( Spec, describe, it, parallel )
 import Test.Hspec.Unit
-    ( UnitTestData2, unitTestData2, unitTestSpec )
+    ( UnitTestData1
+    , UnitTestData2
+    , unitTestData1
+    , unitTestData2
+    , unitTestSpec
+    )
 import Test.QuickCheck
     ( Arbitrary (..)
     , Property
@@ -241,6 +250,10 @@ spec = do
 
     parallel $ describe "Unit tests" $ do
 
+        unitTestSpec_invert_Product_Rational
+        unitTestSpec_invert_Sum_Integer
+        unitTestSpec_pow_Product_Rational
+        unitTestSpec_pow_Sum_Integer
         unitTestSpec_isPrefixOf_String
         unitTestSpec_isSuffixOf_String
 
@@ -432,6 +445,116 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
 --------------------------------------------------------------------------------
 -- Unit tests
 --------------------------------------------------------------------------------
+
+unitTestSpec_invert_Product_Rational :: Spec
+unitTestSpec_invert_Product_Rational = unitTestSpec
+    "invert Product Rational"
+    "invert"
+    (invert)
+    (unitTestData_invert_Product_Rational)
+
+unitTestData_invert_Product_Rational :: UnitTestData1
+    (MonoidMap LatinChar (Product Rational))
+    (MonoidMap LatinChar (Product Rational))
+unitTestData_invert_Product_Rational = unitTestData1 $
+    [ ( [A ➤ p (  2), B ➤ p (  4), C ➤ p (  8), D ➤ p (  16)]
+      , [A ➤ p (1%2), B ➤ p (1%4), C ➤ p (1%8), D ➤ p (1%16)]
+      )
+    , ( [A ➤ p (1%2), B ➤ p (1%4), C ➤ p (1%8), D ➤ p (1%16)]
+      , [A ➤ p (  2), B ➤ p (  4), C ➤ p (  8), D ➤ p (  16)]
+      )
+    , ( [A ➤ p (  2), B ➤ p (1%4), C ➤ p (  8), D ➤ p (  16)]
+      , [A ➤ p (1%2), B ➤ p (  4), C ➤ p (1%8), D ➤ p (1%16)]
+      )
+    , ( [A ➤ p (1%2), B ➤ p (  4), C ➤ p (1%8), D ➤ p (1%16)]
+      , [A ➤ p (  2), B ➤ p (1%4), C ➤ p (  8), D ➤ p (  16)]
+      )
+    ]
+  where
+    p = Product
+
+unitTestSpec_invert_Sum_Integer :: Spec
+unitTestSpec_invert_Sum_Integer = unitTestSpec
+    "invert Sum Integer"
+    "invert"
+    (invert)
+    (unitTestData_invert_Sum_Integer)
+
+unitTestData_invert_Sum_Integer :: UnitTestData1
+    (MonoidMap LatinChar (Sum Integer))
+    (MonoidMap LatinChar (Sum Integer))
+unitTestData_invert_Sum_Integer = unitTestData1
+    [ ( [A ➤ s ( 1), B ➤ s ( 2), C ➤ s ( 3), D ➤ s ( 4)]
+      , [A ➤ s (-1), B ➤ s (-2), C ➤ s (-3), D ➤ s (-4)]
+      )
+    , ( [A ➤ s (-1), B ➤ s (-2), C ➤ s (-3), D ➤ s (-4)]
+      , [A ➤ s ( 1), B ➤ s ( 2), C ➤ s ( 3), D ➤ s ( 4)]
+      )
+    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)]
+      , [A ➤ s (-1), B ➤ s ( 2), C ➤ s (-3), D ➤ s ( 4)]
+      )
+    , ( [A ➤ s (-1), B ➤ s ( 2), C ➤ s (-3), D ➤ s ( 4)]
+      , [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)]
+      )
+    ]
+  where
+    s = Sum
+
+unitTestSpec_pow_Product_Rational :: Spec
+unitTestSpec_pow_Product_Rational = unitTestSpec
+    "pow Product Rational"
+    "pow"
+    (pow)
+    (unitTestData_pow_Product_Rational)
+
+unitTestData_pow_Product_Rational :: UnitTestData2
+    (MonoidMap LatinChar (Product Rational))
+    (Integer)
+    (MonoidMap LatinChar (Product Rational))
+unitTestData_pow_Product_Rational = unitTestData2
+    [ ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], (-1)
+      , [A ➤ p (1%2), B ➤ p (- 1%4), C ➤ p (1%8), D ➤ p (- 1%16)]
+      )
+    , ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], 0
+      , [A ➤ p (  1), B ➤ p (    1), C ➤ p (  1), D ➤ p (     1)]
+      )
+    , ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], 1
+      , [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)]
+      )
+    , ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], 2
+      , [A ➤ p (  4), B ➤ p (   16), C ➤ p ( 64), D ➤ p (   256)]
+      )
+    ]
+  where
+    p = Product
+
+unitTestSpec_pow_Sum_Integer :: Spec
+unitTestSpec_pow_Sum_Integer = unitTestSpec
+    "pow Sum Integer"
+    "pow"
+    (pow)
+    (unitTestData_pow_Sum_Integer)
+
+unitTestData_pow_Sum_Integer :: UnitTestData2
+    (MonoidMap LatinChar (Sum Integer))
+    (Integer)
+    (MonoidMap LatinChar (Sum Integer))
+unitTestData_pow_Sum_Integer = unitTestData2
+    [ ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], (-1)
+      , [A ➤ s (-1), B ➤ s ( 2), C ➤ s (-3), D ➤ s ( 4)]
+      )
+    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], 0
+      , [A ➤ s ( 0), B ➤ s ( 0), C ➤ s ( 0), D ➤ s ( 0)]
+      )
+    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], 1
+      , [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)]
+      )
+    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], 2
+      , [A ➤ s ( 2), B ➤ s (-4), C ➤ s ( 6), D ➤ s (-8)]
+      )
+    ]
+  where
+    s = Sum
 
 unitTestSpec_isPrefixOf_String :: Spec
 unitTestSpec_isPrefixOf_String = unitTestSpec

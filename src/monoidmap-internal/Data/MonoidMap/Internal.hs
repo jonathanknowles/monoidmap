@@ -53,6 +53,8 @@ import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Functor.Identity
     ( Identity (..) )
+import Data.Group
+    ( Group (..) )
 import Data.Map.Strict
     ( Map )
 import Data.Monoid.GCD
@@ -187,6 +189,10 @@ instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
 instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
   where
     (<>) = adjustMany (flip (<>))
+
+instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
+  where
+    invert = map invert
 
 --------------------------------------------------------------------------------
 -- Construction
