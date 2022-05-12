@@ -98,6 +98,7 @@ library monoidmap-internal
     build-depends:
         base >=4.7 && <5
       , containers
+      , groups
       , monoid-subclasses
 
 test-suite monoidmap-test
@@ -119,6 +120,7 @@ test-suite monoidmap-test
     build-depends:
         base >=4.7 && <5
       , containers
+      , groups
       , hspec
       , monoid-subclasses
       , monoidmap
