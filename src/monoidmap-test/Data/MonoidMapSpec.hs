@@ -456,22 +456,22 @@ unitTestSpec_invert_Product_Rational = unitTestSpec
 unitTestData_invert_Product_Rational :: UnitTestData1
     (MonoidMap LatinChar (Product Rational))
     (MonoidMap LatinChar (Product Rational))
-unitTestData_invert_Product_Rational = unitTestData1 $
-    [ ( [A ➤ p (  2), B ➤ p (  4), C ➤ p (  8), D ➤ p (  16)]
-      , [A ➤ p (1%2), B ➤ p (1%4), C ➤ p (1%8), D ➤ p (1%16)]
+unitTestData_invert_Product_Rational = unitTestData1
+    [ ( m [  2,   4,   8,   16]
+      , m [1%2, 1%4, 1%8, 1%16]
       )
-    , ( [A ➤ p (1%2), B ➤ p (1%4), C ➤ p (1%8), D ➤ p (1%16)]
-      , [A ➤ p (  2), B ➤ p (  4), C ➤ p (  8), D ➤ p (  16)]
+    , ( m [1%2, 1%4, 1%8, 1%16]
+      , m [  2,   4,   8,   16]
       )
-    , ( [A ➤ p (  2), B ➤ p (1%4), C ➤ p (  8), D ➤ p (  16)]
-      , [A ➤ p (1%2), B ➤ p (  4), C ➤ p (1%8), D ➤ p (1%16)]
+    , ( m [  2, 1%4,   8,   16]
+      , m [1%2,   4, 1%8, 1%16]
       )
-    , ( [A ➤ p (1%2), B ➤ p (  4), C ➤ p (1%8), D ➤ p (1%16)]
-      , [A ➤ p (  2), B ➤ p (1%4), C ➤ p (  8), D ➤ p (  16)]
+    , ( m [1%2,   4, 1%8, 1%16]
+      , m [  2, 1%4,   8,   16]
       )
     ]
   where
-    p = Product
+    m = MonoidMap.fromList . zip [A ..] . fmap Product
 
 unitTestSpec_invert_Sum_Integer :: Spec
 unitTestSpec_invert_Sum_Integer = unitTestSpec
@@ -484,21 +484,21 @@ unitTestData_invert_Sum_Integer :: UnitTestData1
     (MonoidMap LatinChar (Sum Integer))
     (MonoidMap LatinChar (Sum Integer))
 unitTestData_invert_Sum_Integer = unitTestData1
-    [ ( [A ➤ s ( 1), B ➤ s ( 2), C ➤ s ( 3), D ➤ s ( 4)]
-      , [A ➤ s (-1), B ➤ s (-2), C ➤ s (-3), D ➤ s (-4)]
+    [ ( m [ 1,  2,  3,  4]
+      , m [-1, -2, -3, -4]
       )
-    , ( [A ➤ s (-1), B ➤ s (-2), C ➤ s (-3), D ➤ s (-4)]
-      , [A ➤ s ( 1), B ➤ s ( 2), C ➤ s ( 3), D ➤ s ( 4)]
+    , ( m [-1, -2, -3, -4]
+      , m [ 1,  2,  3,  4]
       )
-    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)]
-      , [A ➤ s (-1), B ➤ s ( 2), C ➤ s (-3), D ➤ s ( 4)]
+    , ( m [ 1, -2,  3, -4]
+      , m [-1,  2, -3,  4]
       )
-    , ( [A ➤ s (-1), B ➤ s ( 2), C ➤ s (-3), D ➤ s ( 4)]
-      , [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)]
+    , ( m [-1,  2, -3,  4]
+      , m [ 1, -2,  3, -4]
       )
     ]
   where
-    s = Sum
+    m = MonoidMap.fromList . zip [A ..] . fmap Sum
 
 unitTestSpec_pow_Product_Rational :: Spec
 unitTestSpec_pow_Product_Rational = unitTestSpec
@@ -512,21 +512,21 @@ unitTestData_pow_Product_Rational :: UnitTestData2
     (Integer)
     (MonoidMap LatinChar (Product Rational))
 unitTestData_pow_Product_Rational = unitTestData2
-    [ ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], (-1)
-      , [A ➤ p (1%2), B ➤ p (- 1%4), C ➤ p (1%8), D ➤ p (- 1%16)]
+    [ ( m [  2,   -4,   8,   -16], (-1)
+      , m [1%2, -1%4, 1%8, -1%16]
       )
-    , ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], 0
-      , [A ➤ p (  1), B ➤ p (    1), C ➤ p (  1), D ➤ p (     1)]
+    , ( m [  2,   -4,   8,   -16], 0
+      , m [  1,    1,   1,     1]
       )
-    , ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], 1
-      , [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)]
+    , ( m [  2,   -4,   8,   -16], 1
+      , m [  2,   -4,   8,   -16]
       )
-    , ( [A ➤ p (  2), B ➤ p (-   4), C ➤ p (  8), D ➤ p (-   16)], 2
-      , [A ➤ p (  4), B ➤ p (   16), C ➤ p ( 64), D ➤ p (   256)]
+    , ( m [  2,   -4,   8,   -16], 2
+      , m [  4,   16,  64,   256]
       )
     ]
   where
-    p = Product
+    m = MonoidMap.fromList . zip [A ..] . fmap Product
 
 unitTestSpec_pow_Sum_Integer :: Spec
 unitTestSpec_pow_Sum_Integer = unitTestSpec
@@ -540,21 +540,21 @@ unitTestData_pow_Sum_Integer :: UnitTestData2
     (Integer)
     (MonoidMap LatinChar (Sum Integer))
 unitTestData_pow_Sum_Integer = unitTestData2
-    [ ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], (-1)
-      , [A ➤ s (-1), B ➤ s ( 2), C ➤ s (-3), D ➤ s ( 4)]
+    [ ( m [ 1, -2,  3, -4], (-1)
+      , m [-1,  2, -3,  4]
       )
-    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], 0
-      , [A ➤ s ( 0), B ➤ s ( 0), C ➤ s ( 0), D ➤ s ( 0)]
+    , ( m [ 1, -2,  3, -4], 0
+      , m [ 0,  0,  0,  0]
       )
-    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], 1
-      , [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)]
+    , ( m [ 1, -2,  3, -4], 1
+      , m [ 1, -2,  3, -4]
       )
-    , ( [A ➤ s ( 1), B ➤ s (-2), C ➤ s ( 3), D ➤ s (-4)], 2
-      , [A ➤ s ( 2), B ➤ s (-4), C ➤ s ( 6), D ➤ s (-8)]
+    , ( m [ 1, -2,  3, -4], 2
+      , m [ 2, -4,  6, -8]
       )
     ]
   where
-    s = Sum
+    m = MonoidMap.fromList . zip [A ..] . fmap Sum
 
 unitTestSpec_isPrefixOf_String :: Spec
 unitTestSpec_isPrefixOf_String = unitTestSpec
@@ -568,15 +568,17 @@ unitTestData_isPrefixOf_String :: UnitTestData2
     (MonoidMap LatinChar String)
     (Bool)
 unitTestData_isPrefixOf_String = unitTestData2
-    [ ( [A ➤ "A"   , B ➤ "B"   , C ➤ "C"   ]
-      , [A ➤ "A123", B ➤ "B123", C ➤ "C123"]
+    [ ( m ["A"   , "B"   , "C"   ]
+      , m ["A123", "B123", "C123"]
       , True
       )
-    , ( [A ➤ "A123", B ➤ "B123", C ➤ "C123"]
-      , [A ➤ "A"   , B ➤ "B"   , C ➤ "C"   ]
+    , ( m ["A123", "B123", "C123"]
+      , m ["A"   , "B"   , "C"   ]
       , False
       )
     ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
 
 unitTestSpec_isSuffixOf_String :: Spec
 unitTestSpec_isSuffixOf_String = unitTestSpec
@@ -590,15 +592,17 @@ unitTestData_isSuffixOf_String :: UnitTestData2
     (MonoidMap LatinChar String)
     (Bool)
 unitTestData_isSuffixOf_String = unitTestData2
-    [ ( [A ➤    "A", B ➤    "B", C ➤    "C"]
-      , [A ➤ "123A", B ➤ "123B", C ➤ "123C"]
+    [ ( m [   "A",    "B",    "C"]
+      , m ["123A", "123B", "123C"]
       , True
       )
-    , ( [A ➤ "123A", B ➤ "123B", C ➤ "123C"]
-      , [A ➤    "A", B ➤    "B", C ➤    "C"]
+    , ( m ["123A", "123B", "123C"]
+      , m [   "A",    "B",    "C"]
       , False
       )
     ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
 -- Utilities
