@@ -94,8 +94,7 @@ import qualified GHC.Exts as GHC
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Core.MonoidMap k v }
-    deriving stock Eq
-    deriving newtype (Bifoldable, Eq1, Eq2, Foldable, Show, Show1, Show2)
+    deriving newtype (Bifoldable, Eq, Eq1, Eq2, Foldable, Show, Show1, Show2)
 
 --------------------------------------------------------------------------------
 -- Instances
