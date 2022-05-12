@@ -24,6 +24,8 @@ import Prelude hiding
 
 import Data.Bifoldable
     ( Bifoldable )
+import Data.Functor.Classes
+    ( Eq1, Eq2 )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -39,8 +41,8 @@ import qualified Data.Map.Strict as Map
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
-    deriving (Eq, Foldable)
-    deriving newtype (Bifoldable, Show)
+    deriving stock Eq
+    deriving newtype (Bifoldable, Eq1, Eq2, Foldable, Show)
 
 --------------------------------------------------------------------------------
 -- Construction
