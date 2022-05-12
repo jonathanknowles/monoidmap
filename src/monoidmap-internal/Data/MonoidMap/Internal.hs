@@ -50,7 +50,7 @@ import Prelude hiding
 import Data.Bifoldable
     ( Bifoldable )
 import Data.Functor.Classes
-    ( Eq1, Eq2 )
+    ( Eq1, Eq2, Show1, Show2 )
 import Data.Functor.Identity
     ( Identity (..) )
 import Data.Map.Strict
@@ -95,7 +95,7 @@ import qualified GHC.Exts as GHC
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Core.MonoidMap k v }
     deriving stock Eq
-    deriving newtype (Bifoldable, Eq1, Eq2, Foldable, Show)
+    deriving newtype (Bifoldable, Eq1, Eq2, Foldable, Show, Show1, Show2)
 
 --------------------------------------------------------------------------------
 -- Instances
