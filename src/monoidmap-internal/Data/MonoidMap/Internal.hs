@@ -21,8 +21,8 @@ module Data.MonoidMap.Internal
     -- * Queries
     , keysSet
     , lookup
-    , null
     , member
+    , null
     , size
 
     -- * Modification
