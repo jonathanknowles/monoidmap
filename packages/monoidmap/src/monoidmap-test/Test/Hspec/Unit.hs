@@ -14,6 +14,10 @@ import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
     ( counterexample, property )
+import Text.Show.Pretty
+    ( ppShow )
+
+import qualified Data.Foldable as F
 
 class IsUnitTestDatum d f r | d -> f, d -> r where
     params :: d -> [String]
@@ -98,11 +102,27 @@ unitTestSpec specDescription functionName function =
             , "/="
             , "actual"
             , ""
-            , show (resultExpected d)
+            , showWrap (resultExpected d)
             , "/="
-            , show (resultActual function d)
+            , showWrap (resultActual function d)
             ]
         description = unwords
             [ functionName
             , unwords (params d <&> \s -> "(" <> s <> ")")
             ]
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+showWrap :: Show a => a -> String
+showWrap x
+    | singleLineMaxLengthExceeded =
+        multiLine
+    | otherwise =
+        singleLine
+  where
+    multiLine = ppShow x
+    singleLine = show x
+    singleLineMaxLength = 80
+    singleLineMaxLengthExceeded = F.length singleLine > singleLineMaxLength

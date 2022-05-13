@@ -124,6 +124,7 @@ test-suite monoidmap-test
       , hspec
       , monoid-subclasses
       , monoidmap
+      , pretty-show
       , QuickCheck
       , quickcheck-classes
       , quickcheck-classes-semigroup
