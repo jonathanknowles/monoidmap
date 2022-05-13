@@ -250,12 +250,17 @@ spec = do
 
     parallel $ describe "Unit tests" $ do
 
-        unitTestSpec_invert_Product_Rational
-        unitTestSpec_invert_Sum_Integer
-        unitTestSpec_pow_Product_Rational
-        unitTestSpec_pow_Sum_Integer
-        unitTestSpec_isPrefixOf_String
-        unitTestSpec_isSuffixOf_String
+        describe "Group" $ do
+
+            unitTestSpec_Group_invert_Product_Rational
+            unitTestSpec_Group_invert_Sum_Integer
+            unitTestSpec_Group_pow_Product_Rational
+            unitTestSpec_Group_pow_Sum_Integer
+
+        describe "Reductive" $ do
+
+            unitTestSpec_Reductive_isPrefixOf_String
+            unitTestSpec_Reductive_isSuffixOf_String
 
 --------------------------------------------------------------------------------
 -- Test types
@@ -443,20 +448,20 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     shrink = shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
 
 --------------------------------------------------------------------------------
--- Unit tests
+-- Unit tests: Group
 --------------------------------------------------------------------------------
 
-unitTestSpec_invert_Product_Rational :: Spec
-unitTestSpec_invert_Product_Rational = unitTestSpec
-    "invert Product Rational"
+unitTestSpec_Group_invert_Product_Rational :: Spec
+unitTestSpec_Group_invert_Product_Rational = unitTestSpec
+    "Group.invert (Product Rational)"
     "invert"
     (invert)
-    (unitTestData_invert_Product_Rational)
+    (unitTestData_Group_invert_Product_Rational)
 
-unitTestData_invert_Product_Rational :: UnitTestData1
+unitTestData_Group_invert_Product_Rational :: UnitTestData1
     (MonoidMap LatinChar (Product Rational))
     (MonoidMap LatinChar (Product Rational))
-unitTestData_invert_Product_Rational = unitTestData1
+unitTestData_Group_invert_Product_Rational = unitTestData1
     [ ( m [  2,   4,   8,   16]
       , m [1%2, 1%4, 1%8, 1%16]
       )
@@ -473,17 +478,17 @@ unitTestData_invert_Product_Rational = unitTestData1
   where
     m = MonoidMap.fromList . zip [A ..] . fmap Product
 
-unitTestSpec_invert_Sum_Integer :: Spec
-unitTestSpec_invert_Sum_Integer = unitTestSpec
-    "invert Sum Integer"
+unitTestSpec_Group_invert_Sum_Integer :: Spec
+unitTestSpec_Group_invert_Sum_Integer = unitTestSpec
+    "Group.invert (Sum Integer)"
     "invert"
     (invert)
-    (unitTestData_invert_Sum_Integer)
+    (unitTestData_Group_invert_Sum_Integer)
 
-unitTestData_invert_Sum_Integer :: UnitTestData1
+unitTestData_Group_invert_Sum_Integer :: UnitTestData1
     (MonoidMap LatinChar (Sum Integer))
     (MonoidMap LatinChar (Sum Integer))
-unitTestData_invert_Sum_Integer = unitTestData1
+unitTestData_Group_invert_Sum_Integer = unitTestData1
     [ ( m [ 1,  2,  3,  4]
       , m [-1, -2, -3, -4]
       )
@@ -500,18 +505,18 @@ unitTestData_invert_Sum_Integer = unitTestData1
   where
     m = MonoidMap.fromList . zip [A ..] . fmap Sum
 
-unitTestSpec_pow_Product_Rational :: Spec
-unitTestSpec_pow_Product_Rational = unitTestSpec
-    "pow Product Rational"
+unitTestSpec_Group_pow_Product_Rational :: Spec
+unitTestSpec_Group_pow_Product_Rational = unitTestSpec
+    "Group.pow (Product Rational)"
     "pow"
     (pow)
-    (unitTestData_pow_Product_Rational)
+    (unitTestData_Group_pow_Product_Rational)
 
-unitTestData_pow_Product_Rational :: UnitTestData2
+unitTestData_Group_pow_Product_Rational :: UnitTestData2
     (MonoidMap LatinChar (Product Rational))
     (Integer)
     (MonoidMap LatinChar (Product Rational))
-unitTestData_pow_Product_Rational = unitTestData2
+unitTestData_Group_pow_Product_Rational = unitTestData2
     [ ( m [  2,   -4,   8,   -16], (-1)
       , m [1%2, -1%4, 1%8, -1%16]
       )
@@ -528,18 +533,18 @@ unitTestData_pow_Product_Rational = unitTestData2
   where
     m = MonoidMap.fromList . zip [A ..] . fmap Product
 
-unitTestSpec_pow_Sum_Integer :: Spec
-unitTestSpec_pow_Sum_Integer = unitTestSpec
-    "pow Sum Integer"
+unitTestSpec_Group_pow_Sum_Integer :: Spec
+unitTestSpec_Group_pow_Sum_Integer = unitTestSpec
+    "Group.pow (Sum Integer)"
     "pow"
     (pow)
-    (unitTestData_pow_Sum_Integer)
+    (unitTestData_Group_pow_Sum_Integer)
 
-unitTestData_pow_Sum_Integer :: UnitTestData2
+unitTestData_Group_pow_Sum_Integer :: UnitTestData2
     (MonoidMap LatinChar (Sum Integer))
     (Integer)
     (MonoidMap LatinChar (Sum Integer))
-unitTestData_pow_Sum_Integer = unitTestData2
+unitTestData_Group_pow_Sum_Integer = unitTestData2
     [ ( m [ 1, -2,  3, -4], (-1)
       , m [-1,  2, -3,  4]
       )
@@ -556,18 +561,22 @@ unitTestData_pow_Sum_Integer = unitTestData2
   where
     m = MonoidMap.fromList . zip [A ..] . fmap Sum
 
-unitTestSpec_isPrefixOf_String :: Spec
-unitTestSpec_isPrefixOf_String = unitTestSpec
-    "isPrefixOf String"
+--------------------------------------------------------------------------------
+-- Unit tests: Reductive
+--------------------------------------------------------------------------------
+
+unitTestSpec_Reductive_isPrefixOf_String :: Spec
+unitTestSpec_Reductive_isPrefixOf_String = unitTestSpec
+    "Reductive.isPrefixOf (String)"
     "isPrefixOf"
     (isPrefixOf)
-    (unitTestData_isPrefixOf_String)
+    (unitTestData_Reductive_isPrefixOf_String)
 
-unitTestData_isPrefixOf_String :: UnitTestData2
+unitTestData_Reductive_isPrefixOf_String :: UnitTestData2
     (MonoidMap LatinChar String)
     (MonoidMap LatinChar String)
     (Bool)
-unitTestData_isPrefixOf_String = unitTestData2
+unitTestData_Reductive_isPrefixOf_String = unitTestData2
     [ ( m ["A"   , "B"   , "C"   ]
       , m ["A123", "B123", "C123"]
       , True
@@ -580,18 +589,18 @@ unitTestData_isPrefixOf_String = unitTestData2
   where
     m = MonoidMap.fromList . zip [A ..]
 
-unitTestSpec_isSuffixOf_String :: Spec
-unitTestSpec_isSuffixOf_String = unitTestSpec
-    "isSuffixOf String"
+unitTestSpec_Reductive_isSuffixOf_String :: Spec
+unitTestSpec_Reductive_isSuffixOf_String = unitTestSpec
+    "Reductive.isSuffixOf (String)"
     "isSuffixOf"
     (isSuffixOf)
-    (unitTestData_isSuffixOf_String)
+    (unitTestData_Reductive_isSuffixOf_String)
 
-unitTestData_isSuffixOf_String :: UnitTestData2
+unitTestData_Reductive_isSuffixOf_String :: UnitTestData2
     (MonoidMap LatinChar String)
     (MonoidMap LatinChar String)
     (Bool)
-unitTestData_isSuffixOf_String = unitTestData2
+unitTestData_Reductive_isSuffixOf_String = unitTestData2
     [ ( m [   "A",    "B",    "C"]
       , m ["123A", "123B", "123C"]
       , True
