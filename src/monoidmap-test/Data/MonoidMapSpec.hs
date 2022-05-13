@@ -256,6 +256,8 @@ spec = do
             unitTestSpec_Group_invert_Sum_Integer
             unitTestSpec_Group_pow_Product_Rational
             unitTestSpec_Group_pow_Sum_Integer
+            unitTestSpec_Group_subtract_Product_Rational
+            unitTestSpec_Group_subtract_Sum_Integer
 
         describe "Reductive" $ do
 
@@ -556,6 +558,70 @@ unitTestData_Group_pow_Sum_Integer = unitTestData2
       )
     , ( m [ 1, -2,  3, -4], 2
       , m [ 2, -4,  6, -8]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Sum
+
+unitTestSpec_Group_subtract_Product_Rational :: Spec
+unitTestSpec_Group_subtract_Product_Rational = unitTestSpec
+    "Group.(~~) (Product Rational)"
+    "(~~)"
+    (~~)
+    (unitTestData_Group_subtract_Product_Rational)
+
+unitTestData_Group_subtract_Product_Rational :: UnitTestData2
+    (MonoidMap LatinChar (Product Rational))
+    (MonoidMap LatinChar (Product Rational))
+    (MonoidMap LatinChar (Product Rational))
+unitTestData_Group_subtract_Product_Rational = unitTestData2
+    [ ( m [ 1,    1,    1,    1]
+      , m [ 1,    2,    4,    8]
+      , m [ 1,  1%2,  1%4,  1%8]
+      )
+    , ( m [-1,   -1,   -1,   -1]
+      , m [ 1,    2,    4,    8]
+      , m [-1, -1%2, -1%4, -1%8]
+      )
+    , ( m [ 1,    1,    1,    1]
+      , m [-1,   -2,   -4,   -8]
+      , m [-1, -1%2, -1%4, -1%8]
+      )
+    , ( m [-1,   -1,   -1,   -1]
+      , m [-1,   -2,   -4,   -8]
+      , m [ 1,  1%2,  1%4,  1%8]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Product
+
+unitTestSpec_Group_subtract_Sum_Integer :: Spec
+unitTestSpec_Group_subtract_Sum_Integer = unitTestSpec
+    "Group.(~~) (Sum Integer)"
+    "(~~)"
+    (~~)
+    (unitTestData_Group_subtract_Sum_Integer)
+
+unitTestData_Group_subtract_Sum_Integer :: UnitTestData2
+    (MonoidMap LatinChar (Sum Integer))
+    (MonoidMap LatinChar (Sum Integer))
+    (MonoidMap LatinChar (Sum Integer))
+unitTestData_Group_subtract_Sum_Integer = unitTestData2
+    [ ( m [ 1,  2,  3,  4]
+      , m [ 1,  2,  3,  4]
+      , m [ 0,  0,  0,  0]
+      )
+    , ( m [ 0,  0,  0,  0]
+      , m [ 1,  2,  3,  4]
+      , m [-1, -2, -3, -4]
+      )
+    , ( m [ 1,  2,  3,  4]
+      , m [-1, -2, -3, -4]
+      , m [ 2,  4,  6,  8]
+      )
+    , ( m [-1, -2, -3, -4]
+      , m [-1, -2, -3, -4]
+      , m [ 0,  0,  0,  0]
       )
     ]
   where
