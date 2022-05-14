@@ -57,6 +57,8 @@ import Data.Group
     ( Group (..) )
 import Data.Map.Strict
     ( Map )
+import Data.Monoid
+    ( All (..) )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
     , LeftGCDMonoid (..)
@@ -252,12 +254,12 @@ size :: MonoidMap k v -> Int
 size = Map.size . toMap
 
 isSubmapOfBy
-    :: Ord k
+    :: (Ord k, Monoid v1, Monoid v2)
     => (v1 -> v2 -> Bool)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> Bool
-isSubmapOfBy f m1 m2 = Map.isSubmapOfBy f (toMap m1) (toMap m2)
+isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 
 --------------------------------------------------------------------------------
 -- Modification

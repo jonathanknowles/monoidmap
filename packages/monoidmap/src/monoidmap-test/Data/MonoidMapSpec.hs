@@ -105,6 +105,19 @@ spec = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
+        testLawsMany @(MonoidMap Int (Product Integer))
+            [ commutativeLaws
+            , eqLaws
+            , isListLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , reductiveLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
         testLawsMany @(MonoidMap Int (Product Natural))
             [ commutativeLaws
             , eqLaws
@@ -119,6 +132,22 @@ spec = do
             , positiveMonoidLaws
             , reductiveLaws
             , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap Int (Sum Integer))
+            [ cancellativeLaws
+            , commutativeLaws
+            , eqLaws
+            , isListLaws
+            , leftCancellativeLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , reductiveLaws
+            , rightCancellativeLaws
             , rightReductiveLaws
             , semigroupLaws
             , semigroupMonoidLaws
