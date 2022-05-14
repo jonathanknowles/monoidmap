@@ -316,59 +316,65 @@ map f = fromList . fmap (fmap f) . toList
 --------------------------------------------------------------------------------
 
 mergeWith
-    :: forall k v. (Ord k, MonoidNull v)
+    :: forall k v1 v2 v3.
+        (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (Set k -> Set k -> Set k)
-    -> (v -> v -> v)
-    -> MonoidMap k v
-    -> MonoidMap k v
-    -> MonoidMap k v
+    -> (v1 -> v2 -> v3)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> MonoidMap k v3
 mergeWith mergeKeys mergeValue m1 m2 =
     runIdentity $ mergeWithF mergeKeys (fmap (fmap Identity) mergeValue) m1 m2
 
 mergeWithF
-    :: forall f k v. (Applicative f, Ord k, MonoidNull v)
+    :: forall f k v1 v2 v3.
+        (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (Set k -> Set k -> Set k)
-    -> (v -> v -> f v)
-    -> MonoidMap k v
-    -> MonoidMap k v
-    -> f (MonoidMap k v)
+    -> (v1 -> v2 -> f v3)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> f (MonoidMap k v3)
 mergeWithF mergeKeys mergeValue m1 m2
     = fmap fromList
     $ traverse merge
     $ F.toList
     $ mergeKeys (keysSet m1) (keysSet m2)
   where
-    merge :: k -> f (k, v)
+    merge :: k -> f (k, v3)
     merge k = (k,) <$> mergeValue (m1 `get` k) (m2 `get` k)
 
 intersectionWith
-    :: forall k v. (Ord k, MonoidNull v)
-    => (v -> v -> v)
-    -> MonoidMap k v
-    -> MonoidMap k v
-    -> MonoidMap k v
+    :: forall k v1 v2 v3.
+        (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> MonoidMap k v3
 intersectionWith = mergeWith Set.intersection
 
 intersectionWithF
-    :: forall f k v. (Applicative f, Ord k, MonoidNull v)
-    => (v -> v -> f v)
-    -> MonoidMap k v
-    -> MonoidMap k v
-    -> f (MonoidMap k v)
+    :: forall f k v1 v2 v3.
+        (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> f (MonoidMap k v3)
 intersectionWithF = mergeWithF Set.intersection
 
 unionWith
-    :: forall k v. (Ord k, MonoidNull v)
-    => (v -> v -> v)
-    -> MonoidMap k v
-    -> MonoidMap k v
-    -> MonoidMap k v
+    :: forall k v1 v2 v3.
+        (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> MonoidMap k v3
 unionWith = mergeWith Set.union
 
 unionWithF
-    :: forall f k v. (Applicative f, Ord k, MonoidNull v)
-    => (v -> v -> f v)
-    -> MonoidMap k v
-    -> MonoidMap k v
-    -> f (MonoidMap k v)
+    :: forall f k v1 v2 v3.
+        (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> f (MonoidMap k v3)
 unionWithF = mergeWithF Set.union
