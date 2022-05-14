@@ -66,6 +66,7 @@ import Test.QuickCheck.Classes.Semigroup
     , cancellativeLaws
     , commutativeLaws
     , gcdMonoidLaws
+    , groupLaws
     , leftCancellativeLaws
     , leftGCDMonoidLaws
     , leftReductiveLaws
@@ -141,6 +142,7 @@ spec = do
             [ cancellativeLaws
             , commutativeLaws
             , eqLaws
+            , groupLaws
             , isListLaws
             , leftCancellativeLaws
             , leftReductiveLaws
