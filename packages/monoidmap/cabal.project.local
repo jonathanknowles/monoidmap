@@ -9,4 +9,4 @@ package *
 source-repository-package
     type: git
     location: git@github.com:jonathanknowles/quickcheck-classes-semigroup.git
-    tag: 73e0818f6061f95d0dbcd52d77ca8b5a341a3fa4
+    tag: cc74ae4848556a166853320b3295b22985a09113
