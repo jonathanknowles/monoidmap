@@ -1,0 +1,6 @@
+packages: monoidmap.cabal
+
+source-repository-package
+    type: git
+    location: https://github.com/jonathanknowles/quickcheck-classes-semigroup.git
+    tag: 781e6b3766e9c8c9aa852cbb8bddcd7175e2aa90
