@@ -1,0 +1,16 @@
+cradle:
+  cabal:
+    - path: "src/monoidmap"
+      component: "lib:monoidmap"
+
+    - path: "src/monoidmap-examples"
+      component: "monoidmap:lib:monoidmap-examples"
+
+    - path: "src/monoidmap-examples-test"
+      component: "monoidmap:test:monoidmap-examples-test"
+
+    - path: "src/monoidmap-internal"
+      component: "monoidmap:lib:monoidmap-internal"
+
+    - path: "src/monoidmap-test"
+      component: "monoidmap:test:monoidmap-test"
