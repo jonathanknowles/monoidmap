@@ -10,8 +10,8 @@ on:
     branches:
       - main
   schedule:
-    # additionally run once per week (At 00:00 on Sunday) to maintain cache
-    - cron: 0 0 * * 0
+    # Run once per day (at UTC 00:00) to maintain cache:
+    - cron: 0 0 * * *
 jobs:
   build:
     name: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
@@ -20,12 +20,23 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
+          - macOS-latest
+          - windows-latest
         cabal:
           - 3.6.2.0
         ghc:
           - 8.10.7
           - 9.0.2
           - 9.2.2
+        exclude:
+          - os: macOS-latest
+            ghc: 8.10.7
+          - os: macOS-latest
+            ghc: 9.0.2
+          - os: windows-latest
+            ghc: 8.10.7
+          - os: windows-latest
+            ghc: 9.0.2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -38,13 +49,13 @@ jobs:
           cabal-version: ${{ matrix.cabal }}
 
       - name: Configure
-        run: |
-          cabal configure \
-              --enable-tests \
-              --enable-benchmarks \
-              --enable-documentation \
-              --test-show-details=direct \
-              --write-ghc-environment-files=always
+        run: >
+          cabal configure
+          --enable-tests
+          --enable-benchmarks
+          --enable-documentation
+          --test-show-details=direct
+          --write-ghc-environment-files=always
 
       - name: Freeze
         run: |
@@ -75,18 +86,25 @@ jobs:
           cabal test all
 
       - name: Documentation
-        if: matrix.ghc == '8.10.7'
-        run: |
-          cabal haddock \
-              --haddock-hyperlink-source \
-              --haddock-quickjump \
-              --haddock-html-location \
-                  'https://hackage.haskell.org/package/$pkg-$version/docs'
-          mv dist-newstyle/build/*/*/*/doc/html/monoidmap gh-pages
+        if: |
+            matrix.os == 'ubuntu-latest'
+            && matrix.ghc == '8.10.7'
+        run: >
+          cabal haddock
+          --haddock-hyperlink-source
+          --haddock-quickjump
+          --haddock-html-location
+          'https://hackage.haskell.org/package/$pkg-$version/docs'
+
+          mv dist-newstyle/build/*/*/*/doc/html/* gh-pages
+
           touch gh-pages/.nojekyll
 
       - name: Deploy
-        if: matrix.ghc == '8.10.7'
+        if: |
+            github.ref == 'refs/heads/main'
+            && matrix.os == 'ubuntu-latest'
+            && matrix.ghc == '8.10.7'
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
