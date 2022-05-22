@@ -2,6 +2,8 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
+-- Total monoidal map type with support for semigroup and monoid subclasses.
+--
 module Data.MonoidMap
     (
     -- * Type

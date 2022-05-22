@@ -8,9 +8,9 @@ author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022 Jonathan Knowles
 category:       Testing
-synopsis:       Monoidal map types
+synopsis:       Total monoidal map type
 description:
-    Monoidal map types with support for monoid subclasses.
+    Total monoidal map type with support for semigroup and monoid subclasses.
 
 extra-source-files:
     README.md
