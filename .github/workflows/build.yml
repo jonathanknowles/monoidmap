@@ -74,7 +74,6 @@ jobs:
         run: |
           ghc --version
           cabal --version
-          cabal update
           cabal build all --only-dependencies
 
       - name: Build
