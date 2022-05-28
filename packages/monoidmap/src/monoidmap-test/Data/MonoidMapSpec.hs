@@ -388,9 +388,7 @@ prop_set_member m k v =
 prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_toList m k v =
     filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set m k v)) ===
-        if v == mempty
-        then []
-        else [(k, v)]
+        [(k, v) | v /= mempty]
 
 --------------------------------------------------------------------------------
 -- Keys
@@ -466,9 +464,7 @@ prop_singleton_size k v =
 prop_singleton_toList :: Key -> Value -> Property
 prop_singleton_toList k v =
     MonoidMap.toList (MonoidMap.singleton k v) ===
-        if v == mempty
-        then []
-        else [(k, v)]
+        [(k, v) | v /= mempty]
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
