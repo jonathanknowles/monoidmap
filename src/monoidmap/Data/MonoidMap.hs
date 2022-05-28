@@ -31,7 +31,6 @@ module Data.MonoidMap
     , adjust
     , delete
     , set
-    , insertWith
 
     -- * Traversal
     , map
