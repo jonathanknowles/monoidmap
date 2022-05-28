@@ -159,8 +159,8 @@ get :: (Ord k1, Ord k2, MonoidNull v)
     -> (k1, k2)
     -> v
 get (NestedMonoidMap m) (k1, k2) = m
-    `mget` k1
-    `mget` k2
+    `MonoidMap.get` k1
+    `MonoidMap.get` k2
 
 keys
     :: (Ord k1, Ord k2, MonoidNull v)
@@ -197,15 +197,12 @@ set :: (Ord k1, Ord k2, MonoidNull v)
     -> NestedMonoidMap k1 k2 v
 set (NestedMonoidMap m) (k1, k2) v = NestedMonoidMap
     $ (m `mset` k1)
-    $ (m `mget` k1) `mset` k2
+    $ (m `MonoidMap.get` k1) `mset` k2
     $ v
 
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
-
-mget :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
-mget m = flip MonoidMap.lookup m
 
 mset :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 mset m k a = MonoidMap.insert k a m
