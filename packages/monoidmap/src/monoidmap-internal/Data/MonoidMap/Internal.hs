@@ -29,7 +29,6 @@ module Data.MonoidMap.Internal
     , adjust
     , delete
     , set
-    , insertWith
 
     -- * Traversal
     , map
@@ -283,15 +282,6 @@ adjustMany f m1 m2 =
 
 delete :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
 delete k m = set m k mempty
-
-insertWith
-    :: (Ord k, MonoidNull v)
-    => (v -> v -> v)
-    -> k
-    -> v
-    -> MonoidMap k v
-    -> MonoidMap k v
-insertWith f k v m = set m k $ f v (get m k)
 
 set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Core.set . unMonoidMap
