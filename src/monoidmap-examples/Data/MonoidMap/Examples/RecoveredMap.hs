@@ -35,7 +35,7 @@ toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
 
 insert :: Ord k => k -> v -> Map k v -> Map k v
-insert k v = Map . MonoidMap.insertWith const k (pure v) . unMap
+insert k v m = Map $ MonoidMap.set (unMap m) k (pure v)
 
 keysSet :: Map k v -> Set k
 keysSet = MonoidMap.keysSet . unMap
