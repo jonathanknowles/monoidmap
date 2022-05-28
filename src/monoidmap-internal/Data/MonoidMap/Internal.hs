@@ -20,7 +20,7 @@ module Data.MonoidMap.Internal
 
     -- * Queries
     , keysSet
-    , lookup
+    , get
     , member
     , null
     , size
@@ -234,9 +234,6 @@ toMap = Core.toMap . unMonoidMap
 --------------------------------------------------------------------------------
 -- Queries
 --------------------------------------------------------------------------------
-
-lookup :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
-lookup = flip get
 
 member :: Ord k => k -> MonoidMap k a -> Bool
 member k = Map.member k . toMap
