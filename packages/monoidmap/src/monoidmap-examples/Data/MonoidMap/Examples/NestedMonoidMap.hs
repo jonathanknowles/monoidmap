@@ -196,13 +196,6 @@ set :: (Ord k1, Ord k2, MonoidNull v)
     -> v
     -> NestedMonoidMap k1 k2 v
 set (NestedMonoidMap m) (k1, k2) v = NestedMonoidMap
-    $ (m `mset` k1)
-    $ (m `MonoidMap.get` k1) `mset` k2
+    $ (m `MonoidMap.set` k1)
+    $ (m `MonoidMap.get` k1) `MonoidMap.set` k2
     $ v
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-mset :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
-mset m k a = MonoidMap.insert k a m

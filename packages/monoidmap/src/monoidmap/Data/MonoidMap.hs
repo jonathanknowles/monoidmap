@@ -30,7 +30,7 @@ module Data.MonoidMap
     -- * Modification
     , adjust
     , delete
-    , insert
+    , set
     , insertWith
 
     -- * Traversal
