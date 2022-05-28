@@ -105,7 +105,7 @@ fromFlatList = F.foldl' acc mempty
 
 fromFlatMap
     :: (Ord k1, Ord k2, MonoidNull v)
-    => (Map (k1, k2) v)
+    => Map (k1, k2) v
     -> NestedMonoidMap k1 k2 v
 fromFlatMap = fromFlatList . Map.toList
 
@@ -118,7 +118,7 @@ fromNestedList entries =
 
 fromNestedMap
     :: (Ord k1, Ord k2, MonoidNull v)
-    => (Map k1 (Map k2 v))
+    => Map k1 (Map k2 v)
     -> NestedMonoidMap k1 k2 v
 fromNestedMap = NestedMonoidMap . MonoidMap.fromMap . fmap MonoidMap.fromMap
 
@@ -135,7 +135,7 @@ toFlatList m = [((k1, k2), v) | (k1, n) <- toNestedList m, (k2, v) <- toList n]
 toFlatMap
     :: (Ord k1, Ord k2, MonoidNull v)
     => NestedMonoidMap k1 k2 v
-    -> (Map (k1, k2) v)
+    -> Map (k1, k2) v
 toFlatMap = Map.fromList . toFlatList
 
 toNestedList
@@ -147,7 +147,7 @@ toNestedList (NestedMonoidMap m) = fmap toList <$> toList m
 toNestedMap
     :: (Ord k1, Ord k2, MonoidNull v)
     => NestedMonoidMap k1 k2 v
-    -> (Map k1 (Map k2 v))
+    -> Map k1 (Map k2 v)
 toNestedMap (NestedMonoidMap m) = MonoidMap.toMap <$> MonoidMap.toMap m
 
 --------------------------------------------------------------------------------
