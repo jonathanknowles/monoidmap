@@ -244,14 +244,14 @@ spec = do
             prop_delete_member & property
 
     parallel $ describe "Insertion" $ do
-        it "prop_insert_keysSet" $
-            prop_insert_keysSet & property
-        it "prop_insert_get" $
-            prop_insert_get & property
-        it "prop_insert_member" $
-            prop_insert_member & property
-        it "prop_insert_toList" $
-            prop_insert_toList & property
+        it "prop_set_keysSet" $
+            prop_set_keysSet & property
+        it "prop_set_get" $
+            prop_set_get & property
+        it "prop_set_member" $
+            prop_set_member & property
+        it "prop_set_toList" $
+            prop_set_toList & property
 
     parallel $ describe "Keys" $ do
         it "prop_keysSet_get" $
@@ -364,14 +364,14 @@ prop_delete_member m k =
 -- Insertion
 --------------------------------------------------------------------------------
 
-prop_insert_keysSet :: MonoidMap Key Value -> Key -> Value -> Property
-prop_insert_keysSet m k v =
-    Set.member k (MonoidMap.keysSet (MonoidMap.insert k v m)) ===
+prop_set_keysSet :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_keysSet m k v =
+    Set.member k (MonoidMap.keysSet (MonoidMap.set m k v)) ===
         (v /= mempty)
 
-prop_insert_get :: MonoidMap Key Value -> Key -> Value -> Property
-prop_insert_get m k v =
-    MonoidMap.insert k v m `MonoidMap.get` k === v
+prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_get m k v =
+    MonoidMap.set m k v `MonoidMap.get` k === v
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -380,14 +380,14 @@ prop_insert_get m k v =
         "not (MonoidMap.member k m)"
     & checkCoverage
 
-prop_insert_member :: MonoidMap Key Value -> Key -> Value -> Property
-prop_insert_member m k v =
-    MonoidMap.member k (MonoidMap.insert k v m) ===
+prop_set_member :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_member m k v =
+    MonoidMap.member k (MonoidMap.set m k v) ===
         (v /= mempty)
 
-prop_insert_toList :: MonoidMap Key Value -> Key -> Value -> Property
-prop_insert_toList m k v =
-    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.insert k v m)) ===
+prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_toList m k v =
+    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set m k v)) ===
         if v == mempty
         then []
         else [(k, v)]
