@@ -22,7 +22,7 @@ module Data.MonoidMap
 
     -- * Queries
     , keysSet
-    , lookup
+    , get
     , member
     , null
     , size
@@ -40,4 +40,4 @@ module Data.MonoidMap
 
 import Data.MonoidMap.Internal
 import Prelude hiding
-    ( lookup, map, null )
+    ( map, null )

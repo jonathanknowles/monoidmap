@@ -238,38 +238,38 @@ spec = do
     parallel $ describe "Deletion" $ do
         it "prop_delete_keysSet" $
             prop_delete_keysSet & property
-        it "prop_delete_lookup" $
-            prop_delete_lookup & property
+        it "prop_delete_get" $
+            prop_delete_get & property
         it "prop_delete_member" $
             prop_delete_member & property
 
     parallel $ describe "Insertion" $ do
         it "prop_insert_keysSet" $
             prop_insert_keysSet & property
-        it "prop_insert_lookup" $
-            prop_insert_lookup & property
+        it "prop_insert_get" $
+            prop_insert_get & property
         it "prop_insert_member" $
             prop_insert_member & property
         it "prop_insert_toList" $
             prop_insert_toList & property
 
     parallel $ describe "Keys" $ do
-        it "prop_keysSet_lookup" $
-            prop_keysSet_lookup & property
+        it "prop_keysSet_get" $
+            prop_keysSet_get & property
 
-    parallel $ describe "Lookup" $ do
-        it "prop_lookup_keysSet" $
-            prop_lookup_keysSet & property
-        it "prop_lookup_member" $
-            prop_lookup_member & property
+    parallel $ describe "Get" $ do
+        it "prop_get_keysSet" $
+            prop_get_keysSet & property
+        it "prop_get_member" $
+            prop_get_member & property
 
     parallel $ describe "Singleton" $ do
         it "prop_singleton_delete" $
             prop_singleton_delete & property
         it "prop_singleton_keysSet" $
             prop_singleton_keysSet & property
-        it "prop_singleton_lookup" $
-            prop_singleton_lookup & property
+        it "prop_singleton_get" $
+            prop_singleton_get & property
         it "prop_singleton_member" $
             prop_singleton_member & property
         it "prop_singleton_null" $
@@ -344,9 +344,9 @@ prop_delete_keysSet m k =
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_lookup :: MonoidMap Key Value -> Key -> Property
-prop_delete_lookup m k =
-    MonoidMap.lookup k (MonoidMap.delete k m) === mempty
+prop_delete_get :: MonoidMap Key Value -> Key -> Property
+prop_delete_get m k =
+    MonoidMap.delete k m `MonoidMap.get` k === mempty
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -369,9 +369,9 @@ prop_insert_keysSet m k v =
     Set.member k (MonoidMap.keysSet (MonoidMap.insert k v m)) ===
         (v /= mempty)
 
-prop_insert_lookup :: MonoidMap Key Value -> Key -> Value -> Property
-prop_insert_lookup m k v =
-    MonoidMap.lookup k (MonoidMap.insert k v m) === v
+prop_insert_get :: MonoidMap Key Value -> Key -> Value -> Property
+prop_insert_get m k v =
+    MonoidMap.insert k v m `MonoidMap.get` k === v
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -396,20 +396,20 @@ prop_insert_toList m k v =
 -- Keys
 --------------------------------------------------------------------------------
 
-prop_keysSet_lookup :: MonoidMap Key Value -> Property
-prop_keysSet_lookup m =
+prop_keysSet_get :: MonoidMap Key Value -> Property
+prop_keysSet_get m =
     fmap
-        (\k -> (k, MonoidMap.lookup k m))
+        (\k -> (k, m `MonoidMap.get` k))
         (Set.toList (MonoidMap.keysSet m))
     === MonoidMap.toList m
 
 --------------------------------------------------------------------------------
--- Lookup
+-- Get
 --------------------------------------------------------------------------------
 
-prop_lookup_keysSet :: MonoidMap Key Value -> Key -> Property
-prop_lookup_keysSet m k =
-    Set.member k (MonoidMap.keysSet m) === (MonoidMap.lookup k m /= mempty)
+prop_get_keysSet :: MonoidMap Key Value -> Key -> Property
+prop_get_keysSet m k =
+    Set.member k (MonoidMap.keysSet m) === (m `MonoidMap.get` k /= mempty)
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -418,9 +418,9 @@ prop_lookup_keysSet m k =
         "not (MonoidMap.member k m)"
     & checkCoverage
 
-prop_lookup_member :: MonoidMap Key Value -> Key -> Property
-prop_lookup_member m k =
-    MonoidMap.member k m === (MonoidMap.lookup k m /= mempty)
+prop_get_member :: MonoidMap Key Value -> Key -> Property
+prop_get_member m k =
+    MonoidMap.member k m === (m `MonoidMap.get` k /= mempty)
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -444,9 +444,9 @@ prop_singleton_keysSet k v =
         then Set.empty
         else Set.singleton k
 
-prop_singleton_lookup :: Key -> Value -> Property
-prop_singleton_lookup k v =
-    MonoidMap.lookup k (MonoidMap.singleton k v) === v
+prop_singleton_get :: Key -> Value -> Property
+prop_singleton_get k v =
+    MonoidMap.singleton k v `MonoidMap.get` k === v
 
 prop_singleton_member :: Key -> Value -> Property
 prop_singleton_member k v =
