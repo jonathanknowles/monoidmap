@@ -77,7 +77,7 @@ jobs:
 
       - name: Benchmark
         run: |
-          cabal bench all
+          cabal bench all --benchmark-options '+RTS -T'
 
       - name: Documentation
         if: |
