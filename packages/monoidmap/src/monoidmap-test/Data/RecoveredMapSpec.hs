@@ -67,6 +67,14 @@ spec = do
         it "prop_append_toList" $
             prop_append_toList & property
 
+    parallel $ describe "Delete" $ do
+        it "prop_delete_lookup" $
+            prop_delete_lookup & property
+        it "prop_delete_member" $
+            prop_delete_member & property
+        it "prop_delete_toList" $
+            prop_delete_toList & property
+
     parallel $ describe "Insert" $ do
         it "prop_insert_lookup" $
             prop_insert_lookup & property
@@ -174,6 +182,49 @@ prop_append_toList kvs1 kvs2 =
   where
     ks1 = Set.fromList (fst <$> kvs1)
     ks2 = Set.fromList (fst <$> kvs2)
+
+--------------------------------------------------------------------------------
+-- Delete
+--------------------------------------------------------------------------------
+
+prop_delete_lookup :: [(Key, Value)] -> Key -> Property
+prop_delete_lookup kvs k =
+    (===)
+        (RMap.lookup k (RMap.delete k (RMap.fromList kvs)))
+        (OMap.lookup k (OMap.delete k (OMap.fromList kvs)))
+    & cover 10
+        (filter ((== k) . fst) kvs == [])
+        "filter ((== k) . fst) kvs == []"
+    & cover 10
+        (filter ((== k) . fst) kvs /= [])
+        "filter ((== k) . fst) kvs /= []"
+    & checkCoverage
+
+prop_delete_member :: [(Key, Value)] -> Key -> Property
+prop_delete_member kvs k =
+    (===)
+        (RMap.member k (RMap.delete k (RMap.fromList kvs)))
+        (OMap.member k (OMap.delete k (OMap.fromList kvs)))
+    & cover 10
+        (filter ((== k) . fst) kvs == [])
+        "filter ((== k) . fst) kvs == []"
+    & cover 10
+        (filter ((== k) . fst) kvs /= [])
+        "filter ((== k) . fst) kvs /= []"
+    & checkCoverage
+
+prop_delete_toList :: [(Key, Value)] -> Key -> Property
+prop_delete_toList kvs k =
+    (===)
+        (RMap.toList (RMap.delete k (RMap.fromList kvs)))
+        (OMap.toList (OMap.delete k (OMap.fromList kvs)))
+    & cover 10
+        (filter ((== k) . fst) kvs == [])
+        "filter ((== k) . fst) kvs == []"
+    & cover 10
+        (filter ((== k) . fst) kvs /= [])
+        "filter ((== k) . fst) kvs /= []"
+    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Insert
