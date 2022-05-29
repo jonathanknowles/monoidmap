@@ -25,10 +25,10 @@ module Data.MonoidMap.Internal
     , nullify
 
     -- * Queries
-    , keysSet
     , member
     , null
     , nonNull
+    , nonNullKeys
     , size
 
     -- * Traversal
@@ -267,9 +267,6 @@ nullify m k = set m k mempty
 -- Queries
 --------------------------------------------------------------------------------
 
-keysSet :: MonoidMap k v -> Set k
-keysSet = Map.keysSet . toMap
-
 member :: Ord k => k -> MonoidMap k v -> Bool
 member k = Map.member k . toMap
 
@@ -278,6 +275,9 @@ null = Map.null . toMap
 
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
+
+nonNullKeys :: MonoidMap k v -> Set k
+nonNullKeys = Map.keysSet . toMap
 
 size :: MonoidMap k v -> Int
 size = Map.size . toMap
@@ -328,7 +328,7 @@ mergeWithF mergeKeys mergeValue m1 m2
     = fmap fromList
     $ traverse merge
     $ F.toList
-    $ mergeKeys (keysSet m1) (keysSet m2)
+    $ mergeKeys (nonNullKeys m1) (nonNullKeys m2)
   where
     merge :: k -> f (k, v3)
     merge k = (k,) <$> mergeValue (m1 `get` k) (m2 `get` k)
