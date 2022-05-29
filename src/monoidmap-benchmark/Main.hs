@@ -33,17 +33,33 @@ main = do
     evaluate $ rnf [rm_even, rm_odd]
 
     defaultMain
-        [ bgroup "lookup (absent)"
-            [ bench "Data.Map.Strict" $
-                nf (lookupMany evens) om_odd
-            , bench "Data.MonoidMap" $
-                nf (lookupMany evens) rm_odd
+        [ bgroup "delete"
+            [ bgroup "absent"
+                [ bench "Data.Map.Strict" $
+                    nf (deleteMany evens) om_odd
+                , bench "Data.MonoidMap" $
+                    nf (deleteMany evens) rm_odd
+                ]
+            , bgroup "present"
+                [ bench "Data.Map.Strict" $
+                    nf (deleteMany evens) om_even
+                , bench "Data.MonoidMap" $
+                    nf (deleteMany evens) rm_even
+                ]
             ]
-        , bgroup "lookup (present)"
-            [ bench "Data.Map.Strict" $
-                nf (lookupMany evens) om_even
-            , bench "Data.MonoidMap" $
-                nf (lookupMany evens) rm_even
+        , bgroup "lookup"
+            [ bgroup "absent"
+                [ bench "Data.Map.Strict" $
+                    nf (lookupMany evens) om_odd
+                , bench "Data.MonoidMap" $
+                    nf (lookupMany evens) rm_odd
+                ]
+            , bgroup "present"
+                [ bench "Data.Map.Strict" $
+                    nf (lookupMany evens) om_even
+                , bench "Data.MonoidMap" $
+                    nf (lookupMany evens) rm_even
+                ]
             ]
         ]
   where
@@ -64,15 +80,21 @@ main = do
 
 class Ord k => Map m k v where
     fromList :: [(k, v)] -> m k v
+    delete :: k -> m k v -> m k v
     lookup :: k -> m k v -> Maybe v
 
 instance Ord k => Map OMap.Map k v where
     fromList = OMap.fromList
+    delete = OMap.delete
     lookup = OMap.lookup
 
 instance Ord k => Map RMap.Map k v where
     fromList = RMap.fromList
+    delete = RMap.delete
     lookup = RMap.lookup
+
+deleteMany :: (Map m k v, Num v) => [k] -> m k v -> m k v
+deleteMany xs m = foldl' (flip delete) m xs
 
 lookupMany :: (Map m k v, Num v) => [k] -> m k v -> v
 lookupMany xs m = foldl' (\n k -> fromMaybe n (lookup k m)) 0 xs
