@@ -235,13 +235,13 @@ spec = do
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap & property
 
-    parallel $ describe "Deletion" $ do
-        it "prop_delete_keysSet" $
-            prop_delete_keysSet & property
-        it "prop_delete_get" $
-            prop_delete_get & property
-        it "prop_delete_member" $
-            prop_delete_member & property
+    parallel $ describe "Nullification" $ do
+        it "prop_nullify_keysSet" $
+            prop_nullify_keysSet & property
+        it "prop_nullify_get" $
+            prop_nullify_get & property
+        it "prop_nullify_member" $
+            prop_nullify_member & property
 
     parallel $ describe "Set" $ do
         it "prop_set_keysSet" $
@@ -264,8 +264,8 @@ spec = do
             prop_get_member & property
 
     parallel $ describe "Singleton" $ do
-        it "prop_singleton_delete" $
-            prop_singleton_delete & property
+        it "prop_singleton_nullify" $
+            prop_singleton_nullify & property
         it "prop_singleton_keysSet" $
             prop_singleton_keysSet & property
         it "prop_singleton_get" $
@@ -336,25 +336,25 @@ prop_toMap_fromMap m =
 -- Deletion
 --------------------------------------------------------------------------------
 
-prop_delete_keysSet :: MonoidMap Key Value -> Key -> Property
-prop_delete_keysSet m k =
-    Set.member k (MonoidMap.keysSet (MonoidMap.delete m k)) === False
+prop_nullify_keysSet :: MonoidMap Key Value -> Key -> Property
+prop_nullify_keysSet m k =
+    Set.member k (MonoidMap.keysSet (MonoidMap.nullify m k)) === False
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_get :: MonoidMap Key Value -> Key -> Property
-prop_delete_get m k =
-    MonoidMap.delete m k `MonoidMap.get` k === mempty
+prop_nullify_get :: MonoidMap Key Value -> Key -> Property
+prop_nullify_get m k =
+    MonoidMap.nullify m k `MonoidMap.get` k === mempty
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_member :: MonoidMap Key Value -> Key -> Property
-prop_delete_member m k =
-    MonoidMap.member k (MonoidMap.delete m k) === False
+prop_nullify_member :: MonoidMap Key Value -> Key -> Property
+prop_nullify_member m k =
+    MonoidMap.member k (MonoidMap.nullify m k) === False
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -431,9 +431,9 @@ prop_get_member m k =
 -- Singleton
 --------------------------------------------------------------------------------
 
-prop_singleton_delete :: Key -> Value -> Property
-prop_singleton_delete k v =
-    MonoidMap.singleton k v `MonoidMap.delete` k === mempty
+prop_singleton_nullify :: Key -> Value -> Property
+prop_singleton_nullify k v =
+    MonoidMap.singleton k v `MonoidMap.nullify` k === mempty
 
 prop_singleton_keysSet :: Key -> Value -> Property
 prop_singleton_keysSet k v =

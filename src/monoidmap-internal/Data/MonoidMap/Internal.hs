@@ -22,7 +22,7 @@ module Data.MonoidMap.Internal
     , get
     , set
     , adjust
-    , delete
+    , nullify
 
     -- * Queries
     , keysSet
@@ -259,8 +259,8 @@ adjustMany f m1 m2 =
   where
     acc m (k, v) = adjust m k (f v)
 
-delete :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> MonoidMap k v
-delete m k = set m k mempty
+nullify :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> MonoidMap k v
+nullify m k = set m k mempty
 
 --------------------------------------------------------------------------------
 -- Queries
