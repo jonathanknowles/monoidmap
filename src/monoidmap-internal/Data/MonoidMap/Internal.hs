@@ -25,9 +25,9 @@ module Data.MonoidMap.Internal
     , nullify
 
     -- * Queries
-    , member
     , null
     , nonNull
+    , nonNullKey
     , nonNullKeys
     , size
 
@@ -267,14 +267,14 @@ nullify m k = set m k mempty
 -- Queries
 --------------------------------------------------------------------------------
 
-member :: Ord k => k -> MonoidMap k v -> Bool
-member k = Map.member k . toMap
-
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
+
+nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
+nonNullKey k = Map.member k . toMap
 
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap

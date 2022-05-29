@@ -240,16 +240,16 @@ spec = do
             prop_nullify_nonNullKeys & property
         it "prop_nullify_get" $
             prop_nullify_get & property
-        it "prop_nullify_member" $
-            prop_nullify_member & property
+        it "prop_nullify_nonNullKey" $
+            prop_nullify_nonNullKey & property
 
     parallel $ describe "Set" $ do
         it "prop_set_nonNullKeys" $
             prop_set_nonNullKeys & property
         it "prop_set_get" $
             prop_set_get & property
-        it "prop_set_member" $
-            prop_set_member & property
+        it "prop_set_NonNullKey" $
+            prop_set_NonNullKey & property
         it "prop_set_toList" $
             prop_set_toList & property
 
@@ -260,8 +260,8 @@ spec = do
     parallel $ describe "Get" $ do
         it "prop_get_nonNullKeys" $
             prop_get_nonNullKeys & property
-        it "prop_get_member" $
-            prop_get_member & property
+        it "prop_get_nonNullKey" $
+            prop_get_nonNullKey & property
 
     parallel $ describe "Singleton" $ do
         it "prop_singleton_nullify" $
@@ -270,8 +270,8 @@ spec = do
             prop_singleton_nonNullKeys & property
         it "prop_singleton_get" $
             prop_singleton_get & property
-        it "prop_singleton_member" $
-            prop_singleton_member & property
+        it "prop_singleton_nonNullKey" $
+            prop_singleton_nonNullKey & property
         it "prop_singleton_null" $
             prop_singleton_null & property
         it "prop_singleton_size" $
@@ -340,24 +340,24 @@ prop_nullify_nonNullKeys :: MonoidMap Key Value -> Key -> Property
 prop_nullify_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify m k)) === False
     & cover 10
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & checkCoverage
 
 prop_nullify_get :: MonoidMap Key Value -> Key -> Property
 prop_nullify_get m k =
     MonoidMap.nullify m k `MonoidMap.get` k === mempty
     & cover 10
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & checkCoverage
 
-prop_nullify_member :: MonoidMap Key Value -> Key -> Property
-prop_nullify_member m k =
-    MonoidMap.member k (MonoidMap.nullify m k) === False
+prop_nullify_nonNullKey :: MonoidMap Key Value -> Key -> Property
+prop_nullify_nonNullKey m k =
+    MonoidMap.nonNullKey k (MonoidMap.nullify m k) === False
     & cover 10
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & checkCoverage
 
 --------------------------------------------------------------------------------
@@ -373,16 +373,16 @@ prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_get m k v =
     MonoidMap.set m k v `MonoidMap.get` k === v
     & cover 10
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 10
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
     & checkCoverage
 
-prop_set_member :: MonoidMap Key Value -> Key -> Value -> Property
-prop_set_member m k v =
-    MonoidMap.member k (MonoidMap.set m k v) ===
+prop_set_NonNullKey :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_NonNullKey m k v =
+    MonoidMap.nonNullKey k (MonoidMap.set m k v) ===
         (v /= mempty)
 
 prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
@@ -409,22 +409,22 @@ prop_get_nonNullKeys :: MonoidMap Key Value -> Key -> Property
 prop_get_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys m) === (m `MonoidMap.get` k /= mempty)
     & cover 10
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 10
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
     & checkCoverage
 
-prop_get_member :: MonoidMap Key Value -> Key -> Property
-prop_get_member m k =
-    MonoidMap.member k m === (m `MonoidMap.get` k /= mempty)
+prop_get_nonNullKey :: MonoidMap Key Value -> Key -> Property
+prop_get_nonNullKey m k =
+    MonoidMap.nonNullKey k m === (m `MonoidMap.get` k /= mempty)
     & cover 10
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 10
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
     & checkCoverage
 
 --------------------------------------------------------------------------------
@@ -446,9 +446,9 @@ prop_singleton_get :: Key -> Value -> Property
 prop_singleton_get k v =
     MonoidMap.singleton k v `MonoidMap.get` k === v
 
-prop_singleton_member :: Key -> Value -> Property
-prop_singleton_member k v =
-    MonoidMap.member k (MonoidMap.singleton k v) === (v /= mempty)
+prop_singleton_nonNullKey :: Key -> Value -> Property
+prop_singleton_nonNullKey k v =
+    MonoidMap.nonNullKey k (MonoidMap.singleton k v) === (v /= mempty)
 
 prop_singleton_null :: Key -> Value -> Property
 prop_singleton_null k v =
