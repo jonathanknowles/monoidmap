@@ -1,7 +1,7 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module Data.MonoidMap.Examples.RecoveredMap where
+module Data.MonoidMap.Internal.RecoveredMap where
 
 import Control.DeepSeq
     ( NFData )
@@ -9,12 +9,12 @@ import Data.Maybe
     ( mapMaybe )
 import Data.Monoid
     ( First (..) )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Set
     ( Set )
 
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 
 newtype Map k v = Map
     {unMap :: MonoidMap k (First v)}
