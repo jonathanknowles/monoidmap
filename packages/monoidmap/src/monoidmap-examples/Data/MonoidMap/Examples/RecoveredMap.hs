@@ -3,6 +3,8 @@
 
 module Data.MonoidMap.Examples.RecoveredMap where
 
+import Control.DeepSeq
+    ( NFData )
 import Data.Maybe
     ( mapMaybe )
 import Data.Monoid
@@ -17,7 +19,7 @@ import qualified Data.MonoidMap as MonoidMap
 newtype Map k v = Map
     {unMap :: MonoidMap k (First v)}
     deriving stock Eq
-    deriving newtype (Semigroup, Monoid)
+    deriving newtype (NFData, Semigroup, Monoid)
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList

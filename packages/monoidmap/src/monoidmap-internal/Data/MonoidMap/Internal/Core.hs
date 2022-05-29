@@ -22,6 +22,8 @@ module Data.MonoidMap.Internal.Core
 import Prelude hiding
     ( null )
 
+import Control.DeepSeq
+    ( NFData )
 import Data.Bifoldable
     ( Bifoldable )
 import Data.Functor.Classes
@@ -41,7 +43,8 @@ import qualified Data.Map.Strict as Map
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
-    deriving newtype (Bifoldable, Eq, Eq1, Eq2, Foldable, Show, Show1, Show2)
+    deriving newtype
+        (Bifoldable, Eq, Eq1, Eq2, Foldable, NFData, Show, Show1, Show2)
 
 --------------------------------------------------------------------------------
 -- Construction

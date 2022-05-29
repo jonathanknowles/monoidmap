@@ -48,6 +48,8 @@ module Data.MonoidMap.Internal
 import Prelude hiding
     ( gcd, lookup, map, null, subtract )
 
+import Control.DeepSeq
+    ( NFData )
 import Data.Bifoldable
     ( Bifoldable )
 import Data.Functor.Classes
@@ -99,7 +101,8 @@ import qualified GHC.Exts as GHC
 
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Core.MonoidMap k v }
-    deriving newtype (Bifoldable, Eq, Eq1, Eq2, Foldable, Show, Show1, Show2)
+    deriving newtype
+        (Bifoldable, Eq, Eq1, Eq2, Foldable, NFData, Show, Show1, Show2)
 
 --------------------------------------------------------------------------------
 -- Instances
