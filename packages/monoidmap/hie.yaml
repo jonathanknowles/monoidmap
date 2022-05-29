@@ -11,3 +11,6 @@ cradle:
 
     - path: "src/monoidmap-test"
       component: "monoidmap:test:monoidmap-test"
+
+    - path: "src/monoidmap-benchmark"
+      component: "monoidmap:bench:monoidmap-benchmark"

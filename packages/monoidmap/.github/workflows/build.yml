@@ -69,11 +69,15 @@ jobs:
 
       - name: Build
         run: |
-          cabal build all
+          cabal build all --enable-tests --enable-benchmarks
 
       - name: Test
         run: |
           cabal test all
+
+      - name: Benchmark
+        run: |
+          cabal bench all
 
       - name: Documentation
         if: |
