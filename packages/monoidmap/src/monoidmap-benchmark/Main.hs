@@ -75,6 +75,20 @@ main = do
                     nf (lookupMany evens) rm_even
                 ]
             ]
+        , bgroup "mappend"
+            [ bgroup "disjoint"
+                [ bench "Data.Map.Strict" $
+                    nf (<> om_even) om_odd
+                , bench "Data.MonoidMap" $
+                    nf (<> rm_even) rm_odd
+                ]
+            , bgroup "identical"
+                [ bench "Data.Map.Strict" $
+                    nf (<> om_even) om_even
+                , bench "Data.MonoidMap" $
+                    nf (<> rm_even) rm_even
+                ]
+            ]
         ]
   where
     bound :: Int
