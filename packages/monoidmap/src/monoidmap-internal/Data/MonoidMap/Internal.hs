@@ -269,10 +269,10 @@ nullify m k = set m k mempty
 keysSet :: MonoidMap k v -> Set k
 keysSet = Map.keysSet . toMap
 
-member :: Ord k => k -> MonoidMap k a -> Bool
+member :: Ord k => k -> MonoidMap k v -> Bool
 member k = Map.member k . toMap
 
-null :: MonoidMap k a -> Bool
+null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
 size :: MonoidMap k v -> Int
