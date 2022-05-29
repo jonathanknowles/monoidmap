@@ -24,7 +24,7 @@ module Data.MonoidMap
     , get
     , set
     , adjust
-    , delete
+    , nullify
 
     -- * Queries
     , keysSet
