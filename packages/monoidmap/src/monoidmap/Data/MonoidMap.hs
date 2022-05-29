@@ -28,6 +28,7 @@ module Data.MonoidMap
 
     -- * Queries
     , null
+    , nullKey
     , nonNull
     , nonNullKey
     , nonNullKeys
