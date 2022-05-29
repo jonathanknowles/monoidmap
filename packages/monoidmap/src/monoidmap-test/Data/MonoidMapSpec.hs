@@ -243,7 +243,7 @@ spec = do
         it "prop_delete_member" $
             prop_delete_member & property
 
-    parallel $ describe "Insertion" $ do
+    parallel $ describe "Set" $ do
         it "prop_set_keysSet" $
             prop_set_keysSet & property
         it "prop_set_get" $
