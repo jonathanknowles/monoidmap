@@ -27,10 +27,10 @@ module Data.MonoidMap
     , nullify
 
     -- * Queries
-    , keysSet
     , member
     , null
     , nonNull
+    , nonNullKeys
     , size
 
     -- * Traversal
