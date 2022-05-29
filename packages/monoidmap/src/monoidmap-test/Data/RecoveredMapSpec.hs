@@ -4,7 +4,7 @@
 -- Copyright: © 2022 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Examples.RecoveredMapSpec
+module Data.RecoveredMapSpec
     where
 
 import Prelude
@@ -33,7 +33,7 @@ import Test.QuickCheck.Instances.Natural
     ()
 
 import qualified Data.Map.Strict as OMap
-import qualified Data.MonoidMap.Examples.RecoveredMap as RMap
+import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
 import qualified Data.Set as Set
 
 spec :: Spec
