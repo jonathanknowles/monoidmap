@@ -20,17 +20,17 @@ module Data.MonoidMap
     , toList
     , toMap
 
+    -- * Basic operations
+    , get
+    , set
+    , adjust
+    , delete
+
     -- * Queries
     , keysSet
-    , get
     , member
     , null
     , size
-
-    -- * Modification
-    , adjust
-    , delete
-    , set
 
     -- * Traversal
     , map
