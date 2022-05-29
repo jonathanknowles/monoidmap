@@ -12,7 +12,7 @@ import Data.List
 import Data.Maybe
     ( fromMaybe )
 import Test.Tasty.Bench
-    ( bench, bgroup, defaultMain, whnf )
+    ( bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
@@ -32,15 +32,15 @@ main = do
     defaultMain
         [ bgroup "lookup (absent)"
             [ bench "Data.Map.Strict" $
-                whnf (olookup evens) om_odd
+                nf (olookup evens) om_odd
             , bench "Data.MonoidMap" $
-                whnf (rlookup evens) rm_odd
+                nf (rlookup evens) rm_odd
             ]
         , bgroup "lookup (present)"
             [ bench "Data.Map.Strict" $
-                whnf (olookup evens) om_even
+                nf (olookup evens) om_even
             , bench "Data.MonoidMap" $
-                whnf (rlookup evens) rm_even
+                nf (rlookup evens) rm_even
             ]
         ]
   where
