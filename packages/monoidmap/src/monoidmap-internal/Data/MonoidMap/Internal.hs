@@ -259,8 +259,8 @@ adjustMany f m1 m2 =
   where
     acc m (k, v) = adjust m k (f v)
 
-delete :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
-delete k m = set m k mempty
+delete :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> MonoidMap k v
+delete m k = set m k mempty
 
 --------------------------------------------------------------------------------
 -- Queries

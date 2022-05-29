@@ -338,7 +338,7 @@ prop_toMap_fromMap m =
 
 prop_delete_keysSet :: MonoidMap Key Value -> Key -> Property
 prop_delete_keysSet m k =
-    Set.member k (MonoidMap.keysSet (MonoidMap.delete k m)) === False
+    Set.member k (MonoidMap.keysSet (MonoidMap.delete m k)) === False
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -346,7 +346,7 @@ prop_delete_keysSet m k =
 
 prop_delete_get :: MonoidMap Key Value -> Key -> Property
 prop_delete_get m k =
-    MonoidMap.delete k m `MonoidMap.get` k === mempty
+    MonoidMap.delete m k `MonoidMap.get` k === mempty
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -354,7 +354,7 @@ prop_delete_get m k =
 
 prop_delete_member :: MonoidMap Key Value -> Key -> Property
 prop_delete_member m k =
-    MonoidMap.member k (MonoidMap.delete k m) === False
+    MonoidMap.member k (MonoidMap.delete m k) === False
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
@@ -433,7 +433,7 @@ prop_get_member m k =
 
 prop_singleton_delete :: Key -> Value -> Property
 prop_singleton_delete k v =
-    MonoidMap.delete k (MonoidMap.singleton k v) === mempty
+    MonoidMap.singleton k v `MonoidMap.delete` k === mempty
 
 prop_singleton_keysSet :: Key -> Value -> Property
 prop_singleton_keysSet k v =
