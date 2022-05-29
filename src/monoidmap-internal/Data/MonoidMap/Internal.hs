@@ -18,17 +18,17 @@ module Data.MonoidMap.Internal
     , toList
     , toMap
 
+    -- * Basic operations
+    , get
+    , set
+    , adjust
+    , delete
+
     -- * Queries
     , keysSet
-    , get
     , member
     , null
     , size
-
-    -- * Modification
-    , adjust
-    , delete
-    , set
 
     -- * Traversal
     , map
@@ -231,35 +231,14 @@ toMap :: MonoidMap k v -> Map k v
 toMap = Core.toMap . unMonoidMap
 
 --------------------------------------------------------------------------------
--- Queries
+-- Basic operations
 --------------------------------------------------------------------------------
-
-member :: Ord k => k -> MonoidMap k a -> Bool
-member k = Map.member k . toMap
-
-null :: MonoidMap k a -> Bool
-null = Map.null . toMap
 
 get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
 get = Core.get . unMonoidMap
 
-keysSet :: MonoidMap k v -> Set k
-keysSet = Map.keysSet . toMap
-
-size :: MonoidMap k v -> Int
-size = Map.size . toMap
-
-isSubmapOfBy
-    :: (Ord k, Monoid v1, Monoid v2)
-    => (v1 -> v2 -> Bool)
-    -> MonoidMap k v1
-    -> MonoidMap k v2
-    -> Bool
-isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
-
---------------------------------------------------------------------------------
--- Modification
---------------------------------------------------------------------------------
+set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
+set = ((MonoidMap .) .) . Core.set . unMonoidMap
 
 adjust
     :: (Ord k, MonoidNull v)
@@ -283,8 +262,29 @@ adjustMany f m1 m2 =
 delete :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
 delete k m = set m k mempty
 
-set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
-set = ((MonoidMap .) .) . Core.set . unMonoidMap
+--------------------------------------------------------------------------------
+-- Queries
+--------------------------------------------------------------------------------
+
+keysSet :: MonoidMap k v -> Set k
+keysSet = Map.keysSet . toMap
+
+member :: Ord k => k -> MonoidMap k a -> Bool
+member k = Map.member k . toMap
+
+null :: MonoidMap k a -> Bool
+null = Map.null . toMap
+
+size :: MonoidMap k v -> Int
+size = Map.size . toMap
+
+isSubmapOfBy
+    :: (Ord k, Monoid v1, Monoid v2)
+    => (v1 -> v2 -> Bool)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> Bool
+isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 
 --------------------------------------------------------------------------------
 -- Traversal
