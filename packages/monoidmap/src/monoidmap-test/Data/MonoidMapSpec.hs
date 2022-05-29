@@ -333,7 +333,7 @@ prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
 
 --------------------------------------------------------------------------------
--- Deletion
+-- Nullification
 --------------------------------------------------------------------------------
 
 prop_nullify_nonNullKeys :: MonoidMap Key Value -> Key -> Property
@@ -361,7 +361,7 @@ prop_nullify_nonNullKey m k =
     & checkCoverage
 
 --------------------------------------------------------------------------------
--- Insertion
+-- Set
 --------------------------------------------------------------------------------
 
 prop_set_nonNullKeys :: MonoidMap Key Value -> Key -> Value -> Property
