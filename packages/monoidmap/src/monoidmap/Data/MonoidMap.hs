@@ -27,9 +27,9 @@ module Data.MonoidMap
     , nullify
 
     -- * Queries
-    , member
     , null
     , nonNull
+    , nonNullKey
     , nonNullKeys
     , size
 
