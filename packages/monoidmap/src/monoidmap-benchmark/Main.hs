@@ -47,6 +47,20 @@ main = do
                     nf (deleteMany evens) rm_even
                 ]
             ]
+        , bgroup "insert"
+            [ bgroup "absent"
+                [ bench "Data.Map.Strict" $
+                    nf (insertMany elems_even) om_odd
+                , bench "Data.MonoidMap" $
+                    nf (insertMany elems_even) rm_odd
+                ]
+            , bgroup "present"
+                [ bench "Data.Map.Strict" $
+                    nf (insertMany elems_even) om_even
+                , bench "Data.MonoidMap" $
+                    nf (insertMany elems_even) rm_even
+                ]
+            ]
         , bgroup "lookup"
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
@@ -81,20 +95,26 @@ main = do
 class Ord k => Map m k v where
     fromList :: [(k, v)] -> m k v
     delete :: k -> m k v -> m k v
+    insert :: k -> v -> m k v -> m k v
     lookup :: k -> m k v -> Maybe v
 
 instance Ord k => Map OMap.Map k v where
     fromList = OMap.fromList
     delete = OMap.delete
+    insert = OMap.insert
     lookup = OMap.lookup
 
 instance Ord k => Map RMap.Map k v where
     fromList = RMap.fromList
     delete = RMap.delete
+    insert = RMap.insert
     lookup = RMap.lookup
 
 deleteMany :: (Map m k v, Num v) => [k] -> m k v -> m k v
 deleteMany xs m = foldl' (flip delete) m xs
+
+insertMany :: (Map m k v, Num v) => [(k, v)] -> m k v -> m k v
+insertMany xs m = foldl' (\m' (k, v) -> insert k v m') m xs
 
 lookupMany :: (Map m k v, Num v) => [k] -> m k v -> v
 lookupMany xs m = foldl' (\n k -> fromMaybe n (lookup k m)) 0 xs
