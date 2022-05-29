@@ -235,49 +235,49 @@ spec = do
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap & property
 
-    parallel $ describe "Nullification" $ do
-        it "prop_nullify_nonNullKeys" $
-            prop_nullify_nonNullKeys & property
-        it "prop_nullify_get" $
-            prop_nullify_get & property
-        it "prop_nullify_nonNullKey" $
-            prop_nullify_nonNullKey & property
-
-    parallel $ describe "Set" $ do
-        it "prop_set_nonNullKeys" $
-            prop_set_nonNullKeys & property
-        it "prop_set_get" $
-            prop_set_get & property
-        it "prop_set_NonNullKey" $
-            prop_set_NonNullKey & property
-        it "prop_set_toList" $
-            prop_set_toList & property
-
-    parallel $ describe "Keys" $ do
-        it "prop_nonNullKeys_get" $
-            prop_nonNullKeys_get & property
-
-    parallel $ describe "Get" $ do
-        it "prop_get_nonNullKeys" $
-            prop_get_nonNullKeys & property
-        it "prop_get_nonNullKey" $
-            prop_get_nonNullKey & property
-
     parallel $ describe "Singleton" $ do
-        it "prop_singleton_nullify" $
-            prop_singleton_nullify & property
-        it "prop_singleton_nonNullKeys" $
-            prop_singleton_nonNullKeys & property
         it "prop_singleton_get" $
             prop_singleton_get & property
         it "prop_singleton_nonNullKey" $
             prop_singleton_nonNullKey & property
+        it "prop_singleton_nonNullKeys" $
+            prop_singleton_nonNullKeys & property
         it "prop_singleton_null" $
             prop_singleton_null & property
+        it "prop_singleton_nullify" $
+            prop_singleton_nullify & property
         it "prop_singleton_size" $
             prop_singleton_size & property
         it "prop_singleton_toList" $
             prop_singleton_toList & property
+
+    parallel $ describe "Get" $ do
+        it "prop_get_nonNullKey" $
+            prop_get_nonNullKey & property
+        it "prop_get_nonNullKeys" $
+            prop_get_nonNullKeys & property
+
+    parallel $ describe "Set" $ do
+        it "prop_set_get" $
+            prop_set_get & property
+        it "prop_set_nonNullKey" $
+            prop_set_nonNullKey & property
+        it "prop_set_nonNullKeys" $
+            prop_set_nonNullKeys & property
+        it "prop_set_toList" $
+            prop_set_toList & property
+
+    parallel $ describe "Nullify" $ do
+        it "prop_nullify_get" $
+            prop_nullify_get & property
+        it "prop_nullify_nonNullKey" $
+            prop_nullify_nonNullKey & property
+        it "prop_nullify_nonNullKeys" $
+            prop_nullify_nonNullKeys & property
+
+    parallel $ describe "Keys" $ do
+        it "prop_nonNullKeys_get" $
+            prop_nonNullKeys_get & property
 
     parallel $ describe "Unit tests" $ do
 
@@ -333,16 +333,103 @@ prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
 
 --------------------------------------------------------------------------------
--- Nullification
+-- Singleton
 --------------------------------------------------------------------------------
 
-prop_nullify_nonNullKeys :: MonoidMap Key Value -> Key -> Property
-prop_nullify_nonNullKeys m k =
-    Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify m k)) === False
+prop_singleton_get :: Key -> Value -> Property
+prop_singleton_get k v =
+    MonoidMap.singleton k v `MonoidMap.get` k === v
+
+prop_singleton_nonNullKey :: Key -> Value -> Property
+prop_singleton_nonNullKey k v =
+    MonoidMap.singleton k v `MonoidMap.nonNullKey` k === (v /= mempty)
+
+prop_singleton_nonNullKeys :: Key -> Value -> Property
+prop_singleton_nonNullKeys k v =
+    MonoidMap.nonNullKeys (MonoidMap.singleton k v) ===
+        if v == mempty
+        then Set.empty
+        else Set.singleton k
+
+prop_singleton_null :: Key -> Value -> Property
+prop_singleton_null k v =
+    MonoidMap.null (MonoidMap.singleton k v) === (v == mempty)
+
+prop_singleton_nullify :: Key -> Value -> Property
+prop_singleton_nullify k v =
+    MonoidMap.singleton k v `MonoidMap.nullify` k === mempty
+
+prop_singleton_size :: Key -> Value -> Property
+prop_singleton_size k v =
+    MonoidMap.size (MonoidMap.singleton k v) ===
+        if v == mempty
+        then 0
+        else 1
+
+prop_singleton_toList :: Key -> Value -> Property
+prop_singleton_toList k v =
+    MonoidMap.toList (MonoidMap.singleton k v) ===
+        [(k, v) | v /= mempty]
+
+--------------------------------------------------------------------------------
+-- Get
+--------------------------------------------------------------------------------
+
+prop_get_nonNullKey :: MonoidMap Key Value -> Key -> Property
+prop_get_nonNullKey m k =
+    MonoidMap.nonNullKey m k === (m `MonoidMap.get` k /= mempty)
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
+    & cover 10
+        (not (MonoidMap.nonNullKey m k))
+        "not (MonoidMap.nonNullKey m k)"
     & checkCoverage
+
+prop_get_nonNullKeys :: MonoidMap Key Value -> Key -> Property
+prop_get_nonNullKeys m k =
+    Set.member k (MonoidMap.nonNullKeys m) === (m `MonoidMap.get` k /= mempty)
+    & cover 10
+        (MonoidMap.nonNullKey m k)
+        "MonoidMap.nonNullKey m k"
+    & cover 10
+        (not (MonoidMap.nonNullKey m k))
+        "not (MonoidMap.nonNullKey m k)"
+    & checkCoverage
+
+--------------------------------------------------------------------------------
+-- Set
+--------------------------------------------------------------------------------
+
+prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_get m k v =
+    MonoidMap.set m k v `MonoidMap.get` k === v
+    & cover 10
+        (MonoidMap.nonNullKey m k)
+        "MonoidMap.nonNullKey m k"
+    & cover 10
+        (not (MonoidMap.nonNullKey m k))
+        "not (MonoidMap.nonNullKey m k)"
+    & checkCoverage
+
+prop_set_nonNullKey :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_nonNullKey m k v =
+    MonoidMap.set m k v `MonoidMap.nonNullKey` k ===
+        (v /= mempty)
+
+prop_set_nonNullKeys :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_nonNullKeys m k v =
+    Set.member k (MonoidMap.nonNullKeys (MonoidMap.set m k v)) ===
+        (v /= mempty)
+
+prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_toList m k v =
+    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set m k v)) ===
+        [(k, v) | v /= mempty]
+
+--------------------------------------------------------------------------------
+-- Nullify
+--------------------------------------------------------------------------------
 
 prop_nullify_get :: MonoidMap Key Value -> Key -> Property
 prop_nullify_get m k =
@@ -360,35 +447,13 @@ prop_nullify_nonNullKey m k =
         "MonoidMap.nonNullKey m k"
     & checkCoverage
 
---------------------------------------------------------------------------------
--- Set
---------------------------------------------------------------------------------
-
-prop_set_nonNullKeys :: MonoidMap Key Value -> Key -> Value -> Property
-prop_set_nonNullKeys m k v =
-    Set.member k (MonoidMap.nonNullKeys (MonoidMap.set m k v)) ===
-        (v /= mempty)
-
-prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
-prop_set_get m k v =
-    MonoidMap.set m k v `MonoidMap.get` k === v
+prop_nullify_nonNullKeys :: MonoidMap Key Value -> Key -> Property
+prop_nullify_nonNullKeys m k =
+    Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify m k)) === False
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
-    & cover 10
-        (not (MonoidMap.nonNullKey m k))
-        "not (MonoidMap.nonNullKey m k)"
     & checkCoverage
-
-prop_set_NonNullKey :: MonoidMap Key Value -> Key -> Value -> Property
-prop_set_NonNullKey m k v =
-    MonoidMap.set m k v `MonoidMap.nonNullKey` k ===
-        (v /= mempty)
-
-prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
-prop_set_toList m k v =
-    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set m k v)) ===
-        [(k, v) | v /= mempty]
 
 --------------------------------------------------------------------------------
 -- Keys
@@ -400,71 +465,6 @@ prop_nonNullKeys_get m =
         (\k -> (k, m `MonoidMap.get` k))
         (Set.toList (MonoidMap.nonNullKeys m))
     === MonoidMap.toList m
-
---------------------------------------------------------------------------------
--- Get
---------------------------------------------------------------------------------
-
-prop_get_nonNullKeys :: MonoidMap Key Value -> Key -> Property
-prop_get_nonNullKeys m k =
-    Set.member k (MonoidMap.nonNullKeys m) === (m `MonoidMap.get` k /= mempty)
-    & cover 10
-        (MonoidMap.nonNullKey m k)
-        "MonoidMap.nonNullKey m k"
-    & cover 10
-        (not (MonoidMap.nonNullKey m k))
-        "not (MonoidMap.nonNullKey m k)"
-    & checkCoverage
-
-prop_get_nonNullKey :: MonoidMap Key Value -> Key -> Property
-prop_get_nonNullKey m k =
-    MonoidMap.nonNullKey m k === (m `MonoidMap.get` k /= mempty)
-    & cover 10
-        (MonoidMap.nonNullKey m k)
-        "MonoidMap.nonNullKey m k"
-    & cover 10
-        (not (MonoidMap.nonNullKey m k))
-        "not (MonoidMap.nonNullKey m k)"
-    & checkCoverage
-
---------------------------------------------------------------------------------
--- Singleton
---------------------------------------------------------------------------------
-
-prop_singleton_nullify :: Key -> Value -> Property
-prop_singleton_nullify k v =
-    MonoidMap.singleton k v `MonoidMap.nullify` k === mempty
-
-prop_singleton_nonNullKeys :: Key -> Value -> Property
-prop_singleton_nonNullKeys k v =
-    MonoidMap.nonNullKeys (MonoidMap.singleton k v) ===
-        if v == mempty
-        then Set.empty
-        else Set.singleton k
-
-prop_singleton_get :: Key -> Value -> Property
-prop_singleton_get k v =
-    MonoidMap.singleton k v `MonoidMap.get` k === v
-
-prop_singleton_nonNullKey :: Key -> Value -> Property
-prop_singleton_nonNullKey k v =
-    MonoidMap.singleton k v `MonoidMap.nonNullKey` k === (v /= mempty)
-
-prop_singleton_null :: Key -> Value -> Property
-prop_singleton_null k v =
-    MonoidMap.null (MonoidMap.singleton k v) === (v == mempty)
-
-prop_singleton_size :: Key -> Value -> Property
-prop_singleton_size k v =
-    MonoidMap.size (MonoidMap.singleton k v) ===
-        if v == mempty
-        then 0
-        else 1
-
-prop_singleton_toList :: Key -> Value -> Property
-prop_singleton_toList k v =
-    MonoidMap.toList (MonoidMap.singleton k v) ===
-        [(k, v) | v /= mempty]
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
