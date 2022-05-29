@@ -59,6 +59,7 @@ library monoidmap-examples
     build-depends:
         base >=4.7 && <5
       , containers
+      , deepseq
       , monoidmap
       , monoid-subclasses
 
@@ -98,6 +99,7 @@ library monoidmap-internal
     build-depends:
         base >=4.7 && <5
       , containers
+      , deepseq
       , groups
       , monoid-subclasses
 
