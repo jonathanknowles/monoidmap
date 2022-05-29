@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedLists #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{- HLINT ignore "Redundant bracket" -}
+{- HLINT ignore "Use camelCase" -}
 
 -- |
 -- Copyright: © 2022 Jonathan Knowles
