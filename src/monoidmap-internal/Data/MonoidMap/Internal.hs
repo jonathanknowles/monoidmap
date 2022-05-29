@@ -28,6 +28,7 @@ module Data.MonoidMap.Internal
     , keysSet
     , member
     , null
+    , nonNull
     , size
 
     -- * Traversal
@@ -274,6 +275,9 @@ member k = Map.member k . toMap
 
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
+
+nonNull :: MonoidMap k v -> Bool
+nonNull = not . null
 
 size :: MonoidMap k v -> Int
 size = Map.size . toMap

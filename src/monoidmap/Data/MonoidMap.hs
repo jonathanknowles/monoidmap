@@ -30,6 +30,7 @@ module Data.MonoidMap
     , keysSet
     , member
     , null
+    , nonNull
     , size
 
     -- * Traversal
