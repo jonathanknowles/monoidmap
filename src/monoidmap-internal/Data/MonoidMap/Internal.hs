@@ -264,8 +264,8 @@ adjustMany f kvs m0 =
   where
     acc m (k, v) = adjust (f v) k m
 
-nullify :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> MonoidMap k v
-nullify m k = set k mempty m
+nullify :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
+nullify k = set k mempty
 
 --------------------------------------------------------------------------------
 -- Queries

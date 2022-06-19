@@ -37,7 +37,7 @@ toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
 
 delete :: Ord k => k -> Map k v -> Map k v
-delete k m = Map $ MonoidMap.nullify (unMap m) k
+delete k = Map . MonoidMap.nullify k . unMap
 
 insert :: Ord k => k -> v -> Map k v -> Map k v
 insert k v = Map . MonoidMap.set k (pure v) . unMap

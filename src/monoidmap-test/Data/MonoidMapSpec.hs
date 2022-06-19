@@ -359,7 +359,7 @@ prop_singleton_null k v =
 
 prop_singleton_nullify :: Key -> Value -> Property
 prop_singleton_nullify k v =
-    MonoidMap.singleton k v `MonoidMap.nullify` k === mempty
+    MonoidMap.nullify k (MonoidMap.singleton k v) === mempty
 
 prop_singleton_size :: Key -> Value -> Property
 prop_singleton_size k v =
@@ -435,7 +435,7 @@ prop_set_toList m k v =
 
 prop_nullify_get :: MonoidMap Key Value -> Key -> Property
 prop_nullify_get m k =
-    MonoidMap.get k (MonoidMap.nullify m k) === mempty
+    MonoidMap.get k (MonoidMap.nullify k m) === mempty
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -443,7 +443,7 @@ prop_nullify_get m k =
 
 prop_nullify_nonNullKey :: MonoidMap Key Value -> Key -> Property
 prop_nullify_nonNullKey m k =
-    MonoidMap.nullify m k `MonoidMap.nonNullKey` k === False
+    MonoidMap.nullify k m `MonoidMap.nonNullKey` k === False
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -451,7 +451,7 @@ prop_nullify_nonNullKey m k =
 
 prop_nullify_nonNullKeys :: MonoidMap Key Value -> Key -> Property
 prop_nullify_nonNullKeys m k =
-    Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify m k)) === False
+    Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify k m)) === False
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
