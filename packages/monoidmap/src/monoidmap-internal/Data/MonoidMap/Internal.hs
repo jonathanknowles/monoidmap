@@ -240,7 +240,7 @@ toMap = Core.toMap . unMonoidMap
 --------------------------------------------------------------------------------
 
 get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
-get = Core.get . unMonoidMap
+get m k = Core.get k (unMonoidMap m)
 
 set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set = ((MonoidMap .) .) . Core.set . unMonoidMap
