@@ -274,8 +274,8 @@ nullify k = set k mempty
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
-nullKey :: Ord k => MonoidMap k v -> k -> Bool
-nullKey m k = Map.notMember k (toMap m)
+nullKey :: Ord k => k -> MonoidMap k v -> Bool
+nullKey k = Map.notMember k . toMap
 
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
