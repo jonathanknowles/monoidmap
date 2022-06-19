@@ -46,7 +46,7 @@ keysSet :: Map k v -> Set k
 keysSet = MonoidMap.nonNullKeys . unMap
 
 lookup :: Ord k => k -> Map k v -> Maybe v
-lookup k = getFirst . (`MonoidMap.get` k) . unMap
+lookup k = getFirst . MonoidMap.get k . unMap
 
 member :: Ord k => k -> Map k v -> Bool
 member k m = MonoidMap.nonNullKey (unMap m) k
