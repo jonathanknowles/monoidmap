@@ -280,8 +280,8 @@ nullKey k = Map.notMember k . toMap
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
-nonNullKey :: Ord k => MonoidMap k v -> k -> Bool
-nonNullKey m k = Map.member k (toMap m)
+nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
+nonNullKey k = Map.member k . toMap
 
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
