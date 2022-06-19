@@ -340,7 +340,7 @@ prop_toMap_fromMap m =
 
 prop_singleton_get :: Key -> Value -> Property
 prop_singleton_get k v =
-    MonoidMap.singleton k v `MonoidMap.get` k === v
+    MonoidMap.get k (MonoidMap.singleton k v) === v
 
 prop_singleton_nonNullKey :: Key -> Value -> Property
 prop_singleton_nonNullKey k v =
@@ -379,7 +379,7 @@ prop_singleton_toList k v =
 
 prop_get_nonNullKey :: MonoidMap Key Value -> Key -> Property
 prop_get_nonNullKey m k =
-    MonoidMap.nonNullKey m k === (m `MonoidMap.get` k /= mempty)
+    MonoidMap.nonNullKey m k === (MonoidMap.get k m /= mempty)
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -390,7 +390,7 @@ prop_get_nonNullKey m k =
 
 prop_get_nonNullKeys :: MonoidMap Key Value -> Key -> Property
 prop_get_nonNullKeys m k =
-    Set.member k (MonoidMap.nonNullKeys m) === (m `MonoidMap.get` k /= mempty)
+    Set.member k (MonoidMap.nonNullKeys m) === (MonoidMap.get k m /= mempty)
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -405,7 +405,7 @@ prop_get_nonNullKeys m k =
 
 prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_get m k v =
-    MonoidMap.set m k v `MonoidMap.get` k === v
+    MonoidMap.get k (MonoidMap.set m k v) === v
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -435,7 +435,7 @@ prop_set_toList m k v =
 
 prop_nullify_get :: MonoidMap Key Value -> Key -> Property
 prop_nullify_get m k =
-    MonoidMap.nullify m k `MonoidMap.get` k === mempty
+    MonoidMap.get k (MonoidMap.nullify m k) === mempty
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -464,7 +464,7 @@ prop_nullify_nonNullKeys m k =
 prop_nonNullKeys_get :: MonoidMap Key Value -> Property
 prop_nonNullKeys_get m =
     fmap
-        (\k -> (k, m `MonoidMap.get` k))
+        (\k -> (k, MonoidMap.get k m))
         (Set.toList (MonoidMap.nonNullKeys m))
     === MonoidMap.toList m
 

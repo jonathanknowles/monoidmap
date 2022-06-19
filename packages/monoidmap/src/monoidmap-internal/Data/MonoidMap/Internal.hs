@@ -239,8 +239,8 @@ toMap = Core.toMap . unMonoidMap
 -- Basic operations
 --------------------------------------------------------------------------------
 
-get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
-get m k = Core.get k (unMonoidMap m)
+get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
+get k = Core.get k . unMonoidMap
 
 set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set m k v = MonoidMap $ Core.set k v $ unMonoidMap m
@@ -251,7 +251,7 @@ adjust
     -> k
     -> (v -> v)
     -> MonoidMap k v
-adjust m k f = set m k (f (get m k))
+adjust m k f = set m k (f (get k m))
 
 adjustMany
     :: (Ord k, MonoidNull v, IsList many, Item many ~ (k, v))
@@ -338,7 +338,7 @@ mergeWithF mergeKeys mergeValue m1 m2
     $ mergeKeys (nonNullKeys m1) (nonNullKeys m2)
   where
     merge :: k -> f (k, v3)
-    merge k = (k,) <$> mergeValue (m1 `get` k) (m2 `get` k)
+    merge k = (k,) <$> mergeValue (get k m1) (get k m2)
 
 intersectionWith
     :: forall k v1 v2 v3.
