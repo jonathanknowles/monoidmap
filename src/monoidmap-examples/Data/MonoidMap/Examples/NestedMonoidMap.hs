@@ -183,10 +183,10 @@ adjust f k m = set m k $ f $ get k m
 
 delete
     :: (Ord k1, Ord k2, MonoidNull v)
-    => NestedMonoidMap k1 k2 v
-    -> (k1, k2)
+    => (k1, k2)
     -> NestedMonoidMap k1 k2 v
-delete m k = set m k mempty
+    -> NestedMonoidMap k1 k2 v
+delete k m = set m k mempty
 
 set :: (Ord k1, Ord k2, MonoidNull v)
     => NestedMonoidMap k1 k2 v
