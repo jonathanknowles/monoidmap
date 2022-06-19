@@ -194,7 +194,7 @@ instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
   where
-    (<>) = adjustMany (flip (<>))
+    (<>) = adjustMany (<>)
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
@@ -217,7 +217,7 @@ fromListWith
     => (v -> v -> v)
     -> [(k, v)]
     -> MonoidMap k v
-fromListWith f = adjustMany f mempty
+fromListWith f kvs = adjustMany f kvs mempty
 
 fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
 fromMap = fromList . Map.toList
@@ -254,13 +254,13 @@ adjust
 adjust f k m = set k (f (get k m)) m
 
 adjustMany
-    :: (Ord k, MonoidNull v, IsList many, Item many ~ (k, v))
+    :: (Ord k, MonoidNull v, IsList kvs, Item kvs ~ (k, v))
     => (v -> v -> v)
+    -> kvs
     -> MonoidMap k v
-    -> many
     -> MonoidMap k v
-adjustMany f m1 m2 =
-    F.foldl' acc m1 (GHC.toList m2)
+adjustMany f kvs m0 =
+    F.foldl' acc m0 (GHC.toList kvs)
   where
     acc m (k, v) = adjust (f v) k m
 
