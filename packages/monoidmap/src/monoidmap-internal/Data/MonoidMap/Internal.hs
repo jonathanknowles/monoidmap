@@ -243,7 +243,7 @@ get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
 get m k = Core.get k (unMonoidMap m)
 
 set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
-set = ((MonoidMap .) .) . Core.set . unMonoidMap
+set m k v = MonoidMap $ Core.set k v $ unMonoidMap m
 
 adjust
     :: (Ord k, MonoidNull v)
