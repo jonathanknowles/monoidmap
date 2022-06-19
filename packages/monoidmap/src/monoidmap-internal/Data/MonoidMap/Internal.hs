@@ -247,11 +247,11 @@ set k v = MonoidMap . Core.set k v . unMonoidMap
 
 adjust
     :: (Ord k, MonoidNull v)
-    => MonoidMap k v
+    => (v -> v)
     -> k
-    -> (v -> v)
     -> MonoidMap k v
-adjust m k f = set k (f (get k m)) m
+    -> MonoidMap k v
+adjust f k m = set k (f (get k m)) m
 
 adjustMany
     :: (Ord k, MonoidNull v, IsList many, Item many ~ (k, v))
@@ -262,7 +262,7 @@ adjustMany
 adjustMany f m1 m2 =
     F.foldl' acc m1 (GHC.toList m2)
   where
-    acc m (k, v) = adjust m k (f v)
+    acc m (k, v) = adjust (f v) k m
 
 nullify :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> MonoidMap k v
 nullify m k = set k mempty m
