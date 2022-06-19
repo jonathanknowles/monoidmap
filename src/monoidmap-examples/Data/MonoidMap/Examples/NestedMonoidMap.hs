@@ -179,19 +179,19 @@ adjust
     -> (k1, k2)
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-adjust f k m = set m k $ f $ get k m
+adjust f k m = set k (f $ get k m) m
 
 delete
     :: (Ord k1, Ord k2, MonoidNull v)
     => (k1, k2)
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-delete k m = set m k mempty
+delete k = set k mempty
 
 set :: (Ord k1, Ord k2, MonoidNull v)
-    => NestedMonoidMap k1 k2 v
-    -> (k1, k2)
+    => (k1, k2)
     -> v
     -> NestedMonoidMap k1 k2 v
-set (NestedMonoidMap m) (k1, k2) v = NestedMonoidMap $
+    -> NestedMonoidMap k1 k2 v
+set (k1, k2) v (NestedMonoidMap m) = NestedMonoidMap $
     MonoidMap.set k1 (MonoidMap.set k2 v (MonoidMap.get k1 m)) m
