@@ -223,7 +223,7 @@ fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
 fromMap = fromList . Map.toList
 
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
-singleton = set mempty
+singleton k v = set k v mempty
 
 --------------------------------------------------------------------------------
 -- Deconstruction
@@ -242,8 +242,8 @@ toMap = Core.toMap . unMonoidMap
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k = Core.get k . unMonoidMap
 
-set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
-set m k v = MonoidMap $ Core.set k v $ unMonoidMap m
+set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
+set k v = MonoidMap . Core.set k v . unMonoidMap
 
 adjust
     :: (Ord k, MonoidNull v)
@@ -251,7 +251,7 @@ adjust
     -> k
     -> (v -> v)
     -> MonoidMap k v
-adjust m k f = set m k (f (get k m))
+adjust m k f = set k (f (get k m)) m
 
 adjustMany
     :: (Ord k, MonoidNull v, IsList many, Item many ~ (k, v))
@@ -265,7 +265,7 @@ adjustMany f m1 m2 =
     acc m (k, v) = adjust m k (f v)
 
 nullify :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> MonoidMap k v
-nullify m k = set m k mempty
+nullify m k = set k mempty m
 
 --------------------------------------------------------------------------------
 -- Queries

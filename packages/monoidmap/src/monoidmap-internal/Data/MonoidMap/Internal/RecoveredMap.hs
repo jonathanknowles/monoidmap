@@ -40,7 +40,7 @@ delete :: Ord k => k -> Map k v -> Map k v
 delete k m = Map $ MonoidMap.nullify (unMap m) k
 
 insert :: Ord k => k -> v -> Map k v -> Map k v
-insert k v m = Map $ MonoidMap.set (unMap m) k (pure v)
+insert k v = Map . MonoidMap.set k (pure v) . unMap
 
 keysSet :: Map k v -> Set k
 keysSet = MonoidMap.nonNullKeys . unMap

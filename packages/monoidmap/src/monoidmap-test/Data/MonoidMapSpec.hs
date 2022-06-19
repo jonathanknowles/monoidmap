@@ -405,7 +405,7 @@ prop_get_nonNullKeys m k =
 
 prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_get m k v =
-    MonoidMap.get k (MonoidMap.set m k v) === v
+    MonoidMap.get k (MonoidMap.set k v m) === v
     & cover 10
         (MonoidMap.nonNullKey m k)
         "MonoidMap.nonNullKey m k"
@@ -416,17 +416,17 @@ prop_set_get m k v =
 
 prop_set_nonNullKey :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_nonNullKey m k v =
-    MonoidMap.set m k v `MonoidMap.nonNullKey` k ===
+    MonoidMap.set k v m `MonoidMap.nonNullKey` k ===
         (v /= mempty)
 
 prop_set_nonNullKeys :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_nonNullKeys m k v =
-    Set.member k (MonoidMap.nonNullKeys (MonoidMap.set m k v)) ===
+    Set.member k (MonoidMap.nonNullKeys (MonoidMap.set k v m)) ===
         (v /= mempty)
 
 prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
 prop_set_toList m k v =
-    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set m k v)) ===
+    filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set k v m)) ===
         [(k, v) | v /= mempty]
 
 --------------------------------------------------------------------------------
