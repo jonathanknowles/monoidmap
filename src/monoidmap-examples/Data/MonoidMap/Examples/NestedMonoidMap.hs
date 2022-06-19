@@ -101,7 +101,7 @@ fromFlatList
     -> NestedMonoidMap k1 k2 v
 fromFlatList = F.foldl' acc mempty
   where
-    acc m (k, v) = adjust m k (<> v)
+    acc m (k, v) = adjust (<> v) k m
 
 fromFlatMap
     :: (Ord k1, Ord k2, MonoidNull v)
@@ -175,11 +175,11 @@ size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.size) m
 
 adjust
     :: (Ord k1, Ord k2, MonoidNull v)
-    => NestedMonoidMap k1 k2 v
+    => (v -> v)
     -> (k1, k2)
-    -> (v -> v)
     -> NestedMonoidMap k1 k2 v
-adjust m k f = set m k $ f $ get k m
+    -> NestedMonoidMap k1 k2 v
+adjust f k m = set m k $ f $ get k m
 
 delete
     :: (Ord k1, Ord k2, MonoidNull v)
