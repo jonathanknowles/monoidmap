@@ -64,8 +64,8 @@ toMap = unMonoidMap
 -- Operations
 --------------------------------------------------------------------------------
 
-get :: (Ord k, Monoid v) => MonoidMap k v -> k -> v
-get m k = fromMaybe mempty $ Map.lookup k $ toMap m
+get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
+get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
 set :: (Ord k, MonoidNull v) => MonoidMap k v -> k -> v -> MonoidMap k v
 set m k v
