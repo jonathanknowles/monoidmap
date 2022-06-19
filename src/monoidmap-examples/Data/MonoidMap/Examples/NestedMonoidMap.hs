@@ -155,10 +155,10 @@ toNestedMap (NestedMonoidMap m) = MonoidMap.toMap <$> MonoidMap.toMap m
 --------------------------------------------------------------------------------
 
 get :: (Ord k1, Ord k2, MonoidNull v)
-    => NestedMonoidMap k1 k2 v
-    -> (k1, k2)
+    => (k1, k2)
+    -> NestedMonoidMap k1 k2 v
     -> v
-get (NestedMonoidMap m) (k1, k2) = MonoidMap.get k2 (MonoidMap.get k1 m)
+get (k1, k2) (NestedMonoidMap m) = MonoidMap.get k2 (MonoidMap.get k1 m)
 
 keys
     :: (Ord k1, Ord k2, MonoidNull v)
@@ -179,7 +179,7 @@ adjust
     -> (k1, k2)
     -> (v -> v)
     -> NestedMonoidMap k1 k2 v
-adjust m k f = set m k $ f $ get m k
+adjust m k f = set m k $ f $ get k m
 
 delete
     :: (Ord k1, Ord k2, MonoidNull v)
