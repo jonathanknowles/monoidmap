@@ -374,3 +374,4 @@ guardNotNull :: MonoidNull v => v -> Maybe v
 guardNotNull v
     | Null.null v = Nothing
     | otherwise = Just v
+{-# INLINE guardNotNull #-}
