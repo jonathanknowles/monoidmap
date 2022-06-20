@@ -60,6 +60,8 @@ import Data.Group
     ( Group (..) )
 import Data.Map.Strict
     ( Map )
+import Data.Maybe
+    ( fromMaybe )
 import Data.Monoid
     ( All (..) )
 import Data.Monoid.GCD
@@ -91,7 +93,6 @@ import Text.Read
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
-import qualified Data.MonoidMap.Internal.Core as Core
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
 
@@ -100,7 +101,7 @@ import qualified GHC.Exts as GHC
 --------------------------------------------------------------------------------
 
 newtype MonoidMap k v = MonoidMap
-    { unMonoidMap :: Core.MonoidMap k v }
+    { unMonoidMap :: Map k v }
     deriving newtype
         (Bifoldable, Eq, Eq1, Eq2, Foldable, NFData, Show, Show1, Show2)
 
@@ -207,7 +208,7 @@ instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
 --------------------------------------------------------------------------------
 
 empty :: MonoidMap k v
-empty = MonoidMap Core.empty
+empty = MonoidMap Map.empty
 
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
@@ -230,20 +231,22 @@ singleton k v = set k v mempty
 --------------------------------------------------------------------------------
 
 toList :: MonoidMap k v -> [(k, v)]
-toList = Map.toList . Core.toMap . unMonoidMap
+toList = Map.toList . unMonoidMap
 
 toMap :: MonoidMap k v -> Map k v
-toMap = Core.toMap . unMonoidMap
+toMap = unMonoidMap
 
 --------------------------------------------------------------------------------
 -- Basic operations
 --------------------------------------------------------------------------------
 
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
-get k = Core.get k . unMonoidMap
+get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
-set k v = MonoidMap . Core.set k v . unMonoidMap
+set k v m
+    | Null.null v = MonoidMap $ Map.delete k   $ unMonoidMap m
+    | otherwise   = MonoidMap $ Map.insert k v $ unMonoidMap m
 
 adjust
     :: (Ord k, MonoidNull v)
