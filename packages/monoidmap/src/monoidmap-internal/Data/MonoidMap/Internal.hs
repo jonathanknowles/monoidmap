@@ -39,6 +39,7 @@ module Data.MonoidMap.Internal
     , intersection
     , intersectionWith
     , intersectionWithF
+    , union
     , unionWith
     , unionWithF
     )
