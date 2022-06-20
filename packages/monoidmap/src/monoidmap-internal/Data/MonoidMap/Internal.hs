@@ -36,10 +36,8 @@ module Data.MonoidMap.Internal
     , map
 
     -- * Combination
-    , intersection
     , intersectionWith
     , intersectionWithF
-    , union
     , unionWith
     , unionWithF
     )
@@ -59,7 +57,6 @@ import Data.Group
 import Data.Map.Merge.Strict
     ( dropMissing
     , mapMaybeMissing
-    , preserveMissing
     , traverseMaybeMissing
     , zipWithMaybeAMatched
     , zipWithMaybeMatched
@@ -201,7 +198,7 @@ instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
   where
-    (<>) = union
+    (<>) = unionWith (<>)
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
@@ -321,17 +318,6 @@ map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- Binary operations
 --------------------------------------------------------------------------------
 
-intersection
-    :: (Ord k, MonoidNull v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> MonoidMap k v
-intersection (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    dropMissing
-    dropMissing
-    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ v1 <> v2)
-    m1 m2
-
 intersectionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
@@ -354,17 +340,6 @@ intersectionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
     dropMissing
     dropMissing
     (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
-    m1 m2
-
-union
-    :: (Ord k, MonoidNull v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> MonoidMap k v
-union (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    preserveMissing
-    preserveMissing
-    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ v1 <> v2)
     m1 m2
 
 unionWith
