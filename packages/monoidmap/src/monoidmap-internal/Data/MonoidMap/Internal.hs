@@ -227,7 +227,7 @@ fromListWith
 fromListWith f kvs = adjustMany f kvs mempty
 
 fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
-fromMap = fromList . Map.toList
+fromMap = MonoidMap . Map.filter (not . Null.null)
 
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
