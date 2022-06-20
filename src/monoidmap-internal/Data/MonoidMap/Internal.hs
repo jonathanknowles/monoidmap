@@ -36,6 +36,7 @@ module Data.MonoidMap.Internal
     , map
 
     -- * Combination
+    , intersection
     , intersectionWith
     , intersectionWithF
     , unionWith
@@ -318,6 +319,17 @@ map f = fromList . fmap (fmap f) . toList
 --------------------------------------------------------------------------------
 -- Binary operations
 --------------------------------------------------------------------------------
+
+intersection
+    :: (Ord k, MonoidNull v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+intersection (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
+    dropMissing
+    dropMissing
+    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ v1 <> v2)
+    m1 m2
 
 intersectionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
