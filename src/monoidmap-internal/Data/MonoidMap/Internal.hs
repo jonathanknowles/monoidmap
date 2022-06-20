@@ -393,3 +393,12 @@ unionWithF
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
 unionWithF = mergeWithF Set.union
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+guardNotNull :: MonoidNull v => v -> Maybe v
+guardNotNull v
+    | Null.null v = Nothing
+    | otherwise = Just v
