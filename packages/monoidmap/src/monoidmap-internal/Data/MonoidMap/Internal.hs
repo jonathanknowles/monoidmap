@@ -36,8 +36,6 @@ module Data.MonoidMap.Internal
     , map
 
     -- * Combination
-    , mergeWith
-    , mergeWithF
     , intersectionWith
     , intersectionWithF
     , unionWith
@@ -54,8 +52,6 @@ import Data.Bifoldable
     ( Bifoldable )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
-import Data.Functor.Identity
-    ( Identity (..) )
 import Data.Group
     ( Group (..) )
 import Data.Map.Merge.Strict
@@ -102,7 +98,6 @@ import qualified Data.Foldable as F
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
-import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
 
 --------------------------------------------------------------------------------
@@ -324,34 +319,6 @@ map f = fromList . fmap (fmap f) . toList
 -- Binary operations
 --------------------------------------------------------------------------------
 
-mergeWith
-    :: forall k v1 v2 v3.
-        (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
-    => (Set k -> Set k -> Set k)
-    -> (v1 -> v2 -> v3)
-    -> MonoidMap k v1
-    -> MonoidMap k v2
-    -> MonoidMap k v3
-mergeWith mergeKeys mergeValue m1 m2 =
-    runIdentity $ mergeWithF mergeKeys (fmap (fmap Identity) mergeValue) m1 m2
-
-mergeWithF
-    :: forall f k v1 v2 v3.
-        (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
-    => (Set k -> Set k -> Set k)
-    -> (v1 -> v2 -> f v3)
-    -> MonoidMap k v1
-    -> MonoidMap k v2
-    -> f (MonoidMap k v3)
-mergeWithF mergeKeys mergeValue m1 m2
-    = fmap fromList
-    $ traverse merge
-    $ F.toList
-    $ mergeKeys (nonNullKeys m1) (nonNullKeys m2)
-  where
-    merge :: k -> f (k, v3)
-    merge k = (k,) <$> mergeValue (get k m1) (get k m2)
-
 intersectionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
@@ -365,13 +332,16 @@ intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     m1 m2
 
 intersectionWithF
-    :: forall f k v1 v2 v3.
-        (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithF = mergeWithF Set.intersection
+intersectionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
+    dropMissing
+    dropMissing
+    (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
+    m1 m2
 
 union
     :: (Ord k, MonoidNull v)
