@@ -59,7 +59,13 @@ import Data.Functor.Identity
 import Data.Group
     ( Group (..) )
 import Data.Map.Merge.Strict
-    ( dropMissing, mapMaybeMissing, preserveMissing, zipWithMaybeMatched )
+    ( dropMissing
+    , mapMaybeMissing
+    , preserveMissing
+    , traverseMaybeMissing
+    , zipWithMaybeAMatched
+    , zipWithMaybeMatched
+    )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -391,13 +397,16 @@ unionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     m1 m2
 
 unionWithF
-    :: forall f k v1 v2 v3.
-        (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithF = mergeWithF Set.union
+unionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
+    (traverseMaybeMissing $ \_ v1 -> guardNotNull <$> f v1 mempty)
+    (traverseMaybeMissing $ \_ v2 -> guardNotNull <$> f mempty v2)
+    (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
+    m1 m2
 
 --------------------------------------------------------------------------------
 -- Utilities
