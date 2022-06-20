@@ -314,7 +314,7 @@ map
     => (v1 -> v2)
     -> MonoidMap k v1
     -> MonoidMap k v2
-map f = fromList . fmap (fmap f) . toList
+map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 --------------------------------------------------------------------------------
 -- Binary operations
