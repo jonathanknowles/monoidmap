@@ -59,7 +59,7 @@ import Data.Functor.Identity
 import Data.Group
     ( Group (..) )
 import Data.Map.Merge.Strict
-    ( mapMaybeMissing, preserveMissing, zipWithMaybeMatched )
+    ( dropMissing, mapMaybeMissing, preserveMissing, zipWithMaybeMatched )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -347,13 +347,16 @@ mergeWithF mergeKeys mergeValue m1 m2
     merge k = (k,) <$> mergeValue (get k m1) (get k m2)
 
 intersectionWith
-    :: forall k v1 v2 v3.
-        (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith = mergeWith Set.intersection
+intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
+    dropMissing
+    dropMissing
+    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
+    m1 m2
 
 intersectionWithF
     :: forall f k v1 v2 v3.
