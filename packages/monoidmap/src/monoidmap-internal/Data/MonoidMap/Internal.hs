@@ -370,11 +370,10 @@ union
     -> MonoidMap k v
     -> MonoidMap k v
 union (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    preserveMissing preserveMissing maybeAppendMatched m1 m2
-  where
-    maybeAppendMatched = zipWithMaybeMatched $ \_ v1 v2 ->
-        let v3 = v1 <> v2 in
-        if Null.null v3 then Nothing else Just v3
+    preserveMissing
+    preserveMissing
+    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ v1 <> v2)
+    m1 m2
 
 unionWith
     :: forall k v1 v2 v3.
