@@ -58,6 +58,8 @@ import Data.Functor.Identity
     ( Identity (..) )
 import Data.Group
     ( Group (..) )
+import Data.Map.Merge.Strict
+    ( preserveMissing, zipWithMaybeMatched )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -91,6 +93,7 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Foldable as F
+import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
@@ -195,7 +198,7 @@ instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
   where
-    (<>) = adjustMany (<>)
+    (<>) = union
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
@@ -360,6 +363,18 @@ intersectionWithF
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
 intersectionWithF = mergeWithF Set.intersection
+
+union
+    :: (Ord k, MonoidNull v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+union (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
+    preserveMissing preserveMissing maybeAppendMatched m1 m2
+  where
+    maybeAppendMatched = zipWithMaybeMatched $ \_ v1 v2 ->
+        let v3 = v1 <> v2 in
+        if Null.null v3 then Nothing else Just v3
 
 unionWith
     :: forall k v1 v2 v3.
