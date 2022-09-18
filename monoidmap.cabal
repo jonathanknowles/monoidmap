@@ -107,7 +107,8 @@ test-suite monoidmap-test
       , pretty-show
       , QuickCheck
       , quickcheck-classes
-      , quickcheck-classes-semigroup
+      , quickcheck-classes-groups
+      , quickcheck-classes-monoid-subclasses
       , quickcheck-instances
 
 benchmark monoidmap-benchmark

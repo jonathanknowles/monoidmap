@@ -61,24 +61,28 @@ import Test.QuickCheck.Classes
     , semigroupMonoidLaws
     , showReadLaws
     )
+import Test.QuickCheck.Classes.Group
+    ( groupLaws )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
-import Test.QuickCheck.Classes.Semigroup
+import Test.QuickCheck.Classes.Monoid.GCD
     ( cancellativeGCDMonoidLaws
-    , cancellativeLaws
-    , commutativeLaws
     , gcdMonoidLaws
-    , groupLaws
-    , leftCancellativeLaws
     , leftGCDMonoidLaws
-    , leftReductiveLaws
-    , monoidNullLaws
-    , monusLaws
     , overlappingGCDMonoidLaws
-    , positiveMonoidLaws
+    , rightGCDMonoidLaws
+    )
+import Test.QuickCheck.Classes.Monoid.Monus
+    ( monusLaws )
+import Test.QuickCheck.Classes.Monoid.Null
+    ( monoidNullLaws, positiveMonoidLaws )
+import Test.QuickCheck.Classes.Semigroup.Cancellative
+    ( cancellativeLaws
+    , commutativeLaws
+    , leftCancellativeLaws
+    , leftReductiveLaws
     , reductiveLaws
     , rightCancellativeLaws
-    , rightGCDMonoidLaws
     , rightReductiveLaws
     )
 import Test.QuickCheck.Instances.Natural
