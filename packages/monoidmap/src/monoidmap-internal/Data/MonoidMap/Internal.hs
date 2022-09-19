@@ -210,22 +210,39 @@ instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
 -- Construction
 --------------------------------------------------------------------------------
 
+-- | The empty 'MonoidMap'.
+--
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
 
+-- | Constructs a 'MonoidMap' from a list of key-value pairs.
+--
+-- If the list contains more than one value for the same key, values are
+-- combined together with '<>'.
+--
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
+-- | Constructs a 'MonoidMap' from a list of key-value pairs.
+--
+-- If the list contains more than one value for the same key, values are
+-- combined together with the given combination function.
+--
 fromListWith
     :: (Ord k, MonoidNull v)
     => (v -> v -> v)
+    -- ^ Combination function with which to combine values for duplicate keys.
     -> [(k, v)]
     -> MonoidMap k v
 fromListWith f kvs = adjustMany f kvs mempty
 
+-- | Constructs a 'MonoidMap' from an ordinary 'Map'.
+--
 fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.filter (not . Null.null)
 
+-- | Constructs a 'MonoidMap' from a single key-value pair.
+--
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
 
@@ -233,9 +250,17 @@ singleton k v = set k v mempty
 -- Deconstruction
 --------------------------------------------------------------------------------
 
+-- | Converts a 'MonoidMap' to a list of key-value pairs.
+--
+-- The result only includes entries with values that are not 'Null.null'.
+--
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toList . unMonoidMap
 
+-- | Converts a 'MonoidMap' to a 'Map'.
+--
+-- The result only includes entries with values that are not 'Null.null'.
+--
 toMap :: MonoidMap k v -> Map k v
 toMap = unMonoidMap
 
@@ -243,14 +268,20 @@ toMap = unMonoidMap
 -- Basic operations
 --------------------------------------------------------------------------------
 
+-- | Gets the value associated with the given key.
+--
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
+-- | Sets the value associated with the given key.
+--
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v m
     | Null.null v = MonoidMap $ Map.delete k   $ unMonoidMap m
     | otherwise   = MonoidMap $ Map.insert k v $ unMonoidMap m
 
+-- | Adjusts the value associated with the given key.
+--
 adjust
     :: (Ord k, MonoidNull v)
     => (v -> v)
@@ -270,6 +301,8 @@ adjustMany f kvs m0 =
   where
     acc m (k, v) = adjust (f v) k m
 
+-- | Sets the value associated with the given key to 'mempty'.
+--
 nullify :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
 nullify k = set k mempty
 
@@ -277,21 +310,36 @@ nullify k = set k mempty
 -- Queries
 --------------------------------------------------------------------------------
 
+-- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
+--
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is 'Null.null'.
+--
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
+-- | Returns 'True' if (and only if) at least one value in the map is not
+--   'Null.null'.
+--
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is not 'Null.null'.
+--
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
+-- | Returns the set of keys associated with values that are not 'Null.null'.
+--
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
 
+-- | Returns a count of the values in the map that are not 'Null.null'.
+--
 size :: MonoidMap k v -> Int
 size = Map.size . toMap
 
@@ -307,6 +355,9 @@ isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 -- Traversal
 --------------------------------------------------------------------------------
 
+-- | Applies the given function to all values in the map that are not
+--   'Null.null'.
+--
 map
     :: (Ord k, MonoidNull v2)
     => (v1 -> v2)
