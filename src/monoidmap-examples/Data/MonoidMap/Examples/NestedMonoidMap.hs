@@ -33,8 +33,6 @@ module Data.MonoidMap.Examples.NestedMonoidMap
     )
     where
 
-import Data.Map.Strict
-    ( Map )
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
@@ -54,15 +52,17 @@ import Data.Semigroup.Cancellative
     , RightCancellative
     , RightReductive
     )
-import Data.Set
+import Data.Strict.Map
+    ( Map )
+import Data.Strict.Set
     ( Set )
 import GHC.Exts
     ( IsList (..) )
 
 import qualified Data.Foldable as F
-import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
-import qualified Data.Set as Set
+import qualified Data.Strict.Map as Map
+import qualified Data.Strict.Set as Set
 
 --------------------------------------------------------------------------------
 -- Type
