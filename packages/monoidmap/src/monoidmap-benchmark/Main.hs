@@ -17,8 +17,8 @@ import Data.Maybe
 import Test.Tasty.Bench
     ( bench, bgroup, defaultMain, nf )
 
-import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
+import qualified Data.Strict.Map as OMap
 
 main :: IO ()
 main = do
@@ -35,13 +35,13 @@ main = do
     defaultMain
         [ bgroup "delete"
             [ bgroup "absent"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (deleteMany evens) om_odd
                 , bench "Data.MonoidMap" $
                     nf (deleteMany evens) rm_odd
                 ]
             , bgroup "present"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (deleteMany evens) om_even
                 , bench "Data.MonoidMap" $
                     nf (deleteMany evens) rm_even
@@ -49,13 +49,13 @@ main = do
             ]
         , bgroup "insert"
             [ bgroup "absent"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (insertMany elems_even) om_odd
                 , bench "Data.MonoidMap" $
                     nf (insertMany elems_even) rm_odd
                 ]
             , bgroup "present"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (insertMany elems_even) om_even
                 , bench "Data.MonoidMap" $
                     nf (insertMany elems_even) rm_even
@@ -63,13 +63,13 @@ main = do
             ]
         , bgroup "lookup"
             [ bgroup "absent"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (lookupMany evens) om_odd
                 , bench "Data.MonoidMap" $
                     nf (lookupMany evens) rm_odd
                 ]
             , bgroup "present"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (lookupMany evens) om_even
                 , bench "Data.MonoidMap" $
                     nf (lookupMany evens) rm_even
@@ -77,13 +77,13 @@ main = do
             ]
         , bgroup "mappend"
             [ bgroup "disjoint"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (<> om_even) om_odd
                 , bench "Data.MonoidMap" $
                     nf (<> rm_even) rm_odd
                 ]
             , bgroup "identical"
-                [ bench "Data.Map.Strict" $
+                [ bench "Data.Strict.Map" $
                     nf (<> om_even) om_even
                 , bench "Data.MonoidMap" $
                     nf (<> rm_even) rm_even

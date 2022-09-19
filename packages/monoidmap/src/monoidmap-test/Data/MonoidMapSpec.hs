@@ -16,8 +16,6 @@ import Data.Function
     ( (&) )
 import Data.Group
     ( Group (..) )
-import Data.Map.Strict
-    ( Map )
 import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.Null
@@ -28,7 +26,9 @@ import Data.Ratio
     ( (%) )
 import Data.Semigroup.Cancellative
     ( LeftReductive (..), RightReductive (..) )
-import Data.Set
+import Data.Strict.Map
+    ( Map )
+import Data.Strict.Set
     ( Set )
 import GHC.Exts
     ( IsList (..) )
@@ -88,9 +88,9 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
 import Test.QuickCheck.Instances.Natural
     ()
 
-import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
-import qualified Data.Set as Set
+import qualified Data.Strict.Map as Map
+import qualified Data.Strict.Set as Set
 
 spec :: Spec
 spec = do
@@ -481,6 +481,12 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
   where
     arbitrary = fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)
     shrink = shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+
+instance (Arbitrary k, Ord k, Arbitrary v) =>
+    Arbitrary (Map k v)
+  where
+    arbitrary = Map.fromList <$> arbitrary
+    shrink = shrinkMapBy Map.fromList Map.toList shrink
 
 --------------------------------------------------------------------------------
 -- Unit tests: Group

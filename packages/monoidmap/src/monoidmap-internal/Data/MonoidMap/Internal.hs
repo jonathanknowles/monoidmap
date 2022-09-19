@@ -54,15 +54,6 @@ import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Group
     ( Group (..) )
-import Data.Map.Merge.Strict
-    ( dropMissing
-    , mapMaybeMissing
-    , traverseMaybeMissing
-    , zipWithMaybeAMatched
-    , zipWithMaybeMatched
-    )
-import Data.Map.Strict
-    ( Map )
 import Data.Maybe
     ( fromMaybe )
 import Data.Monoid
@@ -86,7 +77,16 @@ import Data.Semigroup.Cancellative
     , RightCancellative
     , RightReductive (..)
     )
-import Data.Set
+import Data.Strict.Map
+    ( Map )
+import Data.Strict.Map.Autogen.Merge.Strict
+    ( dropMissing
+    , mapMaybeMissing
+    , traverseMaybeMissing
+    , zipWithMaybeAMatched
+    , zipWithMaybeMatched
+    )
+import Data.Strict.Set
     ( Set )
 import GHC.Exts
     ( IsList (Item) )
@@ -94,9 +94,9 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Foldable as F
-import qualified Data.Map.Merge.Strict as Map
-import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
+import qualified Data.Strict.Map as Map
+import qualified Data.Strict.Map.Autogen.Merge.Strict as Map
 import qualified GHC.Exts as GHC
 
 --------------------------------------------------------------------------------

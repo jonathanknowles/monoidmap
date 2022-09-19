@@ -57,10 +57,10 @@ library monoidmap-examples
         Haskell2010
     build-depends:
         base >=4.7 && <5
-      , containers
       , deepseq
-      , monoidmap
       , monoid-subclasses
+      , monoidmap
+      , strict-containers
 
 library monoidmap-internal
     import:
@@ -74,10 +74,10 @@ library monoidmap-internal
         Haskell2010
     build-depends:
         base >=4.7 && <5
-      , containers
       , deepseq
       , groups
       , monoid-subclasses
+      , strict-containers
 
 test-suite monoidmap-test
     import:
@@ -98,18 +98,18 @@ test-suite monoidmap-test
         hspec-discover:hspec-discover ==2.*
     build-depends:
         base >=4.7 && <5
-      , containers
+      , QuickCheck
       , groups
       , hspec
       , monoid-subclasses
       , monoidmap
       , monoidmap-internal
       , pretty-show
-      , QuickCheck
       , quickcheck-classes
       , quickcheck-classes-groups
       , quickcheck-classes-monoid-subclasses
       , quickcheck-instances
+      , strict-containers
 
 benchmark monoidmap-benchmark
     default-language:
@@ -124,8 +124,8 @@ benchmark monoidmap-benchmark
         -O2
     build-depends:
         base >=4.7 && <5
-      , containers
       , deepseq
       , monoidmap-internal
+      , strict-containers
       , tasty-bench
       , tasty-hunit
