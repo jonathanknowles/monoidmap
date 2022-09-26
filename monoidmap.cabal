@@ -27,6 +27,7 @@ common common-extensions
         TupleSections
         TypeApplications
         TypeFamilies
+        TypeOperators
         ViewPatterns
 
 source-repository head
