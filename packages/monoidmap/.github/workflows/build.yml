@@ -23,11 +23,12 @@ jobs:
           - macOS-latest
           - windows-latest
         cabal:
-          - 3.6.2.0
+          - 3.8.1.0
         ghc:
           - 8.10.7
           - 9.0.2
           - 9.2.4
+          - 9.4.2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
