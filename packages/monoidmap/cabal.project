@@ -9,9 +9,9 @@ allow-newer:
 source-repository-package
     type: git
     location: https://github.com/jonathanknowles/quickcheck-classes-groups.git
-    tag: 62ba454522fb668fb28d20a0e35f85ce1be9fe17
+    tag: 511fc451aa4c65ccb67c4416c6a98f8a5929fd5c
 
 source-repository-package
     type: git
     location: https://github.com/jonathanknowles/quickcheck-classes-monoid-subclasses.git
-    tag: 65a709818276dcb264d7b39b5b3e10f9b69cce16
+    tag: 6c67843e0bbfc1ececa20c222cbcbf8bcc4db58c
