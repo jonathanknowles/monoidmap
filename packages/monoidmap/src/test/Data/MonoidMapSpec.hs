@@ -300,6 +300,8 @@ spec = do
 
             unitTestSpec_Reductive_isPrefixOf_String
             unitTestSpec_Reductive_isSuffixOf_String
+            unitTestSpec_Reductive_isPrefixOf_Sum_Natural
+            unitTestSpec_Reductive_isSuffixOf_Sum_Natural
 
 --------------------------------------------------------------------------------
 -- Test types
@@ -717,6 +719,45 @@ unitTestData_Reductive_isSuffixOf_String = unitTestData2
     ]
   where
     m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_Reductive_isPrefixOf_Sum_Natural :: Spec
+unitTestSpec_Reductive_isPrefixOf_Sum_Natural = unitTestSpec
+    "Reductive.isPrefixOf (Sum Natural)"
+    "isPrefixOf"
+    (isPrefixOf)
+    (unitTestData_Reductive_Sum_Natural)
+
+unitTestSpec_Reductive_isSuffixOf_Sum_Natural :: Spec
+unitTestSpec_Reductive_isSuffixOf_Sum_Natural = unitTestSpec
+    "Reductive.isSuffixOf (Sum Natural)"
+    "isSuffixOf"
+    (isSuffixOf)
+    (unitTestData_Reductive_Sum_Natural)
+
+unitTestData_Reductive_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (Bool)
+unitTestData_Reductive_Sum_Natural = unitTestData2
+    [ ( m [1, 1], m [1, 1], True )
+    , ( m [1, 1], m [1, 2], True )
+    , ( m [1, 1], m [2, 1], True )
+    , ( m [1, 1], m [2, 2], True )
+    , ( m [1, 2], m [1, 1], False)
+    , ( m [1, 2], m [1, 2], True )
+    , ( m [1, 2], m [2, 1], False)
+    , ( m [1, 2], m [2, 2], True )
+    , ( m [2, 1], m [1, 1], False)
+    , ( m [2, 1], m [1, 2], False)
+    , ( m [2, 1], m [2, 1], True )
+    , ( m [2, 1], m [2, 2], True )
+    , ( m [2, 2], m [1, 1], False)
+    , ( m [2, 2], m [1, 2], False)
+    , ( m [2, 2], m [2, 1], False)
+    , ( m [2, 2], m [2, 2], True )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Sum
 
 --------------------------------------------------------------------------------
 -- Utilities
