@@ -254,14 +254,14 @@ singleton k v = set k v mempty
 
 -- | Converts a 'MonoidMap' to a list of key-value pairs.
 --
--- The result only includes entries with values that are not 'Null.null'.
+-- The result only includes entries with values that are not equal to 'mempty'.
 --
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toList . unMonoidMap
 
 -- | Converts a 'MonoidMap' to a 'Map'.
 --
--- The result only includes entries with values that are not 'Null.null'.
+-- The result only includes entries with values that are not equal to 'mempty'.
 --
 toMap :: MonoidMap k v -> Map k v
 toMap = unMonoidMap
@@ -312,35 +312,37 @@ nullify k = set k mempty
 -- Queries
 --------------------------------------------------------------------------------
 
--- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
+-- | Returns 'True' if (and only if) all values in the map are equal to
+--   'mempty'.
 --
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'Null.null'.
+--   that is equal to 'mempty'.
 --
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
--- | Returns 'True' if (and only if) at least one value in the map is not
---   'Null.null'.
+-- | Returns 'True' if (and only if) the map contains at least one value that
+--   is not equal to 'mempty'.
 --
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'Null.null'.
+--   that is not equal to 'mempty'.
 --
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
--- | Returns the set of keys associated with values that are not 'Null.null'.
+-- | Returns the set of keys associated with values that are not equal to
+--   'mempty'.
 --
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
 
--- | Returns a count of the values in the map that are not 'Null.null'.
+-- | Returns a count of all values in the map that are not equal to 'mempty'.
 --
 size :: MonoidMap k v -> Int
 size = Map.size . toMap
@@ -357,8 +359,11 @@ isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 -- Traversal
 --------------------------------------------------------------------------------
 
--- | Applies the given function to all values in the map that are not
---   'Null.null'.
+-- | Applies the given function to all values in the map that are not equal
+--   to 'mempty'.
+--
+-- If the range of the given function includes 'mempty', then the resultant map
+-- may have a 'size' that is smaller than the original map.
 --
 map
     :: (Eq v2, Monoid v2)
