@@ -22,14 +22,14 @@ module Data.MonoidMap.Internal
     , get
     , set
     , adjust
-    , nullify
+    , delete
 
     -- * Queries
+    , keys
+    , member
+    , notMember
     , null
-    , nullKey
-    , nonNull
-    , nonNullKey
-    , nonNullKeys
+    , notNull
     , size
 
     -- * Traversal
@@ -305,12 +305,30 @@ adjustMany f kvs m0 =
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
-nullify :: (Ord k, Eq v, Monoid v) => k -> MonoidMap k v -> MonoidMap k v
-nullify k = set k mempty
+delete :: (Ord k, Eq v, Monoid v) => k -> MonoidMap k v -> MonoidMap k v
+delete k = set k mempty
 
 --------------------------------------------------------------------------------
 -- Queries
 --------------------------------------------------------------------------------
+
+-- | Returns the set of keys associated with values that are not equal to
+--   'mempty'.
+--
+keys :: MonoidMap k v -> Set k
+keys = Map.keysSet . toMap
+
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is not equal to 'mempty'.
+--
+member :: Ord k => k -> MonoidMap k v -> Bool
+member k = Map.member k . toMap
+
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is equal to 'mempty'.
+--
+notMember :: Ord k => k -> MonoidMap k v -> Bool
+notMember k = Map.notMember k . toMap
 
 -- | Returns 'True' if (and only if) all values in the map are equal to
 --   'mempty'.
@@ -318,29 +336,11 @@ nullify k = set k mempty
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is equal to 'mempty'.
---
-nullKey :: Ord k => k -> MonoidMap k v -> Bool
-nullKey k = Map.notMember k . toMap
-
 -- | Returns 'True' if (and only if) the map contains at least one value that
 --   is not equal to 'mempty'.
 --
-nonNull :: MonoidMap k v -> Bool
-nonNull = not . null
-
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not equal to 'mempty'.
---
-nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
-nonNullKey k = Map.member k . toMap
-
--- | Returns the set of keys associated with values that are not equal to
---   'mempty'.
---
-nonNullKeys :: MonoidMap k v -> Set k
-nonNullKeys = Map.keysSet . toMap
+notNull :: MonoidMap k v -> Bool
+notNull = not . null
 
 -- | Returns a count of all values in the map that are not equal to 'mempty'.
 --

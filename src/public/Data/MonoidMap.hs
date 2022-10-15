@@ -24,14 +24,14 @@ module Data.MonoidMap
     , get
     , set
     , adjust
-    , nullify
+    , delete
 
     -- * Queries
+    , keys
+    , member
+    , notMember
     , null
-    , nullKey
-    , nonNull
-    , nonNullKey
-    , nonNullKeys
+    , notNull
     , size
 
     -- * Traversal
