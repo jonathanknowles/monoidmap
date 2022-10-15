@@ -144,6 +144,17 @@ spec = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
+        testLawsMany @(MonoidMap Int (Product Rational))
+            [ commutativeLaws
+            , eqLaws
+            , groupLaws
+            , isListLaws
+            , monoidLaws
+            , monoidNullLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
         testLawsMany @(MonoidMap Int (Sum Integer))
             [ cancellativeLaws
             , commutativeLaws
