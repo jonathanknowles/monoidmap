@@ -271,7 +271,7 @@ prop_insert_toList kvs k v =
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-instance (Arbitrary k, Ord k, Arbitrary v, Eq v) =>
+instance (Arbitrary k, Ord k, Arbitrary v) =>
     Arbitrary (RMap.Map k v)
   where
     arbitrary = RMap.fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)
