@@ -18,8 +18,6 @@ import Data.Group
     ( Group (..) )
 import Data.Monoid
     ( Product (..), Sum (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
 import Data.Ratio
@@ -478,7 +476,7 @@ prop_nonNullKeys_get m =
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
+instance (Arbitrary k, Ord k, Arbitrary v, Eq v, Monoid v) =>
     Arbitrary (MonoidMap k v)
   where
     arbitrary = fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)

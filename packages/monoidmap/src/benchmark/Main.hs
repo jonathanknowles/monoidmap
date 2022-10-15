@@ -118,7 +118,7 @@ instance Ord k => Map OMap.Map k v where
     insert = OMap.insert
     lookup = OMap.lookup
 
-instance Ord k => Map RMap.Map k v where
+instance (Ord k, Eq v) => Map RMap.Map k v where
     fromList = RMap.fromList
     delete = RMap.delete
     insert = RMap.insert

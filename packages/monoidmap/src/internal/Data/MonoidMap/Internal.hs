@@ -58,6 +58,8 @@ import Data.Maybe
     ( fromMaybe )
 import Data.Monoid
     ( All (..) )
+import Data.Monoid.Cancellative
+    ( CommutativeMonoid )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
     , LeftGCDMonoid (..)
@@ -112,64 +114,64 @@ newtype MonoidMap k v = MonoidMap
 -- Instances
 --------------------------------------------------------------------------------
 
-instance (Ord k, Read k, MonoidNull v, Read v) =>
+instance (Ord k, Read k, Eq v, Monoid v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
 
-instance (Ord k, MonoidNull v) =>
+instance (Ord k, Eq v, Monoid v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
 
-instance (Ord k, PositiveMonoid v) =>
+instance (Ord k, Eq v, PositiveMonoid v) =>
     PositiveMonoid (MonoidMap k v)
 
-instance (Ord k, MonoidNull v, Commutative v) =>
+instance (Ord k, Eq v, CommutativeMonoid v) =>
     Commutative (MonoidMap k v)
 
-instance (Ord k, MonoidNull v, LeftReductive v) =>
+instance (Ord k, Eq v, Monoid v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isSubmapOfBy isPrefixOf
     stripPrefix = unionWithF stripPrefix
 
-instance (Ord k, MonoidNull v, RightReductive v) =>
+instance (Ord k, Eq v, Monoid v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSubmapOfBy isSuffixOf
     stripSuffix = unionWithF stripSuffix
 
-instance (Ord k, MonoidNull v, Reductive v) =>
+instance (Ord k, Eq v, Monoid v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
     (</>) = unionWithF (</>)
 
-instance (Ord k, MonoidNull v, LeftCancellative v) =>
+instance (Ord k, Eq v, Monoid v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
 
-instance (Ord k, MonoidNull v, RightCancellative v) =>
+instance (Ord k, Eq v, Monoid v, RightCancellative v) =>
     RightCancellative (MonoidMap k v)
 
-instance (Ord k, MonoidNull v, Cancellative v) =>
+instance (Ord k, Eq v, Monoid v, Cancellative v) =>
     Cancellative (MonoidMap k v)
 
-instance (Ord k, MonoidNull v, GCDMonoid v) =>
+instance (Ord k, Eq v, Monoid v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = intersectionWith gcd
 
-instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
+instance (Ord k, Eq v, Monoid v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = intersectionWith commonPrefix
 
-instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
+instance (Ord k, Eq v, Monoid v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = intersectionWith commonSuffix
 
-instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
+instance (Ord k, Eq v, Monoid v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
     overlap = intersectionWith overlap
@@ -181,26 +183,26 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
         , stripPrefixOverlap m1 m2
         )
 
-instance (Ord k, MonoidNull v, Monus v) =>
+instance (Ord k, Eq v, Monoid v, Monus v) =>
     Monus (MonoidMap k v)
   where
     (<\>) = unionWith (<\>)
 
-instance (Ord k, MonoidNull v) => IsList (MonoidMap k v)
+instance (Ord k, Eq v, Monoid v) => IsList (MonoidMap k v)
   where
     type Item (MonoidMap k v) = (k, v)
     fromList = fromList
     toList = toList
 
-instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
+instance (Ord k, Eq v, Monoid v) => Monoid (MonoidMap k v)
   where
     mempty = empty
 
-instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
+instance (Ord k, Eq v, Monoid v) => Semigroup (MonoidMap k v)
   where
     (<>) = unionWith (<>)
 
-instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
+instance (Ord k, Eq v, Monoid v, Group v) => Group (MonoidMap k v)
   where
     invert = map invert
     (~~) = unionWith (~~)
@@ -220,7 +222,7 @@ empty = MonoidMap Map.empty
 -- If the list contains more than one value for the same key, values are
 -- combined together with '<>'.
 --
-fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
+fromList :: (Ord k, Eq v, Monoid v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
@@ -229,7 +231,7 @@ fromList = fromListWith (<>)
 -- combined together with the given combination function.
 --
 fromListWith
-    :: (Ord k, MonoidNull v)
+    :: (Ord k, Eq v, Monoid v)
     => (v -> v -> v)
     -- ^ Combination function with which to combine values for duplicate keys.
     -> [(k, v)]
@@ -238,12 +240,12 @@ fromListWith f kvs = adjustMany f kvs mempty
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
-fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
-fromMap = MonoidMap . Map.filter (not . Null.null)
+fromMap :: (Eq v, Monoid v) => Map k v -> MonoidMap k v
+fromMap = MonoidMap . Map.filter (/= mempty)
 
 -- | Constructs a 'MonoidMap' from a single key-value pair.
 --
-singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
+singleton :: (Ord k, Eq v, Monoid v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
 
 --------------------------------------------------------------------------------
@@ -275,15 +277,15 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
 -- | Sets the value associated with the given key.
 --
-set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
+set :: (Ord k, Eq v, Monoid v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v m
-    | Null.null v = MonoidMap $ Map.delete k   $ unMonoidMap m
+    | v == mempty = MonoidMap $ Map.delete k   $ unMonoidMap m
     | otherwise   = MonoidMap $ Map.insert k v $ unMonoidMap m
 
 -- | Adjusts the value associated with the given key.
 --
 adjust
-    :: (Ord k, MonoidNull v)
+    :: (Ord k, Eq v, Monoid v)
     => (v -> v)
     -> k
     -> MonoidMap k v
@@ -291,7 +293,7 @@ adjust
 adjust f k m = set k (f (get k m)) m
 
 adjustMany
-    :: (Ord k, MonoidNull v, IsList kvs, Item kvs ~ (k, v))
+    :: (Ord k, Eq v, Monoid v, IsList kvs, Item kvs ~ (k, v))
     => (v -> v -> v)
     -> kvs
     -> MonoidMap k v
@@ -303,7 +305,7 @@ adjustMany f kvs m0 =
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
-nullify :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
+nullify :: (Ord k, Eq v, Monoid v) => k -> MonoidMap k v -> MonoidMap k v
 nullify k = set k mempty
 
 --------------------------------------------------------------------------------
@@ -359,7 +361,7 @@ isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 --   'Null.null'.
 --
 map
-    :: (Ord k, MonoidNull v2)
+    :: (Eq v2, Monoid v2)
     => (v1 -> v2)
     -> MonoidMap k v1
     -> MonoidMap k v2
@@ -370,7 +372,7 @@ map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 --------------------------------------------------------------------------------
 
 intersectionWith
-    :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Ord k, Eq v3, Monoid v3)
     => (v1 -> v2 -> v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
@@ -382,7 +384,7 @@ intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     m1 m2
 
 intersectionWithF
-    :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Applicative f, Ord k, Eq v3, Monoid v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
@@ -394,7 +396,7 @@ intersectionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
     m1 m2
 
 unionWith
-    :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Ord k, Monoid v1, Monoid v2, Eq v3, Monoid v3)
     => (v1 -> v2 -> v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
@@ -406,7 +408,7 @@ unionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     m1 m2
 
 unionWithF
-    :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
+    :: (Applicative f, Ord k, Monoid v1, Monoid v2, Eq v3, Monoid v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
@@ -421,8 +423,8 @@ unionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
 -- Utilities
 --------------------------------------------------------------------------------
 
-guardNotNull :: MonoidNull v => v -> Maybe v
+guardNotNull :: (Eq v, Monoid v) => v -> Maybe v
 guardNotNull v
-    | Null.null v = Nothing
+    | v == mempty = Nothing
     | otherwise = Just v
 {-# INLINE guardNotNull #-}
