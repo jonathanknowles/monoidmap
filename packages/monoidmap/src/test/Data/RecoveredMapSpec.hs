@@ -1,4 +1,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use any" #-}
+{-# HLINT ignore "Use null" #-}
 
 -- |
 -- Copyright: © 2022 Jonathan Knowles
