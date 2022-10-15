@@ -15,8 +15,6 @@ import Data.List
     ( nubBy )
 import Data.Monoid
     ( Sum (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Test.Hspec
     ( Spec, describe, it, parallel )
 import Test.QuickCheck
@@ -273,7 +271,7 @@ prop_insert_toList kvs k v =
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
+instance (Arbitrary k, Ord k, Arbitrary v, Eq v) =>
     Arbitrary (RMap.Map k v)
   where
     arbitrary = RMap.fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)

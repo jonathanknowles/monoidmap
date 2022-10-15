@@ -27,19 +27,19 @@ instance (Show k, Show v) => Show (Map k v) where
 empty :: Map k v
 empty = Map MonoidMap.empty
 
-singleton :: Ord k => k -> v -> Map k v
+singleton :: (Ord k, Eq v) => k -> v -> Map k v
 singleton k = Map . MonoidMap.singleton k . pure
 
-fromList :: Ord k => [(k, v)] -> Map k v
+fromList :: (Ord k, Eq v) => [(k, v)] -> Map k v
 fromList = Map . MonoidMap.fromListWith const . fmap (fmap pure)
 
 toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
 
-delete :: Ord k => k -> Map k v -> Map k v
+delete :: (Ord k, Eq v) => k -> Map k v -> Map k v
 delete k = Map . MonoidMap.nullify k . unMap
 
-insert :: Ord k => k -> v -> Map k v -> Map k v
+insert :: (Ord k, Eq v) => k -> v -> Map k v -> Map k v
 insert k v = Map . MonoidMap.set k (pure v) . unMap
 
 keysSet :: Map k v -> Set k
