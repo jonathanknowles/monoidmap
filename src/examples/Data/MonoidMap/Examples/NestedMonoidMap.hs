@@ -96,7 +96,7 @@ newtype NestedMonoidMap k1 k2 v =
 --------------------------------------------------------------------------------
 
 fromFlatList
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => [((k1, k2), v)]
     -> NestedMonoidMap k1 k2 v
 fromFlatList = F.foldl' acc mempty
@@ -104,20 +104,20 @@ fromFlatList = F.foldl' acc mempty
     acc m (k, v) = adjust (<> v) k m
 
 fromFlatMap
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => Map (k1, k2) v
     -> NestedMonoidMap k1 k2 v
 fromFlatMap = fromFlatList . Map.toList
 
 fromNestedList
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => [(k1, [(k2, v)])]
     -> NestedMonoidMap k1 k2 v
 fromNestedList entries =
     fromFlatList [((k1, k2), v) | (k1, n) <- entries, (k2, v) <- n]
 
 fromNestedMap
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k2, Eq v, Monoid v)
     => Map k1 (Map k2 v)
     -> NestedMonoidMap k1 k2 v
 fromNestedMap = NestedMonoidMap . MonoidMap.fromMap . fmap MonoidMap.fromMap
@@ -127,26 +127,25 @@ fromNestedMap = NestedMonoidMap . MonoidMap.fromMap . fmap MonoidMap.fromMap
 --------------------------------------------------------------------------------
 
 toFlatList
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => NestedMonoidMap k1 k2 v
     -> [((k1, k2), v)]
 toFlatList m = [((k1, k2), v) | (k1, n) <- toNestedList m, (k2, v) <- toList n]
 
 toFlatMap
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => NestedMonoidMap k1 k2 v
     -> Map (k1, k2) v
 toFlatMap = Map.fromList . toFlatList
 
 toNestedList
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => NestedMonoidMap k1 k2 v
     -> [(k1, [(k2, v)])]
 toNestedList (NestedMonoidMap m) = fmap toList <$> toList m
 
 toNestedMap
-    :: (Ord k1, Ord k2, MonoidNull v)
-    => NestedMonoidMap k1 k2 v
+    :: NestedMonoidMap k1 k2 v
     -> Map k1 (Map k2 v)
 toNestedMap (NestedMonoidMap m) = MonoidMap.toMap <$> MonoidMap.toMap m
 
@@ -154,19 +153,19 @@ toNestedMap (NestedMonoidMap m) = MonoidMap.toMap <$> MonoidMap.toMap m
 -- Queries
 --------------------------------------------------------------------------------
 
-get :: (Ord k1, Ord k2, MonoidNull v)
+get :: (Ord k1, Ord k2, Eq v, Monoid v)
     => (k1, k2)
     -> NestedMonoidMap k1 k2 v
     -> v
 get (k1, k2) (NestedMonoidMap m) = MonoidMap.get k2 (MonoidMap.get k1 m)
 
 keys
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => NestedMonoidMap k1 k2 v
     -> Set (k1, k2)
 keys = Set.fromList . fmap fst . toFlatList
 
-size :: (Ord k1, Ord k2, MonoidNull v) => NestedMonoidMap k1 k2 v -> Int
+size :: NestedMonoidMap k1 k2 v -> Int
 size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.size) m
 
 --------------------------------------------------------------------------------
@@ -174,7 +173,7 @@ size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.size) m
 --------------------------------------------------------------------------------
 
 adjust
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => (v -> v)
     -> (k1, k2)
     -> NestedMonoidMap k1 k2 v
@@ -182,13 +181,13 @@ adjust
 adjust f k m = set k (f $ get k m) m
 
 delete
-    :: (Ord k1, Ord k2, MonoidNull v)
+    :: (Ord k1, Ord k2, Eq v, Monoid v)
     => (k1, k2)
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
 delete k = set k mempty
 
-set :: (Ord k1, Ord k2, MonoidNull v)
+set :: (Ord k1, Ord k2, Eq v, Monoid v)
     => (k1, k2)
     -> v
     -> NestedMonoidMap k1 k2 v
