@@ -385,7 +385,7 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 -- | Splits a map at a particular index.
 --
 -- @
--- splitAt !n !xs = ('take' n xs, 'drop' n xs)
+-- splitAt n xs = ('take' n xs, 'drop' n xs)
 -- @
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
