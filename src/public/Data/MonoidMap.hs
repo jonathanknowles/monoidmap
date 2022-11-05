@@ -34,6 +34,11 @@ module Data.MonoidMap
     , notNull
     , size
 
+    -- * Indexed
+    , take
+    , drop
+    , splitAt
+
     -- * Traversal
     , map
     )
@@ -41,4 +46,4 @@ module Data.MonoidMap
 
 import Data.MonoidMap.Internal
 import Prelude hiding
-    ( map, null )
+    ( drop, map, null, splitAt, take )
