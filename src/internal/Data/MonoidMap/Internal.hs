@@ -378,7 +378,7 @@ isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 --   keys.
 --
 -- @
--- take n = 'fromList' . 'Prelude.take' n . 'toList'
+-- take n == 'fromList' . 'Prelude.take' n . 'toList'
 -- @
 --
 take :: Int -> MonoidMap k v -> MonoidMap k v
@@ -388,7 +388,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 --   keys.
 --
 -- @
--- drop n = 'fromList' . 'Prelude.drop' n . 'toList'
+-- drop n == 'fromList' . 'Prelude.drop' n . 'toList'
 -- @
 --
 drop :: Int -> MonoidMap k v -> MonoidMap k v
@@ -397,7 +397,7 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 -- | Splits a map at a particular index.
 --
 -- @
--- splitAt n xs = ('take' n xs, 'drop' n xs)
+-- splitAt n xs == ('take' n xs, 'drop' n xs)
 -- @
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
