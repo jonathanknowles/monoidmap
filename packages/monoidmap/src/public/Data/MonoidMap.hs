@@ -44,6 +44,11 @@ module Data.MonoidMap
     , filterKeys
     , filterValues
 
+    -- * Partitioning
+    , partition
+    , partitionKeys
+    , partitionValues
+
     -- * Traversal
     , map
     )

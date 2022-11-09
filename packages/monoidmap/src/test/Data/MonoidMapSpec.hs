@@ -312,6 +312,14 @@ spec = do
         it "prop_filterValues_filter" $
             prop_filterValues_filter & property
 
+    parallel $ describe "Partitioning" $ do
+        it "prop_partition_filter" $
+            prop_partition_filter & property
+        it "prop_partitionKeys_filterKeys" $
+            prop_partitionKeys_filterKeys & property
+        it "prop_partitionValues_filterValues" $
+            prop_partitionValues_filterValues & property
+
     parallel $ describe "Unit tests" $ do
 
         describe "Group" $ do
@@ -529,6 +537,34 @@ prop_filterValues_filter
     :: Fun Value Bool -> MonoidMap Value Value -> Property
 prop_filterValues_filter (applyFun -> f) m =
     MonoidMap.filterValues f m === MonoidMap.filter (\_ v -> f v) m
+
+--------------------------------------------------------------------------------
+-- Partitioning
+--------------------------------------------------------------------------------
+
+prop_partition_filter
+    :: Fun (Key, Value) Bool -> MonoidMap Key Value -> Property
+prop_partition_filter (applyFun2 -> f) m =
+    MonoidMap.partition f m ===
+        ( MonoidMap.filter f m
+        , MonoidMap.filter (\k v -> not (f k v)) m
+        )
+
+prop_partitionKeys_filterKeys
+    :: Fun Key Bool -> MonoidMap Key Value -> Property
+prop_partitionKeys_filterKeys (applyFun -> f) m =
+    MonoidMap.partitionKeys f m ===
+        ( MonoidMap.filterKeys f m
+        , MonoidMap.filterKeys (not . f) m
+        )
+
+prop_partitionValues_filterValues
+    :: Fun Value Bool -> MonoidMap Key Value -> Property
+prop_partitionValues_filterValues (applyFun -> f) m =
+    MonoidMap.partitionValues f m ===
+        ( MonoidMap.filterValues f m
+        , MonoidMap.filterValues (not . f) m
+        )
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
