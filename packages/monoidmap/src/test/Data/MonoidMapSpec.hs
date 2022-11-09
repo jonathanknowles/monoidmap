@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
+{- HLINT ignore "Use null" -}
 
 -- |
 -- Copyright: © 2022 Jonathan Knowles
@@ -12,6 +13,8 @@ module Data.MonoidMapSpec
 
 import Prelude
 
+import Data.Bifunctor
+    ( bimap )
 import Data.Function
     ( (&) )
 import Data.Group
@@ -46,12 +49,15 @@ import Test.Hspec.Unit
 import Test.QuickCheck
     ( Arbitrary (..)
     , Fun (..)
+    , Gen
     , Property
     , applyFun
     , applyFun2
     , checkCoverage
+    , choose
     , cover
     , listOf
+    , oneof
     , property
     , shrinkMapBy
     , (===)
@@ -320,6 +326,14 @@ spec = do
         it "prop_partitionValues_filterValues" $
             prop_partitionValues_filterValues & property
 
+    parallel $ describe "Slicing" $ do
+        it "prop_take_toList_fromList" $
+            prop_take_toList_fromList & property
+        it "prop_drop_toList_fromList" $
+            prop_drop_toList_fromList & property
+        it "prop_splitAt_toList_fromList" $
+            prop_splitAt_toList_fromList & property
+
     parallel $ describe "Unit tests" $ do
 
         describe "Group" $ do
@@ -565,6 +579,51 @@ prop_partitionValues_filterValues (applyFun -> f) m =
         ( MonoidMap.filterValues f m
         , MonoidMap.filterValues (not . f) m
         )
+
+--------------------------------------------------------------------------------
+-- Slicing
+--------------------------------------------------------------------------------
+
+data Slice k v = Slice Int (MonoidMap k v)
+    deriving (Eq, Show)
+
+instance (Arbitrary k, Arbitrary v, MonoidNull v, Ord k) =>
+    Arbitrary (Slice k v)
+  where
+    arbitrary = do
+        m <- genMap
+        i <- genIndex m
+        pure $ Slice i m
+      where
+        genMap :: Gen (MonoidMap k v)
+        genMap = arbitrary
+
+        genIndex :: MonoidMap k v -> Gen Int
+        genIndex m = oneof
+            [ choose (negate (length m), -1)
+            , pure 0
+            , choose (1, length m - 1)
+            , pure (length m)
+            , choose (length m + 1, 2 * length m)
+            ]
+
+prop_take_toList_fromList
+    :: Slice Key Value -> Property
+prop_take_toList_fromList (Slice i m) =
+    MonoidMap.take i m
+        === (fromList . Prelude.take i . toList) m
+
+prop_drop_toList_fromList
+    :: Slice Key Value -> Property
+prop_drop_toList_fromList (Slice i m) =
+    MonoidMap.drop i m
+        === (fromList . Prelude.drop i . toList) m
+
+prop_splitAt_toList_fromList
+    :: Slice Key Value -> Property
+prop_splitAt_toList_fromList (Slice i m) =
+    MonoidMap.splitAt i m
+        === (bimap fromList fromList . Prelude.splitAt i . toList) m
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
