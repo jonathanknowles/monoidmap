@@ -39,6 +39,11 @@ module Data.MonoidMap
     , drop
     , splitAt
 
+    -- * Filtering
+    , filter
+    , filterKeys
+    , filterValues
+
     -- * Traversal
     , map
     )
@@ -46,4 +51,4 @@ module Data.MonoidMap
 
 import Data.MonoidMap.Internal
 import Prelude hiding
-    ( drop, map, null, splitAt, take )
+    ( drop, filter, map, null, splitAt, take )
