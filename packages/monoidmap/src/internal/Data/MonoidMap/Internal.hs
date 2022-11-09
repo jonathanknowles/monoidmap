@@ -34,7 +34,7 @@ module Data.MonoidMap.Internal
     , notNull
     , size
 
-    -- * Indexed
+    -- * Slicing
     , take
     , drop
     , splitAt
@@ -371,7 +371,7 @@ isSubmapOfBy
 isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 
 --------------------------------------------------------------------------------
--- Indexed
+-- Slicing
 --------------------------------------------------------------------------------
 
 -- | Takes a given number of entries in key order, beginning with the smallest

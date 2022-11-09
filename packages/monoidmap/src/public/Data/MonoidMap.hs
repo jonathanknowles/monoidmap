@@ -34,7 +34,7 @@ module Data.MonoidMap
     , notNull
     , size
 
-    -- * Indexed
+    -- * Slicing
     , take
     , drop
     , splitAt
