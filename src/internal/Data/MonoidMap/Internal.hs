@@ -44,6 +44,11 @@ module Data.MonoidMap.Internal
     , filterKeys
     , filterValues
 
+    -- * Partitioning
+    , partition
+    , partitionKeys
+    , partitionValues
+
     -- * Traversal
     , map
 
@@ -62,6 +67,8 @@ import Control.DeepSeq
     ( NFData )
 import Data.Bifoldable
     ( Bifoldable )
+import Data.Bifunctor
+    ( bimap )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Group
@@ -428,6 +435,52 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 --
 filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
+
+--------------------------------------------------------------------------------
+-- Partitioning
+--------------------------------------------------------------------------------
+
+-- | Partitions a map according to a predicate on keys and values.
+--
+-- The first map contains all elements that satisfy the predicate, and the
+-- second map contains all elements that fail the predicate.
+--
+-- @
+-- partition f m == ('filter' f m, 'filter' (\k v -> 'not' (f k v)) m)
+-- @
+--
+partition
+    :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partition f (MonoidMap m) =
+    bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
+
+-- | Partitions a map according to a predicate on keys.
+--
+-- The first map contains all elements that satisfy the predicate, and the
+-- second map contains all elements that fail the predicate.
+--
+-- @
+-- partitionKeys f m == ('filterKeys' f m, 'filterKeys' ('not' . f) m)
+-- @
+--
+partitionKeys
+    :: (k -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partitionKeys f (MonoidMap m) =
+    bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
+
+-- | Partitions a map according to a predicate on values.
+--
+-- The first map contains all elements that satisfy the predicate, and the
+-- second map contains all elements that fail the predicate.
+--
+-- @
+-- partitionValues f m == ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- @
+--
+partitionValues
+    :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partitionValues f (MonoidMap m) =
+    bimap MonoidMap MonoidMap $ Map.partition f m
 
 --------------------------------------------------------------------------------
 -- Traversal
