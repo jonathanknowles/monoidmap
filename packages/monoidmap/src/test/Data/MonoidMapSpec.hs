@@ -45,7 +45,10 @@ import Test.Hspec.Unit
     )
 import Test.QuickCheck
     ( Arbitrary (..)
+    , Fun (..)
     , Property
+    , applyFun
+    , applyFun2
     , checkCoverage
     , cover
     , listOf
@@ -88,6 +91,7 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
 import Test.QuickCheck.Instances.Natural
     ()
 
+import qualified Data.List as List
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Strict.Map as Map
 import qualified Data.Strict.Set as Set
@@ -296,6 +300,18 @@ spec = do
         it "prop_keys_get" $
             prop_keys_get & property
 
+    parallel $ describe "Filtering" $ do
+        it "prop_filter_toList" $
+            prop_filter_toList & property
+        it "prop_filterKeys_filter" $
+            prop_filterKeys_filter & property
+        it "prop_filterKeys_toList" $
+            prop_filterKeys_toList & property
+        it "prop_filterValues_toList" $
+            prop_filterValues_toList & property
+        it "prop_filterValues_filter" $
+            prop_filterValues_filter & property
+
     parallel $ describe "Unit tests" $ do
 
         describe "Group" $ do
@@ -484,6 +500,35 @@ prop_keys_get m =
         (\k -> (k, MonoidMap.get k m))
         (Set.toList (MonoidMap.keys m))
     === MonoidMap.toList m
+
+--------------------------------------------------------------------------------
+-- Filtering
+--------------------------------------------------------------------------------
+
+prop_filter_toList
+    :: Fun (Key, Value) Bool -> MonoidMap Key Value -> Property
+prop_filter_toList (applyFun2 -> f) m =
+    toList (MonoidMap.filter f m) === List.filter (uncurry f) (toList m)
+
+prop_filterKeys_filter
+    :: Fun Key Bool -> MonoidMap Key Value -> Property
+prop_filterKeys_filter (applyFun -> f) m =
+    MonoidMap.filterKeys f m === MonoidMap.filter (\k _ -> f k) m
+
+prop_filterKeys_toList
+    :: Fun Key Bool -> MonoidMap Key Value -> Property
+prop_filterKeys_toList (applyFun -> f) m =
+    toList (MonoidMap.filterKeys f m) === List.filter (f . fst) (toList m)
+
+prop_filterValues_toList
+    :: Fun Value Bool -> MonoidMap Key Value -> Property
+prop_filterValues_toList (applyFun -> f) m =
+    toList (MonoidMap.filterValues f m) === List.filter (f . snd) (toList m)
+
+prop_filterValues_filter
+    :: Fun Value Bool -> MonoidMap Value Value -> Property
+prop_filterValues_filter (applyFun -> f) m =
+    MonoidMap.filterValues f m === MonoidMap.filter (\_ v -> f v) m
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances

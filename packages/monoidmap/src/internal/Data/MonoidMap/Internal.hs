@@ -39,6 +39,11 @@ module Data.MonoidMap.Internal
     , drop
     , splitAt
 
+    -- * Filtering
+    , filter
+    , filterKeys
+    , filterValues
+
     -- * Traversal
     , map
 
@@ -51,7 +56,7 @@ module Data.MonoidMap.Internal
     where
 
 import Prelude hiding
-    ( drop, gcd, lookup, map, null, splitAt, subtract, take )
+    ( drop, filter, gcd, lookup, map, null, splitAt, subtract, take )
 
 import Control.DeepSeq
     ( NFData )
@@ -390,6 +395,39 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
 splitAt i m = (take i m, drop i m)
+
+--------------------------------------------------------------------------------
+-- Filtering
+--------------------------------------------------------------------------------
+
+-- | Filters a map according to a predicate on keys and values.
+--
+-- The result contains just the subset of elements that satisfy the predicate.
+--
+filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
+
+-- | Filters a map according to a predicate on keys.
+--
+-- The result contains just the subset of elements that satisfy the predicate.
+--
+-- @
+-- filterKeys f m == 'filter' (\k _ -> f k) m
+-- @
+--
+filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
+filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
+
+-- | Filters a map according to a predicate on values.
+--
+-- The result contains just the subset of elements that satisfy the predicate.
+--
+-- @
+-- filterValues f m == 'filter' (\_ v -> f v) m
+-- @
+--
+filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 
 --------------------------------------------------------------------------------
 -- Traversal
