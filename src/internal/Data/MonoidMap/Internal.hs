@@ -409,14 +409,14 @@ splitAt i m = (take i m, drop i m)
 
 -- | Filters a map according to a predicate on keys and values.
 --
--- The result contains just the subset of elements that satisfy the predicate.
+-- The result contains just the subset of entries that satisfy the predicate.
 --
 filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
 -- | Filters a map according to a predicate on keys.
 --
--- The result contains just the subset of elements that satisfy the predicate.
+-- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
 -- filterKeys f m == 'filter' (\k _ -> f k) m
@@ -427,7 +427,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
 -- | Filters a map according to a predicate on values.
 --
--- The result contains just the subset of elements that satisfy the predicate.
+-- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
 -- filterValues f m == 'filter' (\_ v -> f v) m
@@ -442,8 +442,8 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 
 -- | Partitions a map according to a predicate on keys and values.
 --
--- The first map contains all elements that satisfy the predicate, and the
--- second map contains all elements that fail the predicate.
+-- The first map contains all entries that satisfy the predicate, and the
+-- second map contains all entries that fail the predicate.
 --
 -- @
 -- partition f m == ('filter' f m, 'filter' (\k v -> 'not' (f k v)) m)
@@ -456,8 +456,8 @@ partition f (MonoidMap m) =
 
 -- | Partitions a map according to a predicate on keys.
 --
--- The first map contains all elements that satisfy the predicate, and the
--- second map contains all elements that fail the predicate.
+-- The first map contains all entries that satisfy the predicate, and the
+-- second map contains all entries that fail the predicate.
 --
 -- @
 -- partitionKeys f m == ('filterKeys' f m, 'filterKeys' ('not' . f) m)
@@ -470,8 +470,8 @@ partitionKeys f (MonoidMap m) =
 
 -- | Partitions a map according to a predicate on values.
 --
--- The first map contains all elements that satisfy the predicate, and the
--- second map contains all elements that fail the predicate.
+-- The first map contains all entries that satisfy the predicate, and the
+-- second map contains all entries that fail the predicate.
 --
 -- @
 -- partitionValues f m == ('filterValues' f m, 'filterValues' ('not' . f) m)
