@@ -423,7 +423,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- 'filterKeys' f m == 'filter' (\k _ -> f k) m
+-- 'filterKeys' f m == 'filter' (\\k _ -> f k) m
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -434,7 +434,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- 'filterValues' f m == 'filter' (\_ v -> f v) m
+-- 'filterValues' f m == 'filter' (\\_ v -> f v) m
 -- @
 --
 filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
