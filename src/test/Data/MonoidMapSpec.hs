@@ -548,7 +548,7 @@ prop_filterValues_toList (applyFun -> f) m =
     toList (MonoidMap.filterValues f m) === List.filter (f . snd) (toList m)
 
 prop_filterValues_filter
-    :: Fun Value Bool -> MonoidMap Value Value -> Property
+    :: Fun Value Bool -> MonoidMap Key Value -> Property
 prop_filterValues_filter (applyFun -> f) m =
     MonoidMap.filterValues f m === MonoidMap.filter (\_ v -> f v) m
 
