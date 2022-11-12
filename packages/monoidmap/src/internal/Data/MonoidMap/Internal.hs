@@ -271,14 +271,14 @@ singleton k v = set k v mempty
 
 -- | Converts a 'MonoidMap' to a list of key-value pairs.
 --
--- The result only includes entries with values that are not 'null'.
+-- The result only includes entries with values that are not 'Null.null'.
 --
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toList . unMonoidMap
 
 -- | Converts a 'MonoidMap' to a 'Map'.
 --
--- The result only includes entries with values that are not 'null'.
+-- The result only includes entries with values that are not 'Null.null'.
 --
 toMap :: MonoidMap k v -> Map k v
 toMap = unMonoidMap
@@ -329,35 +329,35 @@ delete k = set k mempty
 -- Queries
 --------------------------------------------------------------------------------
 
--- | Returns the set of keys associated with values that are not 'null'.
+-- | Returns the set of keys associated with values that are not 'Null.null'.
 --
 keys :: MonoidMap k v -> Set k
 keys = Map.keysSet . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'null'.
+--   that is not 'Null.null'.
 --
 member :: Ord k => k -> MonoidMap k v -> Bool
 member k = Map.member k . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'null'.
+--   that is 'Null.null'.
 --
 notMember :: Ord k => k -> MonoidMap k v -> Bool
 notMember k = Map.notMember k . toMap
 
--- | Returns 'True' if (and only if) all values in the map are 'null'.
+-- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
 --
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
 -- | Returns 'True' if (and only if) the map contains at least one value that
---   is not 'null'.
+--   is not 'Null.null'.
 --
 notNull :: MonoidMap k v -> Bool
 notNull = not . null
 
--- | Returns a count of all values in the map that are not 'null'.
+-- | Returns a count of all values in the map that are not 'Null.null'.
 --
 size :: MonoidMap k v -> Int
 size = Map.size . toMap
@@ -490,7 +490,8 @@ partitionValues f (MonoidMap m) =
 -- Traversal
 --------------------------------------------------------------------------------
 
--- | Applies the given function to all values in the map that are not 'null'.
+-- | Applies the given function to all values in the map that are not
+--   'Null.null'.
 --
 -- If the range of the given function includes 'mempty', then the resultant map
 -- may have a 'size' that is smaller than the original map.
