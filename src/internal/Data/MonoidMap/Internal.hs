@@ -450,7 +450,7 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- 'partition' f m == ('filter' f m, 'filter' (\k v -> 'not' (f k v)) m)
+-- 'partition' f m == ('filter' f m, 'filter' (('fmap' . 'fmap') 'not' f) m)
 -- @
 --
 partition
