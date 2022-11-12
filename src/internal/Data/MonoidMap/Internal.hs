@@ -378,7 +378,7 @@ isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 --   keys.
 --
 -- @
--- take n == 'fromList' . 'Prelude.take' n . 'toList'
+-- 'take' n == 'fromList' . 'Prelude.take' n . 'toList'
 -- @
 --
 take :: Int -> MonoidMap k v -> MonoidMap k v
@@ -388,7 +388,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 --   keys.
 --
 -- @
--- drop n == 'fromList' . 'Prelude.drop' n . 'toList'
+-- 'drop' n == 'fromList' . 'Prelude.drop' n . 'toList'
 -- @
 --
 drop :: Int -> MonoidMap k v -> MonoidMap k v
@@ -397,7 +397,7 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 -- | Splits a map at a particular index.
 --
 -- @
--- splitAt n xs == ('take' n xs, 'drop' n xs)
+-- 'splitAt' n xs == ('take' n xs, 'drop' n xs)
 -- @
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
@@ -419,7 +419,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- filterKeys f m == 'filter' (\k _ -> f k) m
+-- 'filterKeys' f m == 'filter' (\k _ -> f k) m
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -430,7 +430,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- filterValues f m == 'filter' (\_ v -> f v) m
+-- 'filterValues' f m == 'filter' (\_ v -> f v) m
 -- @
 --
 filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -446,7 +446,7 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- partition f m == ('filter' f m, 'filter' (\k v -> 'not' (f k v)) m)
+-- 'partition' f m == ('filter' f m, 'filter' (\k v -> 'not' (f k v)) m)
 -- @
 --
 partition
@@ -460,7 +460,7 @@ partition f (MonoidMap m) =
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- partitionKeys f m == ('filterKeys' f m, 'filterKeys' ('not' . f) m)
+-- 'partitionKeys' f m == ('filterKeys' f m, 'filterKeys' ('not' . f) m)
 -- @
 --
 partitionKeys
@@ -474,7 +474,7 @@ partitionKeys f (MonoidMap m) =
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- partitionValues f m == ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- 'partitionValues' f m == ('filterValues' f m, 'filterValues' ('not' . f) m)
 -- @
 --
 partitionValues
