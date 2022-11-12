@@ -561,7 +561,7 @@ prop_partition_filter
 prop_partition_filter (applyFun2 -> f) m =
     MonoidMap.partition f m ===
         ( MonoidMap.filter f m
-        , MonoidMap.filter (\k v -> not (f k v)) m
+        , MonoidMap.filter ((fmap . fmap) not f) m
         )
 
 prop_partitionKeys_filterKeys
