@@ -313,10 +313,10 @@ spec = do
             prop_filterKeys_filter & property
         it "prop_filterKeys_toList" $
             prop_filterKeys_toList & property
-        it "prop_filterValues_toList" $
-            prop_filterValues_toList & property
         it "prop_filterValues_filter" $
             prop_filterValues_filter & property
+        it "prop_filterValues_toList" $
+            prop_filterValues_toList & property
 
     parallel $ describe "Partitioning" $ do
         it "prop_partition_filter" $
@@ -542,15 +542,15 @@ prop_filterKeys_toList
 prop_filterKeys_toList (applyFun -> f) m =
     toList (MonoidMap.filterKeys f m) === List.filter (f . fst) (toList m)
 
-prop_filterValues_toList
-    :: Fun Value Bool -> MonoidMap Key Value -> Property
-prop_filterValues_toList (applyFun -> f) m =
-    toList (MonoidMap.filterValues f m) === List.filter (f . snd) (toList m)
-
 prop_filterValues_filter
     :: Fun Value Bool -> MonoidMap Key Value -> Property
 prop_filterValues_filter (applyFun -> f) m =
     MonoidMap.filterValues f m === MonoidMap.filter (\_ v -> f v) m
+
+prop_filterValues_toList
+    :: Fun Value Bool -> MonoidMap Key Value -> Property
+prop_filterValues_toList (applyFun -> f) m =
+    toList (MonoidMap.filterValues f m) === List.filter (f . snd) (toList m)
 
 --------------------------------------------------------------------------------
 -- Partitioning
