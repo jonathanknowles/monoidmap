@@ -411,6 +411,10 @@ splitAt i m = (take i m, drop i m)
 --
 -- The result contains just the subset of entries that satisfy the predicate.
 --
+-- @
+-- 'toList' ('filter' f m) == 'List.filter' ('uncurry' f) ('toList' m)
+-- @
+--
 filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
