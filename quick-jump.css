@@ -15,6 +15,7 @@
   left: calc(50% - 22em);
   width: 44em;
   z-index: 1000;
+  pointer-events: none;
   overflow-y: auto;
 }
 
