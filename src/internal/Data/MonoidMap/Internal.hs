@@ -50,6 +50,10 @@ module Data.MonoidMap.Internal
     , partitionValues
 
     -- * Traversal
+    , map
+    , mapWith
+    , mapKeys
+    , mapKeysWith
     , mapValues
 
     -- * Combination
@@ -489,6 +493,37 @@ partitionValues f (MonoidMap m) =
 --------------------------------------------------------------------------------
 -- Traversal
 --------------------------------------------------------------------------------
+
+map :: (Ord k2, MonoidNull v2)
+    => (k1 -> k2)
+    -> (v1 -> v2)
+    -> MonoidMap k1 v1
+    -> MonoidMap k2 v2
+map = mapWith (<>)
+
+mapWith :: (Ord k2, MonoidNull v2)
+    => (v2 -> v2 -> v2)
+    -> (k1 -> k2)
+    -> (v1 -> v2)
+    -> MonoidMap k1 v1
+    -> MonoidMap k2 v2
+mapWith combine fk fv = fromListWith combine . fmap (bimap fk fv) . toList
+
+mapKeys
+    :: (Ord k2, MonoidNull v)
+    => (k1 -> k2)
+    -> MonoidMap k1 v
+    -> MonoidMap k2 v
+mapKeys = mapKeysWith (<>)
+
+mapKeysWith
+    :: (Ord k2, MonoidNull v)
+    => (v -> v -> v)
+    -> (k1 -> k2)
+    -> MonoidMap k1 v
+    -> MonoidMap k2 v
+mapKeysWith combine fk (MonoidMap m) =
+    MonoidMap $ Map.filter (not . Null.null) $ Map.mapKeysWith combine fk m
 
 -- | Applies the given function to all values in the map that are not
 --   'Null.null'.
