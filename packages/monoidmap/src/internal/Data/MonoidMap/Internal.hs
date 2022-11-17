@@ -50,7 +50,7 @@ module Data.MonoidMap.Internal
     , partitionValues
 
     -- * Traversal
-    , map
+    , mapValues
 
     -- * Combination
     , intersectionWith
@@ -221,9 +221,9 @@ instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
-    invert = map invert
+    invert = mapValues invert
     (~~) = unionWith (~~)
-    m `pow` x = map (`pow` x) m
+    m `pow` x = mapValues (`pow` x) m
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -496,12 +496,12 @@ partitionValues f (MonoidMap m) =
 -- If the range of the given function includes 'mempty', then the resultant map
 -- may have a 'size' that is smaller than the original map.
 --
-map
+mapValues
     :: MonoidNull v2
     => (v1 -> v2)
     -> MonoidMap k v1
     -> MonoidMap k v2
-map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
+mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 --------------------------------------------------------------------------------
 -- Binary operations
