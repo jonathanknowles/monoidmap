@@ -50,6 +50,10 @@ module Data.MonoidMap
     , partitionValues
 
     -- * Traversal
+    , map
+    , mapWith
+    , mapKeys
+    , mapKeysWith
     , mapValues
     )
     where
