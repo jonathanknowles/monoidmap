@@ -64,11 +64,11 @@ library examples
     default-language:
         Haskell2010
     build-depends:
-        base >=4.7 && <5
+      , base >=4.7 && <5
+      , containers
       , deepseq
       , monoid-subclasses
       , monoidmap
-      , strict-containers
 
 library internal
     import:
@@ -81,11 +81,11 @@ library internal
     default-language:
         Haskell2010
     build-depends:
-        base >=4.7 && <5
+      , base >=4.7 && <5
+      , containers
       , deepseq
       , groups
       , monoid-subclasses
-      , strict-containers
 
 test-suite test
     import:
@@ -105,19 +105,19 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-        base >=4.7 && <5
-      , QuickCheck
+      , base >=4.7 && <5
+      , containers
       , groups
       , hspec
       , monoid-subclasses
       , monoidmap
       , monoidmap:internal
       , pretty-show
+      , QuickCheck
       , quickcheck-classes
       , quickcheck-classes-groups
       , quickcheck-classes-monoid-subclasses
       , quickcheck-instances
-      , strict-containers
 
 benchmark benchmark
     default-language:
@@ -131,9 +131,9 @@ benchmark benchmark
     ghc-options:
         -O2
     build-depends:
-        base >=4.7 && <5
+      , base >=4.7 && <5
+      , containers
       , deepseq
       , monoidmap:internal
-      , strict-containers
       , tasty-bench
       , tasty-hunit

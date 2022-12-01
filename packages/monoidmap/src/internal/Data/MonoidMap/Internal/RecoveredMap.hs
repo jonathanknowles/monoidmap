@@ -11,7 +11,7 @@ import Data.Monoid
     ( First (..) )
 import Data.MonoidMap.Internal
     ( MonoidMap )
-import Data.Strict.Set
+import Data.Set
     ( Set )
 
 import qualified Data.MonoidMap.Internal as MonoidMap

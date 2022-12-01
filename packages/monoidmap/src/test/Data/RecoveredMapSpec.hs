@@ -33,9 +33,9 @@ import Test.QuickCheck
 import Test.QuickCheck.Instances.Natural
     ()
 
+import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
-import qualified Data.Strict.Map as OMap
-import qualified Data.Strict.Set as Set
+import qualified Data.Set as Set
 
 spec :: Spec
 spec = do
