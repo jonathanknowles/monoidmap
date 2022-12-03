@@ -71,8 +71,6 @@ import Control.DeepSeq
     ( NFData )
 import Data.Bifoldable
     ( Bifoldable )
-import Data.Bifunctor
-    ( bimap )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Group
@@ -116,6 +114,7 @@ import GHC.Exts
 import Text.Read
     ( Read (..) )
 
+import qualified Data.Bifunctor as B
 import qualified Data.Foldable as F
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
@@ -371,7 +370,7 @@ isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 --   keys.
 --
 -- @
--- 'take' n == 'fromList' . 'Prelude.take' n . 'toList'
+-- 'take' n '==' 'fromList' . 'Prelude.take' n . 'toList'
 -- @
 --
 take :: Int -> MonoidMap k v -> MonoidMap k v
@@ -381,7 +380,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 --   keys.
 --
 -- @
--- 'drop' n == 'fromList' . 'Prelude.drop' n . 'toList'
+-- 'drop' n '==' 'fromList' . 'Prelude.drop' n . 'toList'
 -- @
 --
 drop :: Int -> MonoidMap k v -> MonoidMap k v
@@ -390,7 +389,7 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 -- | Splits a map at a particular index.
 --
 -- @
--- 'splitAt' n xs == ('take' n xs, 'drop' n xs)
+-- 'splitAt' n xs '==' ('take' n xs, 'drop' n xs)
 -- @
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
@@ -405,7 +404,7 @@ splitAt i m = (take i m, drop i m)
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- 'toList' ('filter' f m) == 'List.filter' ('uncurry' f) ('toList' m)
+-- 'toList' ('filter' f m) '==' 'List.filter' ('uncurry' f) ('toList' m)
 -- @
 --
 filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -416,7 +415,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- 'filterKeys' f m == 'filter' (\\k _ -> f k) m
+-- 'filterKeys' f m '==' 'filter' (\\k _ -> f k) m
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -427,7 +426,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- The result contains just the subset of entries that satisfy the predicate.
 --
 -- @
--- 'filterValues' f m == 'filter' (\\_ v -> f v) m
+-- 'filterValues' f m '==' 'filter' (\\_ v -> f v) m
 -- @
 --
 filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -443,13 +442,13 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- 'partition' f m == ('filter' f m, 'filter' (('fmap' . 'fmap') 'not' f) m)
+-- 'partition' f m '==' ('filter' f m, 'filter' (('fmap' . 'fmap') 'not' f) m)
 -- @
 --
 partition
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
-    bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
+    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
 
 -- | Partitions a map according to a predicate on keys.
 --
@@ -457,13 +456,13 @@ partition f (MonoidMap m) =
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- 'partitionKeys' f m == ('filterKeys' f m, 'filterKeys' ('not' . f) m)
+-- 'partitionKeys' f m '==' ('filterKeys' f m, 'filterKeys' ('not' . f) m)
 -- @
 --
 partitionKeys
     :: (k -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partitionKeys f (MonoidMap m) =
-    bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
+    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
 -- | Partitions a map according to a predicate on values.
 --
@@ -471,13 +470,13 @@ partitionKeys f (MonoidMap m) =
 -- second map contains all entries that fail the predicate.
 --
 -- @
--- 'partitionValues' f m == ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- 'partitionValues' f m '==' ('filterValues' f m, 'filterValues' ('not' . f) m)
 -- @
 --
 partitionValues
     :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partitionValues f (MonoidMap m) =
-    bimap MonoidMap MonoidMap $ Map.partition f m
+    B.bimap MonoidMap MonoidMap $ Map.partition f m
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -486,8 +485,9 @@ partitionValues f (MonoidMap m) =
 -- | Maps over the keys and values of a 'MonoidMap'.
 --
 -- Satisifies the following property:
+--
 -- @
--- 'map' f g == 'fromList' . 'fmap' ('bimap' f g) . 'toList'
+-- 'map' f g '==' 'fromList' . 'fmap' ('B.bimap' f g) . 'toList'
 -- @
 --
 map :: (Ord k2, MonoidNull v2)
@@ -500,8 +500,9 @@ map = mapWith (<>)
 -- | Maps over the keys and values of a 'MonoidMap'.
 --
 -- Satisifies the following property:
+--
 -- @
--- 'mapWith' c f g == 'fromListWith' c . 'fmap' ('bimap' f g) . 'toList'
+-- 'mapWith' c f g '==' 'fromListWith' c . 'fmap' ('B.bimap' f g) . 'toList'
 -- @
 --
 mapWith :: (Ord k2, MonoidNull v2)
@@ -510,13 +511,14 @@ mapWith :: (Ord k2, MonoidNull v2)
     -> (v1 -> v2)
     -> MonoidMap k1 v1
     -> MonoidMap k2 v2
-mapWith combine fk fv = fromListWith combine . fmap (bimap fk fv) . toList
+mapWith combine fk fv = fromListWith combine . fmap (B.bimap fk fv) . toList
 
 -- | Maps over the keys of a 'MonoidMap'.
 --
 -- Satisifies the following property:
+--
 -- @
--- 'mapKeys' f == 'fromList' . 'fmap' ('first' f) . 'toList'
+-- 'mapKeys' f '==' 'fromList' . 'fmap' ('B.first' f) . 'toList'
 -- @
 --
 mapKeys
@@ -529,8 +531,9 @@ mapKeys = mapKeysWith (<>)
 -- | Maps over the keys of a 'MonoidMap'.
 --
 -- Satisifies the following property:
+--
 -- @
--- 'mapKeysWith' c f == 'fromListWith' c . 'fmap' ('first' f) . 'toList'
+-- 'mapKeysWith' c f '==' 'fromListWith' c . 'fmap' ('B.first' f) . 'toList'
 -- @
 --
 mapKeysWith
@@ -545,8 +548,9 @@ mapKeysWith combine fk (MonoidMap m) =
 -- | Maps over the values of a 'MonoidMap'.
 --
 -- Satisifies the following property:
+--
 -- @
--- 'mapValues' f == 'fromList' . 'fmap' ('second' f) . 'toList'
+-- 'mapValues' f '==' 'fromList' . 'fmap' ('B.second' f) . 'toList'
 -- @
 --
 mapValues
