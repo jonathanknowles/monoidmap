@@ -483,6 +483,13 @@ partitionValues f (MonoidMap m) =
 -- Mapping
 --------------------------------------------------------------------------------
 
+-- | Maps over the keys and values of a 'MonoidMap'.
+--
+-- Satisifies the following property:
+-- @
+-- 'map' f g == 'fromList' . 'fmap' ('bimap' f g) . 'toList'
+-- @
+--
 map :: (Ord k2, MonoidNull v2)
     => (k1 -> k2)
     -> (v1 -> v2)
@@ -490,6 +497,13 @@ map :: (Ord k2, MonoidNull v2)
     -> MonoidMap k2 v2
 map = mapWith (<>)
 
+-- | Maps over the keys and values of a 'MonoidMap'.
+--
+-- Satisifies the following property:
+-- @
+-- 'mapWith' c f g == 'fromListWith' c . 'fmap' ('bimap' f g) . 'toList'
+-- @
+--
 mapWith :: (Ord k2, MonoidNull v2)
     => (v2 -> v2 -> v2)
     -> (k1 -> k2)
@@ -498,6 +512,13 @@ mapWith :: (Ord k2, MonoidNull v2)
     -> MonoidMap k2 v2
 mapWith combine fk fv = fromListWith combine . fmap (bimap fk fv) . toList
 
+-- | Maps over the keys of a 'MonoidMap'.
+--
+-- Satisifies the following property:
+-- @
+-- 'mapKeys' f == 'fromList' . 'fmap' ('first' f) . 'toList'
+-- @
+--
 mapKeys
     :: (Ord k2, MonoidNull v)
     => (k1 -> k2)
@@ -505,6 +526,13 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
+-- | Maps over the keys of a 'MonoidMap'.
+--
+-- Satisifies the following property:
+-- @
+-- 'mapKeysWith' c f == 'fromListWith' c . 'fmap' ('first' f) . 'toList'
+-- @
+--
 mapKeysWith
     :: (Ord k2, MonoidNull v)
     => (v -> v -> v)
@@ -514,11 +542,12 @@ mapKeysWith
 mapKeysWith combine fk (MonoidMap m) =
     MonoidMap $ Map.filter (not . Null.null) $ Map.mapKeysWith combine fk m
 
--- | Applies the given function to all values in the map that are not
---   'Null.null'.
+-- | Maps over the values of a 'MonoidMap'.
 --
--- If the range of the given function includes 'mempty', then the resultant map
--- may have a 'size' that is smaller than the original map.
+-- Satisifies the following property:
+-- @
+-- 'mapValues' f == 'fromList' . 'fmap' ('second' f) . 'toList'
+-- @
 --
 mapValues
     :: MonoidNull v2
