@@ -49,12 +49,16 @@
 </span><span id="line-49"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">partitionKeys</span></span><span>
 </span><span id="line-50"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">partitionValues</span></span><span>
 </span><span id="line-51"></span><span>
-</span><span id="line-52"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Traversal</span></span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Mapping</span></span><span>
 </span><span id="line-53"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">map</span></span><span>
-</span><span id="line-54"></span><span>    </span><span class="hs-special">)</span><span>
-</span><span id="line-55"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-56"></span><span>
-</span><span id="line-57"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span>
-</span><span id="line-58"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span> </span><span class="hs-keyword">hiding</span><span>
-</span><span id="line-59"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">drop</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">filter</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">map</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">null</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">splitAt</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">take</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-60"></span></pre></body></html>
+</span><span id="line-54"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapWith</span></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapKeys</span></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapKeysWith</span></span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapValues</span></span><span>
+</span><span id="line-58"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-59"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span>
+</span><span id="line-62"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span> </span><span class="hs-keyword">hiding</span><span>
+</span><span id="line-63"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">drop</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">filter</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">map</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">null</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">splitAt</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">take</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-64"></span></pre></body></html>
