@@ -118,6 +118,7 @@ test-suite test
       , quickcheck-classes-groups
       , quickcheck-classes-monoid-subclasses
       , quickcheck-instances
+      , text
 
 benchmark benchmark
     default-language:
