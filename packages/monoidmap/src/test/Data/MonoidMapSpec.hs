@@ -27,12 +27,18 @@ import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.Proxy
+    ( Proxy (..) )
 import Data.Ratio
     ( (%) )
 import Data.Semigroup.Cancellative
     ( LeftReductive (..), RightReductive (..) )
 import Data.Set
     ( Set )
+import Data.Text
+    ( Text )
+import Data.Typeable
+    ( Typeable, typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
@@ -48,7 +54,9 @@ import Test.Hspec.Unit
     )
 import Test.QuickCheck
     ( Arbitrary (..)
+    , CoArbitrary (..)
     , Fun (..)
+    , Function (..)
     , Gen
     , Property
     , applyFun
@@ -96,6 +104,8 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
     )
 import Test.QuickCheck.Instances.Natural
     ()
+import Test.QuickCheck.Instances.Text
+    ()
 
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
@@ -104,288 +114,374 @@ import qualified Data.Set as Set
 
 spec :: Spec
 spec = do
-    parallel $ describe "Class instances obey laws" $ do
-        testLawsMany @(MonoidMap Int String)
-            [ eqLaws
-            , isListLaws
-            , leftCancellativeLaws
-            , leftGCDMonoidLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , overlappingGCDMonoidLaws
-            , positiveMonoidLaws
-            , rightCancellativeLaws
-            , rightGCDMonoidLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
+    parallel specLaws
+    parallel specProperties
+    parallel specUnit
+
+specLaws :: Spec
+specLaws = describe "Laws" $ do
+
+    testLawsMany @(MonoidMap Int String)
+        [ eqLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Product Integer))
+        [ commutativeLaws
+        , eqLaws
+        , isListLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , reductiveLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Product Natural))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Product Rational))
+        [ commutativeLaws
+        , eqLaws
+        , groupLaws
+        , isListLaws
+        , monoidLaws
+        , monoidNullLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Sum Integer))
+        [ cancellativeLaws
+        , commutativeLaws
+        , eqLaws
+        , groupLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Sum Natural))
+        [ cancellativeGCDMonoidLaws
+        , cancellativeLaws
+        , commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Set Int))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (MonoidMap Int (Sum Natural)))
+        [ cancellativeGCDMonoidLaws
+        , cancellativeLaws
+        , commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+
+specProperties :: Spec
+specProperties = describe "Properties" $ do
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @Text)
+
+specPropertiesFor
+    :: forall k v. () =>
+        ( Arbitrary k
+        , Arbitrary v
+        , CoArbitrary k
+        , CoArbitrary v
+        , Eq v
+        , Function k
+        , Function v
+        , MonoidNull v
+        , Ord k
+        , Show k
+        , Show v
+        , Typeable k
+        , Typeable v
+        )
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specPropertiesFor keyType valueType = do
+
+    let description = mconcat
+            [ "MonoidMap ("
+            , show (typeRep keyType)
+            , ") ("
+            , show (typeRep valueType)
+            , ")"
             ]
-        testLawsMany @(MonoidMap Int (Product Integer))
-            [ commutativeLaws
-            , eqLaws
-            , isListLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , reductiveLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
-        testLawsMany @(MonoidMap Int (Product Natural))
-            [ commutativeLaws
-            , eqLaws
-            , gcdMonoidLaws
-            , isListLaws
-            , leftGCDMonoidLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , monusLaws
-            , overlappingGCDMonoidLaws
-            , positiveMonoidLaws
-            , reductiveLaws
-            , rightGCDMonoidLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
-        testLawsMany @(MonoidMap Int (Product Rational))
-            [ commutativeLaws
-            , eqLaws
-            , groupLaws
-            , isListLaws
-            , monoidLaws
-            , monoidNullLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
-        testLawsMany @(MonoidMap Int (Sum Integer))
-            [ cancellativeLaws
-            , commutativeLaws
-            , eqLaws
-            , groupLaws
-            , isListLaws
-            , leftCancellativeLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , reductiveLaws
-            , rightCancellativeLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
-        testLawsMany @(MonoidMap Int (Sum Natural))
-            [ cancellativeGCDMonoidLaws
-            , cancellativeLaws
-            , commutativeLaws
-            , eqLaws
-            , gcdMonoidLaws
-            , isListLaws
-            , leftCancellativeLaws
-            , leftGCDMonoidLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , monusLaws
-            , overlappingGCDMonoidLaws
-            , positiveMonoidLaws
-            , reductiveLaws
-            , rightCancellativeLaws
-            , rightGCDMonoidLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
-        testLawsMany @(MonoidMap Int (Set Int))
-            [ commutativeLaws
-            , eqLaws
-            , gcdMonoidLaws
-            , isListLaws
-            , leftGCDMonoidLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , monusLaws
-            , overlappingGCDMonoidLaws
-            , positiveMonoidLaws
-            , reductiveLaws
-            , rightGCDMonoidLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
-        testLawsMany @(MonoidMap Int (MonoidMap Int (Sum Natural)))
-            [ cancellativeGCDMonoidLaws
-            , cancellativeLaws
-            , commutativeLaws
-            , eqLaws
-            , gcdMonoidLaws
-            , isListLaws
-            , leftCancellativeLaws
-            , leftGCDMonoidLaws
-            , leftReductiveLaws
-            , monoidLaws
-            , monoidNullLaws
-            , monusLaws
-            , overlappingGCDMonoidLaws
-            , positiveMonoidLaws
-            , reductiveLaws
-            , rightCancellativeLaws
-            , rightGCDMonoidLaws
-            , rightReductiveLaws
-            , semigroupLaws
-            , semigroupMonoidLaws
-            , showReadLaws
-            ]
 
-    parallel $ describe "Conversion to and from lists" $ do
-        it "prop_fromList_toMap" $
-            prop_fromList_toMap & property
-        it "prop_fromList_toList" $
-            prop_fromList_toList & property
-        it "prop_toList_fromList" $
-            prop_toList_fromList & property
+    describe description $ do
 
-    parallel $ describe "Conversion to and from ordinary maps" $ do
-        it "prop_fromMap_toMap" $
-            prop_fromMap_toMap & property
-        it "prop_toMap_fromMap" $
-            prop_toMap_fromMap & property
+        parallel $ describe "Conversion to and from lists" $ do
+            it "prop_fromList_toMap" $
+                prop_fromList_toMap
+                    @k @v & property
+            it "prop_fromList_toList" $
+                prop_fromList_toList
+                    @k @v & property
+            it "prop_toList_fromList" $
+                prop_toList_fromList
+                    @k @v & property
 
-    parallel $ describe "Singleton" $ do
-        it "prop_singleton_get" $
-            prop_singleton_get & property
-        it "prop_singleton_member" $
-            prop_singleton_member & property
-        it "prop_singleton_keys" $
-            prop_singleton_keys & property
-        it "prop_singleton_null" $
-            prop_singleton_null & property
-        it "prop_singleton_delete" $
-            prop_singleton_delete & property
-        it "prop_singleton_size" $
-            prop_singleton_size & property
-        it "prop_singleton_toList" $
-            prop_singleton_toList & property
+        parallel $ describe "Conversion to and from ordinary maps" $ do
+            it "prop_fromMap_toMap" $
+                prop_fromMap_toMap
+                    @k @v & property
+            it "prop_toMap_fromMap" $
+                prop_toMap_fromMap
+                    @k @v & property
 
-    parallel $ describe "Get" $ do
-        it "prop_get_member" $
-            prop_get_member & property
-        it "prop_get_keys" $
-            prop_get_keys & property
+        parallel $ describe "Singleton" $ do
+            it "prop_singleton_get" $
+                prop_singleton_get
+                    @k @v & property
+            it "prop_singleton_member" $
+                prop_singleton_member
+                    @k @v & property
+            it "prop_singleton_keys" $
+                prop_singleton_keys
+                    @k @v & property
+            it "prop_singleton_null" $
+                prop_singleton_null
+                    @k @v & property
+            it "prop_singleton_delete" $
+                prop_singleton_delete
+                    @k @v & property
+            it "prop_singleton_size" $
+                prop_singleton_size
+                    @k @v & property
+            it "prop_singleton_toList" $
+                prop_singleton_toList
+                    @k @v & property
 
-    parallel $ describe "Set" $ do
-        it "prop_set_get" $
-            prop_set_get & property
-        it "prop_set_member" $
-            prop_set_member & property
-        it "prop_set_keys" $
-            prop_set_keys & property
-        it "prop_set_toList" $
-            prop_set_toList & property
+        parallel $ describe "Get" $ do
+            it "prop_get_member" $
+                prop_get_member
+                    @k @v & property
+            it "prop_get_keys" $
+                prop_get_keys
+                    @k @v & property
 
-    parallel $ describe "Nullify" $ do
-        it "prop_delete_get" $
-            prop_delete_get & property
-        it "prop_delete_member" $
-            prop_delete_member & property
-        it "prop_delete_keys" $
-            prop_delete_keys & property
+        parallel $ describe "Set" $ do
+            it "prop_set_get" $
+                prop_set_get
+                    @k @v & property
+            it "prop_set_member" $
+                prop_set_member
+                    @k @v & property
+            it "prop_set_keys" $
+                prop_set_keys
+                    @k @v & property
+            it "prop_set_toList" $
+                prop_set_toList
+                    @k @v & property
 
-    parallel $ describe "Keys" $ do
-        it "prop_keys_get" $
-            prop_keys_get & property
+        parallel $ describe "Nullify" $ do
+            it "prop_delete_get" $
+                prop_delete_get
+                    @k @v & property
+            it "prop_delete_member" $
+                prop_delete_member
+                    @k @v & property
+            it "prop_delete_keys" $
+                prop_delete_keys
+                    @k @v & property
 
-    parallel $ describe "Filtering" $ do
-        it "prop_filter_toList" $
-            prop_filter_toList & property
-        it "prop_filterKeys_filter" $
-            prop_filterKeys_filter & property
-        it "prop_filterKeys_toList" $
-            prop_filterKeys_toList & property
-        it "prop_filterValues_filter" $
-            prop_filterValues_filter & property
-        it "prop_filterValues_toList" $
-            prop_filterValues_toList & property
+        parallel $ describe "Keys" $ do
+            it "prop_keys_get" $
+                prop_keys_get
+                    @k @v & property
 
-    parallel $ describe "Partitioning" $ do
-        it "prop_partition_filter" $
-            prop_partition_filter & property
-        it "prop_partitionKeys_filterKeys" $
-            prop_partitionKeys_filterKeys & property
-        it "prop_partitionValues_filterValues" $
-            prop_partitionValues_filterValues & property
+        parallel $ describe "Filtering" $ do
+            it "prop_filter_toList" $
+                prop_filter_toList
+                    @k @v & property
+            it "prop_filterKeys_filter" $
+                prop_filterKeys_filter
+                    @k @v & property
+            it "prop_filterKeys_toList" $
+                prop_filterKeys_toList
+                    @k @v & property
+            it "prop_filterValues_filter" $
+                prop_filterValues_filter
+                    @k @v & property
+            it "prop_filterValues_toList" $
+                prop_filterValues_toList
+                    @k @v & property
 
-    parallel $ describe "Slicing" $ do
-        it "prop_take_toList_fromList" $
-            prop_take_toList_fromList & property
-        it "prop_drop_toList_fromList" $
-            prop_drop_toList_fromList & property
-        it "prop_splitAt_toList_fromList" $
-            prop_splitAt_toList_fromList & property
+        parallel $ describe "Partitioning" $ do
+            it "prop_partition_filter" $
+                prop_partition_filter
+                    @k @v & property
+            it "prop_partitionKeys_filterKeys" $
+                prop_partitionKeys_filterKeys
+                    @k @v & property
+            it "prop_partitionValues_filterValues" $
+                prop_partitionValues_filterValues
+                    @k @v & property
 
-    parallel $ describe "Mapping" $ do
-        it "prop_map_asList" $
-            prop_map_asList & property
-        it "prop_mapWith_asList" $
-            prop_mapWith_asList & property
-        it "prop_mapKeys_asList" $
-            prop_mapKeys_asList & property
-        it "prop_mapKeysWith_asList" $
-            prop_mapKeysWith_asList & property
-        it "prop_mapValues_asList" $
-            prop_mapValues_asList & property
+        parallel $ describe "Slicing" $ do
+            it "prop_take_toList_fromList" $
+                prop_take_toList_fromList
+                    @k @v & property
+            it "prop_drop_toList_fromList" $
+                prop_drop_toList_fromList
+                    @k @v & property
+            it "prop_splitAt_toList_fromList" $
+                prop_splitAt_toList_fromList
+                    @k @v & property
 
-    parallel $ describe "Unit tests" $ do
+        parallel $ describe "Mapping" $ do
+            it "prop_map_asList" $
+                prop_map_asList
+                    @k @v & property
+            it "prop_mapWith_asList" $
+                prop_mapWith_asList
+                    @k @v & property
+            it "prop_mapKeys_asList" $
+                prop_mapKeys_asList
+                    @k @v & property
+            it "prop_mapKeysWith_asList" $
+                prop_mapKeysWith_asList
+                    @k @v & property
+            it "prop_mapValues_asList" $
+                prop_mapValues_asList
+                    @k @v & property
 
-        describe "Group" $ do
+specUnit :: Spec
+specUnit = describe "Unit tests" $ do
 
-            unitTestSpec_Group_invert_Product_Rational
-            unitTestSpec_Group_invert_Sum_Integer
-            unitTestSpec_Group_pow_Product_Rational
-            unitTestSpec_Group_pow_Sum_Integer
-            unitTestSpec_Group_subtract_Product_Rational
-            unitTestSpec_Group_subtract_Sum_Integer
+    describe "Group" $ do
 
-        describe "Reductive" $ do
+        unitTestSpec_Group_invert_Product_Rational
+        unitTestSpec_Group_invert_Sum_Integer
+        unitTestSpec_Group_pow_Product_Rational
+        unitTestSpec_Group_pow_Sum_Integer
+        unitTestSpec_Group_subtract_Product_Rational
+        unitTestSpec_Group_subtract_Sum_Integer
 
-            unitTestSpec_Reductive_isPrefixOf_String
-            unitTestSpec_Reductive_isSuffixOf_String
-            unitTestSpec_Reductive_isPrefixOf_Sum_Natural
-            unitTestSpec_Reductive_isSuffixOf_Sum_Natural
+    describe "Reductive" $ do
 
---------------------------------------------------------------------------------
--- Test types
---------------------------------------------------------------------------------
-
-type Key = Int
-type Value = Sum Int
+        unitTestSpec_Reductive_isPrefixOf_String
+        unitTestSpec_Reductive_isSuffixOf_String
+        unitTestSpec_Reductive_isPrefixOf_Sum_Natural
+        unitTestSpec_Reductive_isSuffixOf_Sum_Natural
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
 
-prop_fromList_toMap :: [(Key, Value)] -> Property
+prop_fromList_toMap
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => [(k, v)]
+    -> Property
 prop_fromList_toMap kvs =
     MonoidMap.toMap (MonoidMap.fromList kvs) ===
     Map.filter (/= mempty) (Map.fromListWith (<>) kvs)
 
-prop_fromList_toList :: [(Key, Value)] -> Property
+prop_fromList_toList
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => [(k, v)]
+    -> Property
 prop_fromList_toList kvs =
     MonoidMap.toList (MonoidMap.fromList kvs) ===
     Map.toList (Map.filter (/= mempty) (Map.fromListWith (<>) kvs))
 
-prop_toList_fromList :: MonoidMap Key Value -> Property
+prop_toList_fromList
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => MonoidMap k v
+    -> Property
 prop_toList_fromList m =
     MonoidMap.fromList (MonoidMap.toList m) === m
 
@@ -393,11 +489,17 @@ prop_toList_fromList m =
 -- Conversion to and from ordinary maps
 --------------------------------------------------------------------------------
 
-prop_fromMap_toMap :: Map Key Value -> Property
+prop_fromMap_toMap
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Map k v
+    -> Property
 prop_fromMap_toMap m =
     MonoidMap.toMap (MonoidMap.fromMap m) === Map.filter (/= mempty) m
 
-prop_toMap_fromMap :: MonoidMap Key Value -> Property
+prop_toMap_fromMap
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => MonoidMap k v
+    -> Property
 prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
 
@@ -405,37 +507,65 @@ prop_toMap_fromMap m =
 -- Singleton
 --------------------------------------------------------------------------------
 
-prop_singleton_get :: Key -> Value -> Property
+prop_singleton_get
+    :: (Ord k, Eq v, MonoidNull v, Show v)
+    => k
+    -> v
+    -> Property
 prop_singleton_get k v =
     MonoidMap.get k (MonoidMap.singleton k v) === v
 
-prop_singleton_member :: Key -> Value -> Property
+prop_singleton_member
+    :: (Ord k, Eq v, MonoidNull v)
+    => k
+    -> v
+    -> Property
 prop_singleton_member k v =
     MonoidMap.member k (MonoidMap.singleton k v) === (v /= mempty)
 
-prop_singleton_keys :: Key -> Value -> Property
+prop_singleton_keys
+    :: (Ord k, Show k, Eq v, MonoidNull v)
+    => k
+    -> v
+    -> Property
 prop_singleton_keys k v =
     MonoidMap.keys (MonoidMap.singleton k v) ===
         if v == mempty
         then Set.empty
         else Set.singleton k
 
-prop_singleton_null :: Key -> Value -> Property
+prop_singleton_null
+    :: (Ord k, Eq v, MonoidNull v)
+    => k
+    -> v
+    -> Property
 prop_singleton_null k v =
     MonoidMap.null (MonoidMap.singleton k v) === (v == mempty)
 
-prop_singleton_delete :: Key -> Value -> Property
+prop_singleton_delete
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => k
+    -> v
+    -> Property
 prop_singleton_delete k v =
     MonoidMap.delete k (MonoidMap.singleton k v) === mempty
 
-prop_singleton_size :: Key -> Value -> Property
+prop_singleton_size
+    :: (Ord k, Eq v, MonoidNull v)
+    => k
+    -> v
+    -> Property
 prop_singleton_size k v =
     MonoidMap.size (MonoidMap.singleton k v) ===
         if v == mempty
         then 0
         else 1
 
-prop_singleton_toList :: Key -> Value -> Property
+prop_singleton_toList
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => k
+    -> v
+    -> Property
 prop_singleton_toList k v =
     MonoidMap.toList (MonoidMap.singleton k v) ===
         [(k, v) | v /= mempty]
@@ -444,7 +574,11 @@ prop_singleton_toList k v =
 -- Get
 --------------------------------------------------------------------------------
 
-prop_get_member :: MonoidMap Key Value -> Key -> Property
+prop_get_member
+    :: (Ord k, Eq v, MonoidNull v)
+    => MonoidMap k v
+    -> k
+    -> Property
 prop_get_member m k =
     MonoidMap.member k m === (MonoidMap.get k m /= mempty)
     & cover 10
@@ -455,7 +589,11 @@ prop_get_member m k =
         "not (MonoidMap.member k m)"
     & checkCoverage
 
-prop_get_keys :: MonoidMap Key Value -> Key -> Property
+prop_get_keys
+    :: (Ord k, Eq v, MonoidNull v)
+    => MonoidMap k v
+    -> k
+    -> Property
 prop_get_keys m k =
     Set.member k (MonoidMap.keys m) === (MonoidMap.get k m /= mempty)
     & cover 10
@@ -470,7 +608,12 @@ prop_get_keys m k =
 -- Set
 --------------------------------------------------------------------------------
 
-prop_set_get :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_get
+    :: (Ord k, Eq v, MonoidNull v, Show v)
+    => MonoidMap k v
+    -> k
+    -> v
+    -> Property
 prop_set_get m k v =
     MonoidMap.get k (MonoidMap.set k v m) === v
     & cover 10
@@ -481,17 +624,32 @@ prop_set_get m k v =
         "not (MonoidMap.member k m)"
     & checkCoverage
 
-prop_set_member :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_member
+    :: (Ord k, Eq v, MonoidNull v)
+    => MonoidMap k v
+    -> k
+    -> v
+    -> Property
 prop_set_member m k v =
     MonoidMap.member k (MonoidMap.set k v m) ===
         (v /= mempty)
 
-prop_set_keys :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_keys
+    :: (Ord k, Eq v, MonoidNull v)
+    => MonoidMap k v
+    -> k
+    -> v
+    -> Property
 prop_set_keys m k v =
     Set.member k (MonoidMap.keys (MonoidMap.set k v m)) ===
         (v /= mempty)
 
-prop_set_toList :: MonoidMap Key Value -> Key -> Value -> Property
+prop_set_toList
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => MonoidMap k v
+    -> k
+    -> v
+    -> Property
 prop_set_toList m k v =
     filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set k v m)) ===
         [(k, v) | v /= mempty]
@@ -500,7 +658,11 @@ prop_set_toList m k v =
 -- Nullify
 --------------------------------------------------------------------------------
 
-prop_delete_get :: MonoidMap Key Value -> Key -> Property
+prop_delete_get
+    :: (Ord k, Eq v, Monoid v, Show v)
+    => MonoidMap k v
+    -> k
+    -> Property
 prop_delete_get m k =
     MonoidMap.get k (MonoidMap.delete k m) === mempty
     & cover 10
@@ -508,7 +670,11 @@ prop_delete_get m k =
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_member :: MonoidMap Key Value -> Key -> Property
+prop_delete_member
+    :: Ord k
+    => MonoidMap k v
+    -> k
+    -> Property
 prop_delete_member m k =
     MonoidMap.member k (MonoidMap.delete k m) === False
     & cover 10
@@ -516,7 +682,11 @@ prop_delete_member m k =
         "MonoidMap.member k m"
     & checkCoverage
 
-prop_delete_keys :: MonoidMap Key Value -> Key -> Property
+prop_delete_keys
+    :: Ord k
+    => MonoidMap k v
+    -> k
+    -> Property
 prop_delete_keys m k =
     Set.member k (MonoidMap.keys (MonoidMap.delete k m)) === False
     & cover 10
@@ -528,7 +698,10 @@ prop_delete_keys m k =
 -- Keys
 --------------------------------------------------------------------------------
 
-prop_keys_get :: MonoidMap Key Value -> Property
+prop_keys_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => MonoidMap k v
+    -> Property
 prop_keys_get m =
     fmap
         (\k -> (k, MonoidMap.get k m))
@@ -540,27 +713,42 @@ prop_keys_get m =
 --------------------------------------------------------------------------------
 
 prop_filter_toList
-    :: Fun (Key, Value) Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun (k, v) Bool
+    -> MonoidMap k v
+    -> Property
 prop_filter_toList (applyFun2 -> f) m =
     toList (MonoidMap.filter f m) === List.filter (uncurry f) (toList m)
 
 prop_filterKeys_filter
-    :: Fun Key Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun k Bool
+    -> MonoidMap k v
+    -> Property
 prop_filterKeys_filter (applyFun -> f) m =
     MonoidMap.filterKeys f m === MonoidMap.filter (\k _ -> f k) m
 
 prop_filterKeys_toList
-    :: Fun Key Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun k Bool
+    -> MonoidMap k v
+    -> Property
 prop_filterKeys_toList (applyFun -> f) m =
     toList (MonoidMap.filterKeys f m) === List.filter (f . fst) (toList m)
 
 prop_filterValues_filter
-    :: Fun Value Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun v Bool
+    -> MonoidMap k v
+    -> Property
 prop_filterValues_filter (applyFun -> f) m =
     MonoidMap.filterValues f m === MonoidMap.filter (\_ v -> f v) m
 
 prop_filterValues_toList
-    :: Fun Value Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v Bool
+    -> MonoidMap k v
+    -> Property
 prop_filterValues_toList (applyFun -> f) m =
     toList (MonoidMap.filterValues f m) === List.filter (f . snd) (toList m)
 
@@ -569,7 +757,10 @@ prop_filterValues_toList (applyFun -> f) m =
 --------------------------------------------------------------------------------
 
 prop_partition_filter
-    :: Fun (Key, Value) Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun (k, v) Bool
+    -> MonoidMap k v
+    -> Property
 prop_partition_filter (applyFun2 -> f) m =
     MonoidMap.partition f m ===
         ( MonoidMap.filter f m
@@ -577,7 +768,10 @@ prop_partition_filter (applyFun2 -> f) m =
         )
 
 prop_partitionKeys_filterKeys
-    :: Fun Key Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun k Bool
+    -> MonoidMap k v
+    -> Property
 prop_partitionKeys_filterKeys (applyFun -> f) m =
     MonoidMap.partitionKeys f m ===
         ( MonoidMap.filterKeys f m
@@ -585,7 +779,10 @@ prop_partitionKeys_filterKeys (applyFun -> f) m =
         )
 
 prop_partitionValues_filterValues
-    :: Fun Value Bool -> MonoidMap Key Value -> Property
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun v Bool
+    -> MonoidMap k v
+    -> Property
 prop_partitionValues_filterValues (applyFun -> f) m =
     MonoidMap.partitionValues f m ===
         ( MonoidMap.filterValues f m
@@ -620,19 +817,25 @@ instance (Arbitrary k, Arbitrary v, MonoidNull v, Ord k) =>
             ]
 
 prop_take_toList_fromList
-    :: Slice Key Value -> Property
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Slice k v
+    -> Property
 prop_take_toList_fromList (Slice i m) =
     MonoidMap.take i m
         === (fromList . Prelude.take i . toList) m
 
 prop_drop_toList_fromList
-    :: Slice Key Value -> Property
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Slice k v
+    -> Property
 prop_drop_toList_fromList (Slice i m) =
     MonoidMap.drop i m
         === (fromList . Prelude.drop i . toList) m
 
 prop_splitAt_toList_fromList
-    :: Slice Key Value -> Property
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Slice k v
+    -> Property
 prop_splitAt_toList_fromList (Slice i m) =
     MonoidMap.splitAt i m
         === (bimap fromList fromList . Prelude.splitAt i . toList) m
@@ -642,9 +845,10 @@ prop_splitAt_toList_fromList (Slice i m) =
 --------------------------------------------------------------------------------
 
 prop_map_asList
-    :: Fun Key Key
-    -> Fun Value Value
-    -> MonoidMap Key Value
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun k k
+    -> Fun v v
+    -> MonoidMap k v
     -> Property
 prop_map_asList (applyFun -> f) (applyFun -> g) m =
     MonoidMap.map f g m
@@ -652,10 +856,11 @@ prop_map_asList (applyFun -> f) (applyFun -> g) m =
     (MonoidMap.fromList . fmap (bimap f g) . MonoidMap.toList $ m)
 
 prop_mapWith_asList
-    :: Fun (Value, Value) Value
-    -> Fun Key Key
-    -> Fun Value Value
-    -> MonoidMap Key Value
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun (v, v) v
+    -> Fun k k
+    -> Fun v v
+    -> MonoidMap k v
     -> Property
 prop_mapWith_asList (applyFun2 -> c) (applyFun -> f) (applyFun -> g) m =
     MonoidMap.mapWith c f g m
@@ -663,8 +868,9 @@ prop_mapWith_asList (applyFun2 -> c) (applyFun -> f) (applyFun -> g) m =
     (MonoidMap.fromListWith c . fmap (bimap f g) . MonoidMap.toList $ m)
 
 prop_mapKeys_asList
-    :: Fun Key Key
-    -> MonoidMap Key Value
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun k k
+    -> MonoidMap k v
     -> Property
 prop_mapKeys_asList (applyFun -> f) m =
     MonoidMap.mapKeys f m
@@ -672,9 +878,10 @@ prop_mapKeys_asList (applyFun -> f) m =
     (MonoidMap.fromList . fmap (first f) . MonoidMap.toList $ m)
 
 prop_mapKeysWith_asList
-    :: Fun (Value, Value) Value
-    -> Fun Key Key
-    -> MonoidMap Key Value
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun (v, v) v
+    -> Fun k k
+    -> MonoidMap k v
     -> Property
 prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
     MonoidMap.mapKeysWith c f m
@@ -682,8 +889,9 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
     (MonoidMap.fromListWith c . fmap (first f) . MonoidMap.toList $ m)
 
 prop_mapValues_asList
-    :: Fun Value Value
-    -> MonoidMap Key Value
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v v
+    -> MonoidMap k v
     -> Property
 prop_mapValues_asList (applyFun -> f) m =
     MonoidMap.mapValues f m
