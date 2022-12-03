@@ -257,7 +257,7 @@ fromListWith
     -- ^ Combination function with which to combine values for duplicate keys.
     -> [(k, v)]
     -> MonoidMap k v
-fromListWith f kvs = adjustMany f kvs mempty
+fromListWith f = fromMap . Map.fromListWith f
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
@@ -312,17 +312,6 @@ adjust
     -> MonoidMap k v
     -> MonoidMap k v
 adjust f k m = set k (f (get k m)) m
-
-adjustMany
-    :: (Ord k, MonoidNull v, IsList kvs, Item kvs ~ (k, v))
-    => (v -> v -> v)
-    -> kvs
-    -> MonoidMap k v
-    -> MonoidMap k v
-adjustMany f kvs m0 =
-    F.foldl' acc m0 (GHC.toList kvs)
-  where
-    acc m (k, v) = adjust (f v) k m
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
