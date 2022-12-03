@@ -314,8 +314,8 @@ adjust f k m = set k (f (get k m)) m
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
-delete :: (Ord k, MonoidNull v) => k -> MonoidMap k v -> MonoidMap k v
-delete k = set k mempty
+delete :: Ord k => k -> MonoidMap k v -> MonoidMap k v
+delete k (MonoidMap m) = MonoidMap $ Map.delete k m
 
 --------------------------------------------------------------------------------
 -- Queries
