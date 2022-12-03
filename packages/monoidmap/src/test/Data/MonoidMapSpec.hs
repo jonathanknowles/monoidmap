@@ -264,11 +264,11 @@ specLaws = describe "Laws" $ do
 
 specProperties :: Spec
 specProperties = describe "Properties" $ do
-    specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
-    specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
-    specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
-    specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
-    specPropertiesFor (Proxy @Int) (Proxy @Text)
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
+    parallel $ specPropertiesFor (Proxy @Int) (Proxy @Text)
 
 specPropertiesFor
     :: forall k v. ()
