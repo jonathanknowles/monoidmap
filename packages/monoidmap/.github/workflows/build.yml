@@ -31,10 +31,10 @@ jobs:
           - 9.4.2
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Environment
-        uses: haskell/actions/setup@v1.2
+        uses: haskell/actions/setup@v2
         id: setup-haskell-cabal
         with:
           ghc-version: ${{ matrix.ghc }}
@@ -83,11 +83,11 @@ jobs:
       - name: Documentation
         if: |
             matrix.os == 'ubuntu-latest'
-            && matrix.ghc == '8.10.7'
+            && matrix.ghc == '9.4.2'
         run: >
-          cabal haddock
+          cabal haddock all
+          --enable-documentation
           --haddock-hyperlink-source
-          --haddock-quickjump
           --haddock-html-location
           'https://hackage.haskell.org/package/$pkg-$version/docs'
 
@@ -99,7 +99,7 @@ jobs:
         if: |
             github.ref == 'refs/heads/main'
             && matrix.os == 'ubuntu-latest'
-            && matrix.ghc == '8.10.7'
+            && matrix.ghc == '9.4.2'
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
