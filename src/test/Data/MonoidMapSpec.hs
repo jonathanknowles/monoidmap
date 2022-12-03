@@ -14,7 +14,7 @@ module Data.MonoidMapSpec
 import Prelude
 
 import Data.Bifunctor
-    ( bimap )
+    ( bimap, first, second )
 import Data.Function
     ( (&) )
 import Data.Group
@@ -334,6 +334,18 @@ spec = do
         it "prop_splitAt_toList_fromList" $
             prop_splitAt_toList_fromList & property
 
+    parallel $ describe "Mapping" $ do
+        it "prop_map_asList" $
+            prop_map_asList & property
+        it "prop_mapWith_asList" $
+            prop_mapWith_asList & property
+        it "prop_mapKeys_asList" $
+            prop_mapKeys_asList & property
+        it "prop_mapKeysWith_asList" $
+            prop_mapKeysWith_asList & property
+        it "prop_mapValues_asList" $
+            prop_mapValues_asList & property
+
     parallel $ describe "Unit tests" $ do
 
         describe "Group" $ do
@@ -624,6 +636,59 @@ prop_splitAt_toList_fromList
 prop_splitAt_toList_fromList (Slice i m) =
     MonoidMap.splitAt i m
         === (bimap fromList fromList . Prelude.splitAt i . toList) m
+
+--------------------------------------------------------------------------------
+-- Mapping
+--------------------------------------------------------------------------------
+
+prop_map_asList
+    :: Fun Key Key
+    -> Fun Value Value
+    -> MonoidMap Key Value
+    -> Property
+prop_map_asList (applyFun -> f) (applyFun -> g) m =
+    MonoidMap.map f g m
+    ===
+    (MonoidMap.fromList . fmap (bimap f g) . MonoidMap.toList $ m)
+
+prop_mapWith_asList
+    :: Fun (Value, Value) Value
+    -> Fun Key Key
+    -> Fun Value Value
+    -> MonoidMap Key Value
+    -> Property
+prop_mapWith_asList (applyFun2 -> c) (applyFun -> f) (applyFun -> g) m =
+    MonoidMap.mapWith c f g m
+    ===
+    (MonoidMap.fromListWith c . fmap (bimap f g) . MonoidMap.toList $ m)
+
+prop_mapKeys_asList
+    :: Fun Key Key
+    -> MonoidMap Key Value
+    -> Property
+prop_mapKeys_asList (applyFun -> f) m =
+    MonoidMap.mapKeys f m
+    ===
+    (MonoidMap.fromList . fmap (first f) . MonoidMap.toList $ m)
+
+prop_mapKeysWith_asList
+    :: Fun (Value, Value) Value
+    -> Fun Key Key
+    -> MonoidMap Key Value
+    -> Property
+prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
+    MonoidMap.mapKeysWith c f m
+    ===
+    (MonoidMap.fromListWith c . fmap (first f) . MonoidMap.toList $ m)
+
+prop_mapValues_asList
+    :: Fun Value Value
+    -> MonoidMap Key Value
+    -> Property
+prop_mapValues_asList (applyFun -> f) m =
+    MonoidMap.mapValues f m
+    ===
+    (MonoidMap.fromList . fmap (second f) . MonoidMap.toList $ m)
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
