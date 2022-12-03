@@ -37,6 +37,8 @@ import Data.Set
     ( Set )
 import Data.Text
     ( Text )
+import Data.Typeable
+    ( Typeable, typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
@@ -271,149 +273,171 @@ specProperties = describe "Properties" $ do
     parallel $ specPropertiesFor (Proxy @Int) (Proxy @Text)
 
 specPropertiesFor
-    :: forall k v. ()
-    => (Arbitrary k, CoArbitrary k, Function k, Ord k, Show k)
-    => (Arbitrary v, CoArbitrary v, Eq v, Function v, MonoidNull v, Show v)
+    :: forall k v. () =>
+        ( Arbitrary k
+        , Arbitrary v
+        , CoArbitrary k
+        , CoArbitrary v
+        , Eq v
+        , Function k
+        , Function v
+        , MonoidNull v
+        , Ord k
+        , Show k
+        , Show v
+        , Typeable k
+        , Typeable v
+        )
     => Proxy k
     -> Proxy v
     -> Spec
-specPropertiesFor _ _ = do
+specPropertiesFor keyType valueType = do
 
-    parallel $ describe "Conversion to and from lists" $ do
-        it "prop_fromList_toMap" $
-            prop_fromList_toMap
-                @k @v & property
-        it "prop_fromList_toList" $
-            prop_fromList_toList
-                @k @v & property
-        it "prop_toList_fromList" $
-            prop_toList_fromList
-                @k @v & property
+    let description = mconcat
+            [ "MonoidMap ("
+            , show (typeRep keyType)
+            , ") ("
+            , show (typeRep valueType)
+            , ")"
+            ]
 
-    parallel $ describe "Conversion to and from ordinary maps" $ do
-        it "prop_fromMap_toMap" $
-            prop_fromMap_toMap
-                @k @v & property
-        it "prop_toMap_fromMap" $
-            prop_toMap_fromMap
-                @k @v & property
+    describe description $ do
 
-    parallel $ describe "Singleton" $ do
-        it "prop_singleton_get" $
-            prop_singleton_get
-                @k @v & property
-        it "prop_singleton_member" $
-            prop_singleton_member
-                @k @v & property
-        it "prop_singleton_keys" $
-            prop_singleton_keys
-                @k @v & property
-        it "prop_singleton_null" $
-            prop_singleton_null
-                @k @v & property
-        it "prop_singleton_delete" $
-            prop_singleton_delete
-                @k @v & property
-        it "prop_singleton_size" $
-            prop_singleton_size
-                @k @v & property
-        it "prop_singleton_toList" $
-            prop_singleton_toList
-                @k @v & property
+        parallel $ describe "Conversion to and from lists" $ do
+            it "prop_fromList_toMap" $
+                prop_fromList_toMap
+                    @k @v & property
+            it "prop_fromList_toList" $
+                prop_fromList_toList
+                    @k @v & property
+            it "prop_toList_fromList" $
+                prop_toList_fromList
+                    @k @v & property
 
-    parallel $ describe "Get" $ do
-        it "prop_get_member" $
-            prop_get_member
-                @k @v & property
-        it "prop_get_keys" $
-            prop_get_keys
-                @k @v & property
+        parallel $ describe "Conversion to and from ordinary maps" $ do
+            it "prop_fromMap_toMap" $
+                prop_fromMap_toMap
+                    @k @v & property
+            it "prop_toMap_fromMap" $
+                prop_toMap_fromMap
+                    @k @v & property
 
-    parallel $ describe "Set" $ do
-        it "prop_set_get" $
-            prop_set_get
-                @k @v & property
-        it "prop_set_member" $
-            prop_set_member
-                @k @v & property
-        it "prop_set_keys" $
-            prop_set_keys
-                @k @v & property
-        it "prop_set_toList" $
-            prop_set_toList
-                @k @v & property
+        parallel $ describe "Singleton" $ do
+            it "prop_singleton_get" $
+                prop_singleton_get
+                    @k @v & property
+            it "prop_singleton_member" $
+                prop_singleton_member
+                    @k @v & property
+            it "prop_singleton_keys" $
+                prop_singleton_keys
+                    @k @v & property
+            it "prop_singleton_null" $
+                prop_singleton_null
+                    @k @v & property
+            it "prop_singleton_delete" $
+                prop_singleton_delete
+                    @k @v & property
+            it "prop_singleton_size" $
+                prop_singleton_size
+                    @k @v & property
+            it "prop_singleton_toList" $
+                prop_singleton_toList
+                    @k @v & property
 
-    parallel $ describe "Nullify" $ do
-        it "prop_delete_get" $
-            prop_delete_get
-                @k @v & property
-        it "prop_delete_member" $
-            prop_delete_member
-                @k @v & property
-        it "prop_delete_keys" $
-            prop_delete_keys
-                @k @v & property
+        parallel $ describe "Get" $ do
+            it "prop_get_member" $
+                prop_get_member
+                    @k @v & property
+            it "prop_get_keys" $
+                prop_get_keys
+                    @k @v & property
 
-    parallel $ describe "Keys" $ do
-        it "prop_keys_get" $
-            prop_keys_get
-                @k @v & property
+        parallel $ describe "Set" $ do
+            it "prop_set_get" $
+                prop_set_get
+                    @k @v & property
+            it "prop_set_member" $
+                prop_set_member
+                    @k @v & property
+            it "prop_set_keys" $
+                prop_set_keys
+                    @k @v & property
+            it "prop_set_toList" $
+                prop_set_toList
+                    @k @v & property
 
-    parallel $ describe "Filtering" $ do
-        it "prop_filter_toList" $
-            prop_filter_toList
-                @k @v & property
-        it "prop_filterKeys_filter" $
-            prop_filterKeys_filter
-                @k @v & property
-        it "prop_filterKeys_toList" $
-            prop_filterKeys_toList
-                @k @v & property
-        it "prop_filterValues_filter" $
-            prop_filterValues_filter
-                @k @v & property
-        it "prop_filterValues_toList" $
-            prop_filterValues_toList
-                @k @v & property
+        parallel $ describe "Nullify" $ do
+            it "prop_delete_get" $
+                prop_delete_get
+                    @k @v & property
+            it "prop_delete_member" $
+                prop_delete_member
+                    @k @v & property
+            it "prop_delete_keys" $
+                prop_delete_keys
+                    @k @v & property
 
-    parallel $ describe "Partitioning" $ do
-        it "prop_partition_filter" $
-            prop_partition_filter
-                @k @v & property
-        it "prop_partitionKeys_filterKeys" $
-            prop_partitionKeys_filterKeys
-                @k @v & property
-        it "prop_partitionValues_filterValues" $
-            prop_partitionValues_filterValues
-                @k @v & property
+        parallel $ describe "Keys" $ do
+            it "prop_keys_get" $
+                prop_keys_get
+                    @k @v & property
 
-    parallel $ describe "Slicing" $ do
-        it "prop_take_toList_fromList" $
-            prop_take_toList_fromList
-                @k @v & property
-        it "prop_drop_toList_fromList" $
-            prop_drop_toList_fromList
-                @k @v & property
-        it "prop_splitAt_toList_fromList" $
-            prop_splitAt_toList_fromList
-                @k @v & property
+        parallel $ describe "Filtering" $ do
+            it "prop_filter_toList" $
+                prop_filter_toList
+                    @k @v & property
+            it "prop_filterKeys_filter" $
+                prop_filterKeys_filter
+                    @k @v & property
+            it "prop_filterKeys_toList" $
+                prop_filterKeys_toList
+                    @k @v & property
+            it "prop_filterValues_filter" $
+                prop_filterValues_filter
+                    @k @v & property
+            it "prop_filterValues_toList" $
+                prop_filterValues_toList
+                    @k @v & property
 
-    parallel $ describe "Mapping" $ do
-        it "prop_map_asList" $
-            prop_map_asList
-                @k @v & property
-        it "prop_mapWith_asList" $
-            prop_mapWith_asList
-                @k @v & property
-        it "prop_mapKeys_asList" $
-            prop_mapKeys_asList
-                @k @v & property
-        it "prop_mapKeysWith_asList" $
-            prop_mapKeysWith_asList
-                @k @v & property
-        it "prop_mapValues_asList" $
-            prop_mapValues_asList
-                @k @v & property
+        parallel $ describe "Partitioning" $ do
+            it "prop_partition_filter" $
+                prop_partition_filter
+                    @k @v & property
+            it "prop_partitionKeys_filterKeys" $
+                prop_partitionKeys_filterKeys
+                    @k @v & property
+            it "prop_partitionValues_filterValues" $
+                prop_partitionValues_filterValues
+                    @k @v & property
+
+        parallel $ describe "Slicing" $ do
+            it "prop_take_toList_fromList" $
+                prop_take_toList_fromList
+                    @k @v & property
+            it "prop_drop_toList_fromList" $
+                prop_drop_toList_fromList
+                    @k @v & property
+            it "prop_splitAt_toList_fromList" $
+                prop_splitAt_toList_fromList
+                    @k @v & property
+
+        parallel $ describe "Mapping" $ do
+            it "prop_map_asList" $
+                prop_map_asList
+                    @k @v & property
+            it "prop_mapWith_asList" $
+                prop_mapWith_asList
+                    @k @v & property
+            it "prop_mapKeys_asList" $
+                prop_mapKeys_asList
+                    @k @v & property
+            it "prop_mapKeysWith_asList" $
+                prop_mapKeysWith_asList
+                    @k @v & property
+            it "prop_mapValues_asList" $
+                prop_mapValues_asList
+                    @k @v & property
 
 specUnit :: Spec
 specUnit = describe "Unit tests" $ do
