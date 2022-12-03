@@ -35,6 +35,8 @@ import Data.Semigroup.Cancellative
     ( LeftReductive (..), RightReductive (..) )
 import Data.Set
     ( Set )
+import Data.Text
+    ( Text )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
@@ -99,6 +101,8 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
     , rightReductiveLaws
     )
 import Test.QuickCheck.Instances.Natural
+    ()
+import Test.QuickCheck.Instances.Text
     ()
 
 import qualified Data.List as List
@@ -260,7 +264,11 @@ specLaws = describe "Laws" $ do
 
 specProperties :: Spec
 specProperties = describe "Properties" $ do
+    specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
+    specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
     specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
+    specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
+    specPropertiesFor (Proxy @Int) (Proxy @Text)
 
 specPropertiesFor
     :: forall k v. ()
