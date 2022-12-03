@@ -49,7 +49,7 @@ module Data.MonoidMap
     , partitionKeys
     , partitionValues
 
-    -- * Traversal
+    -- * Mapping
     , map
     , mapWith
     , mapKeys

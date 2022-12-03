@@ -49,7 +49,7 @@ module Data.MonoidMap.Internal
     , partitionKeys
     , partitionValues
 
-    -- * Traversal
+    -- * Mapping
     , map
     , mapWith
     , mapKeys
@@ -491,7 +491,7 @@ partitionValues f (MonoidMap m) =
     bimap MonoidMap MonoidMap $ Map.partition f m
 
 --------------------------------------------------------------------------------
--- Traversal
+-- Mapping
 --------------------------------------------------------------------------------
 
 map :: (Ord k2, MonoidNull v2)
