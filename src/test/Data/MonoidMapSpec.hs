@@ -44,7 +44,7 @@ import GHC.Exts
 import Numeric.Natural
     ( Natural )
 import Test.Hspec
-    ( Spec, describe, it, parallel )
+    ( Spec, describe, it )
 import Test.Hspec.Unit
     ( UnitTestData1
     , UnitTestData2
@@ -114,9 +114,9 @@ import qualified Data.Set as Set
 
 spec :: Spec
 spec = do
-    parallel specLaws
-    parallel specProperties
-    parallel specUnit
+    specLaws
+    specProperties
+    specUnit
 
 specLaws :: Spec
 specLaws = describe "Laws" $ do
@@ -266,11 +266,11 @@ specLaws = describe "Laws" $ do
 
 specProperties :: Spec
 specProperties = describe "Properties" $ do
-    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
-    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
-    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
-    parallel $ specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
-    parallel $ specPropertiesFor (Proxy @Int) (Proxy @Text)
+    specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
+    specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
+    specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
+    specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
+    specPropertiesFor (Proxy @Int) (Proxy @Text)
 
 specPropertiesFor
     :: forall k v. () =>
@@ -303,7 +303,7 @@ specPropertiesFor keyType valueType = do
 
     describe description $ do
 
-        parallel $ describe "Conversion to and from lists" $ do
+        describe "Conversion to and from lists" $ do
             it "prop_fromList_toMap" $
                 prop_fromList_toMap
                     @k @v & property
@@ -314,7 +314,7 @@ specPropertiesFor keyType valueType = do
                 prop_toList_fromList
                     @k @v & property
 
-        parallel $ describe "Conversion to and from ordinary maps" $ do
+        describe "Conversion to and from ordinary maps" $ do
             it "prop_fromMap_toMap" $
                 prop_fromMap_toMap
                     @k @v & property
@@ -322,7 +322,7 @@ specPropertiesFor keyType valueType = do
                 prop_toMap_fromMap
                     @k @v & property
 
-        parallel $ describe "Singleton" $ do
+        describe "Singleton" $ do
             it "prop_singleton_get" $
                 prop_singleton_get
                     @k @v & property
@@ -345,7 +345,7 @@ specPropertiesFor keyType valueType = do
                 prop_singleton_toList
                     @k @v & property
 
-        parallel $ describe "Get" $ do
+        describe "Get" $ do
             it "prop_get_member" $
                 prop_get_member
                     @k @v & property
@@ -353,7 +353,7 @@ specPropertiesFor keyType valueType = do
                 prop_get_keys
                     @k @v & property
 
-        parallel $ describe "Set" $ do
+        describe "Set" $ do
             it "prop_set_get" $
                 prop_set_get
                     @k @v & property
@@ -367,7 +367,7 @@ specPropertiesFor keyType valueType = do
                 prop_set_toList
                     @k @v & property
 
-        parallel $ describe "Nullify" $ do
+        describe "Nullify" $ do
             it "prop_delete_get" $
                 prop_delete_get
                     @k @v & property
@@ -378,12 +378,12 @@ specPropertiesFor keyType valueType = do
                 prop_delete_keys
                     @k @v & property
 
-        parallel $ describe "Keys" $ do
+        describe "Keys" $ do
             it "prop_keys_get" $
                 prop_keys_get
                     @k @v & property
 
-        parallel $ describe "Filtering" $ do
+        describe "Filtering" $ do
             it "prop_filter_toList" $
                 prop_filter_toList
                     @k @v & property
@@ -400,7 +400,7 @@ specPropertiesFor keyType valueType = do
                 prop_filterValues_toList
                     @k @v & property
 
-        parallel $ describe "Partitioning" $ do
+        describe "Partitioning" $ do
             it "prop_partition_filter" $
                 prop_partition_filter
                     @k @v & property
@@ -411,7 +411,7 @@ specPropertiesFor keyType valueType = do
                 prop_partitionValues_filterValues
                     @k @v & property
 
-        parallel $ describe "Slicing" $ do
+        describe "Slicing" $ do
             it "prop_take_toList_fromList" $
                 prop_take_toList_fromList
                     @k @v & property
@@ -422,7 +422,7 @@ specPropertiesFor keyType valueType = do
                 prop_splitAt_toList_fromList
                     @k @v & property
 
-        parallel $ describe "Mapping" $ do
+        describe "Mapping" $ do
             it "prop_map_asList" $
                 prop_map_asList
                     @k @v & property
