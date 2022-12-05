@@ -112,7 +112,7 @@ test-suite test
       , base >=4.7 && <5
       , containers
       , groups
-      , hspec
+      , hspec >= 2.8.3
       , monoid-subclasses
       , monoidmap
       , monoidmap:internal
