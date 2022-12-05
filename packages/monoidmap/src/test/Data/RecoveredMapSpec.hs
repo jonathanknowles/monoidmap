@@ -19,7 +19,7 @@ import Data.List
 import Data.Monoid
     ( Sum (..) )
 import Test.Hspec
-    ( Spec, describe, it, parallel )
+    ( Spec, describe, it )
 import Test.QuickCheck
     ( Arbitrary (..)
     , Property
@@ -40,11 +40,11 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = do
 
-    parallel $ describe "Conversion to and from lists" $ do
+    describe "Conversion to and from lists" $ do
         it "prop_fromList_toList" $
             prop_fromList_toList & property
 
-    parallel $ describe "Empty" $ do
+    describe "Empty" $ do
         it "prop_empty_keysSet" $
             prop_empty_keysSet & property
         it "prop_empty_lookup" $
@@ -54,7 +54,7 @@ spec = do
         it "prop_empty_toList" $
             prop_empty_toList & property
 
-    parallel $ describe "Singleton" $ do
+    describe "Singleton" $ do
         it "prop_singleton_keysSet" $
             prop_singleton_keysSet & property
         it "prop_singleton_lookup" $
@@ -64,11 +64,11 @@ spec = do
         it "prop_singleton_toList" $
             prop_singleton_toList & property
 
-    parallel $ describe "Append" $ do
+    describe "Append" $ do
         it "prop_append_toList" $
             prop_append_toList & property
 
-    parallel $ describe "Delete" $ do
+    describe "Delete" $ do
         it "prop_delete_lookup" $
             prop_delete_lookup & property
         it "prop_delete_member" $
@@ -76,7 +76,7 @@ spec = do
         it "prop_delete_toList" $
             prop_delete_toList & property
 
-    parallel $ describe "Insert" $ do
+    describe "Insert" $ do
         it "prop_insert_lookup" $
             prop_insert_lookup & property
         it "prop_insert_member" $
