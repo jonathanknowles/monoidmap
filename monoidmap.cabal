@@ -91,7 +91,7 @@ test-suite test
     import:
         common-extensions
     ghc-options:
-        -threaded
+        -threaded -with-rtsopts=-N
     main-is:
         Spec.hs
     hs-source-dirs:
