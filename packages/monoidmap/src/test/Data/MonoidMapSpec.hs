@@ -59,6 +59,7 @@ import Test.QuickCheck
     , Function (..)
     , Gen
     , Property
+    , Testable
     , applyFun
     , applyFun2
     , checkCoverage
@@ -66,7 +67,6 @@ import Test.QuickCheck
     , cover
     , listOf
     , oneof
-    , property
     , shrinkMapBy
     , (===)
     )
@@ -111,6 +111,7 @@ import qualified Data.List as List
 import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
+import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = do
@@ -300,6 +301,9 @@ specPropertiesFor keyType valueType = do
             , show (typeRep valueType)
             , ")"
             ]
+
+    let property :: Testable t => t -> Property
+        property = checkCoverage . QC.property
 
     describe description $ do
 
@@ -587,7 +591,6 @@ prop_get_member m k =
     & cover 10
         (not (MonoidMap.member k m))
         "not (MonoidMap.member k m)"
-    & checkCoverage
 
 prop_get_keys
     :: (Ord k, Eq v, MonoidNull v)
@@ -602,7 +605,6 @@ prop_get_keys m k =
     & cover 10
         (not (MonoidMap.member k m))
         "not (MonoidMap.member k m)"
-    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Set
@@ -622,7 +624,6 @@ prop_set_get m k v =
     & cover 10
         (not (MonoidMap.member k m))
         "not (MonoidMap.member k m)"
-    & checkCoverage
 
 prop_set_member
     :: (Ord k, Eq v, MonoidNull v)
@@ -668,7 +669,6 @@ prop_delete_get m k =
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
-    & checkCoverage
 
 prop_delete_member
     :: Ord k
@@ -680,7 +680,6 @@ prop_delete_member m k =
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
-    & checkCoverage
 
 prop_delete_keys
     :: Ord k
@@ -692,7 +691,6 @@ prop_delete_keys m k =
     & cover 10
         (MonoidMap.member k m)
         "MonoidMap.member k m"
-    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Keys
