@@ -67,6 +67,7 @@ import Test.QuickCheck
     , cover
     , listOf
     , oneof
+    , scale
     , shrinkMapBy
     , (===)
     )
@@ -1093,6 +1094,7 @@ prop_mapValues_asList (applyFun -> f) m =
         "0 < MonoidMap.size n && MonoidMap.size n < MonoidMap.size m"
   where
     n = MonoidMap.mapValues f m
+
 --------------------------------------------------------------------------------
 -- Arbitrary instances
 --------------------------------------------------------------------------------
@@ -1100,8 +1102,10 @@ prop_mapValues_asList (applyFun -> f) m =
 instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     Arbitrary (MonoidMap k v)
   where
-    arbitrary = fromList <$> listOf ((,) <$> arbitrary <*> arbitrary)
-    shrink = shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+    arbitrary =
+        fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
+    shrink =
+        shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
 
 --------------------------------------------------------------------------------
 -- Unit tests: Group
