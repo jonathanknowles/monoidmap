@@ -120,8 +120,8 @@ test-suite test
       , QuickCheck
       , quickcheck-classes
       , quickcheck-classes-groups
-      , quickcheck-classes-monoid-subclasses
       , quickcheck-instances
+      , quickcheck-monoid-subclasses
       , text
 
 benchmark benchmark
