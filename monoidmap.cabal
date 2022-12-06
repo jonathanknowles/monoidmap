@@ -120,8 +120,8 @@ test-suite test
       , QuickCheck
       , quickcheck-classes
       , quickcheck-classes-groups
-      , quickcheck-classes-monoid-subclasses
       , quickcheck-instances
+      , quickcheck-monoid-subclasses
       , text
 
 benchmark benchmark
@@ -133,8 +133,6 @@ benchmark benchmark
         src/benchmark
     main-is:
         Main.hs
-    ghc-options:
-        -O2
     build-depends:
       , base >=4.7 && <5
       , containers
