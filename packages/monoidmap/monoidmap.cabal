@@ -133,8 +133,6 @@ benchmark benchmark
         src/benchmark
     main-is:
         Main.hs
-    ghc-options:
-        -O2
     build-depends:
       , base >=4.7 && <5
       , containers
