@@ -21,8 +21,14 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Proxy
     ( Proxy (..) )
+import Data.Set
+    ( Set )
+import Data.Text
+    ( Text )
 import Data.Typeable
     ( Typeable, typeRep )
+import Numeric.Natural
+    ( Natural )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -37,6 +43,8 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Instances.Natural
     ()
+import Test.QuickCheck.Instances.Text
+    ()
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
@@ -44,7 +52,12 @@ import qualified Data.Set as Set
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
-spec = specFor (Proxy @Int) (Proxy @(Sum Int))
+spec = do
+    specFor (Proxy @Int) (Proxy @(Set Int))
+    specFor (Proxy @Int) (Proxy @(Set Natural))
+    specFor (Proxy @Int) (Proxy @(Sum Int))
+    specFor (Proxy @Int) (Proxy @(Sum Natural))
+    specFor (Proxy @Int) (Proxy @Text)
 
 specFor
     :: forall k v. () =>
