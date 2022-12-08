@@ -41,7 +41,7 @@ import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
 import qualified Data.Set as Set
 
 spec :: Spec
-spec = specFor (Proxy @Key) (Proxy @Value)
+spec = specFor (Proxy @Int) (Proxy @(Sum Int))
 
 specFor
     :: forall k v. () =>
@@ -116,13 +116,6 @@ specFor _keyType _valueType = do
         it "prop_insert_toList" $
             prop_insert_toList
                 @k @v & property
-
---------------------------------------------------------------------------------
--- Test types
---------------------------------------------------------------------------------
-
-type Key = Int
-type Value = Sum Int
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
