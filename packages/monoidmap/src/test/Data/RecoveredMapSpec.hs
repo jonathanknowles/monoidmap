@@ -21,6 +21,8 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Proxy
     ( Proxy (..) )
+import Data.Typeable
+    ( Typeable, typeRep )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -52,74 +54,86 @@ specFor
         , Ord k
         , Show k
         , Show v
+        , Typeable k
+        , Typeable v
         )
     => Proxy k
     -> Proxy v
     -> Spec
-specFor _keyType _valueType = do
+specFor keyType valueType = do
+
+    let description = mconcat
+            [ "RecoveredMap ("
+            , show (typeRep keyType)
+            , ") ("
+            , show (typeRep valueType)
+            , ")"
+            ]
 
     let property :: Testable t => t -> Property
         property = checkCoverage . QC.property
 
-    describe "Conversion to and from lists" $ do
-        it "prop_fromList_toList" $
-            prop_fromList_toList
-                @k @v & property
+    describe description $ do
 
-    describe "Empty" $ do
-        it "prop_empty_keysSet" $
-            prop_empty_keysSet
-                @k & property
-        it "prop_empty_lookup" $
-            prop_empty_lookup
-                @k @v & property
-        it "prop_empty_show" $
-            prop_empty_show
-                @k @v & property
-        it "prop_empty_toList" $
-            prop_empty_toList
-                @k @v & property
+        describe "Conversion to and from lists" $ do
+            it "prop_fromList_toList" $
+                prop_fromList_toList
+                    @k @v & property
 
-    describe "Singleton" $ do
-        it "prop_singleton_keysSet" $
-            prop_singleton_keysSet
-                @k @v & property
-        it "prop_singleton_lookup" $
-            prop_singleton_lookup
-                @k @v & property
-        it "prop_singleton_show" $
-            prop_singleton_show
-                @k @v & property
-        it "prop_singleton_toList" $
-            prop_singleton_toList
-                @k @v & property
+        describe "Empty" $ do
+            it "prop_empty_keysSet" $
+                prop_empty_keysSet
+                    @k & property
+            it "prop_empty_lookup" $
+                prop_empty_lookup
+                    @k @v & property
+            it "prop_empty_show" $
+                prop_empty_show
+                    @k @v & property
+            it "prop_empty_toList" $
+                prop_empty_toList
+                    @k @v & property
 
-    describe "Append" $ do
-        it "prop_append_toList" $
-            prop_append_toList
-                @k @v & property
+        describe "Singleton" $ do
+            it "prop_singleton_keysSet" $
+                prop_singleton_keysSet
+                    @k @v & property
+            it "prop_singleton_lookup" $
+                prop_singleton_lookup
+                    @k @v & property
+            it "prop_singleton_show" $
+                prop_singleton_show
+                    @k @v & property
+            it "prop_singleton_toList" $
+                prop_singleton_toList
+                    @k @v & property
 
-    describe "Delete" $ do
-        it "prop_delete_lookup" $
-            prop_delete_lookup
-                @k @v & property
-        it "prop_delete_member" $
-            prop_delete_member
-                @k @v & property
-        it "prop_delete_toList" $
-            prop_delete_toList
-                @k @v & property
+        describe "Append" $ do
+            it "prop_append_toList" $
+                prop_append_toList
+                    @k @v & property
 
-    describe "Insert" $ do
-        it "prop_insert_lookup" $
-            prop_insert_lookup
-                @k @v & property
-        it "prop_insert_member" $
-            prop_insert_member
-                @k @v & property
-        it "prop_insert_toList" $
-            prop_insert_toList
-                @k @v & property
+        describe "Delete" $ do
+            it "prop_delete_lookup" $
+                prop_delete_lookup
+                    @k @v & property
+            it "prop_delete_member" $
+                prop_delete_member
+                    @k @v & property
+            it "prop_delete_toList" $
+                prop_delete_toList
+                    @k @v & property
+
+        describe "Insert" $ do
+            it "prop_insert_lookup" $
+                prop_insert_lookup
+                    @k @v & property
+            it "prop_insert_member" $
+                prop_insert_member
+                    @k @v & property
+            it "prop_insert_toList" $
+                prop_insert_toList
+                    @k @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
