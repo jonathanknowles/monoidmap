@@ -26,10 +26,10 @@ import Test.Hspec
 import Test.QuickCheck
     ( Arbitrary (..)
     , Property
+    , Testable
     , checkCoverage
     , cover
     , listOf
-    , property
     , shrinkMapBy
     , (===)
     )
@@ -39,6 +39,7 @@ import Test.QuickCheck.Instances.Natural
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
 import qualified Data.Set as Set
+import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = specFor (Proxy @Int) (Proxy @(Sum Int))
@@ -56,6 +57,9 @@ specFor
     -> Proxy v
     -> Spec
 specFor _keyType _valueType = do
+
+    let property :: Testable t => t -> Property
+        property = checkCoverage . QC.property
 
     describe "Conversion to and from lists" $ do
         it "prop_fromList_toList" $
@@ -135,7 +139,6 @@ prop_fromList_toList kvs =
     & cover 10
         (length kvs > 1 && length (nubBy ((==) `on` fst) kvs) == length kvs)
         "length kvs > 1 && length (nubBy ((==) `on` fst) kvs) == length kvs"
-    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Empty
@@ -237,7 +240,6 @@ prop_append_toList kvs1 kvs2 =
     & cover 10
         (not (ks1 `Set.disjoint` ks2))
         "not (ks1 `Set.disjoint` ks2)"
-    & checkCoverage
   where
     ks1 = Set.fromList (fst <$> kvs1)
     ks2 = Set.fromList (fst <$> kvs2)
@@ -261,7 +263,6 @@ prop_delete_lookup kvs k =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
-    & checkCoverage
 
 prop_delete_member
     :: forall k v. (Ord k, Eq v)
@@ -278,7 +279,6 @@ prop_delete_member kvs k =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
-    & checkCoverage
 
 prop_delete_toList
     :: forall k v. (Ord k, Show k, Eq v, Show v)
@@ -295,7 +295,6 @@ prop_delete_toList kvs k =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
-    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Insert
@@ -317,7 +316,6 @@ prop_insert_lookup kvs k v =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
-    & checkCoverage
 
 prop_insert_member
     :: forall k v. (Ord k, Eq v)
@@ -335,7 +333,6 @@ prop_insert_member kvs k v =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
-    & checkCoverage
 
 prop_insert_toList
     :: forall k v. (Ord k, Show k, Eq v, Show v)
@@ -353,7 +350,6 @@ prop_insert_toList kvs k v =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
-    & checkCoverage
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
