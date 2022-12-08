@@ -19,6 +19,8 @@ import Data.List
     ( nubBy )
 import Data.Monoid
     ( Sum (..) )
+import Data.Proxy
+    ( Proxy (..) )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -39,67 +41,81 @@ import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
 import qualified Data.Set as Set
 
 spec :: Spec
-spec = do
+spec = specFor (Proxy @Key) (Proxy @Value)
+
+specFor
+    :: forall k v. () =>
+        ( Arbitrary k
+        , Arbitrary v
+        , Eq v
+        , Ord k
+        , Show k
+        , Show v
+        )
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specFor _keyType _valueType = do
 
     describe "Conversion to and from lists" $ do
         it "prop_fromList_toList" $
             prop_fromList_toList
-                @Key @Value & property
+                @k @v & property
 
     describe "Empty" $ do
         it "prop_empty_keysSet" $
             prop_empty_keysSet
-                @Key & property
+                @k & property
         it "prop_empty_lookup" $
             prop_empty_lookup
-                @Key @Value & property
+                @k @v & property
         it "prop_empty_show" $
             prop_empty_show
-                @Key @Value & property
+                @k @v & property
         it "prop_empty_toList" $
             prop_empty_toList
-                @Key @Value & property
+                @k @v & property
 
     describe "Singleton" $ do
         it "prop_singleton_keysSet" $
             prop_singleton_keysSet
-                @Key @Value & property
+                @k @v & property
         it "prop_singleton_lookup" $
             prop_singleton_lookup
-                @Key @Value & property
+                @k @v & property
         it "prop_singleton_show" $
             prop_singleton_show
-                @Key @Value & property
+                @k @v & property
         it "prop_singleton_toList" $
             prop_singleton_toList
-                @Key @Value & property
+                @k @v & property
 
     describe "Append" $ do
         it "prop_append_toList" $
             prop_append_toList
-                @Key @Value & property
+                @k @v & property
 
     describe "Delete" $ do
         it "prop_delete_lookup" $
             prop_delete_lookup
-                @Key @Value & property
+                @k @v & property
         it "prop_delete_member" $
             prop_delete_member
-                @Key @Value & property
+                @k @v & property
         it "prop_delete_toList" $
             prop_delete_toList
-                @Key @Value & property
+                @k @v & property
 
     describe "Insert" $ do
         it "prop_insert_lookup" $
             prop_insert_lookup
-                @Key @Value & property
+                @k @v & property
         it "prop_insert_member" $
             prop_insert_member
-                @Key @Value & property
+                @k @v & property
         it "prop_insert_toList" $
             prop_insert_toList
-                @Key @Value & property
+                @k @v & property
 
 --------------------------------------------------------------------------------
 -- Test types
