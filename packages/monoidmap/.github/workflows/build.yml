@@ -16,6 +16,8 @@ jobs:
   build:
     name: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
+    env:
+      cabal-build-dir: b
     strategy:
       matrix:
         os:
@@ -43,6 +45,7 @@ jobs:
       - name: Configure
         run: >
           cabal configure
+          --builddir=${{ env.cabal-build-dir }}
           --enable-tests
           --enable-benchmarks
           --enable-documentation
@@ -50,48 +53,53 @@ jobs:
           --write-ghc-environment-files=always
 
       - name: Freeze
-        run: |
+        run: >
           cabal freeze
+          --builddir=${{ env.cabal-build-dir }}
 
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        env:
+          hash: ${{ hashFiles('cabal.project.freeze') }}
         with:
-          path: ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
-          key: |
-            ${{ runner.os }}-\
-            ${{ matrix.ghc }}-\
-            ${{ hashFiles('cabal.project.freeze') }}
+          key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-${{ env.hash }}
+          restore-keys: |
+            ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+          path: |
+            ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+            ${{ env.cabal-build-dir }}
 
       - name: Dependencies
-        run: |
-          ghc --version
-          cabal --version
-          cabal build all --only-dependencies
+        run: >
+          cabal build all
+          --builddir=${{ env.cabal-build-dir }}
+          --only-dependencies
 
       - name: Build
-        run: |
-          cabal build all --enable-tests --enable-benchmarks
+        run: >
+          cabal build all
+          --builddir=${{ env.cabal-build-dir }}
+          --enable-tests
+          --enable-benchmarks
 
       - name: Test
-        run: |
+        run: >
           cabal test all
-
-      - name: Benchmark
-        run: |
-          cabal bench all --benchmark-options '+RTS -T'
+          --builddir=${{ env.cabal-build-dir }}
 
       - name: Documentation
         if: |
             matrix.os == 'ubuntu-latest'
             && matrix.ghc == '9.4.2'
         run: >
-          cabal haddock all
+          cabal build all
+          --builddir=${{ env.cabal-build-dir }}
           --enable-documentation
           --haddock-hyperlink-source
           --haddock-html-location
           'https://hackage.haskell.org/package/$pkg-$version/docs'
 
-          mv dist-newstyle/build/*/*/*/doc/html/* gh-pages
+          mv ${{ env.cabal-build-dir }}/build/*/*/*/doc/html/* gh-pages
 
           touch gh-pages/.nojekyll
 
