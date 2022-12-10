@@ -10,8 +10,8 @@ on:
     branches:
       - main
   schedule:
-    # Run once per day (at UTC 00:00) to maintain cache:
-    - cron: 0 0 * * *
+    # Run once per day (at UTC 18:00) to maintain cache:
+    - cron: 0 18 * * *
 jobs:
   build:
     name: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
