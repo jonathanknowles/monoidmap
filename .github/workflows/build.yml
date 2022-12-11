@@ -92,7 +92,7 @@ jobs:
             matrix.os == 'ubuntu-latest'
             && matrix.ghc == '9.4.2'
         run: >
-          cabal build all
+          cabal haddock
           --builddir=${{ env.cabal-build-dir }}
           --enable-documentation
           --haddock-hyperlink-source
