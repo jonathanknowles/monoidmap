@@ -64,7 +64,7 @@ jobs:
         with:
           key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-${{ env.hash }}
           restore-keys: |
-            ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+            ${{ matrix.os }}-ghc-${{ matrix.ghc }}-
           path: |
             ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
             ${{ env.cabal-build-dir }}
