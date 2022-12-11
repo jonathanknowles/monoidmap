@@ -64,7 +64,7 @@ jobs:
         with:
           key: ${{ matrix.os }}-ghc-${{ matrix.ghc }}-${{ env.hash }}
           restore-keys: |
-            ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+            ${{ matrix.os }}-ghc-${{ matrix.ghc }}-
           path: |
             ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
             ${{ env.cabal-build-dir }}
@@ -92,7 +92,7 @@ jobs:
             matrix.os == 'ubuntu-latest'
             && matrix.ghc == '9.4.2'
         run: >
-          cabal build all
+          cabal haddock
           --builddir=${{ env.cabal-build-dir }}
           --enable-documentation
           --haddock-hyperlink-source
