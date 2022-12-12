@@ -108,7 +108,7 @@ jobs:
             github.ref == 'refs/heads/main'
             && matrix.os == 'ubuntu-latest'
             && matrix.ghc == '9.4.2'
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: gh-pages
