@@ -14,4 +14,4 @@ source-repository-package
 source-repository-package
     type: git
     location: https://github.com/jonathanknowles/quickcheck-monoid-subclasses.git
-    tag: e851586b5cb442ca0833c71de58112a73a5a0ea2
+    tag: aaedfdb3c87ba2686d06abcdb1a0e6f28aa2fe3e
