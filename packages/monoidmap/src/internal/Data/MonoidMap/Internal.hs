@@ -56,6 +56,10 @@ module Data.MonoidMap.Internal
     , mapKeysWith
     , mapValues
 
+    -- * Prefixes and suffixes
+    , isPrefixOf
+    , isSuffixOf
+
     -- * Combination
     , intersectionWith
     , intersectionWithF
@@ -102,10 +106,10 @@ import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
     , LeftCancellative
-    , LeftReductive (..)
+    , LeftReductive
     , Reductive (..)
     , RightCancellative
-    , RightReductive (..)
+    , RightReductive
     )
 import Data.Set
     ( Set )
@@ -119,6 +123,7 @@ import qualified Data.Foldable as F
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
+import qualified Data.Semigroup.Cancellative as C
 import qualified GHC.Exts as GHC
 
 --------------------------------------------------------------------------------
@@ -153,14 +158,14 @@ instance (Ord k, MonoidNull v, Commutative v) =>
 instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
-    isPrefixOf = isSubmapOfBy isPrefixOf
-    stripPrefix = unionWithF stripPrefix
+    isPrefixOf = isSubmapOfBy C.isPrefixOf
+    stripPrefix = unionWithF C.stripPrefix
 
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
-    isSuffixOf = isSubmapOfBy isSuffixOf
-    stripSuffix = unionWithF stripSuffix
+    isSuffixOf = isSubmapOfBy C.isSuffixOf
+    stripSuffix = unionWithF C.stripSuffix
 
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
@@ -559,6 +564,226 @@ mapValues
     -> MonoidMap k v1
     -> MonoidMap k v2
 mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
+
+--------------------------------------------------------------------------------
+-- Prefixes and suffixes
+--------------------------------------------------------------------------------
+
+-- | Indicates whether or not the first map is a __prefix__ of the second.
+--
+-- 'MonoidMap' @m1@ is a prefix of 'MonoidMap' @m2@ if (and only if) for all
+-- possible keys @k@, the value associated with @k@ in @m1@ is a prefix of the
+-- value associated with @k@ in @m2@:
+--
+-- @
+-- (m1 '`isPrefixOf`' m2) \<=\> (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> m1 = 'fromList' [(1, "a"  ), (2, "p"  ), (3, "x"  )]
+-- >>> m2 = 'fromList' [(1, "abc"), (2, "pqr"), (3, "xyz")]
+-- >>> m1 '`isPrefixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [            (2, "p"  )            ]
+-- >>> m2 = 'fromList' [(1, "abc"), (2, "pqr"), (3, "xyz")]
+-- >>> m1 '`isPrefixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [(1, "abc"), (2, "p"  ), (3, "x"  )]
+-- >>> m2 = 'fromList' [(1, "a"  ), (2, "pqr"), (3, "xyz")]
+-- >>> m1 '`isPrefixOf`' m2
+-- 'False'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1), ("b", 1), ("c", 1)]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 4), ("c", 8)]
+-- >>> m1 '`isPrefixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [          ("b", 1)          ]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 4), ("c", 8)]
+-- >>> m1 '`isPrefixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b", 1), ("c", 1)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 4), ("c", 8)]
+-- >>> m1 '`isPrefixOf`' m2
+-- 'False'
+-- @
+--
+-- === __Evaluation__
+--
+-- This function also satisfies the following property:
+--
+-- @
+-- m1 '`isPrefixOf`' m2 '=='
+--     'all'
+--         (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
+--         ('keys' m1)
+-- @
+--
+-- ==== Justification
+--
+-- According to the laws for 'LeftReductive':
+--
+-- @
+-- a '`C.isPrefixOf`' (a '<>' b)
+-- @
+--
+-- By substitution, it follows that:
+--
+-- @
+-- 'mempty' '`C.isPrefixOf`' ('mempty' '<>' b)
+-- @
+--
+-- According to the laws for 'Monoid':
+--
+-- @
+-- 'mempty' '<>' b '==' b
+-- @
+--
+-- Again, by substitution, it follows that:
+--
+-- @
+-- 'mempty' '`C.isPrefixOf`' b
+-- @
+--
+-- Therefore, when evaluating @(m1 '`isPrefixOf`' m2)@, it is not necessary to
+-- consider the subset of keys that map to 'mempty' in 'm1'.
+--
+isPrefixOf
+    :: (Ord k, Monoid v, LeftReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Bool
+isPrefixOf m1 m2 =
+    all
+        (\k -> get k m1 `C.isPrefixOf` get k m2)
+        (keys m1)
+
+-- | Indicates whether or not the first map is a __suffix__ of the second.
+--
+-- 'MonoidMap' @m1@ is a suffix of 'MonoidMap' @m2@ if (and only if) for all
+-- possible keys @k@, the value associated with @k@ in @m1@ is a suffix of the
+-- value associated with @k@ in @m2@:
+--
+-- @
+-- (m1 '`isSuffixOf`' m2) \<=\> (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> m1 = 'fromList' [(1,   "c"), (2,   "r"), (3,   "z")]
+-- >>> m2 = 'fromList' [(1, "abc"), (2, "pqr"), (3, "xyz")]
+-- >>> m1 '`isSuffixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [            (2,   "r")            ]
+-- >>> m2 = 'fromList' [(1, "abc"), (2, "pqr"), (3, "xyz")]
+-- >>> m1 '`isSuffixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [(1, "abc"), (2,   "r"), (3,   "z")]
+-- >>> m2 = 'fromList' [(1,   "c"), (2, "pqr"), (3, "xyz")]
+-- >>> m1 '`isSuffixOf`' m2
+-- 'False'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1), ("b", 1), ("c", 1)]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 4), ("c", 8)]
+-- >>> m1 '`isSuffixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [          ("b", 1)          ]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 4), ("c", 8)]
+-- >>> m1 '`isSuffixOf`' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b", 1), ("c", 1)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 4), ("c", 8)]
+-- >>> m1 '`isSuffixOf`' m2
+-- 'False'
+-- @
+--
+-- === __Evaluation__
+--
+-- This function also satisfies the following property:
+--
+-- @
+-- m1 '`isSuffixOf`' m2 '=='
+--     'all'
+--         (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
+--         ('keys' m1)
+-- @
+--
+-- ==== Justification
+--
+-- According to the laws for 'RightReductive':
+--
+-- @
+-- b '`C.isSuffixOf`' (a '<>' b)
+-- @
+--
+-- By substitution, it follows that:
+--
+-- @
+-- 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
+-- @
+--
+-- According to the laws for 'Monoid':
+--
+-- @
+-- a '<>' 'mempty' '==' a
+-- @
+--
+-- Again, by substitution, it follows that:
+--
+-- @
+-- 'mempty' '`C.isSuffixOf`' a
+-- @
+--
+-- Therefore, when evaluating @(m1 '`isSuffixOf`' m2)@, it is not necessary to
+-- consider the subset of keys that map to 'mempty' in 'm1'.
+--
+isSuffixOf
+    :: (Ord k, Monoid v, RightReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Bool
+isSuffixOf m1 m2 =
+    all
+        (\k -> get k m1 `C.isSuffixOf` get k m2)
+        (keys m1)
 
 --------------------------------------------------------------------------------
 -- Binary operations
