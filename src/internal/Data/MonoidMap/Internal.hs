@@ -61,7 +61,6 @@ module Data.MonoidMap.Internal
     , isSuffixOf
 
     -- * Combination
-    , isSubmapOfBy
     , intersectionWith
     , intersectionWithF
     , unionWith
@@ -91,8 +90,6 @@ import Data.Map.Strict
     ( Map )
 import Data.Maybe
     ( fromMaybe )
-import Data.Monoid
-    ( All (..) )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
     , LeftGCDMonoid (..)
@@ -120,7 +117,6 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
-import qualified Data.Foldable as F
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
@@ -359,14 +355,6 @@ notNull = not . null
 --
 size :: MonoidMap k v -> Int
 size = Map.size . toMap
-
-isSubmapOfBy
-    :: (Ord k, Monoid v1, Monoid v2)
-    => (v1 -> v2 -> Bool)
-    -> MonoidMap k v1
-    -> MonoidMap k v2
-    -> Bool
-isSubmapOfBy f m1 m2 = getAll $ F.fold $ unionWith (fmap (fmap All) f) m1 m2
 
 --------------------------------------------------------------------------------
 -- Slicing
