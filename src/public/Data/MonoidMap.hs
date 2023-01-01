@@ -55,6 +55,10 @@ module Data.MonoidMap
     , mapKeys
     , mapKeysWith
     , mapValues
+
+    -- * Prefixes and suffixes
+    , isPrefixOf
+    , isSuffixOf
     )
     where
 
