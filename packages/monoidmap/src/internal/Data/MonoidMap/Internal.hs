@@ -61,6 +61,7 @@ module Data.MonoidMap.Internal
     , isSuffixOf
 
     -- * Combination
+    , isSubmapOfBy
     , intersectionWith
     , intersectionWithF
     , unionWith
@@ -158,13 +159,13 @@ instance (Ord k, MonoidNull v, Commutative v) =>
 instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
-    isPrefixOf = isSubmapOfBy C.isPrefixOf
+    isPrefixOf = isPrefixOf
     stripPrefix = unionWithF C.stripPrefix
 
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
-    isSuffixOf = isSubmapOfBy C.isSuffixOf
+    isSuffixOf = isSuffixOf
     stripSuffix = unionWithF C.stripSuffix
 
 instance (Ord k, MonoidNull v, Reductive v) =>
