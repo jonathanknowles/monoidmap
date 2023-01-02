@@ -463,6 +463,7 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_Reductive_isSuffixOf_String
         unitTestSpec_Reductive_isSuffixOf_Sum_Natural
         unitTestSpec_Reductive_stripPrefix_String
+        unitTestSpec_Reductive_stripSuffix_String
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1398,6 +1399,34 @@ unitTestData_Reductive_stripPrefix_String = unitTestData2
       , m [ "bc",  "qr",  "yz"] & Just
       )
     , ( m ["?"  , "p"  , "x"  ]
+      , m ["abc", "pqr", "xyz"]
+      , Nothing
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_Reductive_stripSuffix_String :: Spec
+unitTestSpec_Reductive_stripSuffix_String = unitTestSpec
+    "Reductive.stripSuffix (String)"
+    "stripSuffix"
+    (stripSuffix)
+    (unitTestData_Reductive_stripSuffix_String)
+
+unitTestData_Reductive_stripSuffix_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (Maybe (MonoidMap LatinChar String))
+unitTestData_Reductive_stripSuffix_String = unitTestData2
+    [ ( m [   "",    "",    ""]
+      , m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"] & Just
+      )
+    , ( m [  "c",   "r",   "z"]
+      , m ["abc", "pqr", "xyz"]
+      , m ["ab" , "pq" , "xy" ] & Just
+      )
+    , ( m [  "?",   "r",   "z"]
       , m ["abc", "pqr", "xyz"]
       , Nothing
       )
