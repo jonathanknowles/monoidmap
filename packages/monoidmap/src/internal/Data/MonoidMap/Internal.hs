@@ -565,7 +565,52 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- value associated with @k@ in @m2@:
 --
 -- @
--- (m1 '`isPrefixOf`' m2) \<=\> (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
+-- m1 '`isPrefixOf`' m2 \<=\> (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
+-- @
+--
+-- === __Properties__
+--
+-- This function satisfies the following property:
+--
+-- @
+-- m1 '`isPrefixOf`' m2 '=='
+--     'all' (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2) ('keys' m1)
+-- @
+--
+-- ==== Justification
+--
+-- According to the laws for 'LeftReductive':
+--
+-- @
+-- ∀ a b. b '`C.isPrefixOf`' (b '<>' a)
+-- @
+--
+-- Substituting 'mempty' for @b@:
+--
+-- @
+-- ∀ a. 'mempty' '`C.isPrefixOf`' ('mempty' '<>' a)
+-- @
+--
+-- According to the left identity law for 'Monoid':
+--
+-- @
+-- ∀ a. 'mempty' '<>' a '==' a
+-- @
+--
+-- We can therefore assert that:
+--
+-- @
+-- ∀ a. 'mempty' '`C.isPrefixOf`' a
+-- @
+--
+-- Since 'mempty' is /always/ a valid prefix, we only need to consider values
+-- in 'm1' that are /not/ 'mempty'.
+--
+-- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
+-- keys that are not associated with 'mempty' in 'm1':
+--
+-- @
+-- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
 -- @
 --
 -- === __Examples__
@@ -616,46 +661,6 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- 'False'
 -- @
 --
--- === __Evaluation__
---
--- This function also satisfies the following property:
---
--- @
--- m1 '`isPrefixOf`' m2 '=='
---     'all'
---         (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
---         ('keys' m1)
--- @
---
--- ==== Justification
---
--- According to the laws for 'LeftReductive':
---
--- @
--- a '`C.isPrefixOf`' (a '<>' b)
--- @
---
--- By substitution, it follows that:
---
--- @
--- 'mempty' '`C.isPrefixOf`' ('mempty' '<>' b)
--- @
---
--- According to the laws for 'Monoid':
---
--- @
--- 'mempty' '<>' b '==' b
--- @
---
--- Again, by substitution, it follows that:
---
--- @
--- 'mempty' '`C.isPrefixOf`' b
--- @
---
--- Therefore, when evaluating @(m1 '`isPrefixOf`' m2)@, it is not necessary to
--- consider the subset of keys that map to 'mempty' in 'm1'.
---
 isPrefixOf
     :: (Ord k, Monoid v, LeftReductive v)
     => MonoidMap k v
@@ -673,7 +678,52 @@ isPrefixOf m1 m2 =
 -- value associated with @k@ in @m2@:
 --
 -- @
--- (m1 '`isSuffixOf`' m2) \<=\> (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
+-- m1 '`isSuffixOf`' m2 \<=\> (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
+-- @
+--
+-- === __Properties__
+--
+-- This function satisfies the following property:
+--
+-- @
+-- m1 '`isSuffixOf`' m2 '=='
+--     'all' (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2) ('keys' m1)
+-- @
+--
+-- ==== Justification
+--
+-- According to the laws for 'RightReductive':
+--
+-- @
+-- ∀ a b. b '`C.isSuffixOf`' (a '<>' b)
+-- @
+--
+-- Substituting 'mempty' for @b@:
+--
+-- @
+-- ∀ a. 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
+-- @
+--
+-- According to the right identity law for 'Monoid':
+--
+-- @
+-- ∀ a. a '<>' 'mempty' '==' a
+-- @
+--
+-- We can therefore assert that:
+--
+-- @
+-- ∀ a. 'mempty' '`C.isSuffixOf`' a
+-- @
+--
+-- Since 'mempty' is /always/ a valid suffix, we only need to consider values
+-- in 'm1' that are /not/ 'mempty'.
+--
+-- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
+-- keys that are not associated with 'mempty' in 'm1':
+--
+-- @
+-- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
 -- @
 --
 -- === __Examples__
@@ -723,46 +773,6 @@ isPrefixOf m1 m2 =
 -- >>> m1 '`isSuffixOf`' m2
 -- 'False'
 -- @
---
--- === __Evaluation__
---
--- This function also satisfies the following property:
---
--- @
--- m1 '`isSuffixOf`' m2 '=='
---     'all'
---         (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
---         ('keys' m1)
--- @
---
--- ==== Justification
---
--- According to the laws for 'RightReductive':
---
--- @
--- b '`C.isSuffixOf`' (a '<>' b)
--- @
---
--- By substitution, it follows that:
---
--- @
--- 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
--- @
---
--- According to the laws for 'Monoid':
---
--- @
--- a '<>' 'mempty' '==' a
--- @
---
--- Again, by substitution, it follows that:
---
--- @
--- 'mempty' '`C.isSuffixOf`' a
--- @
---
--- Therefore, when evaluating @(m1 '`isSuffixOf`' m2)@, it is not necessary to
--- consider the subset of keys that map to 'mempty' in 'm1'.
 --
 isSuffixOf
     :: (Ord k, Monoid v, RightReductive v)
