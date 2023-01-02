@@ -1400,6 +1400,10 @@ unitTestData_Reductive_stripPrefix_String = unitTestData2
       , m ["abc", "pqr", "xyz"]
       , m [ "bc",  "qr",  "yz"] & Just
       )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"]
+      , m [   "",    "",    ""] & Just
+      )
     , ( m ["?"  , "p"  , "x"  ]
       , m ["abc", "pqr", "xyz"]
       , Nothing
@@ -1459,6 +1463,10 @@ unitTestData_Reductive_stripSuffix_String = unitTestData2
     , ( m [  "c",   "r",   "z"]
       , m ["abc", "pqr", "xyz"]
       , m ["ab" , "pq" , "xy" ] & Just
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"]
+      , m [""   , ""   , ""   ] & Just
       )
     , ( m [  "?",   "r",   "z"]
       , m ["abc", "pqr", "xyz"]
