@@ -462,6 +462,7 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_Reductive_isPrefixOf_Sum_Natural
         unitTestSpec_Reductive_isSuffixOf_String
         unitTestSpec_Reductive_isSuffixOf_Sum_Natural
+        unitTestSpec_Reductive_stripPrefix_String
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1375,6 +1376,34 @@ unitTestData_Reductive_Sum_Natural = unitTestData2
     ]
   where
     m = MonoidMap.fromList . zip [A ..] . fmap Sum
+
+unitTestSpec_Reductive_stripPrefix_String :: Spec
+unitTestSpec_Reductive_stripPrefix_String = unitTestSpec
+    "Reductive.stripPrefix (String)"
+    "stripPrefix"
+    (stripPrefix)
+    (unitTestData_Reductive_stripPrefix_String)
+
+unitTestData_Reductive_stripPrefix_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (Maybe (MonoidMap LatinChar String))
+unitTestData_Reductive_stripPrefix_String = unitTestData2
+    [ ( m [""   , ""   , ""   ]
+      , m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"] & Just
+      )
+    , ( m ["a"  , "p"  , "x"  ]
+      , m ["abc", "pqr", "xyz"]
+      , m [ "bc",  "qr",  "yz"] & Just
+      )
+    , ( m ["?"  , "p"  , "x"  ]
+      , m ["abc", "pqr", "xyz"]
+      , Nothing
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
 -- Utilities
