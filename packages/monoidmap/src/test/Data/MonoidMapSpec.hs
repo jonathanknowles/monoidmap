@@ -459,8 +459,8 @@ specUnit = describe "Unit tests" $ do
     describe "Reductive" $ do
 
         unitTestSpec_Reductive_isPrefixOf_String
-        unitTestSpec_Reductive_isSuffixOf_String
         unitTestSpec_Reductive_isPrefixOf_Sum_Natural
+        unitTestSpec_Reductive_isSuffixOf_String
         unitTestSpec_Reductive_isSuffixOf_Sum_Natural
 
 --------------------------------------------------------------------------------
