@@ -59,6 +59,8 @@ module Data.MonoidMap.Internal
     -- * Prefixes and suffixes
     , isPrefixOf
     , isSuffixOf
+    , stripPrefix
+    , stripSuffix
 
     -- * Combination
     , intersectionWith
