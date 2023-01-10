@@ -156,7 +156,7 @@ instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isPrefixOf
-    stripPrefix = unionWithF C.stripPrefix
+    stripPrefix = stripPrefix
 
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
@@ -783,6 +783,13 @@ isSuffixOf m1 m2 =
     all
         (\k -> get k m1 `C.isSuffixOf` get k m2)
         (keys m1)
+
+stripPrefix
+    :: (Ord k, MonoidNull v, LeftReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Maybe (MonoidMap k v)
+stripPrefix = unionWithF C.stripPrefix
 
 --------------------------------------------------------------------------------
 -- Binary operations
