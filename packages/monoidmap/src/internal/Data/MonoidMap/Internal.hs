@@ -66,7 +66,7 @@ module Data.MonoidMap.Internal
     , intersectionWith
     , intersectionWithF
     , unionWith
-    , unionWithF
+    , unionWithA
     )
     where
 
@@ -169,7 +169,7 @@ instance (Ord k, MonoidNull v, RightReductive v) =>
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = unionWithF (</>)
+    (</>) = unionWithA (</>)
 
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -791,14 +791,14 @@ stripPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripPrefix = unionWithF C.stripPrefix
+stripPrefix = unionWithA C.stripPrefix
 
 stripSuffix
     :: (Ord k, MonoidNull v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripSuffix = unionWithF C.stripSuffix
+stripSuffix = unionWithA C.stripSuffix
 
 --------------------------------------------------------------------------------
 -- Binary operations
@@ -840,13 +840,13 @@ unionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
     m1 m2
 
-unionWithF
+unionWithA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
+unionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
     (traverseMaybeMissing $ \_ v1 -> guardNotNull <$> f v1 mempty)
     (traverseMaybeMissing $ \_ v2 -> guardNotNull <$> f mempty v2)
     (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
