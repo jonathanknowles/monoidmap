@@ -64,7 +64,7 @@ module Data.MonoidMap.Internal
 
     -- * Combination
     , intersectionWith
-    , intersectionWithF
+    , intersectionWithA
     , unionWith
     , unionWithA
     )
@@ -816,13 +816,13 @@ intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
     m1 m2
 
-intersectionWithF
+intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
+intersectionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
     dropMissing
     dropMissing
     (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
