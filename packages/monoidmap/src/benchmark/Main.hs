@@ -18,7 +18,7 @@ import Test.Tasty.Bench
     ( bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
-import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
+import qualified Data.MonoidMap.Examples.RecoveredMap as RMap
 
 main :: IO ()
 main = do
