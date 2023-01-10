@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 -- |
 -- Copyright: © 2022 Jonathan Knowles
@@ -91,7 +92,7 @@ import Data.Map.Merge.Strict
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
-    ( fromMaybe )
+    ( fromMaybe, isJust )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
     , LeftGCDMonoid (..)
@@ -123,6 +124,7 @@ import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Semigroup.Cancellative as C
+import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
 
 --------------------------------------------------------------------------------
@@ -786,6 +788,74 @@ isSuffixOf m1 m2 =
         (\k -> get k m1 `C.isSuffixOf` get k m2)
         (keys m1)
 
+-- | Strips a /prefix/ from a 'MonoidMap'.
+--
+-- If map __@m1@__ is a /prefix/ of map __@m2@__, then 'stripPrefix' __@m1@__
+-- __@m2@__ will produce a /reduced/ map where prefix __@m1@__ is /stripped/
+-- from __@m2@__.
+--
+-- === Properties
+--
+-- The 'stripPrefix' function, when applied to maps __@m1@__ and __@m2@__,
+-- produces a result if (and only if) __@m1@__ is a prefix of __@m2@__:
+--
+-- @
+-- 'isJust' ('stripPrefix' m1 m2) '==' m1 '`isPrefixOf`' m2
+-- @
+--
+-- The value for any key __@k@__ in the result is /identical/ to the result of
+-- stripping the value for __@k@__ in map __@m1@__ from the value for __@k@__
+-- in map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> 'Just' ('get' k r) '==' 'C.stripPrefix' ('get' k m1) ('get' k m2))
+--    ('stripPrefix' m1 m2)
+-- @
+--
+-- If we append prefix __@m1@__ to the left-hand side of the result, we can
+-- always recover the original map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> m1 '<>' r '==' m2)
+--    ('stripPrefix' m1 m2)
+-- @
+--
+-- === Examples
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1, ""   ), (2, "i"  ), (3, "pq" ), (4, "xyz")]
+-- >>> __m2__ = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- >>> __m3__ = 'fromList' [(1, "abc"), (2,  "jk"), (3,   "r"), (4,    "")]
+-- @
+-- @
+-- >>> 'stripPrefix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripPrefix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 3), ("b", 3), ("c", 3), ("d", 3)]
+-- >>> __m3__ = 'fromList' [("a", 3), ("b", 2), ("c", 1), ("d", 0)]
+-- @
+-- @
+-- >>> 'stripPrefix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripPrefix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
 stripPrefix
     :: (Ord k, MonoidNull v, LeftReductive v)
     => MonoidMap k v
