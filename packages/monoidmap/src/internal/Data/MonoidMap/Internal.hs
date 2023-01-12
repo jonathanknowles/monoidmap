@@ -567,7 +567,7 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- value associated with @k@ in @m2@:
 --
 -- @
--- m1 '`isPrefixOf`' m2 \<=\> (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
+-- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
 -- === __Properties__
@@ -680,7 +680,7 @@ isPrefixOf m1 m2 =
 -- value associated with @k@ in @m2@:
 --
 -- @
--- m1 '`isSuffixOf`' m2 \<=\> (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
+-- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
 --
 -- === __Properties__
