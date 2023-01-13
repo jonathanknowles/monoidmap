@@ -564,11 +564,11 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- Prefixes and suffixes
 --------------------------------------------------------------------------------
 
--- | Indicates whether or not the first map is a __prefix__ of the second.
+-- | Indicates whether or not the first map is a /prefix/ of the second.
 --
--- 'MonoidMap' @m1@ is a prefix of 'MonoidMap' @m2@ if (and only if) for all
--- possible keys @k@, the value associated with @k@ in @m1@ is a prefix of the
--- value associated with @k@ in @m2@:
+-- 'MonoidMap' __@m1@__ is a /prefix/ of 'MonoidMap' __@m2@__ if (and only if)
+-- for all possible keys __@k@__, the value for __@k@__ in __@m1@__ is a
+-- /prefix/ of the value for __@k@__ in __@m2@__:
 --
 -- @
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
@@ -674,11 +674,11 @@ isPrefixOf m1 m2 =
         (\k -> get k m1 `C.isPrefixOf` get k m2)
         (keys m1)
 
--- | Indicates whether or not the first map is a __suffix__ of the second.
+-- | Indicates whether or not the first map is a /suffix/ of the second.
 --
--- 'MonoidMap' @m1@ is a suffix of 'MonoidMap' @m2@ if (and only if) for all
--- possible keys @k@, the value associated with @k@ in @m1@ is a suffix of the
--- value associated with @k@ in @m2@:
+-- 'MonoidMap' __@m1@__ is a /suffix/ of 'MonoidMap' __@m2@__ if (and only if)
+-- for all possible keys __@k@__, the value for __@k@__ in __@m1@__ is a
+-- /suffix/ of the value for __@k@__ in __@m2@__:
 --
 -- @
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
