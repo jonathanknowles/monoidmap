@@ -1113,6 +1113,14 @@ prop_stripPrefix_isJust
 prop_stripPrefix_isJust m1 m2 =
     isJust (stripPrefix m1 m2) === m1 `isPrefixOf` m2
 
+prop_stripSuffix_isJust
+    :: (Ord k, MonoidNull v, RightReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_stripSuffix_isJust m1 m2 =
+    isJust (stripSuffix m1 m2) === m1 `isSuffixOf` m2
+
 prop_stripPrefix_get
     :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
     => MonoidMap k v
@@ -1128,6 +1136,21 @@ prop_stripPrefix_get m1 m2 k = QC.property $
         )
         (stripPrefix m1 m2)
 
+prop_stripSuffix_get
+    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_stripSuffix_get m1 m2 k = QC.property $
+    maybe True
+        (\r ->
+            Just (MonoidMap.get k r)
+            ==
+            stripSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
+        )
+        (stripSuffix m1 m2)
+
 prop_stripPrefix_mappend
     :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
     => MonoidMap k v
@@ -1137,6 +1160,16 @@ prop_stripPrefix_mappend m1 m2 = QC.property $
     maybe True
         (\r -> m1 <> r == m2)
         (stripPrefix m1 m2)
+
+prop_stripSuffix_mappend
+    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_stripSuffix_mappend m1 m2 = QC.property $
+    maybe True
+        (\r -> r <> m1 == m2)
+        (stripSuffix m1 m2)
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances

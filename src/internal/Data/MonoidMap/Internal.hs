@@ -863,6 +863,74 @@ stripPrefix
     -> Maybe (MonoidMap k v)
 stripPrefix = unionWithA C.stripPrefix
 
+-- | Strips a /suffix/ from a 'MonoidMap'.
+--
+-- If map __@m1@__ is a /suffix/ of map __@m2@__, then 'stripSuffix' __@m1@__
+-- __@m2@__ will produce a /reduced/ map where suffix __@m1@__ is /stripped/
+-- from __@m2@__.
+--
+-- === Properties
+--
+-- The 'stripSuffix' function, when applied to maps __@m1@__ and __@m2@__,
+-- produces a result if (and only if) __@m1@__ is a suffix of __@m2@__:
+--
+-- @
+-- 'isJust' ('stripSuffix' m1 m2) '==' m1 '`isSuffixOf`' m2
+-- @
+--
+-- The value for any key __@k@__ in the result is /identical/ to the result of
+-- stripping the value for __@k@__ in map __@m1@__ from the value for __@k@__
+-- in map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> 'Just' ('get' k r) '==' 'C.stripSuffix' ('get' k m1) ('get' k m2))
+--    ('stripSuffix' m1 m2)
+-- @
+--
+-- If we append suffix __@m1@__ to the right-hand side of the result, we can
+-- always recover the original map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> r '<>' m1 '==' m2)
+--    ('stripSuffix' m1 m2)
+-- @
+--
+-- === Examples
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1,    ""), (2,   "k"), (3,  "qr"), (4, "xyz")]
+-- >>> __m2__ = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- >>> __m3__ = 'fromList' [(1, "abc"), (2, "ij" ), (3, "p"  ), (4, ""   )]
+-- @
+-- @
+-- >>> 'stripSuffix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripSuffix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 3), ("b", 3), ("c", 3), ("d", 3)]
+-- >>> __m3__ = 'fromList' [("a", 3), ("b", 2), ("c", 1), ("d", 0)]
+-- @
+-- @
+-- >>> 'stripSuffix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripSuffix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
 stripSuffix
     :: (Ord k, MonoidNull v, RightReductive v)
     => MonoidMap k v
