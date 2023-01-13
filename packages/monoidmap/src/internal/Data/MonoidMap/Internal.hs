@@ -819,7 +819,7 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
--- === Examples
+-- === __Examples__
 --
 -- With 'String' values:
 --
@@ -894,7 +894,7 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
--- === Examples
+-- === __Examples__
 --
 -- With 'String' values:
 --
