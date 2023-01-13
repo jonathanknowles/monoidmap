@@ -56,10 +56,12 @@ module Data.MonoidMap
     , mapKeysWith
     , mapValues
 
-    -- * Prefixes and suffixes
+    -- * Prefixes
     , isPrefixOf
-    , isSuffixOf
     , stripPrefix
+
+    -- * Suffixes
+    , isSuffixOf
     , stripSuffix
     )
     where
