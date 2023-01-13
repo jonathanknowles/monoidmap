@@ -574,51 +574,6 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
--- === __Properties__
---
--- This function satisfies the following property:
---
--- @
--- m1 '`isPrefixOf`' m2 '=='
---     'all' (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2) ('keys' m1)
--- @
---
--- ==== Justification
---
--- According to the laws for 'LeftReductive':
---
--- @
--- ∀ a b. b '`C.isPrefixOf`' (b '<>' a)
--- @
---
--- Substituting 'mempty' for @b@:
---
--- @
--- ∀ a. 'mempty' '`C.isPrefixOf`' ('mempty' '<>' a)
--- @
---
--- According to the left identity law for 'Monoid':
---
--- @
--- ∀ a. 'mempty' '<>' a '==' a
--- @
---
--- We can therefore assert that:
---
--- @
--- ∀ a. 'mempty' '`C.isPrefixOf`' a
--- @
---
--- Since 'mempty' is /always/ a valid prefix, we only need to consider values
--- in 'm1' that are /not/ 'mempty'.
---
--- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
--- keys that are not associated with 'mempty' in 'm1':
---
--- @
--- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
--- @
---
 -- === __Examples__
 --
 -- With 'String' values:
@@ -673,6 +628,48 @@ isPrefixOf
     -> MonoidMap k v
     -> Bool
 isPrefixOf m1 m2 =
+    -- This function satisfies the following property:
+    --
+    -- @
+    -- m1 '`isPrefixOf`' m2 '=='
+    --     'all' (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2) ('keys' m1)
+    -- @
+    --
+    -- ==== Justification
+    --
+    -- According to the laws for 'LeftReductive':
+    --
+    -- @
+    -- ∀ a b. b '`C.isPrefixOf`' (b '<>' a)
+    -- @
+    --
+    -- Substituting 'mempty' for @b@:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isPrefixOf`' ('mempty' '<>' a)
+    -- @
+    --
+    -- According to the left identity law for 'Monoid':
+    --
+    -- @
+    -- ∀ a. 'mempty' '<>' a '==' a
+    -- @
+    --
+    -- We can therefore assert that:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isPrefixOf`' a
+    -- @
+    --
+    -- Since 'mempty' is /always/ a valid prefix, we only need to consider values
+    -- in 'm1' that are /not/ 'mempty'.
+    --
+    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
+    -- keys that are not associated with 'mempty' in 'm1':
+    --
+    -- @
+    -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+    -- @
     all
         (\k -> get k m1 `C.isPrefixOf` get k m2)
         (keys m1)
@@ -685,51 +682,6 @@ isPrefixOf m1 m2 =
 --
 -- @
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
--- @
---
--- === __Properties__
---
--- This function satisfies the following property:
---
--- @
--- m1 '`isSuffixOf`' m2 '=='
---     'all' (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2) ('keys' m1)
--- @
---
--- ==== Justification
---
--- According to the laws for 'RightReductive':
---
--- @
--- ∀ a b. b '`C.isSuffixOf`' (a '<>' b)
--- @
---
--- Substituting 'mempty' for @b@:
---
--- @
--- ∀ a. 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
--- @
---
--- According to the right identity law for 'Monoid':
---
--- @
--- ∀ a. a '<>' 'mempty' '==' a
--- @
---
--- We can therefore assert that:
---
--- @
--- ∀ a. 'mempty' '`C.isSuffixOf`' a
--- @
---
--- Since 'mempty' is /always/ a valid suffix, we only need to consider values
--- in 'm1' that are /not/ 'mempty'.
---
--- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
--- keys that are not associated with 'mempty' in 'm1':
---
--- @
--- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
 -- @
 --
 -- === __Examples__
@@ -786,6 +738,49 @@ isSuffixOf
     -> MonoidMap k v
     -> Bool
 isSuffixOf m1 m2 =
+    -- This function satisfies the following property:
+    --
+    -- @
+    -- m1 '`isSuffixOf`' m2 '=='
+    --     'all' (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2) ('keys' m1)
+    -- @
+    --
+    -- ==== Justification
+    --
+    -- According to the laws for 'RightReductive':
+    --
+    -- @
+    -- ∀ a b. b '`C.isSuffixOf`' (a '<>' b)
+    -- @
+    --
+    -- Substituting 'mempty' for @b@:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
+    -- @
+    --
+    -- According to the right identity law for 'Monoid':
+    --
+    -- @
+    -- ∀ a. a '<>' 'mempty' '==' a
+    -- @
+    --
+    -- We can therefore assert that:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isSuffixOf`' a
+    -- @
+    --
+    -- Since 'mempty' is /always/ a valid suffix, we only need to consider values
+    -- in 'm1' that are /not/ 'mempty'.
+    --
+    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
+    -- keys that are not associated with 'mempty' in 'm1':
+    --
+    -- @
+    -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+    -- @
+    --
     all
         (\k -> get k m1 `C.isSuffixOf` get k m2)
         (keys m1)
