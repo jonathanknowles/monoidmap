@@ -57,10 +57,12 @@ module Data.MonoidMap.Internal
     , mapKeysWith
     , mapValues
 
-    -- * Prefixes and suffixes
+    -- * Prefixes
     , isPrefixOf
-    , isSuffixOf
     , stripPrefix
+
+    -- * Suffixes
+    , isSuffixOf
     , stripSuffix
 
     -- * Combination
