@@ -59,10 +59,12 @@ module Data.MonoidMap
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
+    , commonPrefix
 
     -- * Suffixes
     , isSuffixOf
     , stripSuffix
+    , commonSuffix
     )
     where
 
