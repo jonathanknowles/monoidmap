@@ -628,7 +628,7 @@ isPrefixOf
     -> MonoidMap k v
     -> Bool
 isPrefixOf m1 m2 =
-    -- This function satisfies the following property:
+    -- Note that in practice, it's sufficient to check the following property:
     --
     -- @
     -- m1 '`isPrefixOf`' m2 '=='
@@ -661,15 +661,16 @@ isPrefixOf m1 m2 =
     -- ∀ a. 'mempty' '`C.isPrefixOf`' a
     -- @
     --
-    -- Since 'mempty' is /always/ a valid prefix, we only need to consider values
-    -- in 'm1' that are /not/ 'mempty'.
+    -- Since 'mempty' is /always/ a valid prefix, we only need to consider
+    -- values in 'm1' that are /not/ 'mempty'.
     --
-    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
-    -- keys that are not associated with 'mempty' in 'm1':
+    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set
+    -- of keys that are not associated with 'mempty' in 'm1':
     --
     -- @
     -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
+    --
     all
         (\k -> get k m1 `C.isPrefixOf` get k m2)
         (keys m1)
@@ -738,7 +739,7 @@ isSuffixOf
     -> MonoidMap k v
     -> Bool
 isSuffixOf m1 m2 =
-    -- This function satisfies the following property:
+    -- Note that in practice, it's sufficient to check the following property:
     --
     -- @
     -- m1 '`isSuffixOf`' m2 '=='
@@ -771,11 +772,11 @@ isSuffixOf m1 m2 =
     -- ∀ a. 'mempty' '`C.isSuffixOf`' a
     -- @
     --
-    -- Since 'mempty' is /always/ a valid suffix, we only need to consider values
-    -- in 'm1' that are /not/ 'mempty'.
+    -- Since 'mempty' is /always/ a valid suffix, we only need to consider
+    -- values in 'm1' that are /not/ 'mempty'.
     --
-    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
-    -- keys that are not associated with 'mempty' in 'm1':
+    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set
+    -- of keys that are not associated with 'mempty' in 'm1':
     --
     -- @
     -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
