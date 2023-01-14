@@ -939,6 +939,41 @@ stripSuffix
     -> Maybe (MonoidMap k v)
 stripSuffix = unionWithA C.stripSuffix
 
+-- | Finds the /common prefix/ of two maps.
+--
+-- Satisifies the following property:
+--
+-- @
+-- 'get' k ('commonPrefix' m1 m2) '=='
+--    'C.commonPrefix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1, "+++"), (2, "b++"), (3, "cc+"), (4, "ddd")]
+-- >>> __m2__ = 'fromList' [(1, "---"), (2, "b--"), (3, "cc-"), (4, "ddd")]
+-- >>> __m3__ = 'fromList' [(1, ""   ), (2, "b"  ), (3, "cc" ), (4, "ddd")]
+-- @
+-- @
+-- >>> 'commonPrefix' __m1__ __m2__ '==' __m3__
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
+-- >>> __m3__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 2)]
+-- @
+-- @
+-- >>> 'commonPrefix' __m1__ __m2__ '==' __m3__
+-- 'True'
+-- @
+--
 commonPrefix
     :: (Ord k, MonoidNull v, LeftGCDMonoid v)
     => MonoidMap k v
