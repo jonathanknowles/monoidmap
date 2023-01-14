@@ -97,7 +97,7 @@ import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
-    , LeftGCDMonoid (..)
+    , LeftGCDMonoid
     , OverlappingGCDMonoid (..)
     , RightGCDMonoid (..)
     )
@@ -124,6 +124,7 @@ import Text.Read
 import qualified Data.Bifunctor as B
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
+import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.Null as Null
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
@@ -192,7 +193,7 @@ instance (Ord k, MonoidNull v, GCDMonoid v) =>
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
-    commonPrefix = intersectionWith commonPrefix
+    commonPrefix = commonPrefix
 
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
@@ -935,6 +936,13 @@ stripSuffix
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
 stripSuffix = unionWithA C.stripSuffix
+
+commonPrefix
+    :: (Ord k, MonoidNull v, LeftGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+commonPrefix = intersectionWith C.commonPrefix
 
 --------------------------------------------------------------------------------
 -- Binary operations
