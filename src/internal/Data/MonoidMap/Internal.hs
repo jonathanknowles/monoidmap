@@ -60,10 +60,12 @@ module Data.MonoidMap.Internal
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
+    , commonPrefix
 
     -- * Suffixes
     , isSuffixOf
     , stripSuffix
+    , commonSuffix
 
     -- * Combination
     , intersectionWith
@@ -97,9 +99,9 @@ import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
-    , LeftGCDMonoid (..)
+    , LeftGCDMonoid
     , OverlappingGCDMonoid (..)
-    , RightGCDMonoid (..)
+    , RightGCDMonoid
     )
 import Data.Monoid.Monus
     ( Monus (..) )
@@ -124,6 +126,7 @@ import Text.Read
 import qualified Data.Bifunctor as B
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
+import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.Null as Null
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
@@ -192,12 +195,12 @@ instance (Ord k, MonoidNull v, GCDMonoid v) =>
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
-    commonPrefix = intersectionWith commonPrefix
+    commonPrefix = commonPrefix
 
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
-    commonSuffix = intersectionWith commonSuffix
+    commonSuffix = commonSuffix
 
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
@@ -935,6 +938,90 @@ stripSuffix
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
 stripSuffix = unionWithA C.stripSuffix
+
+-- | Finds the /common prefix/ of two maps.
+--
+-- Satisifies the following property:
+--
+-- @
+-- 'get' k ('commonPrefix' m1 m2) '=='
+--    'C.commonPrefix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1, "+++"), (2, "b++"), (3, "cc+"), (4, "ddd")]
+-- >>> __m2__ = 'fromList' [(1, "---"), (2, "b--"), (3, "cc-"), (4, "ddd")]
+-- >>> __m3__ = 'fromList' [(1, ""   ), (2, "b"  ), (3, "cc" ), (4, "ddd")]
+-- @
+-- @
+-- >>> 'commonPrefix' __m1__ __m2__ '==' __m3__
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
+-- >>> __m3__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 2)]
+-- @
+-- @
+-- >>> 'commonPrefix' __m1__ __m2__ '==' __m3__
+-- 'True'
+-- @
+--
+commonPrefix
+    :: (Ord k, MonoidNull v, LeftGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+commonPrefix = intersectionWith C.commonPrefix
+
+-- | Finds the /common suffix/ of two maps.
+--
+-- Satisifies the following property:
+--
+-- @
+-- 'get' k ('commonSuffix' m1 m2) '=='
+--    'C.commonSuffix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1, "+++"), (2, "++b"), (3, "+cc"), (4, "ddd")]
+-- >>> __m2__ = 'fromList' [(1, "---"), (2, "--b"), (3, "-cc"), (4, "ddd")]
+-- >>> __m3__ = 'fromList' [(1,    ""), (2,   "b"), (3,  "cc"), (4, "ddd")]
+-- @
+-- @
+-- >>> 'commonSuffix' __m1__ __m2__ '==' __m3__
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
+-- >>> __m3__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 2)]
+-- @
+-- @
+-- >>> 'commonSuffix' __m1__ __m2__ '==' __m3__
+-- 'True'
+-- @
+--
+commonSuffix
+    :: (Ord k, MonoidNull v, RightGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+commonSuffix = intersectionWith C.commonSuffix
 
 --------------------------------------------------------------------------------
 -- Binary operations
