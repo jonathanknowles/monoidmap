@@ -26,7 +26,7 @@ import Data.Maybe
 import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.GCD
-    ( LeftGCDMonoid (..) )
+    ( LeftGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
@@ -475,6 +475,11 @@ specUnit = describe "Unit tests" $ do
 
         unitTestSpec_LeftGCDMonoid_commonPrefix_String
         unitTestSpec_LeftGCDMonoid_commonPrefix_Sum_Natural
+
+    describe "RightGCDMonoid" $ do
+
+        unitTestSpec_RightGCDMonoid_commonSuffix_String
+        unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1189,6 +1194,17 @@ prop_commonPrefix_get m1 m2 k =
     ===
     commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
 
+prop_commonSuffix_get
+    :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_commonSuffix_get m1 m2 k =
+    MonoidMap.get k (commonSuffix m1 m2)
+    ===
+    commonSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
+
 --------------------------------------------------------------------------------
 -- Arbitrary instances
 --------------------------------------------------------------------------------
@@ -1658,6 +1674,90 @@ unitTestData_LeftGCDMonoid_commonPrefix_Sum_Natural :: UnitTestData2
     (MonoidMap LatinChar (Sum Natural))
     (MonoidMap LatinChar (Sum Natural))
 unitTestData_LeftGCDMonoid_commonPrefix_Sum_Natural = unitTestData2
+    [ ( m [0, 0, 0]
+      , m [1, 2, 3]
+      , m [0, 0, 0]
+      )
+    , ( m [1, 1, 1]
+      , m [1, 2, 3]
+      , m [1, 1, 1]
+      )
+    , ( m [2, 2, 2]
+      , m [1, 2, 3]
+      , m [1, 2, 2]
+      )
+    , ( m [3, 3, 3]
+      , m [1, 2, 3]
+      , m [1, 2, 3]
+      )
+    , ( m [4, 4, 4]
+      , m [1, 2, 3]
+      , m [1, 2, 3]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+--------------------------------------------------------------------------------
+-- Unit tests: RightGCDMonoid
+--------------------------------------------------------------------------------
+
+unitTestSpec_RightGCDMonoid_commonSuffix_String :: Spec
+unitTestSpec_RightGCDMonoid_commonSuffix_String = unitTestSpec
+    "RightGCDMonoid.commonSuffix (String)"
+    "commonSuffix"
+    (commonSuffix)
+    (unitTestData_RightGCDMonoid_commonSuffix_String)
+
+unitTestData_RightGCDMonoid_commonSuffix_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+unitTestData_RightGCDMonoid_commonSuffix_String = unitTestData2
+    [ ( m ["---", "---", "---"]
+      , m ["abc", "pqr", "xyz"]
+      , m [  "" ,    "",    ""]
+      )
+    , ( m ["--c", "--r", "--z"]
+      , m ["abc", "pqr", "xyz"]
+      , m [  "c",   "r",   "z"]
+      )
+    , ( m ["-bc", "-qr", "-yz"]
+      , m ["abc", "pqr", "xyz"]
+      , m [ "bc",  "qr",  "yz"]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["-bc", "-qr", "-yz"]
+      , m [ "bc",  "qr",  "yz"]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["--c", "--r", "--z"]
+      , m [  "c",   "r",   "z"]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["---", "---", "---"]
+      , m [   "",    "",    ""]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural :: Spec
+unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural = unitTestSpec
+    "RightGCDMonoid.commonSuffix (Sum Natural)"
+    "commonSuffix"
+    (commonSuffix)
+    (unitTestData_RightGCDMonoid_commonSuffix_Sum_Natural)
+
+unitTestData_RightGCDMonoid_commonSuffix_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+unitTestData_RightGCDMonoid_commonSuffix_Sum_Natural = unitTestData2
     [ ( m [0, 0, 0]
       , m [1, 2, 3]
       , m [0, 0, 0]
