@@ -99,7 +99,7 @@ import Data.Monoid.GCD
     ( GCDMonoid (..)
     , LeftGCDMonoid
     , OverlappingGCDMonoid (..)
-    , RightGCDMonoid (..)
+    , RightGCDMonoid
     )
 import Data.Monoid.Monus
     ( Monus (..) )
@@ -198,7 +198,7 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
-    commonSuffix = intersectionWith commonSuffix
+    commonSuffix = commonSuffix
 
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
@@ -943,6 +943,13 @@ commonPrefix
     -> MonoidMap k v
     -> MonoidMap k v
 commonPrefix = intersectionWith C.commonPrefix
+
+commonSuffix
+    :: (Ord k, MonoidNull v, RightGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+commonSuffix = intersectionWith C.commonSuffix
 
 --------------------------------------------------------------------------------
 -- Binary operations
