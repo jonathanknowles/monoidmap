@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 -- |
 -- Copyright: © 2022 Jonathan Knowles
@@ -56,15 +57,19 @@ module Data.MonoidMap.Internal
     , mapKeysWith
     , mapValues
 
-    -- * Prefixes and suffixes
+    -- * Prefixes
     , isPrefixOf
+    , stripPrefix
+
+    -- * Suffixes
     , isSuffixOf
+    , stripSuffix
 
     -- * Combination
     , intersectionWith
-    , intersectionWithF
+    , intersectionWithA
     , unionWith
-    , unionWithF
+    , unionWithA
     )
     where
 
@@ -89,7 +94,7 @@ import Data.Map.Merge.Strict
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
-    ( fromMaybe )
+    ( fromMaybe, isJust )
 import Data.Monoid.GCD
     ( GCDMonoid (..)
     , LeftGCDMonoid (..)
@@ -121,6 +126,7 @@ import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Semigroup.Cancellative as C
+import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
 
 --------------------------------------------------------------------------------
@@ -156,18 +162,18 @@ instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isPrefixOf
-    stripPrefix = unionWithF C.stripPrefix
+    stripPrefix = stripPrefix
 
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSuffixOf
-    stripSuffix = unionWithF C.stripSuffix
+    stripSuffix = stripSuffix
 
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = unionWithF (</>)
+    (</>) = unionWithA (</>)
 
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -558,59 +564,14 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- Prefixes and suffixes
 --------------------------------------------------------------------------------
 
--- | Indicates whether or not the first map is a __prefix__ of the second.
+-- | Indicates whether or not the first map is a /prefix/ of the second.
 --
--- 'MonoidMap' @m1@ is a prefix of 'MonoidMap' @m2@ if (and only if) for all
--- possible keys @k@, the value associated with @k@ in @m1@ is a prefix of the
--- value associated with @k@ in @m2@:
---
--- @
--- m1 '`isPrefixOf`' m2 \<=\> (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
--- @
---
--- === __Properties__
---
--- This function satisfies the following property:
+-- 'MonoidMap' __@m1@__ is a /prefix/ of 'MonoidMap' __@m2@__ if (and only if)
+-- for all possible keys __@k@__, the value for __@k@__ in __@m1@__ is a
+-- /prefix/ of the value for __@k@__ in __@m2@__:
 --
 -- @
--- m1 '`isPrefixOf`' m2 '=='
---     'all' (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2) ('keys' m1)
--- @
---
--- ==== Justification
---
--- According to the laws for 'LeftReductive':
---
--- @
--- ∀ a b. b '`C.isPrefixOf`' (b '<>' a)
--- @
---
--- Substituting 'mempty' for @b@:
---
--- @
--- ∀ a. 'mempty' '`C.isPrefixOf`' ('mempty' '<>' a)
--- @
---
--- According to the left identity law for 'Monoid':
---
--- @
--- ∀ a. 'mempty' '<>' a '==' a
--- @
---
--- We can therefore assert that:
---
--- @
--- ∀ a. 'mempty' '`C.isPrefixOf`' a
--- @
---
--- Since 'mempty' is /always/ a valid prefix, we only need to consider values
--- in 'm1' that are /not/ 'mempty'.
---
--- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
--- keys that are not associated with 'mempty' in 'm1':
---
--- @
--- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+-- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
 -- === __Examples__
@@ -667,63 +628,61 @@ isPrefixOf
     -> MonoidMap k v
     -> Bool
 isPrefixOf m1 m2 =
+    -- Note that in practice, it's sufficient to check the following property:
+    --
+    -- @
+    -- m1 '`isPrefixOf`' m2 '=='
+    --     'all' (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2) ('keys' m1)
+    -- @
+    --
+    -- ==== Justification
+    --
+    -- According to the laws for 'LeftReductive':
+    --
+    -- @
+    -- ∀ a b. b '`C.isPrefixOf`' (b '<>' a)
+    -- @
+    --
+    -- Substituting 'mempty' for @b@:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isPrefixOf`' ('mempty' '<>' a)
+    -- @
+    --
+    -- According to the left identity law for 'Monoid':
+    --
+    -- @
+    -- ∀ a. 'mempty' '<>' a '==' a
+    -- @
+    --
+    -- We can therefore assert that:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isPrefixOf`' a
+    -- @
+    --
+    -- Since 'mempty' is /always/ a valid prefix, we only need to consider
+    -- values in 'm1' that are /not/ 'mempty'.
+    --
+    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set
+    -- of keys that are not associated with 'mempty' in 'm1':
+    --
+    -- @
+    -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+    -- @
+    --
     all
         (\k -> get k m1 `C.isPrefixOf` get k m2)
         (keys m1)
 
--- | Indicates whether or not the first map is a __suffix__ of the second.
+-- | Indicates whether or not the first map is a /suffix/ of the second.
 --
--- 'MonoidMap' @m1@ is a suffix of 'MonoidMap' @m2@ if (and only if) for all
--- possible keys @k@, the value associated with @k@ in @m1@ is a suffix of the
--- value associated with @k@ in @m2@:
---
--- @
--- m1 '`isSuffixOf`' m2 \<=\> (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
--- @
---
--- === __Properties__
---
--- This function satisfies the following property:
+-- 'MonoidMap' __@m1@__ is a /suffix/ of 'MonoidMap' __@m2@__ if (and only if)
+-- for all possible keys __@k@__, the value for __@k@__ in __@m1@__ is a
+-- /suffix/ of the value for __@k@__ in __@m2@__:
 --
 -- @
--- m1 '`isSuffixOf`' m2 '=='
---     'all' (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2) ('keys' m1)
--- @
---
--- ==== Justification
---
--- According to the laws for 'RightReductive':
---
--- @
--- ∀ a b. b '`C.isSuffixOf`' (a '<>' b)
--- @
---
--- Substituting 'mempty' for @b@:
---
--- @
--- ∀ a. 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
--- @
---
--- According to the right identity law for 'Monoid':
---
--- @
--- ∀ a. a '<>' 'mempty' '==' a
--- @
---
--- We can therefore assert that:
---
--- @
--- ∀ a. 'mempty' '`C.isSuffixOf`' a
--- @
---
--- Since 'mempty' is /always/ a valid suffix, we only need to consider values
--- in 'm1' that are /not/ 'mempty'.
---
--- The 'keys' function, when applied to 'm1', gives us /precisely/ the set of
--- keys that are not associated with 'mempty' in 'm1':
---
--- @
--- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+-- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
 --
 -- === __Examples__
@@ -780,9 +739,202 @@ isSuffixOf
     -> MonoidMap k v
     -> Bool
 isSuffixOf m1 m2 =
+    -- Note that in practice, it's sufficient to check the following property:
+    --
+    -- @
+    -- m1 '`isSuffixOf`' m2 '=='
+    --     'all' (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2) ('keys' m1)
+    -- @
+    --
+    -- ==== Justification
+    --
+    -- According to the laws for 'RightReductive':
+    --
+    -- @
+    -- ∀ a b. b '`C.isSuffixOf`' (a '<>' b)
+    -- @
+    --
+    -- Substituting 'mempty' for @b@:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isSuffixOf`' (a '<>' 'mempty')
+    -- @
+    --
+    -- According to the right identity law for 'Monoid':
+    --
+    -- @
+    -- ∀ a. a '<>' 'mempty' '==' a
+    -- @
+    --
+    -- We can therefore assert that:
+    --
+    -- @
+    -- ∀ a. 'mempty' '`C.isSuffixOf`' a
+    -- @
+    --
+    -- Since 'mempty' is /always/ a valid suffix, we only need to consider
+    -- values in 'm1' that are /not/ 'mempty'.
+    --
+    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set
+    -- of keys that are not associated with 'mempty' in 'm1':
+    --
+    -- @
+    -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+    -- @
+    --
     all
         (\k -> get k m1 `C.isSuffixOf` get k m2)
         (keys m1)
+
+-- | Strips a /prefix/ from a 'MonoidMap'.
+--
+-- If map __@m1@__ is a /prefix/ of map __@m2@__, then 'stripPrefix' __@m1@__
+-- __@m2@__ will produce a /reduced/ map where prefix __@m1@__ is /stripped/
+-- from __@m2@__.
+--
+-- === Properties
+--
+-- The 'stripPrefix' function, when applied to maps __@m1@__ and __@m2@__,
+-- produces a result if (and only if) __@m1@__ is a prefix of __@m2@__:
+--
+-- @
+-- 'isJust' ('stripPrefix' m1 m2) '==' m1 '`isPrefixOf`' m2
+-- @
+--
+-- The value for any key __@k@__ in the result is /identical/ to the result of
+-- stripping the value for __@k@__ in map __@m1@__ from the value for __@k@__
+-- in map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> 'Just' ('get' k r) '==' 'C.stripPrefix' ('get' k m1) ('get' k m2))
+--    ('stripPrefix' m1 m2)
+-- @
+--
+-- If we append prefix __@m1@__ to the left-hand side of the result, we can
+-- always recover the original map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> m1 '<>' r '==' m2)
+--    ('stripPrefix' m1 m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1, ""   ), (2, "i"  ), (3, "pq" ), (4, "xyz")]
+-- >>> __m2__ = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- >>> __m3__ = 'fromList' [(1, "abc"), (2,  "jk"), (3,   "r"), (4,    "")]
+-- @
+-- @
+-- >>> 'stripPrefix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripPrefix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 3), ("b", 3), ("c", 3), ("d", 3)]
+-- >>> __m3__ = 'fromList' [("a", 3), ("b", 2), ("c", 1), ("d", 0)]
+-- @
+-- @
+-- >>> 'stripPrefix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripPrefix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
+stripPrefix
+    :: (Ord k, MonoidNull v, LeftReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Maybe (MonoidMap k v)
+stripPrefix = unionWithA C.stripPrefix
+
+-- | Strips a /suffix/ from a 'MonoidMap'.
+--
+-- If map __@m1@__ is a /suffix/ of map __@m2@__, then 'stripSuffix' __@m1@__
+-- __@m2@__ will produce a /reduced/ map where suffix __@m1@__ is /stripped/
+-- from __@m2@__.
+--
+-- === Properties
+--
+-- The 'stripSuffix' function, when applied to maps __@m1@__ and __@m2@__,
+-- produces a result if (and only if) __@m1@__ is a suffix of __@m2@__:
+--
+-- @
+-- 'isJust' ('stripSuffix' m1 m2) '==' m1 '`isSuffixOf`' m2
+-- @
+--
+-- The value for any key __@k@__ in the result is /identical/ to the result of
+-- stripping the value for __@k@__ in map __@m1@__ from the value for __@k@__
+-- in map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> 'Just' ('get' k r) '==' 'C.stripSuffix' ('get' k m1) ('get' k m2))
+--    ('stripSuffix' m1 m2)
+-- @
+--
+-- If we append suffix __@m1@__ to the right-hand side of the result, we can
+-- always recover the original map __@m2@__:
+--
+-- @
+-- 'maybe' 'True'
+--    (\\r -> r '<>' m1 '==' m2)
+--    ('stripSuffix' m1 m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [(1,    ""), (2,   "k"), (3,  "qr"), (4, "xyz")]
+-- >>> __m2__ = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- >>> __m3__ = 'fromList' [(1, "abc"), (2, "ij" ), (3, "p"  ), (4, ""   )]
+-- @
+-- @
+-- >>> 'stripSuffix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripSuffix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> __m2__ = 'fromList' [("a", 3), ("b", 3), ("c", 3), ("d", 3)]
+-- >>> __m3__ = 'fromList' [("a", 3), ("b", 2), ("c", 1), ("d", 0)]
+-- @
+-- @
+-- >>> 'stripSuffix' __m1__ __m2__ '==' 'Just' __m3__
+-- 'True'
+-- @
+-- @
+-- >>> 'stripSuffix' __m2__ __m1__ '==' 'Nothing'
+-- 'True'
+-- @
+--
+stripSuffix
+    :: (Ord k, MonoidNull v, RightReductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Maybe (MonoidMap k v)
+stripSuffix = unionWithA C.stripSuffix
 
 --------------------------------------------------------------------------------
 -- Binary operations
@@ -800,13 +952,13 @@ intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
     m1 m2
 
-intersectionWithF
+intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
+intersectionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
     dropMissing
     dropMissing
     (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
@@ -824,13 +976,13 @@ unionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
     (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
     m1 m2
 
-unionWithF
+unionWithA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithF f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
+unionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
     (traverseMaybeMissing $ \_ v1 -> guardNotNull <$> f v1 mempty)
     (traverseMaybeMissing $ \_ v2 -> guardNotNull <$> f mempty v2)
     (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
