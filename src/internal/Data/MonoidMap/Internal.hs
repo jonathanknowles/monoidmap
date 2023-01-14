@@ -811,7 +811,7 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
--- If we append prefix __@m1@__ to the left-hand side of the result, we can
+-- If we append prefix __@m1@__ to the /left-hand/ side of the result, we can
 -- always recover the original map __@m2@__:
 --
 -- @
@@ -886,7 +886,7 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
--- If we append suffix __@m1@__ to the right-hand side of the result, we can
+-- If we append suffix __@m1@__ to the /right-hand/ side of the result, we can
 -- always recover the original map __@m2@__:
 --
 -- @
