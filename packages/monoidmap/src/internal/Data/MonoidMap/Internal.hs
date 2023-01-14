@@ -60,10 +60,12 @@ module Data.MonoidMap.Internal
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
+    , commonPrefix
 
     -- * Suffixes
     , isSuffixOf
     , stripSuffix
+    , commonSuffix
 
     -- * Combination
     , intersectionWith
