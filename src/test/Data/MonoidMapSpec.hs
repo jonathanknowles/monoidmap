@@ -25,6 +25,8 @@ import Data.Maybe
     ( isJust )
 import Data.Monoid
     ( Product (..), Sum (..) )
+import Data.Monoid.GCD
+    ( LeftGCDMonoid (..) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
@@ -468,6 +470,11 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_Reductive_stripPrefix_Sum_Natural
         unitTestSpec_Reductive_stripSuffix_String
         unitTestSpec_Reductive_stripSuffix_Sum_Natural
+
+    describe "LeftGCDMonoid" $ do
+
+        unitTestSpec_LeftGCDMonoid_commonPrefix_String
+        unitTestSpec_LeftGCDMonoid_commonPrefix_Sum_Natural
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1171,6 +1178,17 @@ prop_stripSuffix_mappend m1 m2 = QC.property $
         (\r -> r <> m1 == m2)
         (stripSuffix m1 m2)
 
+prop_commonPrefix_get
+    :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_commonPrefix_get m1 m2 k =
+    MonoidMap.get k (commonPrefix m1 m2)
+    ===
+    commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
+
 --------------------------------------------------------------------------------
 -- Arbitrary instances
 --------------------------------------------------------------------------------
@@ -1575,6 +1593,90 @@ unitTestData_Reductive_stripSuffix_Sum_Natural = unitTestData2
     , ( m [3, 4, 8]
       , m [2, 4, 8]
       , Nothing
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+--------------------------------------------------------------------------------
+-- Unit tests: LeftGCDMonoid
+--------------------------------------------------------------------------------
+
+unitTestSpec_LeftGCDMonoid_commonPrefix_String :: Spec
+unitTestSpec_LeftGCDMonoid_commonPrefix_String = unitTestSpec
+    "LeftGCDMonoid.commonPrefix (String)"
+    "commonPrefix"
+    (commonPrefix)
+    (unitTestData_LeftGCDMonoid_commonPrefix_String)
+
+unitTestData_LeftGCDMonoid_commonPrefix_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+unitTestData_LeftGCDMonoid_commonPrefix_String = unitTestData2
+    [ ( m ["---", "---", "---"]
+      , m ["abc", "pqr", "xyz"]
+      , m [""   , ""   , ""   ]
+      )
+    , ( m ["a--", "p--", "x--"]
+      , m ["abc", "pqr", "xyz"]
+      , m ["a"  , "p"  , "x"  ]
+      )
+    , ( m ["ab-", "pq-", "xy-"]
+      , m ["abc", "pqr", "xyz"]
+      , m ["ab" , "pq" , "xy" ]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"]
+      , m ["abc", "pqr", "xyz"]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["ab-", "pq-", "xy-"]
+      , m ["ab" , "pq" , "xy" ]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["a--", "p--", "x--"]
+      , m ["a"  , "p"  , "x"  ]
+      )
+    , ( m ["abc", "pqr", "xyz"]
+      , m ["---", "---", "---"]
+      , m [""   , ""   , ""   ]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_LeftGCDMonoid_commonPrefix_Sum_Natural :: Spec
+unitTestSpec_LeftGCDMonoid_commonPrefix_Sum_Natural = unitTestSpec
+    "LeftGCDMonoid.commonPrefix (Sum Natural)"
+    "commonPrefix"
+    (commonPrefix)
+    (unitTestData_LeftGCDMonoid_commonPrefix_Sum_Natural)
+
+unitTestData_LeftGCDMonoid_commonPrefix_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+unitTestData_LeftGCDMonoid_commonPrefix_Sum_Natural = unitTestData2
+    [ ( m [0, 0, 0]
+      , m [1, 2, 3]
+      , m [0, 0, 0]
+      )
+    , ( m [1, 1, 1]
+      , m [1, 2, 3]
+      , m [1, 1, 1]
+      )
+    , ( m [2, 2, 2]
+      , m [1, 2, 3]
+      , m [1, 2, 2]
+      )
+    , ( m [3, 3, 3]
+      , m [1, 2, 3]
+      , m [1, 2, 3]
+      )
+    , ( m [4, 4, 4]
+      , m [1, 2, 3]
+      , m [1, 2, 3]
       )
     ]
   where
