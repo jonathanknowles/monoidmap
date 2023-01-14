@@ -475,6 +475,7 @@ specUnit = describe "Unit tests" $ do
 
         unitTestSpec_LeftGCDMonoid_commonPrefix_String
         unitTestSpec_LeftGCDMonoid_commonPrefix_Sum_Natural
+        unitTestSpec_LeftGCDMonoid_stripCommonPrefix_String
 
     describe "RightGCDMonoid" $ do
 
@@ -1693,6 +1694,79 @@ unitTestData_LeftGCDMonoid_commonPrefix_Sum_Natural = unitTestData2
     , ( m [4, 4, 4]
       , m [1, 2, 3]
       , m [1, 2, 3]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_LeftGCDMonoid_stripCommonPrefix_String :: Spec
+unitTestSpec_LeftGCDMonoid_stripCommonPrefix_String = unitTestSpec
+    "LeftGCDMonoid.stripCommonPrefix (String)"
+    "stripCommonPrefix"
+    (stripCommonPrefix)
+    (unitTestData_LeftGCDMonoid_stripCommonPrefix_String)
+
+unitTestData_LeftGCDMonoid_stripCommonPrefix_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    ( MonoidMap LatinChar String
+    , MonoidMap LatinChar String
+    , MonoidMap LatinChar String
+    )
+unitTestData_LeftGCDMonoid_stripCommonPrefix_String = unitTestData2
+    [ (   m ["---", "---", "---"]
+      ,   m ["abc", "pqr", "xyz"]
+
+      , ( m [""   , ""   , ""   ]
+        , m ["---", "---", "---"]
+        , m ["abc", "pqr", "xyz"]
+        )
+      )
+    , (   m ["a--", "p--", "x--"]
+      ,   m ["abc", "pqr", "xyz"]
+
+      , ( m ["a"  , "p"  , "x"  ]
+        , m [ "--",  "--",  "--"]
+        , m [ "bc",  "qr",  "yz"]
+        )
+      )
+    , (   m ["ab-", "pq-", "xy-"]
+      ,   m ["abc", "pqr", "xyz"]
+
+      , ( m ["ab" , "pq" , "xy" ]
+        , m [  "-",   "-",   "-"]
+        , m [  "c",   "r",   "z"]
+        )
+      )
+    , (   m ["abc", "pqr", "xyz"]
+      ,   m ["abc", "pqr", "xyz"]
+
+      , ( m ["abc", "pqr", "xyz"]
+        , m [   "",    "",    ""]
+        , m [   "",    "",    ""]
+        )
+      )
+    , (   m ["abc", "pqr", "xyz"]
+      ,   m ["ab-", "pq-", "xy-"]
+
+      , ( m ["ab" , "pq" , "xy" ]
+        , m [  "c",   "r",   "z"]
+        , m [  "-",   "-",   "-"]
+        )
+      )
+    , (   m ["abc", "pqr", "xyz"]
+      ,   m ["a--", "p--", "x--"]
+      , ( m ["a"  , "p"  , "x"  ]
+        , m [ "bc",  "qr",  "yz"]
+        , m [ "--",  "--",  "--"]
+        )
+      )
+    , (   m ["abc", "pqr", "xyz"]
+      ,   m ["---", "---", "---"]
+      , ( m [""   , ""   , ""   ]
+        , m ["abc", "pqr", "xyz"]
+        , m ["---", "---", "---"]
+        )
       )
     ]
   where
