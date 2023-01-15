@@ -60,11 +60,13 @@ module Data.MonoidMap
     , isPrefixOf
     , stripPrefix
     , commonPrefix
+    , stripCommonPrefix
 
     -- * Suffixes
     , isSuffixOf
     , stripSuffix
     , commonSuffix
+    , stripCommonSuffix
     )
     where
 

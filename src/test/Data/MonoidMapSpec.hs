@@ -476,12 +476,14 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_LeftGCDMonoid_commonPrefix_String
         unitTestSpec_LeftGCDMonoid_commonPrefix_Sum_Natural
         unitTestSpec_LeftGCDMonoid_stripCommonPrefix_String
+        unitTestSpec_LeftGCDMonoid_stripCommonPrefix_Sum_Natural
 
     describe "RightGCDMonoid" $ do
 
         unitTestSpec_RightGCDMonoid_commonSuffix_String
         unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_String
+        unitTestSpec_RightGCDMonoid_stripCommonSuffix_Sum_Natural
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1773,6 +1775,33 @@ unitTestData_LeftGCDMonoid_stripCommonPrefix_String = unitTestData2
   where
     m = MonoidMap.fromList . zip [A ..]
 
+unitTestSpec_LeftGCDMonoid_stripCommonPrefix_Sum_Natural :: Spec
+unitTestSpec_LeftGCDMonoid_stripCommonPrefix_Sum_Natural = unitTestSpec
+    "LeftGCDMonoid.stripCommonPrefix (Sum Natural)"
+    "stripCommonPrefix"
+    (stripCommonPrefix)
+    (unitTestData_LeftGCDMonoid_stripCommonPrefix_Sum_Natural)
+
+unitTestData_LeftGCDMonoid_stripCommonPrefix_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    ( MonoidMap LatinChar (Sum Natural)
+    , MonoidMap LatinChar (Sum Natural)
+    , MonoidMap LatinChar (Sum Natural)
+    )
+unitTestData_LeftGCDMonoid_stripCommonPrefix_Sum_Natural = unitTestData2
+    [ (   m [0, 1, 2, 3, 4]
+      ,   m [4, 3, 2, 1, 0]
+
+      , ( m [0, 1, 2, 1, 0]
+        , m [0, 0, 0, 2, 4]
+        , m [4, 2, 0, 0, 0]
+        )
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
 --------------------------------------------------------------------------------
 -- Unit tests: RightGCDMonoid
 --------------------------------------------------------------------------------
@@ -1934,6 +1963,33 @@ unitTestData_RightGCDMonoid_stripCommonSuffix_String = unitTestData2
       , ( m ["abc", "pqr", "xyz"]
         , m ["---", "---", "---"]
         , m [   "",    "",    ""]
+        )
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_RightGCDMonoid_stripCommonSuffix_Sum_Natural :: Spec
+unitTestSpec_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestSpec
+    "RightGCDMonoid.stripCommonSuffix (Sum Natural)"
+    "stripCommonSuffix"
+    (stripCommonSuffix)
+    (unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural)
+
+unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    ( MonoidMap LatinChar (Sum Natural)
+    , MonoidMap LatinChar (Sum Natural)
+    , MonoidMap LatinChar (Sum Natural)
+    )
+unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestData2
+    [ (   m [0, 1, 2, 3, 4]
+      ,   m [4, 3, 2, 1, 0]
+
+      , ( m [0, 0, 0, 2, 4]
+        , m [4, 2, 0, 0, 0]
+        , m [0, 1, 2, 1, 0]
         )
       )
     ]
