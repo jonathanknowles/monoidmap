@@ -1107,6 +1107,79 @@ stripCommonPrefix
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
 stripCommonPrefix = C.stripCommonPrefix
 
+-- | Strips the /greatest common suffix/ from a pair of maps.
+--
+-- Given two maps __@m1@__ and __@m2@__, 'stripCommonSuffix' produces a
+-- tuple __@(r1, r2, s)@__, where:
+--
+--  - __@s@__ is the /greatest common suffix/ of __@m1@__ and __@m2@__
+--  - __@r1@__ is the /remainder/ of stripping suffix __@s@__ from __@m1@__
+--  - __@r2@__ is the /remainder/ of stripping suffix __@s@__ from __@m2@__
+--
+-- The resulting suffix __@s@__ can be appended to the /right-hand/ side of
+-- either remainder __@r1@__ or __@r2@__ to /reproduce/ either of the original
+-- maps __@m1@__ or __@m2@__ respectively:
+--
+-- @
+-- 'stripCommonSuffix' m1 m2
+--    '&' \\(r1, _, s) -> r1 '<>' s '==' m1
+-- 'stripCommonSuffix' m1 m2
+--    '&' \\(_, r2, s) -> r2 '<>' s '==' m2
+-- @
+--
+-- Suffix __@s@__ is /identical/ to the result of applying 'commonSuffix' to
+-- __@m1@__ and __@m2@__:
+--
+-- @
+-- 'stripCommonSuffix' m1 m2
+--    '&' \\(_, _, s) -> s '==' 'commonSuffix' m1 m2
+-- @
+--
+-- Remainders __@r1@__ and __@r2@__ are /identical/ to the results of applying
+-- 'stripSuffix' to __@s@__ and __@m1@__ or to __@s@__ and __@m2@__
+-- respectively:
+--
+-- @
+-- 'stripCommonSuffix' m1 m2
+--    '&' \\(r1, _, s) -> 'Just' r1 '==' 'stripSuffix' s m1
+-- 'stripCommonSuffix' m1 m2
+--    '&' \\(_, r2, s) -> 'Just' r2 '==' 'stripSuffix' s m2
+-- @
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> m1 = 'fromList' [(1, "+++"), (2, "++a"), (3, "+aa"), (4, "aaa")]
+-- >>> m2 = 'fromList' [(1, "---"), (2, "--a"), (3, "-aa"), (4, "aaa")]
+-- @
+-- @
+-- >>> r1 = 'fromList' [(1, "+++"), (2, "++" ), (3, "+"  ), (4, ""   )]
+-- >>> r2 = 'fromList' [(1, "---"), (2, "--" ), (3, "-"  ), (4, ""   )]
+-- >>> s  = 'fromList' [(1,    ""), (2,   "a"), (3,  "aa"), (4, "aaa")]
+-- @
+-- @
+-- >>> 'stripCommonSuffix' m1 m2 == (r1, r2, s)
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
+-- >>> m2 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1), ("e", 0)]
+-- @
+-- @
+-- >>> r1 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 2), ("e", 4)]
+-- >>> r2 = 'fromList' [("a", 4), ("b", 2), ("c", 0), ("d", 0), ("e", 0)]
+-- >>> s  = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 1), ("e", 0)]
+-- @
+-- @
+-- >>> 'stripCommonSuffix' m1 m2 == (r1, r2, s)
+-- 'True'
+-- @
+--
 stripCommonSuffix
     :: (Ord k, MonoidNull v, RightGCDMonoid v)
     => MonoidMap k v
