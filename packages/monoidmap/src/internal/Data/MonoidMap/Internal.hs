@@ -61,11 +61,13 @@ module Data.MonoidMap.Internal
     , isPrefixOf
     , stripPrefix
     , commonPrefix
+    , stripCommonPrefix
 
     -- * Suffixes
     , isSuffixOf
     , stripSuffix
     , commonSuffix
+    , stripCommonSuffix
 
     -- * Combination
     , intersectionWith
@@ -1022,6 +1024,20 @@ commonSuffix
     -> MonoidMap k v
     -> MonoidMap k v
 commonSuffix = intersectionWith C.commonSuffix
+
+stripCommonPrefix
+    :: (Ord k, MonoidNull v, LeftGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
+stripCommonPrefix = C.stripCommonPrefix
+
+stripCommonSuffix
+    :: (Ord k, MonoidNull v, RightGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
+stripCommonSuffix = C.stripCommonSuffix
 
 --------------------------------------------------------------------------------
 -- Binary operations
