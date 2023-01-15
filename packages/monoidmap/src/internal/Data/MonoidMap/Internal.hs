@@ -941,7 +941,7 @@ stripSuffix
     -> Maybe (MonoidMap k v)
 stripSuffix = unionWithA C.stripSuffix
 
--- | Finds the /common prefix/ of two maps.
+-- | Finds the /greatest common prefix/ of two maps.
 --
 -- Satisifies the following property:
 --
@@ -983,7 +983,7 @@ commonPrefix
     -> MonoidMap k v
 commonPrefix = intersectionWith C.commonPrefix
 
--- | Finds the /common suffix/ of two maps.
+-- | Finds the /greatest common suffix/ of two maps.
 --
 -- Satisifies the following property:
 --
