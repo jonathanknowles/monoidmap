@@ -55,11 +55,11 @@
  produces a result if (and only if) <strong><code>m1</code></strong> is a prefix of <strong><code>m2</code></strong>:</p><pre><code>isJust</code> (<code><a href="Data-MonoidMap.html#v:stripPrefix" title="Data.MonoidMap">stripPrefix</a></code> m1 m2) <code>==</code> m1 <code><a href="Data-MonoidMap.html#v:isPrefixOf" title="Data.MonoidMap">`isPrefixOf`</a></code> m2
 </pre><p>The value for any key <strong><code>k</code></strong> in the result is <em>identical</em> to the result of
  stripping the value for <strong><code>k</code></strong> in map <strong><code>m1</code></strong> from the value for <strong><code>k</code></strong>
- in map <strong><code>m2</code></strong>:</p><pre><code>maybe</code> <code>True</code>
+ in map <strong><code>m2</code></strong>:</p><pre><code>all</code>
    (\r -&gt; <code>Just</code> (<code><a href="Data-MonoidMap.html#v:get" title="Data.MonoidMap">get</a></code> k r) <code>==</code> <code><a href="https://hackage.haskell.org/package/monoid-subclasses-1.2.1/docs/Data-Semigroup-Cancellative.html#v:stripPrefix" title="Data.Semigroup.Cancellative">stripPrefix</a></code> (<code><a href="Data-MonoidMap.html#v:get" title="Data.MonoidMap">get</a></code> k m1) (<code><a href="Data-MonoidMap.html#v:get" title="Data.MonoidMap">get</a></code> k m2))
    (<code><a href="Data-MonoidMap.html#v:stripPrefix" title="Data.MonoidMap">stripPrefix</a></code> m1 m2)
 </pre><p>If we append prefix <strong><code>m1</code></strong> to the <em>left-hand</em> side of the result, we can
- always recover the original map <strong><code>m2</code></strong>:</p><pre><code>maybe</code> <code>True</code>
+ always recover the original map <strong><code>m2</code></strong>:</p><pre><code>all</code>
    (\r -&gt; m1 <code>&lt;&gt;</code> r <code>==</code> m2)
    (<code><a href="Data-MonoidMap.html#v:stripPrefix" title="Data.MonoidMap">stripPrefix</a></code> m1 m2)
 </pre><h3 class="subheading details-toggle-control details-toggle" data-details-id="ch:stripPrefix0">Examples</h3><details id="ch:stripPrefix0"><summary class="hide-when-js-enabled">Expand</summary><p>With <code>String</code> values:</p><pre>&gt;&gt;&gt; <strong>m1</strong> = <code><a href="Data-MonoidMap.html#v:fromList" title="Data.MonoidMap">fromList</a></code> [(1, &quot;&quot;   ), (2, &quot;i&quot;  ), (3, &quot;pq&quot; ), (4, &quot;xyz&quot;)]
@@ -151,11 +151,11 @@
  produces a result if (and only if) <strong><code>m1</code></strong> is a suffix of <strong><code>m2</code></strong>:</p><pre><code>isJust</code> (<code><a href="Data-MonoidMap.html#v:stripSuffix" title="Data.MonoidMap">stripSuffix</a></code> m1 m2) <code>==</code> m1 <code><a href="Data-MonoidMap.html#v:isSuffixOf" title="Data.MonoidMap">`isSuffixOf`</a></code> m2
 </pre><p>The value for any key <strong><code>k</code></strong> in the result is <em>identical</em> to the result of
  stripping the value for <strong><code>k</code></strong> in map <strong><code>m1</code></strong> from the value for <strong><code>k</code></strong>
- in map <strong><code>m2</code></strong>:</p><pre><code>maybe</code> <code>True</code>
+ in map <strong><code>m2</code></strong>:</p><pre><code>all</code>
    (\r -&gt; <code>Just</code> (<code><a href="Data-MonoidMap.html#v:get" title="Data.MonoidMap">get</a></code> k r) <code>==</code> <code><a href="https://hackage.haskell.org/package/monoid-subclasses-1.2.1/docs/Data-Semigroup-Cancellative.html#v:stripSuffix" title="Data.Semigroup.Cancellative">stripSuffix</a></code> (<code><a href="Data-MonoidMap.html#v:get" title="Data.MonoidMap">get</a></code> k m1) (<code><a href="Data-MonoidMap.html#v:get" title="Data.MonoidMap">get</a></code> k m2))
    (<code><a href="Data-MonoidMap.html#v:stripSuffix" title="Data.MonoidMap">stripSuffix</a></code> m1 m2)
 </pre><p>If we append suffix <strong><code>m1</code></strong> to the <em>right-hand</em> side of the result, we can
- always recover the original map <strong><code>m2</code></strong>:</p><pre><code>maybe</code> <code>True</code>
+ always recover the original map <strong><code>m2</code></strong>:</p><pre><code>all</code>
    (\r -&gt; r <code>&lt;&gt;</code> m1 <code>==</code> m2)
    (<code><a href="Data-MonoidMap.html#v:stripSuffix" title="Data.MonoidMap">stripSuffix</a></code> m1 m2)
 </pre><h3 class="subheading details-toggle-control details-toggle" data-details-id="ch:stripSuffix0">Examples</h3><details id="ch:stripSuffix0"><summary class="hide-when-js-enabled">Expand</summary><p>With <code>String</code> values:</p><pre>&gt;&gt;&gt; <strong>m1</strong> = <code><a href="Data-MonoidMap.html#v:fromList" title="Data.MonoidMap">fromList</a></code> [(1,    &quot;&quot;), (2,   &quot;k&quot;), (3,  &quot;qr&quot;), (4, &quot;xyz&quot;)]
