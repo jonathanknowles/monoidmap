@@ -1144,7 +1144,7 @@ prop_stripPrefix_get
     -> k
     -> Property
 prop_stripPrefix_get m1 m2 k = QC.property $
-    maybe True
+    all
         (\r ->
             Just (MonoidMap.get k r)
             ==
@@ -1159,7 +1159,7 @@ prop_stripSuffix_get
     -> k
     -> Property
 prop_stripSuffix_get m1 m2 k = QC.property $
-    maybe True
+    all
         (\r ->
             Just (MonoidMap.get k r)
             ==
@@ -1173,7 +1173,7 @@ prop_stripPrefix_mappend
     -> MonoidMap k v
     -> Property
 prop_stripPrefix_mappend m1 m2 = QC.property $
-    maybe True
+    all
         (\r -> m1 <> r == m2)
         (stripPrefix m1 m2)
 
@@ -1183,7 +1183,7 @@ prop_stripSuffix_mappend
     -> MonoidMap k v
     -> Property
 prop_stripSuffix_mappend m1 m2 = QC.property $
-    maybe True
+    all
         (\r -> r <> m1 == m2)
         (stripSuffix m1 m2)
 
