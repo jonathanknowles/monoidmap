@@ -813,7 +813,7 @@ isSuffixOf m1 m2 =
 -- in map __@m2@__:
 --
 -- @
--- 'maybe' 'True'
+-- 'all'
 --    (\\r -> 'Just' ('get' k r) '==' 'C.stripPrefix' ('get' k m1) ('get' k m2))
 --    ('stripPrefix' m1 m2)
 -- @
@@ -822,7 +822,7 @@ isSuffixOf m1 m2 =
 -- always recover the original map __@m2@__:
 --
 -- @
--- 'maybe' 'True'
+-- 'all'
 --    (\\r -> m1 '<>' r '==' m2)
 --    ('stripPrefix' m1 m2)
 -- @
@@ -888,7 +888,7 @@ stripPrefix = unionWithA C.stripPrefix
 -- in map __@m2@__:
 --
 -- @
--- 'maybe' 'True'
+-- 'all'
 --    (\\r -> 'Just' ('get' k r) '==' 'C.stripSuffix' ('get' k m1) ('get' k m2))
 --    ('stripSuffix' m1 m2)
 -- @
@@ -897,7 +897,7 @@ stripPrefix = unionWithA C.stripPrefix
 -- always recover the original map __@m2@__:
 --
 -- @
--- 'maybe' 'True'
+-- 'all'
 --    (\\r -> r '<>' m1 '==' m2)
 --    ('stripSuffix' m1 m2)
 -- @
