@@ -26,13 +26,13 @@ module Data.MonoidMap
     , adjust
     , delete
 
-    -- * Queries
-    , nonNullKeys
-    , nonNullKey
-    , nullKey
+    -- * Membership
     , null
+    , nullKey
     , nonNull
     , nonNullCount
+    , nonNullKey
+    , nonNullKeys
 
     -- * Slicing
     , take
