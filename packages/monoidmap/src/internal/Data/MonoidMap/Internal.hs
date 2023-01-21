@@ -27,13 +27,13 @@ module Data.MonoidMap.Internal
     , adjust
     , delete
 
-    -- * Queries
-    , nonNullKeys
-    , nonNullKey
-    , nullKey
+    -- * Membership
     , null
+    , nullKey
     , nonNull
     , nonNullCount
+    , nonNullKey
+    , nonNullKeys
 
     -- * Slicing
     , take
@@ -333,30 +333,19 @@ delete :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 delete k (MonoidMap m) = MonoidMap $ Map.delete k m
 
 --------------------------------------------------------------------------------
--- Queries
+-- Membership
 --------------------------------------------------------------------------------
 
--- | Returns the set of keys associated with values that are not 'Null.null'.
+-- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
 --
-nonNullKeys :: MonoidMap k v -> Set k
-nonNullKeys = Map.keysSet . toMap
-
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'Null.null'.
---
-nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
-nonNullKey k = Map.member k . toMap
+null :: MonoidMap k v -> Bool
+null = Map.null . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
 --   that is 'Null.null'.
 --
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
-
--- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
---
-null :: MonoidMap k v -> Bool
-null = Map.null . toMap
 
 -- | Returns 'True' if (and only if) the map contains at least one value that
 --   is not 'Null.null'.
@@ -368,6 +357,17 @@ nonNull = not . null
 --
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
+
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is not 'Null.null'.
+--
+nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
+nonNullKey k = Map.member k . toMap
+
+-- | Returns the set of keys associated with values that are not 'Null.null'.
+--
+nonNullKeys :: MonoidMap k v -> Set k
+nonNullKeys = Map.keysSet . toMap
 
 --------------------------------------------------------------------------------
 -- Slicing
