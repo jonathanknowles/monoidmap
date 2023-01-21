@@ -29,7 +29,7 @@ module Data.MonoidMap.Internal
 
     -- * Queries
     , nonNullKeys
-    , member
+    , nonNullKey
     , notMember
     , null
     , nonNull
@@ -344,8 +344,8 @@ nonNullKeys = Map.keysSet . toMap
 -- | Returns 'True' if (and only if) the given key is associated with a value
 --   that is not 'Null.null'.
 --
-member :: Ord k => k -> MonoidMap k v -> Bool
-member k = Map.member k . toMap
+nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
+nonNullKey k = Map.member k . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
 --   that is 'Null.null'.
