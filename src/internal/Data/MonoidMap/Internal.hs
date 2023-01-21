@@ -25,7 +25,7 @@ module Data.MonoidMap.Internal
     , get
     , set
     , adjust
-    , delete
+    , nullify
 
     -- * Membership
     , null
@@ -329,8 +329,8 @@ adjust f k m = set k (f (get k m)) m
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
-delete :: Ord k => k -> MonoidMap k v -> MonoidMap k v
-delete k (MonoidMap m) = MonoidMap $ Map.delete k m
+nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
+nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 
 --------------------------------------------------------------------------------
 -- Membership

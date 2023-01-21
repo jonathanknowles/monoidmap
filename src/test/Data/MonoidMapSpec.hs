@@ -344,8 +344,8 @@ specPropertiesFor keyType valueType = do
             it "prop_singleton_null" $
                 prop_singleton_null
                     @k @v & property
-            it "prop_singleton_delete" $
-                prop_singleton_delete
+            it "prop_singleton_nullify" $
+                prop_singleton_nullify
                     @k @v & property
             it "prop_singleton_nonNullCount" $
                 prop_singleton_nonNullCount
@@ -377,14 +377,14 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Nullify" $ do
-            it "prop_delete_get" $
-                prop_delete_get
+            it "prop_nullify_get" $
+                prop_nullify_get
                     @k @v & property
-            it "prop_delete_nonNullKey" $
-                prop_delete_nonNullKey
+            it "prop_nullify_nonNullKey" $
+                prop_nullify_nonNullKey
                     @k @v & property
-            it "prop_delete_nonNullKeys" $
-                prop_delete_nonNullKeys
+            it "prop_nullify_nonNullKeys" $
+                prop_nullify_nonNullKeys
                     @k @v & property
 
         describe "Keys" $ do
@@ -618,13 +618,13 @@ prop_singleton_null k v =
         (v /= mempty)
         "v /= mempty"
 
-prop_singleton_delete
+prop_singleton_nullify
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => k
     -> v
     -> Property
-prop_singleton_delete k v =
-    MonoidMap.delete k (MonoidMap.singleton k v) === mempty
+prop_singleton_nullify k v =
+    MonoidMap.nullify k (MonoidMap.singleton k v) === mempty
     & cover 1
         (v == mempty)
         "v == mempty"
@@ -765,13 +765,13 @@ prop_set_toList m k v =
 -- Nullify
 --------------------------------------------------------------------------------
 
-prop_delete_get
+prop_nullify_get
     :: (Ord k, Eq v, Monoid v, Show v)
     => MonoidMap k v
     -> k
     -> Property
-prop_delete_get m k =
-    MonoidMap.get k (MonoidMap.delete k m) === mempty
+prop_nullify_get m k =
+    MonoidMap.get k (MonoidMap.nullify k m) === mempty
     & cover 1
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
@@ -779,13 +779,13 @@ prop_delete_get m k =
         (not (MonoidMap.nonNullKey k m))
         "not (MonoidMap.nonNullKey k m)"
 
-prop_delete_nonNullKey
+prop_nullify_nonNullKey
     :: Ord k
     => MonoidMap k v
     -> k
     -> Property
-prop_delete_nonNullKey m k =
-    MonoidMap.nonNullKey k (MonoidMap.delete k m) === False
+prop_nullify_nonNullKey m k =
+    MonoidMap.nonNullKey k (MonoidMap.nullify k m) === False
     & cover 1
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
@@ -793,13 +793,13 @@ prop_delete_nonNullKey m k =
         (not (MonoidMap.nonNullKey k m))
         "not (MonoidMap.nonNullKey k m)"
 
-prop_delete_nonNullKeys
+prop_nullify_nonNullKeys
     :: Ord k
     => MonoidMap k v
     -> k
     -> Property
-prop_delete_nonNullKeys m k =
-    Set.member k (MonoidMap.nonNullKeys (MonoidMap.delete k m)) === False
+prop_nullify_nonNullKeys m k =
+    Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify k m)) === False
     & cover 1
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
