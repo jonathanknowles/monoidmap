@@ -27,7 +27,7 @@ module Data.MonoidMap
     , delete
 
     -- * Queries
-    , keys
+    , nonNullKeys
     , member
     , notMember
     , null
