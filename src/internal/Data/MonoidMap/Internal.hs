@@ -30,7 +30,7 @@ module Data.MonoidMap.Internal
     -- * Queries
     , nonNullKeys
     , nonNullKey
-    , notMember
+    , nullKey
     , null
     , nonNull
     , size
@@ -350,8 +350,8 @@ nonNullKey k = Map.member k . toMap
 -- | Returns 'True' if (and only if) the given key is associated with a value
 --   that is 'Null.null'.
 --
-notMember :: Ord k => k -> MonoidMap k v -> Bool
-notMember k = Map.notMember k . toMap
+nullKey :: Ord k => k -> MonoidMap k v -> Bool
+nullKey k = Map.notMember k . toMap
 
 -- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
 --
