@@ -31,7 +31,7 @@ module Data.MonoidMap
     , member
     , notMember
     , null
-    , notNull
+    , nonNull
     , size
 
     -- * Slicing

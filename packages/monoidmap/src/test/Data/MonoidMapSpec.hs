@@ -496,11 +496,11 @@ prop_fromList_toMap
 prop_fromList_toMap kvs =
     MonoidMap.toMap m === Map.filter (/= mempty) o
     & cover 1
-        (MonoidMap.notNull m && MonoidMap.size m /= Map.size o)
-        "MonoidMap.notNull m && MonoidMap.size m /= Map.size o"
+        (MonoidMap.nonNull m && MonoidMap.size m /= Map.size o)
+        "MonoidMap.nonNull m && MonoidMap.size m /= Map.size o"
     & cover 1
-        (MonoidMap.notNull m && MonoidMap.size m == Map.size o)
-        "MonoidMap.notNull m && MonoidMap.size m == Map.size o"
+        (MonoidMap.nonNull m && MonoidMap.size m == Map.size o)
+        "MonoidMap.nonNull m && MonoidMap.size m == Map.size o"
   where
     m = MonoidMap.fromList kvs
     o = Map.fromListWith (<>) kvs
@@ -512,11 +512,11 @@ prop_fromList_toList
 prop_fromList_toList kvs =
     MonoidMap.toList m === Map.toList (Map.filter (/= mempty) o)
     & cover 1
-        (MonoidMap.notNull m && MonoidMap.size m /= Map.size o)
-        "MonoidMap.notNull m && MonoidMap.size m /= Map.size o"
+        (MonoidMap.nonNull m && MonoidMap.size m /= Map.size o)
+        "MonoidMap.nonNull m && MonoidMap.size m /= Map.size o"
     & cover 1
-        (MonoidMap.notNull m && MonoidMap.size m == Map.size o)
-        "MonoidMap.notNull m && MonoidMap.size m == Map.size o"
+        (MonoidMap.nonNull m && MonoidMap.size m == Map.size o)
+        "MonoidMap.nonNull m && MonoidMap.size m == Map.size o"
   where
     m = MonoidMap.fromList kvs
     o = Map.fromListWith (<>) kvs
@@ -528,8 +528,8 @@ prop_toList_fromList
 prop_toList_fromList m =
     MonoidMap.fromList (MonoidMap.toList m) === m
     & cover 1
-        (MonoidMap.notNull m)
-        "MonoidMap.notNull m"
+        (MonoidMap.nonNull m)
+        "MonoidMap.nonNull m"
 
 --------------------------------------------------------------------------------
 -- Conversion to and from ordinary maps
@@ -542,11 +542,11 @@ prop_fromMap_toMap
 prop_fromMap_toMap o =
     MonoidMap.toMap m === Map.filter (/= mempty) o
     & cover 1
-        (MonoidMap.notNull m && MonoidMap.size m /= Map.size o)
-        "MonoidMap.notNull m && MonoidMap.size m /= Map.size o"
+        (MonoidMap.nonNull m && MonoidMap.size m /= Map.size o)
+        "MonoidMap.nonNull m && MonoidMap.size m /= Map.size o"
     & cover 1
-        (MonoidMap.notNull m && MonoidMap.size m == Map.size o)
-        "MonoidMap.notNull m && MonoidMap.size m == Map.size o"
+        (MonoidMap.nonNull m && MonoidMap.size m == Map.size o)
+        "MonoidMap.nonNull m && MonoidMap.size m == Map.size o"
   where
     m = MonoidMap.fromMap o
 
@@ -839,11 +839,11 @@ prop_filter_toList
 prop_filter_toList (applyFun2 -> f) m =
     toList n === List.filter (uncurry f) (toList m)
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m"
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m"
   where
     n = MonoidMap.filter f m
 
@@ -855,11 +855,11 @@ prop_filterKeys_filter
 prop_filterKeys_filter (applyFun -> f) m =
     n === MonoidMap.filter (\k _ -> f k) m
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m"
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m"
   where
     n = MonoidMap.filterKeys f m
 
@@ -871,11 +871,11 @@ prop_filterKeys_toList
 prop_filterKeys_toList (applyFun -> f) m =
     toList n === List.filter (f . fst) (toList m)
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m"
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m"
   where
     n = MonoidMap.filterKeys f m
 
@@ -887,11 +887,11 @@ prop_filterValues_filter
 prop_filterValues_filter (applyFun -> f) m =
     n === MonoidMap.filter (\_ v -> f v) m
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m"
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m"
   where
     n = MonoidMap.filterValues f m
 
@@ -903,11 +903,11 @@ prop_filterValues_toList
 prop_filterValues_toList (applyFun -> f) m =
     toList n === List.filter (f . snd) (toList m)
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n == MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n == MonoidMap.size m"
     & cover 1
-        (MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m)
-        "MonoidMap.notNull n && MonoidMap.size n /= MonoidMap.size m"
+        (MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m)
+        "MonoidMap.nonNull n && MonoidMap.size n /= MonoidMap.size m"
   where
     n = MonoidMap.filterValues f m
 

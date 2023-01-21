@@ -32,7 +32,7 @@ module Data.MonoidMap.Internal
     , member
     , notMember
     , null
-    , notNull
+    , nonNull
     , size
 
     -- * Slicing
@@ -361,8 +361,8 @@ null = Map.null . toMap
 -- | Returns 'True' if (and only if) the map contains at least one value that
 --   is not 'Null.null'.
 --
-notNull :: MonoidMap k v -> Bool
-notNull = not . null
+nonNull :: MonoidMap k v -> Bool
+nonNull = not . null
 
 -- | Returns a count of all values in the map that are not 'Null.null'.
 --
