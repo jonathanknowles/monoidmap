@@ -25,15 +25,15 @@ module Data.MonoidMap.Internal
     , get
     , set
     , adjust
-    , delete
+    , nullify
 
-    -- * Queries
-    , keys
-    , member
-    , notMember
+    -- * Membership
     , null
-    , notNull
-    , size
+    , nullKey
+    , nonNull
+    , nonNullCount
+    , nonNullKey
+    , nonNullKeys
 
     -- * Slicing
     , take
@@ -329,45 +329,45 @@ adjust f k m = set k (f (get k m)) m
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
-delete :: Ord k => k -> MonoidMap k v -> MonoidMap k v
-delete k (MonoidMap m) = MonoidMap $ Map.delete k m
+nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
+nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 
 --------------------------------------------------------------------------------
--- Queries
+-- Membership
 --------------------------------------------------------------------------------
-
--- | Returns the set of keys associated with values that are not 'Null.null'.
---
-keys :: MonoidMap k v -> Set k
-keys = Map.keysSet . toMap
-
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'Null.null'.
---
-member :: Ord k => k -> MonoidMap k v -> Bool
-member k = Map.member k . toMap
-
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'Null.null'.
---
-notMember :: Ord k => k -> MonoidMap k v -> Bool
-notMember k = Map.notMember k . toMap
 
 -- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
 --
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is 'Null.null'.
+--
+nullKey :: Ord k => k -> MonoidMap k v -> Bool
+nullKey k = Map.notMember k . toMap
+
 -- | Returns 'True' if (and only if) the map contains at least one value that
 --   is not 'Null.null'.
 --
-notNull :: MonoidMap k v -> Bool
-notNull = not . null
+nonNull :: MonoidMap k v -> Bool
+nonNull = not . null
 
 -- | Returns a count of all values in the map that are not 'Null.null'.
 --
-size :: MonoidMap k v -> Int
-size = Map.size . toMap
+nonNullCount :: MonoidMap k v -> Int
+nonNullCount = Map.size . toMap
+
+-- | Returns 'True' if (and only if) the given key is associated with a value
+--   that is not 'Null.null'.
+--
+nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
+nonNullKey k = Map.member k . toMap
+
+-- | Returns the set of keys associated with values that are not 'Null.null'.
+--
+nonNullKeys :: MonoidMap k v -> Set k
+nonNullKeys = Map.keysSet . toMap
 
 --------------------------------------------------------------------------------
 -- Slicing
@@ -639,7 +639,9 @@ isPrefixOf m1 m2 =
     --
     -- @
     -- m1 '`isPrefixOf`' m2 '=='
-    --     'all' (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2) ('keys' m1)
+    --     'all'
+    --         (\\k -> 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
+    --         ('nonNullKeys' m1)
     -- @
     --
     -- ==== Justification
@@ -671,16 +673,16 @@ isPrefixOf m1 m2 =
     -- Since 'mempty' is /always/ a valid prefix, we only need to consider
     -- values in 'm1' that are /not/ 'mempty'.
     --
-    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set
-    -- of keys that are not associated with 'mempty' in 'm1':
+    -- The 'nonNullKeys' function, when applied to 'm1', gives us /precisely/
+    -- the set of keys that are not associated with 'mempty' in 'm1':
     --
     -- @
-    -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+    -- (k '`Data.Set.member`' 'nonNullKeys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
     --
     all
         (\k -> get k m1 `C.isPrefixOf` get k m2)
-        (keys m1)
+        (nonNullKeys m1)
 
 -- | Indicates whether or not the first map is a /suffix/ of the second.
 --
@@ -750,7 +752,9 @@ isSuffixOf m1 m2 =
     --
     -- @
     -- m1 '`isSuffixOf`' m2 '=='
-    --     'all' (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2) ('keys' m1)
+    --     'all'
+    --         (\\k -> 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
+    --         ('nonNullKeys' m1)
     -- @
     --
     -- ==== Justification
@@ -782,16 +786,16 @@ isSuffixOf m1 m2 =
     -- Since 'mempty' is /always/ a valid suffix, we only need to consider
     -- values in 'm1' that are /not/ 'mempty'.
     --
-    -- The 'keys' function, when applied to 'm1', gives us /precisely/ the set
-    -- of keys that are not associated with 'mempty' in 'm1':
+    -- The 'nonNullKeys' function, when applied to 'm1', gives us /precisely/
+    -- the set of keys that are not associated with 'mempty' in 'm1':
     --
     -- @
-    -- (k '`Data.Set.member`' 'keys' m1) '==' ('get' k m1 '/=' 'mempty')
+    -- (k '`Data.Set.member`' 'nonNullKeys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
     --
     all
         (\k -> get k m1 `C.isSuffixOf` get k m2)
-        (keys m1)
+        (nonNullKeys m1)
 
 -- | Strips a /prefix/ from a 'MonoidMap'.
 --

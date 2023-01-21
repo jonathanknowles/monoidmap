@@ -24,15 +24,15 @@ module Data.MonoidMap
     , get
     , set
     , adjust
-    , delete
+    , nullify
 
-    -- * Queries
-    , keys
-    , member
-    , notMember
+    -- * Membership
     , null
-    , notNull
-    , size
+    , nullKey
+    , nonNull
+    , nonNullCount
+    , nonNullKey
+    , nonNullKeys
 
     -- * Slicing
     , take

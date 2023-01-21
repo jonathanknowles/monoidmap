@@ -37,16 +37,16 @@ toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
 
 delete :: Ord k => k -> Map k v -> Map k v
-delete k = Map . MonoidMap.delete k . unMap
+delete k = Map . MonoidMap.nullify k . unMap
 
 insert :: Ord k => k -> v -> Map k v -> Map k v
 insert k v = Map . MonoidMap.set k (pure v) . unMap
 
 keysSet :: Map k v -> Set k
-keysSet = MonoidMap.keys . unMap
+keysSet = MonoidMap.nonNullKeys . unMap
 
 lookup :: Ord k => k -> Map k v -> Maybe v
 lookup k = getFirst . MonoidMap.get k . unMap
 
 member :: Ord k => k -> Map k v -> Bool
-member k = MonoidMap.member k . unMap
+member k = MonoidMap.nonNullKey k . unMap
