@@ -335,8 +335,8 @@ specPropertiesFor keyType valueType = do
             it "prop_singleton_get" $
                 prop_singleton_get
                     @k @v & property
-            it "prop_singleton_member" $
-                prop_singleton_member
+            it "prop_singleton_nonNullKey" $
+                prop_singleton_nonNullKey
                     @k @v & property
             it "prop_singleton_nonNullKeys" $
                 prop_singleton_nonNullKeys
@@ -355,8 +355,8 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Get" $ do
-            it "prop_get_member" $
-                prop_get_member
+            it "prop_get_nonNullKey" $
+                prop_get_nonNullKey
                     @k @v & property
             it "prop_get_nonNullKeys" $
                 prop_get_nonNullKeys
@@ -366,8 +366,8 @@ specPropertiesFor keyType valueType = do
             it "prop_set_get" $
                 prop_set_get
                     @k @v & property
-            it "prop_set_member" $
-                prop_set_member
+            it "prop_set_nonNullKey" $
+                prop_set_nonNullKey
                     @k @v & property
             it "prop_set_nonNullKeys" $
                 prop_set_nonNullKeys
@@ -380,8 +380,8 @@ specPropertiesFor keyType valueType = do
             it "prop_delete_get" $
                 prop_delete_get
                     @k @v & property
-            it "prop_delete_member" $
-                prop_delete_member
+            it "prop_delete_nonNullKey" $
+                prop_delete_nonNullKey
                     @k @v & property
             it "prop_delete_nonNullKeys" $
                 prop_delete_nonNullKeys
@@ -575,13 +575,13 @@ prop_singleton_get k v =
         (v /= mempty)
         "v /= mempty"
 
-prop_singleton_member
+prop_singleton_nonNullKey
     :: (Ord k, Eq v, MonoidNull v)
     => k
     -> v
     -> Property
-prop_singleton_member k v =
-    MonoidMap.member k (MonoidMap.singleton k v) === (v /= mempty)
+prop_singleton_nonNullKey k v =
+    MonoidMap.nonNullKey k (MonoidMap.singleton k v) === (v /= mempty)
     & cover 1
         (v == mempty)
         "v == mempty"
@@ -666,19 +666,19 @@ prop_singleton_toList k v =
 -- Get
 --------------------------------------------------------------------------------
 
-prop_get_member
+prop_get_nonNullKey
     :: (Ord k, Eq v, MonoidNull v)
     => MonoidMap k v
     -> k
     -> Property
-prop_get_member m k =
-    MonoidMap.member k m === (MonoidMap.get k m /= mempty)
+prop_get_nonNullKey m k =
+    MonoidMap.nonNullKey k m === (MonoidMap.get k m /= mempty)
     & cover 1
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 1
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
 
 prop_get_nonNullKeys
     :: (Ord k, Eq v, MonoidNull v)
@@ -688,11 +688,11 @@ prop_get_nonNullKeys
 prop_get_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys m) === (MonoidMap.get k m /= mempty)
     & cover 1
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 1
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
 
 --------------------------------------------------------------------------------
 -- Set
@@ -707,20 +707,20 @@ prop_set_get
 prop_set_get m k v =
     MonoidMap.get k (MonoidMap.set k v m) === v
     & cover 1
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 1
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
 
-prop_set_member
+prop_set_nonNullKey
     :: (Ord k, Eq v, MonoidNull v)
     => MonoidMap k v
     -> k
     -> v
     -> Property
-prop_set_member m k v =
-    MonoidMap.member k (MonoidMap.set k v m) ===
+prop_set_nonNullKey m k v =
+    MonoidMap.nonNullKey k (MonoidMap.set k v m) ===
         (v /= mempty)
     & cover 1
         (v == mempty)
@@ -773,25 +773,25 @@ prop_delete_get
 prop_delete_get m k =
     MonoidMap.get k (MonoidMap.delete k m) === mempty
     & cover 1
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 1
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
 
-prop_delete_member
+prop_delete_nonNullKey
     :: Ord k
     => MonoidMap k v
     -> k
     -> Property
-prop_delete_member m k =
-    MonoidMap.member k (MonoidMap.delete k m) === False
+prop_delete_nonNullKey m k =
+    MonoidMap.nonNullKey k (MonoidMap.delete k m) === False
     & cover 1
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 1
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
 
 prop_delete_nonNullKeys
     :: Ord k
@@ -801,11 +801,11 @@ prop_delete_nonNullKeys
 prop_delete_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys (MonoidMap.delete k m)) === False
     & cover 1
-        (MonoidMap.member k m)
-        "MonoidMap.member k m"
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
     & cover 1
-        (not (MonoidMap.member k m))
-        "not (MonoidMap.member k m)"
+        (not (MonoidMap.nonNullKey k m))
+        "not (MonoidMap.nonNullKey k m)"
 
 --------------------------------------------------------------------------------
 -- Keys
