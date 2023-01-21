@@ -166,7 +166,7 @@ keys
 keys = Set.fromList . fmap fst . toFlatList
 
 size :: NestedMonoidMap k1 k2 v -> Int
-size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.size) m
+size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.nonNullCount) m
 
 --------------------------------------------------------------------------------
 -- Modification

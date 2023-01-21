@@ -33,7 +33,7 @@ module Data.MonoidMap.Internal
     , nullKey
     , null
     , nonNull
-    , size
+    , nonNullCount
 
     -- * Slicing
     , take
@@ -366,8 +366,8 @@ nonNull = not . null
 
 -- | Returns a count of all values in the map that are not 'Null.null'.
 --
-size :: MonoidMap k v -> Int
-size = Map.size . toMap
+nonNullCount :: MonoidMap k v -> Int
+nonNullCount = Map.size . toMap
 
 --------------------------------------------------------------------------------
 -- Slicing

@@ -32,7 +32,7 @@ module Data.MonoidMap
     , nullKey
     , null
     , nonNull
-    , size
+    , nonNullCount
 
     -- * Slicing
     , take
