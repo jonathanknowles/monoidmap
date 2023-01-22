@@ -451,6 +451,11 @@ specPropertiesFor keyType valueType = do
 specUnit :: Spec
 specUnit = describe "Unit tests" $ do
 
+    describe "Semigroup" $ do
+
+        unitTestSpec_Semigroup_mappend_String
+        unitTestSpec_Semigroup_mappend_Sum_Natural
+
     describe "Group" $ do
 
         unitTestSpec_Group_invert_Product_Rational
@@ -1220,6 +1225,50 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+
+--------------------------------------------------------------------------------
+-- Unit tests: Semigroup
+--------------------------------------------------------------------------------
+
+unitTestSpec_Semigroup_mappend_String :: Spec
+unitTestSpec_Semigroup_mappend_String = unitTestSpec
+    "Semigroup.mappend (String)"
+    "mappend"
+    (mappend)
+    (unitTestData_Semigroup_concat_String)
+
+unitTestData_Semigroup_concat_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+unitTestData_Semigroup_concat_String = unitTestData2
+    [ ( m ["abc", "ij" , "p"  , ""   ]
+      , m [   "",   "k",  "qr", "xyz"]
+      , m ["abc", "ijk", "pqr", "xyz"]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_Semigroup_mappend_Sum_Natural :: Spec
+unitTestSpec_Semigroup_mappend_Sum_Natural = unitTestSpec
+    "Semigroup.mappend (Sum Natural)"
+    "mappend"
+    (mappend)
+    (unitTestData_Semigroup_concat_Sum_Natural)
+
+unitTestData_Semigroup_concat_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+unitTestData_Semigroup_concat_Sum_Natural = unitTestData2
+    [ ( m [4, 2, 1, 0]
+      , m [0, 1, 2, 4]
+      , m [4, 3, 3, 4]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
 -- Unit tests: Group
