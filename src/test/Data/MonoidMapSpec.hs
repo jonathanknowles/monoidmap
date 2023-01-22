@@ -1123,6 +1123,19 @@ prop_mapValues_asList (applyFun -> f) m =
     n = MonoidMap.mapValues f m
 
 --------------------------------------------------------------------------------
+-- Association
+--------------------------------------------------------------------------------
+
+prop_mappend_get
+    :: (Ord k, Eq v, Show v, MonoidNull v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_mappend_get m1 m2 k =
+    MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
+
+--------------------------------------------------------------------------------
 -- Prefixes and suffixes
 --------------------------------------------------------------------------------
 
