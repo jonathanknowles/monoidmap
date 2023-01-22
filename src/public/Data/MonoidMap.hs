@@ -56,6 +56,9 @@ module Data.MonoidMap
     , mapKeysWith
     , mapValues
 
+    -- * Association
+    , append
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
