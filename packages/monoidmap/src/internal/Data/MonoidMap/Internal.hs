@@ -57,6 +57,9 @@ module Data.MonoidMap.Internal
     , mapKeysWith
     , mapValues
 
+    -- * Association
+    , append
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
@@ -566,6 +569,49 @@ mapValues
     -> MonoidMap k v1
     -> MonoidMap k v2
 mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
+
+--------------------------------------------------------------------------------
+-- Association
+--------------------------------------------------------------------------------
+
+-- | Appends a pair of maps together.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
+-- @
+--
+-- This function is a synonym for 'mappend' and '`<>`'.
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> m1 = 'fromList' [(1, "abc"), (2, "ij" ), (3, "p"  )            ]
+-- >>> m2 = 'fromList' [            (2, "  k"), (3,  "qr"), (4, "xyz")]
+-- >>> m3 = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- >>> 'append' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 4), ("b", 2), ("c", 1)          ]
+-- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 4)]
+-- >>> m3 = 'fromList' [("a", 4), ("b", 3), ("c", 3), ("d", 4)]
+-- >>> 'append' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+append
+    :: (Ord k, MonoidNull v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+append = unionWith (<>)
 
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
