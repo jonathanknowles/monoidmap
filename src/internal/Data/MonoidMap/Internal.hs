@@ -238,7 +238,7 @@ instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
   where
-    (<>) = unionWith (<>)
+    (<>) = append
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
