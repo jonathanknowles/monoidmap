@@ -87,10 +87,7 @@ jobs:
           cabal test all
           --builddir=${{ env.cabal-build-dir }}
 
-      - name: Documentation
-        if: |
-            matrix.os == 'ubuntu-latest'
-            && matrix.ghc == '9.4.4'
+      - name: Documentation (Generation)
         run: >
           cabal haddock
           --builddir=${{ env.cabal-build-dir }}
@@ -99,11 +96,17 @@ jobs:
           --haddock-html-location
           'https://hackage.haskell.org/package/$pkg-$version/docs'
 
+      - name: Documentation (Staging)
+        if: |
+            github.ref == 'refs/heads/main'
+            && matrix.os == 'ubuntu-latest'
+            && matrix.ghc == '9.4.4'
+        run: >
           mv ${{ env.cabal-build-dir }}/build/*/*/*/doc/html/* gh-pages
 
           touch gh-pages/.nojekyll
 
-      - name: Deploy
+      - name: Documentation (Deployment)
         if: |
             github.ref == 'refs/heads/main'
             && matrix.os == 'ubuntu-latest'
