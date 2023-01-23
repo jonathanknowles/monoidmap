@@ -72,6 +72,9 @@ module Data.MonoidMap.Internal
     , commonSuffix
     , stripCommonSuffix
 
+    -- * Monus
+    , monus
+
     -- * Combination
     , intersectionWith
     , intersectionWithA
@@ -1236,6 +1239,17 @@ stripCommonSuffix
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
 stripCommonSuffix = C.stripCommonSuffix
+
+--------------------------------------------------------------------------------
+-- Monus
+--------------------------------------------------------------------------------
+
+monus
+    :: (Ord k, MonoidNull v, Monus v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+monus = unionWith (<\>)
 
 --------------------------------------------------------------------------------
 -- Binary operations
