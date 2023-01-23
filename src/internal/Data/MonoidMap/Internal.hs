@@ -595,6 +595,8 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- >>> m1 = 'fromList' [(1, "abc"), (2, "ij" ), (3, "p"  )            ]
 -- >>> m2 = 'fromList' [            (2, "  k"), (3,  "qr"), (4, "xyz")]
 -- >>> m3 = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- @
+-- @
 -- >>> 'append' m1 m2 '==' m3
 -- 'True'
 -- @
@@ -605,6 +607,8 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- >>> m1 = 'fromList' [("a", 4), ("b", 2), ("c", 1)          ]
 -- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 4)]
 -- >>> m3 = 'fromList' [("a", 4), ("b", 3), ("c", 3), ("d", 4)]
+-- @
+-- @
 -- >>> 'append' m1 m2 '==' m3
 -- 'True'
 -- @
@@ -1133,7 +1137,7 @@ commonSuffix = intersectionWith C.commonSuffix
 -- >>> r2 = 'fromList' [(1, "---"), (2,  "--"), (3,   "-"), (4,    "")]
 -- @
 -- @
--- >>> 'stripCommonPrefix' m1 m2 == (p, r1, r2)
+-- >>> 'stripCommonPrefix' m1 m2 '==' (p, r1, r2)
 -- 'True'
 -- @
 --
@@ -1149,7 +1153,7 @@ commonSuffix = intersectionWith C.commonSuffix
 -- >>> r2 = 'fromList' [("a", 4), ("b", 2), ("c", 0), ("d", 0), ("e", 0)]
 -- @
 -- @
--- >>> 'stripCommonPrefix' m1 m2 == (p, r1, r2)
+-- >>> 'stripCommonPrefix' m1 m2 '==' (p, r1, r2)
 -- 'True'
 -- @
 --
@@ -1213,7 +1217,7 @@ stripCommonPrefix = C.stripCommonPrefix
 -- >>> s  = 'fromList' [(1,    ""), (2,   "a"), (3,  "aa"), (4, "aaa")]
 -- @
 -- @
--- >>> 'stripCommonSuffix' m1 m2 == (r1, r2, s)
+-- >>> 'stripCommonSuffix' m1 m2 '==' (r1, r2, s)
 -- 'True'
 -- @
 --
@@ -1229,7 +1233,7 @@ stripCommonPrefix = C.stripCommonPrefix
 -- >>> s  = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 1), ("e", 0)]
 -- @
 -- @
--- >>> 'stripCommonSuffix' m1 m2 == (r1, r2, s)
+-- >>> 'stripCommonSuffix' m1 m2 '==' (r1, r2, s)
 -- 'True'
 -- @
 --
