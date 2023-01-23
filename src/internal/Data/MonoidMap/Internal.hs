@@ -72,6 +72,9 @@ module Data.MonoidMap.Internal
     , commonSuffix
     , stripCommonSuffix
 
+    -- * Monus
+    , monus
+
     -- * Combination
     , intersectionWith
     , intersectionWithA
@@ -224,7 +227,7 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
-    (<\>) = unionWith (<\>)
+    (<\>) = monus
 
 instance (Ord k, MonoidNull v) => IsList (MonoidMap k v)
   where
@@ -592,6 +595,8 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- >>> m1 = 'fromList' [(1, "abc"), (2, "ij" ), (3, "p"  )            ]
 -- >>> m2 = 'fromList' [            (2, "  k"), (3,  "qr"), (4, "xyz")]
 -- >>> m3 = 'fromList' [(1, "abc"), (2, "ijk"), (3, "pqr"), (4, "xyz")]
+-- @
+-- @
 -- >>> 'append' m1 m2 '==' m3
 -- 'True'
 -- @
@@ -602,6 +607,8 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- >>> m1 = 'fromList' [("a", 4), ("b", 2), ("c", 1)          ]
 -- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 4)]
 -- >>> m3 = 'fromList' [("a", 4), ("b", 3), ("c", 3), ("d", 4)]
+-- @
+-- @
 -- >>> 'append' m1 m2 '==' m3
 -- 'True'
 -- @
@@ -1130,7 +1137,7 @@ commonSuffix = intersectionWith C.commonSuffix
 -- >>> r2 = 'fromList' [(1, "---"), (2,  "--"), (3,   "-"), (4,    "")]
 -- @
 -- @
--- >>> 'stripCommonPrefix' m1 m2 == (p, r1, r2)
+-- >>> 'stripCommonPrefix' m1 m2 '==' (p, r1, r2)
 -- 'True'
 -- @
 --
@@ -1146,7 +1153,7 @@ commonSuffix = intersectionWith C.commonSuffix
 -- >>> r2 = 'fromList' [("a", 4), ("b", 2), ("c", 0), ("d", 0), ("e", 0)]
 -- @
 -- @
--- >>> 'stripCommonPrefix' m1 m2 == (p, r1, r2)
+-- >>> 'stripCommonPrefix' m1 m2 '==' (p, r1, r2)
 -- 'True'
 -- @
 --
@@ -1210,7 +1217,7 @@ stripCommonPrefix = C.stripCommonPrefix
 -- >>> s  = 'fromList' [(1,    ""), (2,   "a"), (3,  "aa"), (4, "aaa")]
 -- @
 -- @
--- >>> 'stripCommonSuffix' m1 m2 == (r1, r2, s)
+-- >>> 'stripCommonSuffix' m1 m2 '==' (r1, r2, s)
 -- 'True'
 -- @
 --
@@ -1226,7 +1233,7 @@ stripCommonPrefix = C.stripCommonPrefix
 -- >>> s  = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 1), ("e", 0)]
 -- @
 -- @
--- >>> 'stripCommonSuffix' m1 m2 == (r1, r2, s)
+-- >>> 'stripCommonSuffix' m1 m2 '==' (r1, r2, s)
 -- 'True'
 -- @
 --
@@ -1236,6 +1243,109 @@ stripCommonSuffix
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
 stripCommonSuffix = C.stripCommonSuffix
+
+--------------------------------------------------------------------------------
+-- Monus
+--------------------------------------------------------------------------------
+
+-- | Uses a /monus/ operation to subtract the second map from the first.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
+-- @
+--
+-- This function is a synonym for the '`<\>`' operator.
+--
+-- === __Examples__
+--
+-- With 'Set' 'Numeric.Natural.Natural' values, this function performs /set/
+-- /subtraction/ of matching values:
+--
+-- @
+-- f xs = 'fromList' ('Set.fromList' '<$>' xs)
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [0,1,2])]
+-- >>> m2 = f [("a", [     ]), ("b", [0,1,2])]
+-- >>> m3 = f [("a", [0,1,2]), ("b", [     ])]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [0,1,2]), ("c", [0,1,2])]
+-- >>> m2 = f [("a", [0    ]), ("b", [  1  ]), ("c", [    2])]
+-- >>> m3 = f [("a", [  1,2]), ("b", [0,  2]), ("c", [0,1  ])]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2    ]), ("b", [0,1,2    ]), ("c", [0,1,2    ])]
+-- >>> m2 = f [("a", [    2,3,4]), ("b", [  1,2,3,4]), ("c", [0,1,2,3,4])]
+-- >>> m3 = f [("a", [0,1      ]), ("b", [0        ]), ("c", [         ])]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
+-- perfoms /truncated/ /subtraction/ of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 1), ("c", 1), ("d", 1)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 1), ("d", 2)]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 1)]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 4), ("b", 4), ("c", 4), ("d", 4)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
+-- @
+-- @
+-- >>> m1 '`monus`' m2 '==' m3
+-- 'True'
+-- @
+--
+monus
+    :: (Ord k, MonoidNull v, Monus v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+monus = unionWith (<\>)
 
 --------------------------------------------------------------------------------
 -- Binary operations
