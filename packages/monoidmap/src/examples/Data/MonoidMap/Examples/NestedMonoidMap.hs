@@ -28,7 +28,7 @@ module Data.MonoidMap.Examples.NestedMonoidMap
 
 --  * Modification
     , adjust
-    , delete
+    , nullify
     , set
     )
     where
@@ -183,12 +183,12 @@ adjust
     -> NestedMonoidMap k1 k2 v
 adjust f k m = set k (f $ get k m) m
 
-delete
+nullify
     :: (Ord k1, Ord k2, MonoidNull v)
     => (k1, k2)
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-delete k = set k mempty
+nullify k = set k mempty
 
 set :: (Ord k1, Ord k2, MonoidNull v)
     => (k1, k2)
