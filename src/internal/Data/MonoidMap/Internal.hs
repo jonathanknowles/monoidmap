@@ -227,7 +227,7 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
-    (<\>) = unionWith (<\>)
+    (<\>) = monus
 
 instance (Ord k, MonoidNull v) => IsList (MonoidMap k v)
   where
