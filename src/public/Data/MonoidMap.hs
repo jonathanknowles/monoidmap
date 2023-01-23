@@ -70,6 +70,9 @@ module Data.MonoidMap
     , stripSuffix
     , commonSuffix
     , stripCommonSuffix
+
+    -- * Monus
+    , monus
     )
     where
 
