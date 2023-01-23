@@ -24,7 +24,7 @@ module Data.MonoidMap.Examples.NestedMonoidMap
 --  * Queries
     , get
     , nonNullKeys
-    , size
+    , nonNullCount
 
 --  * Modification
     , adjust
@@ -167,8 +167,9 @@ nonNullKeys
     -> Set (k1, k2)
 nonNullKeys = Set.fromList . fmap fst . toFlatList
 
-size :: NestedMonoidMap k1 k2 v -> Int
-size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.nonNullCount) m
+nonNullCount :: NestedMonoidMap k1 k2 v -> Int
+nonNullCount (NestedMonoidMap m) =
+    getSum $ F.foldMap (Sum . MonoidMap.nonNullCount) m
 
 --------------------------------------------------------------------------------
 -- Modification
