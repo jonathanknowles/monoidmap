@@ -6,30 +6,30 @@
 --
 module Data.MonoidMap.Examples.NestedMonoidMap
     (
---  * Type
+    -- * Type
       NestedMonoidMap
 
---  * Construction
+    -- * Construction
     , fromFlatList
     , fromFlatMap
     , fromNestedList
     , fromNestedMap
 
---  * Deconstruction
+    -- * Deconstruction
     , toFlatList
     , toFlatMap
     , toNestedList
     , toNestedMap
 
---  * Queries
+    -- * Basic operations
     , get
-    , keys
-    , size
-
---  * Modification
-    , adjust
-    , delete
     , set
+    , adjust
+    , nullify
+
+    -- * Membership
+    , nonNullCount
+    , nonNullKeys
     )
     where
 
@@ -152,7 +152,7 @@ toNestedMap
 toNestedMap (NestedMonoidMap m) = MonoidMap.toMap <$> MonoidMap.toMap m
 
 --------------------------------------------------------------------------------
--- Queries
+-- Basic operations
 --------------------------------------------------------------------------------
 
 get :: (Ord k1, Ord k2, MonoidNull v)
@@ -161,18 +161,13 @@ get :: (Ord k1, Ord k2, MonoidNull v)
     -> v
 get (k1, k2) (NestedMonoidMap m) = MonoidMap.get k2 (MonoidMap.get k1 m)
 
-keys
-    :: (Ord k1, Ord k2, MonoidNull v)
-    => NestedMonoidMap k1 k2 v
-    -> Set (k1, k2)
-keys = Set.fromList . fmap fst . toFlatList
-
-size :: NestedMonoidMap k1 k2 v -> Int
-size (NestedMonoidMap m) = getSum $ F.foldMap (Sum . MonoidMap.nonNullCount) m
-
---------------------------------------------------------------------------------
--- Modification
---------------------------------------------------------------------------------
+set :: (Ord k1, Ord k2, MonoidNull v)
+    => (k1, k2)
+    -> v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+set (k1, k2) v (NestedMonoidMap m) = NestedMonoidMap $
+    MonoidMap.set k1 (MonoidMap.set k2 v (MonoidMap.get k1 m)) m
 
 adjust
     :: (Ord k1, Ord k2, MonoidNull v)
@@ -182,17 +177,23 @@ adjust
     -> NestedMonoidMap k1 k2 v
 adjust f k m = set k (f $ get k m) m
 
-delete
+nullify
     :: (Ord k1, Ord k2, MonoidNull v)
     => (k1, k2)
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-delete k = set k mempty
+nullify k = set k mempty
 
-set :: (Ord k1, Ord k2, MonoidNull v)
-    => (k1, k2)
-    -> v
-    -> NestedMonoidMap k1 k2 v
-    -> NestedMonoidMap k1 k2 v
-set (k1, k2) v (NestedMonoidMap m) = NestedMonoidMap $
-    MonoidMap.set k1 (MonoidMap.set k2 v (MonoidMap.get k1 m)) m
+--------------------------------------------------------------------------------
+-- Membership
+--------------------------------------------------------------------------------
+
+nonNullCount :: NestedMonoidMap k1 k2 v -> Int
+nonNullCount (NestedMonoidMap m) =
+    getSum $ F.foldMap (Sum . MonoidMap.nonNullCount) m
+
+nonNullKeys
+    :: (Ord k1, Ord k2, MonoidNull v)
+    => NestedMonoidMap k1 k2 v
+    -> Set (k1, k2)
+nonNullKeys = Set.fromList . fmap fst . toFlatList
