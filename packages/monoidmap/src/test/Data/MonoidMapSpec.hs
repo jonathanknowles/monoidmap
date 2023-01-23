@@ -27,6 +27,8 @@ import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.GCD
     ( LeftGCDMonoid (..), RightGCDMonoid (..) )
+import Data.Monoid.Monus
+    ( (<\>) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
@@ -489,6 +491,11 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_String
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_Sum_Natural
+
+    describe "Monus" $ do
+
+        unitTestSpec_Monus_monus_Set_Natural
+        unitTestSpec_Monus_monus_Sum_Natural
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -2053,6 +2060,94 @@ unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestData2
         , m [4, 2, 0, 0, 0]
         , m [0, 1, 2, 1, 0]
         )
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+--------------------------------------------------------------------------------
+-- Unit tests: Monus
+--------------------------------------------------------------------------------
+
+unitTestSpec_Monus_monus_Set_Natural :: Spec
+unitTestSpec_Monus_monus_Set_Natural = unitTestSpec
+    "Monus.monus (Set Natural)"
+    "<\\>"
+    (<\>)
+    (unitTestData_Monus_monus_Set_Natural)
+
+unitTestData_Monus_monus_Set_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+unitTestData_Monus_monus_Set_Natural = unitTestData2
+    [ ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[       ], [       ]]
+      , m [[0, 1, 2], [3, 4, 5]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[0      ], [3      ]]
+      , m [[   1, 2], [   4, 5]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[   1   ], [   4   ]]
+      , m [[0,    2], [3,    5]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[      2], [      5]]
+      , m [[0, 1   ], [3, 4   ]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[0, 1, 2], [3, 4, 5]]
+      , m [[       ], [       ]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[3, 4, 5], [0, 1, 2]]
+      , m [[0, 1, 2], [3, 4, 5]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[2, 3, 4], [1, 2, 3]]
+      , m [[0, 1   ], [   4, 5]]
+      )
+    , ( m [[0, 1, 2], [3, 4, 5]]
+      , m [[1, 2, 3], [2, 3, 4]]
+      , m [[0      ], [      5]]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
+
+unitTestSpec_Monus_monus_Sum_Natural :: Spec
+unitTestSpec_Monus_monus_Sum_Natural = unitTestSpec
+    "Monus.monus (Sum Natural)"
+    "<\\>"
+    (<\>)
+    (unitTestData_Monus_monus_Sum_Natural)
+
+unitTestData_Monus_monus_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+unitTestData_Monus_monus_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3]
+      , m [0, 0, 0, 0]
+      , m [0, 1, 2, 3]
+      )
+    , ( m [0, 1, 2, 3]
+      , m [1, 1, 1, 1]
+      , m [0, 0, 1, 2]
+      )
+    , ( m [0, 1, 2, 3]
+      , m [2, 2, 2, 2]
+      , m [0, 0, 0, 1]
+      )
+    , ( m [0, 1, 2, 3]
+      , m [3, 3, 3, 3]
+      , m [0, 0, 0, 0]
+      )
+    , ( m [0, 1, 2, 3]
+      , m [4, 4, 4, 4]
+      , m [0, 0, 0, 0]
       )
     ]
   where
