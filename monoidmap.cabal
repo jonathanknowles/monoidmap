@@ -23,6 +23,7 @@ common common-extensions
         GeneralizedNewtypeDeriving
         LambdaCase
         MultiParamTypeClasses
+        NoImplicitPrelude
         ScopedTypeVariables
         TupleSections
         TypeApplications
