@@ -1,7 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 
 -- |
--- Copyright: © 2022 Jonathan Knowles
+-- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
 module Data.MonoidMap.Examples.NestedMonoidMap
