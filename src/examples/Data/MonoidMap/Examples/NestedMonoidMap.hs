@@ -33,6 +33,8 @@ module Data.MonoidMap.Examples.NestedMonoidMap
     )
     where
 
+import Prelude
+
 import Data.Map.Strict
     ( Map )
 import Data.Monoid

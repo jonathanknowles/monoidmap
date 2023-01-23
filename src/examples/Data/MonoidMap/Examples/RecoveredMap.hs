@@ -3,6 +3,8 @@
 
 module Data.MonoidMap.Examples.RecoveredMap where
 
+import Prelude
+
 import Control.DeepSeq
     ( NFData )
 import Data.Maybe

@@ -77,5 +77,3 @@ module Data.MonoidMap
     where
 
 import Data.MonoidMap.Internal
-import Prelude hiding
-    ( drop, filter, map, null, splitAt, take )
