@@ -6,28 +6,28 @@
 --
 module Data.MonoidMap.Examples.NestedMonoidMap
     (
---  * Type
+    -- * Type
       NestedMonoidMap
 
---  * Construction
+    -- * Construction
     , fromFlatList
     , fromFlatMap
     , fromNestedList
     , fromNestedMap
 
---  * Deconstruction
+    -- * Deconstruction
     , toFlatList
     , toFlatMap
     , toNestedList
     , toNestedMap
 
---  * Basic operations
+    -- * Basic operations
     , get
     , set
     , adjust
     , nullify
 
---  * Membership
+    -- * Membership
     , nonNullCount
     , nonNullKeys
     )
