@@ -77,14 +77,12 @@ module Data.MonoidMap
     , stripSuffixOverlap
     , stripOverlap
 
+    -- * Subtraction
+    , minus
+    , monus
+
     -- * GCD
     , gcd
-
-    -- * Minus
-    , minus
-
-    -- * Monus
-    , monus
     )
     where
 
