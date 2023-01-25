@@ -214,7 +214,7 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
-    overlap = intersectionWith C.overlap
+    overlap = overlap
     stripPrefixOverlap = unionWith C.stripPrefixOverlap
     stripSuffixOverlap = unionWith C.stripSuffixOverlap
     stripOverlap m1 m2 =
@@ -1266,6 +1266,17 @@ stripCommonSuffix
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
 stripCommonSuffix = C.stripCommonSuffix
+
+--------------------------------------------------------------------------------
+-- Overlap
+--------------------------------------------------------------------------------
+
+overlap
+    :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+overlap = intersectionWith C.overlap
 
 --------------------------------------------------------------------------------
 -- GCD
