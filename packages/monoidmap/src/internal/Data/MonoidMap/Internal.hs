@@ -191,7 +191,7 @@ instance (Ord k, MonoidNull v, RightReductive v) =>
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = unionWithA (</>)
+    (</>) = minus
 
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -1580,6 +1580,17 @@ gcd
     -> MonoidMap k v
     -> MonoidMap k v
 gcd = intersectionWith C.gcd
+
+--------------------------------------------------------------------------------
+-- Minus
+--------------------------------------------------------------------------------
+
+minus
+    :: (Ord k, MonoidNull v, Reductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Maybe (MonoidMap k v)
+minus = unionWithA (</>)
 
 --------------------------------------------------------------------------------
 -- Monus
