@@ -1321,6 +1321,45 @@ overlap
     -> MonoidMap k v
 overlap = intersectionWith C.overlap
 
+-- | /Strips/ the /greatest prefix/ from the second map that is also a suffix
+--   of the first map.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('stripPrefixOverlap' m1 m2)
+--     '==' 'C.stripPrefixOverlap' ('get' k m1) ('get' k m2)
+-- @
+--
+-- This function is a synonym for the 'C.stripPrefixOverlap' method of the
+-- 'OverlappingGCDMonoid' class.
+--
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> m1 = 'fromList' [(1,"abc"   ), (2,"abcd"  ), (3,"abcde" ), (4,"abcdef")]
+-- >>> m2 = 'fromList' [(1,   "def"), (2,  "cdef"), (3, "bcdef"), (4,"abcdef")]
+-- >>> m3 = 'fromList' [(1,   "def"), (2,    "ef"), (3,     "f"), (4,      "")]
+-- @
+-- @
+-- >>> 'stripPrefixOverlap' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
+-- >>> m2 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1), ("e", 0)]
+-- >>> m3 = 'fromList' [("a", 4), ("b", 2), ("c", 0), ("d", 0), ("e", 0)]
+-- @
+-- @
+-- >>> 'stripPrefixOverlap' m1 m2 '==' m3
+-- 'True'
+-- @
+--
 stripPrefixOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
     => MonoidMap k v
