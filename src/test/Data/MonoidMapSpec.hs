@@ -500,6 +500,7 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_OverlappingGCDMonoid_stripPrefixOverlap_String
         unitTestSpec_OverlappingGCDMonoid_stripPrefixOverlap_Sum_Natural
         unitTestSpec_OverlappingGCDMonoid_stripSuffixOverlap_String
+        unitTestSpec_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural
 
     describe "GCDMonoid" $ do
 
@@ -2224,6 +2225,27 @@ unitTestData_OverlappingGCDMonoid_stripPrefixOverlap_Sum_Natural
         (MonoidMap LatinChar (Sum Natural))
         (MonoidMap LatinChar (Sum Natural))
 unitTestData_OverlappingGCDMonoid_stripPrefixOverlap_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [9, 7, 5, 3, 1, 0, 0, 0, 0, 0]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural :: Spec
+unitTestSpec_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural = unitTestSpec
+    "OverlappingGCDMonoid.stripSuffixOverlap (Sum Natural)"
+    "stripSuffixOverlap"
+    (stripSuffixOverlap)
+    (unitTestData_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural)
+
+unitTestData_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural
+    :: UnitTestData2
+        (MonoidMap LatinChar (Sum Natural))
+        (MonoidMap LatinChar (Sum Natural))
+        (MonoidMap LatinChar (Sum Natural))
+unitTestData_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural = unitTestData2
     [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
       , m [9, 7, 5, 3, 1, 0, 0, 0, 0, 0]
