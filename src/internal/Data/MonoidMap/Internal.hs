@@ -76,6 +76,7 @@ module Data.MonoidMap.Internal
     , overlap
     , stripPrefixOverlap
     , stripSuffixOverlap
+    , stripOverlap
 
     -- * GCD
     , gcd
