@@ -633,6 +633,9 @@ append = unionWith (<>)
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
+-- This function is a synonym for the 'C.isPrefixOf' method of the
+-- 'LeftReductive' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -745,6 +748,9 @@ isPrefixOf m1 m2 =
 -- @
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
+--
+-- This function is a synonym for the 'C.isSuffixOf' method of the
+-- 'RightReductive' class.
 --
 -- === __Examples__
 --
@@ -883,6 +889,9 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
+-- This function is a synonym for the 'C.stripPrefix' method of the
+-- 'LeftReductive' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -958,6 +967,9 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
+-- This function is a synonym for the 'C.stripSuffix' method of the
+-- 'RightReductive' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -1008,6 +1020,9 @@ stripSuffix = unionWithA C.stripSuffix
 --    'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
+-- This function is a synonym for the 'C.commonPrefix' method of the
+-- 'LeftGCDMonoid' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -1049,6 +1064,9 @@ commonPrefix = intersectionWith C.commonPrefix
 -- 'get' k ('commonSuffix' m1 m2) '=='
 --    'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
+--
+-- This function is a synonym for the 'C.commonSuffix' method of the
+-- 'RightGCDMonoid' class.
 --
 -- === __Examples__
 --
@@ -1121,6 +1139,9 @@ commonSuffix = intersectionWith C.commonSuffix
 -- 'stripCommonPrefix' m1 m2
 --    '&' \\(p, _, r2) -> 'Just' r2 '==' 'stripPrefix' p m2
 -- @
+--
+-- This function is a synonym for the 'C.stripCommonPrefix' method of the
+-- 'LeftGCDMonoid' class.
 --
 -- === __Examples__
 --
@@ -1201,6 +1222,9 @@ stripCommonPrefix = C.stripCommonPrefix
 -- 'stripCommonSuffix' m1 m2
 --    '&' \\(_, r2, s) -> 'Just' r2 '==' 'stripSuffix' s m2
 -- @
+--
+-- This function is a synonym for the 'C.stripCommonSuffix' method of the
+-- 'RightGCDMonoid' class.
 --
 -- === __Examples__
 --
