@@ -29,7 +29,7 @@ import Data.Monoid
 import Data.Monoid.GCD
     ( GCDMonoid (..), LeftGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Monus
-    ( (<\>) )
+    ( OverlappingGCDMonoid (..), (<\>) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
@@ -492,6 +492,11 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_String
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_Sum_Natural
+
+    describe "OverlappingGCDMonoid" $ do
+
+        unitTestSpec_OverlappingGCDMonoid_overlap_String
+        unitTestSpec_OverlappingGCDMonoid_overlap_Sum_Natural
 
     describe "GCDMonoid" $ do
 
@@ -2072,7 +2077,67 @@ unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: GCD
+-- Unit tests: OverlappingGCDMonoid
+--------------------------------------------------------------------------------
+
+unitTestSpec_OverlappingGCDMonoid_overlap_String :: Spec
+unitTestSpec_OverlappingGCDMonoid_overlap_String = unitTestSpec
+    "OverlappingGCDMonoid.overlap (String)"
+    "overlap"
+    (overlap)
+    (unitTestData_OverlappingGCDMonoid_overlap_String)
+
+unitTestData_OverlappingGCDMonoid_overlap_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+unitTestData_OverlappingGCDMonoid_overlap_String = unitTestData2
+    [ ( m ["abcd"    , "0123"    ]
+      , m [    "efgh",     "4567"]
+      , m [    ""    ,     ""    ]
+      )
+    , ( m ["abcde"   , "01234"   ]
+      , m [   "defgh",    "34567"]
+      , m [   "de"   ,    "34"   ]
+      )
+    , ( m ["abcdef"  , "012345"  ]
+      , m [  "cdefgh",   "234567"]
+      , m [  "cdef"  ,   "2345"  ]
+      )
+    , ( m ["abcdefg" , "0123456" ]
+      , m [ "bcdefgh",  "1234567"]
+      , m [ "bcdefg" ,  "123456" ]
+      )
+    , ( m ["abcdefgh", "01234567"]
+      , m ["abcdefgh", "01234567"]
+      , m ["abcdefgh", "01234567"]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_OverlappingGCDMonoid_overlap_Sum_Natural :: Spec
+unitTestSpec_OverlappingGCDMonoid_overlap_Sum_Natural = unitTestSpec
+    "OverlappingGCDMonoid.overlap (Sum Natural)"
+    "overlap"
+    (overlap)
+    (unitTestData_OverlappingGCDMonoid_overlap_Sum_Natural)
+
+unitTestData_OverlappingGCDMonoid_overlap_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+unitTestData_OverlappingGCDMonoid_overlap_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 4, 3, 2, 1, 0]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+--------------------------------------------------------------------------------
+-- Unit tests: GCDMonoid
 --------------------------------------------------------------------------------
 
 unitTestSpec_GCDMonoid_gcd_Product_Natural :: Spec

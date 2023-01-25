@@ -71,6 +71,9 @@ module Data.MonoidMap
     , commonSuffix
     , stripCommonSuffix
 
+    -- * Overlap
+    , overlap
+
     -- * GCD
     , gcd
 
