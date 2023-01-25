@@ -76,6 +76,7 @@ module Data.MonoidMap.Internal
     , overlap
     , stripPrefixOverlap
     , stripSuffixOverlap
+    , stripOverlap
 
     -- * GCD
     , gcd
@@ -222,11 +223,7 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     overlap = overlap
     stripPrefixOverlap = stripPrefixOverlap
     stripSuffixOverlap = stripSuffixOverlap
-    stripOverlap m1 m2 =
-        ( C.stripSuffixOverlap m2 m1
-        , m1 `C.overlap` m2
-        , C.stripPrefixOverlap m1 m2
-        )
+    stripOverlap = stripOverlap
 
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
@@ -1276,10 +1273,10 @@ stripCommonSuffix = C.stripCommonSuffix
 -- Overlap
 --------------------------------------------------------------------------------
 
--- | Finds the /greatest overlap/ between two maps.
+-- | Finds the /greatest common overlap/ between two maps.
 --
--- The /greatest overlap/ is defined as the greatest /prefix/ of the second map
--- that is also a /suffix/ of the first map.
+-- The /greatest common overlap/ is defined as the greatest /prefix/ of the
+-- second map that is also a /suffix/ of the first map.
 --
 -- Satisfies the following property:
 --
@@ -1414,6 +1411,41 @@ stripSuffixOverlap
     -> MonoidMap k v
     -> MonoidMap k v
 stripSuffixOverlap = unionWith C.stripSuffixOverlap
+
+-- | Identifies the /greatest common overlap/ between a pair of maps and
+--   /strips/ it from both maps.
+--
+-- Given two maps __@m1@__ and __@m2@__, 'stripOverlap' produces a tuple
+-- __@(r1, o, r2)@__, where:
+--
+--  - __@o@__  is the /greatest common overlap/: the greatest /suffix/ of
+--    __@m1@__ that is also a /prefix/ of __@m2@__.
+--  - __@r1@__ is the /remainder/ of stripping suffix __@o@__ from __@m1@__.
+--  - __@r2@__ is the /remainder/ of stripping prefix __@o@__ from __@m2@__.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'stripOverlap' m1 m2 '=='
+--    ( 'stripSuffixOverlap' m2 m1
+--    , 'overlap' m1 m2
+--    , 'stripPrefixOverlap' m1 m2
+--    )
+-- @
+--
+-- This function is a synonym for the 'C.stripOverlap' method of the
+-- 'OverlappingGCDMonoid' class.
+--
+stripOverlap
+    :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
+stripOverlap m1 m2 =
+    ( stripSuffixOverlap m2 m1
+    , m1 `overlap` m2
+    , stripPrefixOverlap m1 m2
+    )
 
 --------------------------------------------------------------------------------
 -- GCD
