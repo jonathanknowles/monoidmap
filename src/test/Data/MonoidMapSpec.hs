@@ -497,6 +497,7 @@ specUnit = describe "Unit tests" $ do
 
         unitTestSpec_OverlappingGCDMonoid_overlap_String
         unitTestSpec_OverlappingGCDMonoid_overlap_Sum_Natural
+        unitTestSpec_OverlappingGCDMonoid_stripPrefixOverlap_String
 
     describe "GCDMonoid" $ do
 
@@ -2131,6 +2132,42 @@ unitTestData_OverlappingGCDMonoid_overlap_Sum_Natural = unitTestData2
     [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
       , m [0, 1, 2, 3, 4, 4, 3, 2, 1, 0]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_OverlappingGCDMonoid_stripPrefixOverlap_String :: Spec
+unitTestSpec_OverlappingGCDMonoid_stripPrefixOverlap_String = unitTestSpec
+    "OverlappingGCDMonoid.stripPrefixOverlap (String)"
+    "stripPrefixOverlap"
+    (stripPrefixOverlap)
+    (unitTestData_OverlappingGCDMonoid_stripPrefixOverlap_String)
+
+unitTestData_OverlappingGCDMonoid_stripPrefixOverlap_String :: UnitTestData2
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+    (MonoidMap LatinChar String)
+unitTestData_OverlappingGCDMonoid_stripPrefixOverlap_String = unitTestData2
+    [ ( m ["abcd"    , "0123"    ]
+      , m [    "efgh",     "4567"]
+      , m [    "efgh",     "4567"]
+      )
+    , ( m ["abcde"   , "01234"   ]
+      , m [   "defgh",    "34567"]
+      , m [     "fgh",      "567"]
+      )
+    , ( m ["abcdef"  , "012345"  ]
+      , m [  "cdefgh",   "234567"]
+      , m [      "gh",       "67"]
+      )
+    , ( m ["abcdefg" , "0123456" ]
+      , m [ "bcdefgh",  "1234567"]
+      , m [       "h",        "7"]
+      )
+    , ( m ["abcdefgh", "01234567"]
+      , m ["abcdefgh", "01234567"]
+      , m [        "",         ""]
       )
     ]
   where
