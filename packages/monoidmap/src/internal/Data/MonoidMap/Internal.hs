@@ -1272,10 +1272,10 @@ stripCommonSuffix = C.stripCommonSuffix
 -- Overlap
 --------------------------------------------------------------------------------
 
--- | Finds the /greatest overlap/ between two maps.
+-- | Finds the /greatest common overlap/ between two maps.
 --
--- The /greatest overlap/ is defined as the greatest /prefix/ of the second map
--- that is also a /suffix/ of the first map.
+-- The /greatest common overlap/ is defined as the greatest /prefix/ of the
+-- second map that is also a /suffix/ of the first map.
 --
 -- Satisfies the following property:
 --
