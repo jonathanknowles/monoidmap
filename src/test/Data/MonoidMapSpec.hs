@@ -496,6 +496,7 @@ specUnit = describe "Unit tests" $ do
     describe "GCDMonoid" $ do
 
         unitTestSpec_GCDMonoid_gcd_Product_Natural
+        unitTestSpec_GCDMonoid_gcd_Set_Natural
 
     describe "Monus" $ do
 
@@ -2129,6 +2130,58 @@ unitTestData_GCDMonoid_gcd_Product_Natural = unitTestData2
     ]
   where
     m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_GCDMonoid_gcd_Set_Natural :: Spec
+unitTestSpec_GCDMonoid_gcd_Set_Natural = unitTestSpec
+    "GCDMonoid.gcd (Set Natural)"
+    "gcd"
+    (gcd)
+    (unitTestData_GCDMonoid_gcd_Set_Natural)
+
+unitTestData_GCDMonoid_gcd_Set_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+unitTestData_GCDMonoid_gcd_Set_Natural = unitTestData2
+    [ ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[          ], [          ]]
+      , m [[          ], [          ]]
+      )
+    , ( m [[          ], [          ]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[          ], [          ]]
+      )
+    , ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      )
+    , ( m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      )
+    , ( m [[0, 1, 2   ], [4, 5, 6   ]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[   1, 2   ], [   5, 6   ]]
+      )
+    , ( m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2   ], [4, 5, 6   ]]
+      , m [[   1, 2   ], [   5, 6   ]]
+      )
+    , ( m [[0, 1      ], [4, 5      ]]
+      , m [[      2, 3], [      6, 7]]
+      , m [[          ], [          ]]
+      )
+    , ( m [[      2, 3], [      6, 7]]
+      , m [[0, 1      ], [4, 5      ]]
+      , m [[          ], [          ]]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
 
 --------------------------------------------------------------------------------
 -- Unit tests: Monus
