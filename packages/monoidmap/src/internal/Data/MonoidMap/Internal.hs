@@ -1247,6 +1247,68 @@ stripCommonSuffix = C.stripCommonSuffix
 -- GCD
 --------------------------------------------------------------------------------
 
+-- | Finds the /greatest common divisor/ of two maps.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
+-- @
+--
+-- This function is a synonym for the 'C.gcd' method of the 'GCDMonoid' class.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Product' 'Numeric.Natural.Natural' values, this function
+-- computes the /greatest common divisor/ of each pair of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
+-- >>> m3 = 'fromList' [("a", 2), ("b", 1), ("c", 2), ("d", 1)]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Set' 'Numeric.Natural.Natural' values, this function computes the
+-- /set/ /intersection/ of each pair of matching values:
+--
+-- @
+-- f xs = 'fromList' ('Set.fromList' '<$>' xs)
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [3,4,5]), ("c", [6,7,8])]
+-- >>> m2 = f [("a", [0    ]), ("b", [  4  ]), ("c", [    8])]
+-- >>> m3 = f [("a", [0    ]), ("b", [  4  ]), ("c", [    8])]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1  ]), ("b", [3,4  ]), ("c", [6,7  ])]
+-- >>> m2 = f [("a", [  1,2]), ("b", [  4,5]), ("c", [  7,8])]
+-- >>> m3 = f [("a", [  1  ]), ("b", [  4  ]), ("c", [  7  ])]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
 gcd
     :: (Ord k, MonoidNull v, GCDMonoid v)
     => MonoidMap k v
