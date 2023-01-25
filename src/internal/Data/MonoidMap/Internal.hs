@@ -585,7 +585,7 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- This function is a synonym for 'mappend' and '`<>`'.
+-- This function is a synonym for the '`<>`' method of the 'Semigroup' class.
 --
 -- === __Examples__
 --
@@ -1256,7 +1256,7 @@ stripCommonSuffix = C.stripCommonSuffix
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
 --
--- This function is a synonym for the '`<\>`' operator.
+-- This function is a synonym for the '`<\>`' method of the 'Monus' class.
 --
 -- === __Examples__
 --
