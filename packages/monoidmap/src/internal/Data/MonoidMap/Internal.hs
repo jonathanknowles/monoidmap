@@ -72,6 +72,9 @@ module Data.MonoidMap.Internal
     , commonSuffix
     , stripCommonSuffix
 
+    -- * GCD
+    , gcd
+
     -- * Monus
     , monus
 
@@ -108,11 +111,7 @@ import Data.Map.Strict
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
-    ( GCDMonoid (..)
-    , LeftGCDMonoid
-    , OverlappingGCDMonoid (..)
-    , RightGCDMonoid
-    )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid (..), RightGCDMonoid )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -200,7 +199,7 @@ instance (Ord k, MonoidNull v, Cancellative v) =>
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
-    gcd = intersectionWith gcd
+    gcd = gcd
 
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
@@ -1243,6 +1242,17 @@ stripCommonSuffix
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
 stripCommonSuffix = C.stripCommonSuffix
+
+--------------------------------------------------------------------------------
+-- GCD
+--------------------------------------------------------------------------------
+
+gcd
+    :: (Ord k, MonoidNull v, GCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+gcd = intersectionWith C.gcd
 
 --------------------------------------------------------------------------------
 -- Monus
