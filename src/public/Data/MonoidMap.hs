@@ -80,6 +80,9 @@ module Data.MonoidMap
     -- * GCD
     , gcd
 
+    -- * Minus
+    , minus
+
     -- * Monus
     , monus
     )
