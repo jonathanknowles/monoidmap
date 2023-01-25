@@ -81,6 +81,9 @@ module Data.MonoidMap.Internal
     -- * GCD
     , gcd
 
+    -- * Minus
+    , minus
+
     -- * Monus
     , monus
 
