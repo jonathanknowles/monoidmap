@@ -78,14 +78,12 @@ module Data.MonoidMap.Internal
     , stripSuffixOverlap
     , stripOverlap
 
+    -- * Subtraction
+    , minus
+    , monus
+
     -- * GCD
     , gcd
-
-    -- * Minus
-    , minus
-
-    -- * Monus
-    , monus
 
     -- * Combination
     , intersectionWith
@@ -1585,7 +1583,7 @@ gcd
 gcd = intersectionWith C.gcd
 
 --------------------------------------------------------------------------------
--- Minus
+-- Subtraction
 --------------------------------------------------------------------------------
 
 -- | Subtracts the second map from the first, with the possibility of failure.
@@ -1703,10 +1701,6 @@ minus
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
 minus = unionWithA (</>)
-
---------------------------------------------------------------------------------
--- Monus
---------------------------------------------------------------------------------
 
 -- | Uses a /monus/ operation to subtract the second map from the first.
 --
