@@ -72,6 +72,9 @@ module Data.MonoidMap.Internal
     , commonSuffix
     , stripCommonSuffix
 
+    -- * GCD
+    , gcd
+
     -- * Monus
     , monus
 
@@ -108,11 +111,7 @@ import Data.Map.Strict
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
-    ( GCDMonoid (..)
-    , LeftGCDMonoid
-    , OverlappingGCDMonoid (..)
-    , RightGCDMonoid
-    )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid (..), RightGCDMonoid )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -200,7 +199,7 @@ instance (Ord k, MonoidNull v, Cancellative v) =>
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
-    gcd = intersectionWith gcd
+    gcd = gcd
 
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
@@ -585,7 +584,7 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- This function is a synonym for 'mappend' and '`<>`'.
+-- This function is a synonym for the '`<>`' method of the 'Semigroup' class.
 --
 -- === __Examples__
 --
@@ -633,6 +632,9 @@ append = unionWith (<>)
 -- @
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
+--
+-- This function is a synonym for the 'C.isPrefixOf' method of the
+-- 'LeftReductive' class.
 --
 -- === __Examples__
 --
@@ -746,6 +748,9 @@ isPrefixOf m1 m2 =
 -- @
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
+--
+-- This function is a synonym for the 'C.isSuffixOf' method of the
+-- 'RightReductive' class.
 --
 -- === __Examples__
 --
@@ -884,6 +889,9 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
+-- This function is a synonym for the 'C.stripPrefix' method of the
+-- 'LeftReductive' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -959,6 +967,9 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
+-- This function is a synonym for the 'C.stripSuffix' method of the
+-- 'RightReductive' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -1009,6 +1020,9 @@ stripSuffix = unionWithA C.stripSuffix
 --    'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
+-- This function is a synonym for the 'C.commonPrefix' method of the
+-- 'LeftGCDMonoid' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -1050,6 +1064,9 @@ commonPrefix = intersectionWith C.commonPrefix
 -- 'get' k ('commonSuffix' m1 m2) '=='
 --    'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
+--
+-- This function is a synonym for the 'C.commonSuffix' method of the
+-- 'RightGCDMonoid' class.
 --
 -- === __Examples__
 --
@@ -1122,6 +1139,9 @@ commonSuffix = intersectionWith C.commonSuffix
 -- 'stripCommonPrefix' m1 m2
 --    '&' \\(p, _, r2) -> 'Just' r2 '==' 'stripPrefix' p m2
 -- @
+--
+-- This function is a synonym for the 'C.stripCommonPrefix' method of the
+-- 'LeftGCDMonoid' class.
 --
 -- === __Examples__
 --
@@ -1203,6 +1223,9 @@ stripCommonPrefix = C.stripCommonPrefix
 --    '&' \\(_, r2, s) -> 'Just' r2 '==' 'stripSuffix' s m2
 -- @
 --
+-- This function is a synonym for the 'C.stripCommonSuffix' method of the
+-- 'RightGCDMonoid' class.
+--
 -- === __Examples__
 --
 -- With 'String' values:
@@ -1245,6 +1268,79 @@ stripCommonSuffix
 stripCommonSuffix = C.stripCommonSuffix
 
 --------------------------------------------------------------------------------
+-- GCD
+--------------------------------------------------------------------------------
+
+-- | Finds the /greatest common divisor/ of two maps.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
+-- @
+--
+-- This function is a synonym for the 'C.gcd' method of the 'GCDMonoid' class.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Product' 'Numeric.Natural.Natural' values, this function
+-- computes the /greatest common divisor/ of each pair of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
+-- >>> m3 = 'fromList' [("a", 2), ("b", 1), ("c", 2), ("d", 1)]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Set' 'Numeric.Natural.Natural' values, this function computes the
+-- /set/ /intersection/ of each pair of matching values:
+--
+-- @
+-- f xs = 'fromList' ('Set.fromList' '<$>' xs)
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [3,4,5]), ("c", [6,7,8])]
+-- >>> m2 = f [("a", [0    ]), ("b", [  4  ]), ("c", [    8])]
+-- >>> m3 = f [("a", [0    ]), ("b", [  4  ]), ("c", [    8])]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1  ]), ("b", [3,4  ]), ("c", [6,7  ])]
+-- >>> m2 = f [("a", [  1,2]), ("b", [  4,5]), ("c", [  7,8])]
+-- >>> m3 = f [("a", [  1  ]), ("b", [  4  ]), ("c", [  7  ])]
+-- @
+-- @
+-- >>> 'gcd' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+gcd
+    :: (Ord k, MonoidNull v, GCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+gcd = intersectionWith C.gcd
+
+--------------------------------------------------------------------------------
 -- Monus
 --------------------------------------------------------------------------------
 
@@ -1256,7 +1352,7 @@ stripCommonSuffix = C.stripCommonSuffix
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
 --
--- This function is a synonym for the '`<\>`' operator.
+-- This function is a synonym for the '`<\>`' method of the 'Monus' class.
 --
 -- === __Examples__
 --

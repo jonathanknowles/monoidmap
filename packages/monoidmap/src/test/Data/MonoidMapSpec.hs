@@ -11,7 +11,8 @@
 module Data.MonoidMapSpec
     where
 
-import Prelude
+import Prelude hiding
+    ( gcd )
 
 import Data.Bifunctor
     ( bimap, first, second )
@@ -26,7 +27,7 @@ import Data.Maybe
 import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.GCD
-    ( LeftGCDMonoid (..), RightGCDMonoid (..) )
+    ( GCDMonoid (..), LeftGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Monus
     ( (<\>) )
 import Data.Monoid.Null
@@ -491,6 +492,11 @@ specUnit = describe "Unit tests" $ do
         unitTestSpec_RightGCDMonoid_commonSuffix_Sum_Natural
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_String
         unitTestSpec_RightGCDMonoid_stripCommonSuffix_Sum_Natural
+
+    describe "GCDMonoid" $ do
+
+        unitTestSpec_GCDMonoid_gcd_Product_Natural
+        unitTestSpec_GCDMonoid_gcd_Set_Natural
 
     describe "Monus" $ do
 
@@ -2064,6 +2070,118 @@ unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestData2
     ]
   where
     m = MonoidMap.fromList . zip [A ..]
+
+--------------------------------------------------------------------------------
+-- Unit tests: GCD
+--------------------------------------------------------------------------------
+
+unitTestSpec_GCDMonoid_gcd_Product_Natural :: Spec
+unitTestSpec_GCDMonoid_gcd_Product_Natural = unitTestSpec
+    "GCDMonoid.gcd (Product Natural)"
+    "gcd"
+    (gcd)
+    (unitTestData_GCDMonoid_gcd_Product_Natural)
+
+unitTestData_GCDMonoid_gcd_Product_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Product Natural))
+    (MonoidMap LatinChar (Product Natural))
+    (MonoidMap LatinChar (Product Natural))
+unitTestData_GCDMonoid_gcd_Product_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      , m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      , m [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+      , m [2, 1, 2, 1, 2, 1, 2, 1, 2, 1]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+      , m [3, 1, 1, 3, 1, 1, 3, 1, 1, 3]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+      , m [4, 1, 2, 1, 4, 1, 2, 1, 4, 1]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+      , m [5, 1, 1, 1, 1, 5, 1, 1, 1, 1]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+      , m [6, 1, 2, 3, 2, 1, 6, 1, 2, 3]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+      , m [7, 1, 1, 1, 1, 1, 1, 7, 1, 1]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [8, 8, 8, 8, 8, 8, 8, 8, 8, 8]
+      , m [8, 1, 2, 1, 4, 1, 2, 1, 8, 1]
+      )
+    , ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
+      , m [9, 1, 1, 3, 1, 1, 3, 1, 1, 9]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+unitTestSpec_GCDMonoid_gcd_Set_Natural :: Spec
+unitTestSpec_GCDMonoid_gcd_Set_Natural = unitTestSpec
+    "GCDMonoid.gcd (Set Natural)"
+    "gcd"
+    (gcd)
+    (unitTestData_GCDMonoid_gcd_Set_Natural)
+
+unitTestData_GCDMonoid_gcd_Set_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+unitTestData_GCDMonoid_gcd_Set_Natural = unitTestData2
+    [ ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[          ], [          ]]
+      , m [[          ], [          ]]
+      )
+    , ( m [[          ], [          ]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[          ], [          ]]
+      )
+    , ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      )
+    , ( m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      )
+    , ( m [[0, 1, 2   ], [4, 5, 6   ]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[   1, 2   ], [   5, 6   ]]
+      )
+    , ( m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2   ], [4, 5, 6   ]]
+      , m [[   1, 2   ], [   5, 6   ]]
+      )
+    , ( m [[0, 1      ], [4, 5      ]]
+      , m [[      2, 3], [      6, 7]]
+      , m [[          ], [          ]]
+      )
+    , ( m [[      2, 3], [      6, 7]]
+      , m [[0, 1      ], [4, 5      ]]
+      , m [[          ], [          ]]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
 
 --------------------------------------------------------------------------------
 -- Unit tests: Monus
