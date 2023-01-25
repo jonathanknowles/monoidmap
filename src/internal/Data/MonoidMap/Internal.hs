@@ -111,7 +111,7 @@ import Data.Map.Strict
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
-    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid (..), RightGCDMonoid )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -214,13 +214,13 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
-    overlap = intersectionWith overlap
-    stripPrefixOverlap = unionWith stripPrefixOverlap
-    stripSuffixOverlap = unionWith stripSuffixOverlap
+    overlap = intersectionWith C.overlap
+    stripPrefixOverlap = unionWith C.stripPrefixOverlap
+    stripSuffixOverlap = unionWith C.stripSuffixOverlap
     stripOverlap m1 m2 =
-        ( stripSuffixOverlap m2 m1
-        , m1 `overlap` m2
-        , stripPrefixOverlap m1 m2
+        ( C.stripSuffixOverlap m2 m1
+        , m1 `C.overlap` m2
+        , C.stripPrefixOverlap m1 m2
         )
 
 instance (Ord k, MonoidNull v, Monus v) =>
