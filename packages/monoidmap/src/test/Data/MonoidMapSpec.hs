@@ -2072,7 +2072,7 @@ unitTestData_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: GCD
+-- Unit tests: GCDMonoid
 --------------------------------------------------------------------------------
 
 unitTestSpec_GCDMonoid_gcd_Product_Natural :: Spec
