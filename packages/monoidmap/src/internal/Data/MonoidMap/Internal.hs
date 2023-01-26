@@ -78,11 +78,12 @@ module Data.MonoidMap.Internal
     , stripSuffixOverlap
     , stripOverlap
 
+    -- * Subtraction
+    , minus
+    , monus
+
     -- * GCD
     , gcd
-
-    -- * Monus
-    , monus
 
     -- * Combination
     , intersectionWith
@@ -191,7 +192,7 @@ instance (Ord k, MonoidNull v, RightReductive v) =>
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = unionWithA (</>)
+    (</>) = minus
 
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -1582,12 +1583,135 @@ gcd
 gcd = intersectionWith C.gcd
 
 --------------------------------------------------------------------------------
--- Monus
+-- Subtraction
 --------------------------------------------------------------------------------
 
--- | Uses a /monus/ operation to subtract the second map from the first.
+-- | Subtracts the second map from the first, with the possibility of failure.
 --
--- Satisfies the following property:
+-- Uses '</>' to subtract each value in the second map from its matching value
+-- in the first map.
+--
+-- This function produces a result if (and only if) for all possible keys
+-- __@k@__, it is possible to subtract the value for __@k@__ in the second map
+-- from the value for __@k@__ in the first map:
+--
+-- @
+-- 'isJust' (m1 '`minus`' m2) '==' (∀ k. 'isJust' ('get' k m1 '</>' 'get' k m2))
+-- @
+--
+-- Otherwise, this function returns 'Nothing'.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'all'
+--    (\\r -> 'Just' ('get' k r) '==' 'get' k m1 '</>' 'get' k m2)
+--    (m1 '`minus`' m2)
+-- @
+--
+-- This function is a synonym for the '</>' method of the 'Reductive' class.
+--
+-- === __Examples__
+--
+-- With 'Set' 'Numeric.Natural.Natural' values, this function performs /set/
+-- /subtraction/ of matching values, succeeding if (and only if) each value
+-- from the second map is a subset of its matching value from the first map:
+--
+-- @
+-- f xs = 'fromList' ('Set.fromList' '<$>' xs)
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [0,1,2])]
+-- >>> m2 = f [("a", [     ]), ("b", [0,1,2])]
+-- >>> m3 = f [("a", [0,1,2]), ("b", [     ])]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [0,1,2]), ("c", [0,1,2])]
+-- >>> m2 = f [("a", [0    ]), ("b", [  1  ]), ("c", [    2])]
+-- >>> m3 = f [("a", [  1,2]), ("b", [0,  2]), ("c", [0,1  ])]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2    ]), ("b", [0,1,2    ]), ("c", [0,1,2    ])]
+-- >>> m2 = f [("a", [    2,3,4]), ("b", [  1,2,3,4]), ("c", [0,1,2,3,4])]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Nothing'
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
+-- perfoms /ordinary/ /subtraction/ of matching values, succeeding if (and only
+-- if) each value from the second map is less than or equal to its matching
+-- value from the first map:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
+-- >>> m2 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
+-- >>> m3 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 2), ("c", 3), ("d", 5)]
+-- >>> m3 = 'fromList' [("a", 1), ("b", 1), ("c", 2), ("d", 3)]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
+-- >>> m2 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
+-- >>> m2 = 'fromList' [("a", 3), ("b", 3), ("c", 5), ("d", 8)]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' 'Nothing'
+-- 'True'
+-- @
+--
+minus
+    :: (Ord k, MonoidNull v, Reductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Maybe (MonoidMap k v)
+minus = unionWithA (</>)
+
+-- | Subtracts the second map from the first, with no possibility of failure.
+--
+-- Uses '<\>' to subtract each value in the second map from its matching value
+-- in the first map.
+--
+-- Unlike the 'minus' function, which /may/ fail with 'Nothing', the 'monus'
+-- function can /never/ fail, and /always/ produces a result.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
