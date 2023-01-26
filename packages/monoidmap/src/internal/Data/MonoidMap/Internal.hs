@@ -1273,12 +1273,30 @@ stripCommonSuffix = C.stripCommonSuffix
 -- Overlap
 --------------------------------------------------------------------------------
 
--- | Finds the /greatest common overlap/ between two maps.
+-- | Finds the /greatest overlap/ of two maps.
 --
--- The /greatest common overlap/ is defined as the greatest /prefix/ of the
--- second map that is also a /suffix/ of the first map.
+-- The /greatest overlap/ __@o@__ of maps __@m1@__ and __@m2@__ is the /unique/
+-- greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of __@m2@__:
 --
--- Satisfies the following property:
+-- @
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where:
+--
+--  - __@r1@__ is the /remainder/ obtained by stripping /suffix overlap/
+--    __@o@__ from __@m1@__.
+--
+--      (see 'stripSuffixOverlap')
+--
+--  - __@r2@__ is the /remainder/ obtained by stripping /prefix overlap/
+--    __@o@__ from __@m2@__.
+--
+--      (see 'stripPrefixOverlap')
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k ('overlap' m1 m2) '==' 'C.overlap' ('get' k m1) ('get' k m2)
@@ -1320,10 +1338,23 @@ overlap
     -> MonoidMap k v
 overlap = intersectionWith C.overlap
 
--- | /Strips/ the /greatest prefix/ from the second map that is also a suffix
+-- | /Strips/ from the second map its /greatest prefix overlap/ with suffixes
 --   of the first map.
 --
--- Satisfies the following property:
+-- Evaluating 'stripPrefixOverlap' __@m1@__ __@m2@__ produces the /remainder/
+-- __@r2@__:
+--
+-- @
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where __@o@__ is the /greatest overlap/ of maps __@m1@__ and __@m2@__: the
+-- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
+-- __@m2@__.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k ('stripPrefixOverlap' m1 m2)
@@ -1366,14 +1397,27 @@ stripPrefixOverlap
     -> MonoidMap k v
 stripPrefixOverlap = unionWith C.stripPrefixOverlap
 
--- | /Strips/ the /greatest suffix/ from the second map that is also a prefix
+-- | /Strips/ from the second map its /greatest suffix overlap/ with prefixes
 --   of the first map.
 --
--- Satisfies the following property:
+-- Evaluating 'stripSuffixOverlap' __@m2@__ __@m1@__ produces the /remainder/
+-- __@r1@__:
 --
 -- @
--- 'get' k ('stripSuffixOverlap' m1 m2)
---     '==' 'C.stripSuffixOverlap' ('get' k m1) ('get' k m2)
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where __@o@__ is the /greatest overlap/ of maps __@m1@__ and __@m2@__: the
+-- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
+-- __@m2@__.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k ('stripSuffixOverlap' m2 m1)
+--     '==' 'C.stripSuffixOverlap' ('get' k m2) ('get' k m1)
 -- @
 --
 -- This function is a synonym for the 'C.stripSuffixOverlap' method of the
@@ -1384,12 +1428,12 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 -- With 'String' values:
 --
 -- @
--- >>> m1 = 'fromList' [(1,   "def"), (2,  "cdef"), (3, "bcdef"), (4,"abcdef")]
--- >>> m2 = 'fromList' [(1,"abc"   ), (2,"abcd"  ), (3,"abcde" ), (4,"abcdef")]
+-- >>> m1 = 'fromList' [(1,"abc"   ), (2,"abcd"  ), (3,"abcde" ), (4,"abcdef")]
+-- >>> m2 = 'fromList' [(1,   "def"), (2,  "cdef"), (3, "bcdef"), (4,"abcdef")]
 -- >>> m3 = 'fromList' [(1,"abc"   ), (2,"ab"    ), (3,"a"     ), (4,""      )]
 -- @
 -- @
--- >>> 'stripSuffixOverlap' m1 m2 '==' m3
+-- >>> 'stripSuffixOverlap' m2 m1 '==' m3
 -- 'True'
 -- @
 --
@@ -1398,10 +1442,10 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
 -- >>> m2 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1), ("e", 0)]
--- >>> m3 = 'fromList' [("a", 4), ("b", 2), ("c", 0), ("d", 0), ("e", 0)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 2), ("e", 4)]
 -- @
 -- @
--- >>> 'stripSuffixOverlap' m1 m2 '==' m3
+-- >>> 'stripSuffixOverlap' m2 m1 '==' m3
 -- 'True'
 -- @
 --
@@ -1412,16 +1456,33 @@ stripSuffixOverlap
     -> MonoidMap k v
 stripSuffixOverlap = unionWith C.stripSuffixOverlap
 
--- | Identifies the /greatest common overlap/ between a pair of maps and
---   /strips/ it from both maps.
+-- | Finds the /greatest overlap/ of two maps and /strips/ it from both maps.
 --
--- Given two maps __@m1@__ and __@m2@__, 'stripOverlap' produces a tuple
+-- Evaluating 'stripOverlap' __@m1@__ __@m2@__ produces the tuple
 -- __@(r1, o, r2)@__, where:
 --
---  - __@o@__  is the /greatest common overlap/: the greatest /suffix/ of
---    __@m1@__ that is also a /prefix/ of __@m2@__.
---  - __@r1@__ is the /remainder/ of stripping suffix __@o@__ from __@m1@__.
---  - __@r2@__ is the /remainder/ of stripping prefix __@o@__ from __@m2@__.
+-- @
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where:
+--
+--  - __@o@__ is the /greatest overlap/ of maps __@m1@__ and __@m2@__: the
+--    /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/
+--    of __@m2@__.
+--
+--      (see 'overlap')
+--
+--  - __@r1@__ is the /remainder/ obtained by stripping /suffix overlap/
+--    __@o@__ from __@m1@__.
+--
+--      (see 'stripSuffixOverlap')
+--
+--  - __@r2@__ is the /remainder/ obtained by stripping /prefix overlap/
+--    __@o@__ from __@m2@__.
+--
+--      (see 'stripPrefixOverlap')
 --
 -- Satisfies the following property:
 --
