@@ -1702,9 +1702,16 @@ minus
     -> Maybe (MonoidMap k v)
 minus = unionWithA (</>)
 
--- | Uses a /monus/ operation to subtract the second map from the first.
+-- | Subtracts the second map from the first, with no possibility of failure.
 --
--- Satisfies the following property:
+-- Uses '<\>' to subtract each value in the second map from its matching value
+-- in the first map.
+--
+-- Unlike the 'minus' function, which /may/ fail with 'Nothing', the 'monus'
+-- function can /never/ fail, and /always/ produces a result.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
