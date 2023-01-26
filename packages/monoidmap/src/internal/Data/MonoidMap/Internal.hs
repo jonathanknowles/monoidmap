@@ -1338,10 +1338,23 @@ overlap
     -> MonoidMap k v
 overlap = intersectionWith C.overlap
 
--- | /Strips/ the /greatest prefix/ from the second map that is also a suffix
+-- | /Strips/ from the second map its /greatest prefix overlap/ with suffixes
 --   of the first map.
 --
--- Satisfies the following property:
+-- Evaluating 'stripPrefixOverlap' __@m1@__ __@m2@__ produces the /remainder/
+-- __@r2@__:
+--
+-- @
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where __@o@__ is the /greatest overlap/ of maps __@m1@__ and __@m2@__: the
+-- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
+-- __@m2@__.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k ('stripPrefixOverlap' m1 m2)
