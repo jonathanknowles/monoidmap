@@ -1273,12 +1273,30 @@ stripCommonSuffix = C.stripCommonSuffix
 -- Overlap
 --------------------------------------------------------------------------------
 
--- | Finds the /greatest common overlap/ between two maps.
+-- | Finds the /greatest overlap/ of two maps.
 --
--- The /greatest common overlap/ is defined as the greatest /prefix/ of the
--- second map that is also a /suffix/ of the first map.
+-- The /greatest overlap/ __@o@__ of maps __@m1@__ and __@m2@__ is the /unique/
+-- greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of __@m2@__:
 --
--- Satisfies the following property:
+-- @
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where:
+--
+--  - __@r1@__ is the /remainder/ obtained by stripping /suffix overlap/
+--    __@o@__ from __@m1@__.
+--
+--      (see 'stripSuffixOverlap')
+--
+--  - __@r2@__ is the /remainder/ obtained by stripping /prefix overlap/
+--    __@o@__ from __@m2@__.
+--
+--      (see 'stripPrefixOverlap')
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k ('overlap' m1 m2) '==' 'C.overlap' ('get' k m1) ('get' k m2)
