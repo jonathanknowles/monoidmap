@@ -1397,14 +1397,27 @@ stripPrefixOverlap
     -> MonoidMap k v
 stripPrefixOverlap = unionWith C.stripPrefixOverlap
 
--- | /Strips/ the /greatest suffix/ from the second map that is also a prefix
+-- | /Strips/ from the second map its /greatest suffix overlap/ with prefixes
 --   of the first map.
 --
--- Satisfies the following property:
+-- Evaluating 'stripSuffixOverlap' __@m2@__ __@m1@__ produces the /remainder/
+-- __@r1@__:
 --
 -- @
--- 'get' k ('stripSuffixOverlap' m1 m2)
---     '==' 'C.stripSuffixOverlap' ('get' k m1) ('get' k m2)
+-- m1 '==' r1 '<>' o \  \
+-- m2 '=='    \  \ o '<>' r2
+-- @
+--
+-- Where __@o@__ is the /greatest overlap/ of maps __@m1@__ and __@m2@__: the
+-- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
+-- __@m2@__.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k ('stripSuffixOverlap' m2 m1)
+--     '==' 'C.stripSuffixOverlap' ('get' k m2) ('get' k m1)
 -- @
 --
 -- This function is a synonym for the 'C.stripSuffixOverlap' method of the
@@ -1415,12 +1428,12 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 -- With 'String' values:
 --
 -- @
--- >>> m1 = 'fromList' [(1,   "def"), (2,  "cdef"), (3, "bcdef"), (4,"abcdef")]
--- >>> m2 = 'fromList' [(1,"abc"   ), (2,"abcd"  ), (3,"abcde" ), (4,"abcdef")]
+-- >>> m1 = 'fromList' [(1,"abc"   ), (2,"abcd"  ), (3,"abcde" ), (4,"abcdef")]
+-- >>> m2 = 'fromList' [(1,   "def"), (2,  "cdef"), (3, "bcdef"), (4,"abcdef")]
 -- >>> m3 = 'fromList' [(1,"abc"   ), (2,"ab"    ), (3,"a"     ), (4,""      )]
 -- @
 -- @
--- >>> 'stripSuffixOverlap' m1 m2 '==' m3
+-- >>> 'stripSuffixOverlap' m2 m1 '==' m3
 -- 'True'
 -- @
 --
@@ -1429,10 +1442,10 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
 -- >>> m2 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1), ("e", 0)]
--- >>> m3 = 'fromList' [("a", 4), ("b", 2), ("c", 0), ("d", 0), ("e", 0)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 2), ("e", 4)]
 -- @
 -- @
--- >>> 'stripSuffixOverlap' m1 m2 '==' m3
+-- >>> 'stripSuffixOverlap' m2 m1 '==' m3
 -- 'True'
 -- @
 --
