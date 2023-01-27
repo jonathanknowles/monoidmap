@@ -114,7 +114,7 @@ import Data.Map.Merge.Strict
     , zipWithMaybeMatched
     )
 import Data.Map.Strict
-    ( Map )
+    ( Map, lookup )
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
@@ -152,6 +152,115 @@ import qualified GHC.Exts as GHC
 -- Type
 --------------------------------------------------------------------------------
 
+-- | Models a /total/ relation from unique keys to /monoidal/ values.
+--
+-- The mapping from keys to values is __total__: every possible key of type
+-- __@k@__ is associated with a corresponding value of type __@v@__:
+--
+-- @
+-- 'get' :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> v
+-- @
+--
+-- By default, every key in an 'empty' map corresponds to a value of 'mempty':
+--
+-- @
+-- ∀ k. 'get' k 'empty' '==' 'mempty'
+-- @
+--
+-- == Comparison with partial map types
+--
+-- The 'MonoidMap' type differs from the standard 'Map' type in how it relates
+-- /keys/ to /values/:
+--
+--  - 'Map' __@k@__ __@v@__:
+--
+--      relates /keys/ of type __@k@__ to /values/ of type __'Maybe'__ __@v@__.
+--
+--  - 'MonoidMap' __@k@__ __@v@__:
+--
+--      relates /keys/ of type __@k@__ to /values/ of type __@v@__.
+--
+-- This becomes evident if we compare the type signatures of operations to
+-- query a key for its value, for both types:
+--
+-- @
+--       'Map'.'lookup' :: 'Ord' k => k ->       'Map' k v -> 'Maybe' v
+-- 'MonoidMap'.'get'    :: 'Ord' k => k -> 'MonoidMap' k v -> \     \ v
+-- @
+--
+-- For types that have no natural notion of an "empty" value, the ability to
+-- represent empty values with 'Nothing' is important.
+--
+-- However, /monoidal/ types /do/ have a way to represent empty values: the
+-- special 'mempty' value.
+--
+-- Consequently, if we use an ordinary 'Map' with a monoidal value type, we now
+-- have __two__ possible ways to represent values that are "empty":
+--
+--  - Representation #1: (if a 'Map' has __no__ entry for a given key)
+--
+--      @
+--      'Nothing'
+--      @
+--
+--  - Representation #2: (if a 'Map' __has__ an entry for a given key)
+--
+--      @
+--      'Just' 'mempty'
+--      @
+--
+-- In many situations, even for monoidal value types, the ability to clearly
+-- distinguish between "values that are not present" and "values that are
+-- present but empty" is still important.
+--
+-- However, for situations where we do /not/ care to distinguish between these
+-- two cases, the 'MonoidMap' type provides a single unified representation for
+-- empty values: 'mempty'.
+--
+-- == Internal data structure
+--
+-- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
+-- its key-value mappings, and only stores values that are /not/ equal to
+-- 'mempty'.
+--
+-- Values that /are/ equal to 'mempty' are automatically garbage collected, and
+-- /never/ included in the internal data structure.
+--
+-- As a result, the internal data structure is /always/ in a canonical form.
+--
+-- == Constraints on value types
+--
+-- For 'MonoidMap' operations that test for equality with the 'mempty' value,
+-- the value type is required to be an instance of 'MonoidNull'.
+--
+-- There is /no/ general requirement for value types to be instances of 'Eq'.
+--
+-- === Justification
+--
+-- In general, the set of types that admit a 'MonoidNull' instance is
+-- /strictly/ /larger/ than the set of types that admit an 'Eq' instance.
+--
+-- For any type __@v@__ that is an instance of both 'Eq' and 'Monoid', it is
+-- /always/ possible to define a 'MonoidNull' instance:
+--
+-- @
+-- instance 'MonoidNull' v where
+--     'C.null' = ('==' 'mempty')
+-- @
+--
+-- However, there are some types for which it /is/ possible to define a
+-- 'MonoidNull' instance, but /not/ practical (or possible) to define a lawful
+-- 'Eq' instance.
+--
+-- For example, consider the following type:
+--
+-- @
+-- 'Maybe' ('String' -> 'Data.Monoid.Sum' 'Numeric.Natural.Natural')
+-- @
+--
+-- Requiring a 'MonoidNull' constraint instead of an 'Eq' constraint allows
+-- 'MonoidMap' to be usable with a greater range of monoidal value types.
+--
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
     deriving newtype
