@@ -1695,7 +1695,8 @@ gcd = intersectionWith C.gcd
 -- Subtraction
 --------------------------------------------------------------------------------
 
--- | Subtracts the second map from the first, with the possibility of failure.
+-- | Subtracts the second map from the first, returning 'Nothing' in the case
+--   of failure.
 --
 -- Uses '</>' to subtract each value in the second map from its matching value
 -- in the first map.
