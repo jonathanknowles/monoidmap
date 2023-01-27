@@ -21,8 +21,10 @@ module Data.MonoidMap.Internal
     , toList
     , toMap
 
-    -- * Basic operations
+    -- * Querying
     , get
+
+    -- * Modification
     , set
     , adjust
     , nullify
