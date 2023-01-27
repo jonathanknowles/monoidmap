@@ -219,6 +219,48 @@ import qualified GHC.Exts as GHC
 -- two cases, the 'MonoidMap' type provides a single unified representation for
 -- empty values: 'mempty'.
 --
+-- == Instances of 'Semigroup' and 'Monoid'
+--
+-- This module provides a 'Semigroup' instance that combines /matching/ values
+-- with the '<>' operator.
+--
+-- In addition, this module /also/ provides instances of several __subclasses__
+-- of 'Semigroup' and 'Monoid'.
+--
+-- The 'Semigroup' and 'Monoid' subclass instances provided by this module
+-- generally follow a similar pattern:
+--
+-- For a given subclass __@C@__:
+--
+--  - the instance definition for 'MonoidMap' __@k@__ __@v@__ will generally
+--    require that the value type __@v@__ is also an instance of __@C@__:
+--
+--      @
+--      instance (C v) => C ('MonoidMap' k v)
+--      @
+--
+--  - if class __@C@__ defines a /unary/ function __@f@__, then the result of
+--    applying __@f@__ to map __@m@__ will generally satisfy the following
+--    property:
+--
+--      @
+--      ∀ k m. 'get' k (f m) == f ('get' k m)
+--      @
+--
+--  - if class __@C@__ defines a /binary/ function __@f@__, then the result of
+--    applying __@f@__ to maps __@m1@__ and __@m2@__ will generally satisfy the
+--    following property:
+--
+--      @
+--      ∀ k m1 m2. 'get' k (f m1 m2) == f ('get' k m1) ('get' k m2)
+--      @
+--
+-- For example, the 'Semigroup' operator '<>' satisfies the following property:
+--
+-- @
+-- ∀ k m1 m2. 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
+-- @
+--
 -- == Internal data structure
 --
 -- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
