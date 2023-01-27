@@ -20,8 +20,10 @@ module Data.MonoidMap
     , toList
     , toMap
 
-    -- * Basic operations
+    -- * Querying
     , get
+
+    -- * Modification
     , set
     , adjust
     , nullify
