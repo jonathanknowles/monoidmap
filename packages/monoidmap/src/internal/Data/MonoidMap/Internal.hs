@@ -186,38 +186,39 @@ import qualified GHC.Exts as GHC
 -- query a key for its value, for both types:
 --
 -- @
---       'Map'.'lookup' :: 'Ord' k => k ->       'Map' k v -> 'Maybe' v
--- 'MonoidMap'.'get'    :: 'Ord' k => k -> 'MonoidMap' k v -> \     \ v
+-- 'lookup' :: ('Ord' k  \      \  ) => k ->       'Map' k v -> 'Maybe' v
+-- 'get'    :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> \     \ v
 -- @
 --
--- For types that have no natural notion of an "empty" value, the ability to
--- represent empty values with 'Nothing' is important.
+-- For an /unconstrained/ value type __@v@__, using 'Maybe' makes it possible
+-- to signal the /presence/ or /absence/ of a value for a particular key.
 --
--- However, /monoidal/ types /do/ have a way to represent empty values: the
--- special 'mempty' value.
+-- However, /monoidal/ types have a natural way to represent empty values:
+-- the special 'mempty' constant.
 --
--- Consequently, if we use an ordinary 'Map' with a monoidal value type, we now
--- have __two__ possible ways to represent values that are "empty":
+-- As a consequence, using a standard 'Map' with a /monoidal/ value type gives
+-- rise to two distinct representations for missing or empty values:
 --
---  - Representation #1: (if a 'Map' has __no__ entry for a given key)
+--  1. When a 'Map' has /no/ entry for a given key:
 --
 --      @
 --      'Nothing'
 --      @
 --
---  - Representation #2: (if a 'Map' __has__ an entry for a given key)
+--  2. When a 'Map' /has/ an entry for a given key, but the value is /empty/:
 --
 --      @
 --      'Just' 'mempty'
 --      @
 --
--- In many situations, even for monoidal value types, the ability to clearly
--- distinguish between "values that are not present" and "values that are
--- present but empty" is still important.
+-- Of course, in many situations where map types are used, it's important to be
+-- able to clearly distinguish between these two cases, even for monoidal value
+-- types.
 --
--- However, for situations where we do /not/ care to distinguish between these
--- two cases, the 'MonoidMap' type provides a single unified representation for
--- empty values: 'mempty'.
+-- However, for situations where we do /not/ want to distinguish between these
+-- two cases, or where it's important to treat these two cases /equivalently/,
+-- the 'MonoidMap' type provides a single /unified/ representation for empty
+-- values: the 'mempty' constant.
 --
 -- == Instances of 'Semigroup' and 'Monoid'
 --
