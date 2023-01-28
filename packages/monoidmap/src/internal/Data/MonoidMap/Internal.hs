@@ -1193,8 +1193,8 @@ stripSuffix = unionWithA C.stripSuffix
 -- Satisifies the following property:
 --
 -- @
--- 'get' k ('commonPrefix' m1 m2) '=='
---    'C.commonPrefix' ('get' k m1) ('get' k m2)
+-- 'get' k ('commonPrefix' m1 m2)
+--     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
 -- This function is a synonym for the 'C.commonPrefix' method of the
@@ -1238,8 +1238,8 @@ commonPrefix = intersectionWith C.commonPrefix
 -- Satisifies the following property:
 --
 -- @
--- 'get' k ('commonSuffix' m1 m2) '=='
---    'C.commonSuffix' ('get' k m1) ('get' k m2)
+-- 'get' k ('commonSuffix' m1 m2)
+--     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
 --
 -- This function is a synonym for the 'C.commonSuffix' method of the
