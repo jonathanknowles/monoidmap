@@ -221,44 +221,65 @@ import qualified GHC.Exts as GHC
 --
 -- == Instances of 'Semigroup' and 'Monoid'
 --
--- This module provides a 'Semigroup' instance that combines /matching/ values
--- with the '<>' operator.
---
--- In addition, this module /also/ provides instances of several __subclasses__
--- of 'Semigroup' and 'Monoid'.
---
--- The 'Semigroup' and 'Monoid' subclass instances provided by this module
--- generally follow a similar pattern:
---
--- For a given subclass __@C@__:
---
---  - the instance definition for 'MonoidMap' __@k@__ __@v@__ will generally
---    require that the value type __@v@__ is also an instance of __@C@__:
---
---      @
---      instance (C v) => C ('MonoidMap' k v)
---      @
---
---  - if class __@C@__ defines a /unary/ function __@f@__, then the result of
---    applying __@f@__ to map __@m@__ will generally satisfy the following
---    property:
---
---      @
---      ∀ k m. 'get' k (f m) == f ('get' k m)
---      @
---
---  - if class __@C@__ defines a /binary/ function __@f@__, then the result of
---    applying __@f@__ to maps __@m1@__ and __@m2@__ will generally satisfy the
---    following property:
---
---      @
---      ∀ k m1 m2. 'get' k (f m1 m2) == f ('get' k m1) ('get' k m2)
---      @
---
--- For example, the 'Semigroup' operator '<>' satisfies the following property:
+-- This module provides a 'Semigroup' instance that uses the '<>' operator to
+-- combines values for matching keys, satisfying the following property:
 --
 -- @
--- ∀ k m1 m2. 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
+-- 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
+-- @
+--
+-- The 'Monoid' instance satisfies the following property for all keys:
+--
+-- @
+-- 'get' k 'mempty' == 'mempty'
+-- @
+--
+-- == Subclasses of 'Semigroup' and 'Monoid'
+--
+-- In addition, this module /also/ provides instances for several
+-- __subclasses__ of 'Semigroup' and 'Monoid'.
+--
+-- In general, these instances are defined according to a common pattern that
+-- is /analogous/ to the 'Semigroup' instance, where binary operations on
+-- /pairs/ /of/ /maps/ are defined in terms of their application to /pairs/
+-- /of/ /values/ for matching keys.
+--
+-- For example, if subclass __@C@__ defines a binary operation __@f@__ of the
+-- form:
+--
+-- @
+-- class 'Semigroup' a => C a where
+--    f :: a -> a -> a
+-- @
+--
+-- Then the result of applying __@f@__ to maps __@m1@__ and __@m2@__ will
+-- typically satisfy a property of the following form:
+--
+-- @
+-- ∀ k m1 m2. 'get' k (f m1 m2) == f ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- The 'commonPrefix' function from 'LeftGCDMonoid':
+--
+-- @
+-- 'get' k ('C.commonPrefix' m1 m2)
+--     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- The 'commonSuffix' function from 'RightGCDMonoid':
+--
+-- @
+-- 'get' k ('C.commonSuffix' m1 m2)
+--     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- The 'overlap' function from 'OverlappingGCDMonoid':
+--
+-- @
+-- 'get' k ('C.overlap' m1 m2)
+--     '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
 --
 -- == Internal data structure
