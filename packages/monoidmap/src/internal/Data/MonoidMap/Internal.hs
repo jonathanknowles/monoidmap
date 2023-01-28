@@ -237,8 +237,8 @@ import qualified GHC.Exts as GHC
 --
 -- == Subclasses of 'Semigroup' and 'Monoid'
 --
--- In addition, this module /also/ provides instances for several
--- __subclasses__ of 'Semigroup' and 'Monoid'.
+-- This module also provides instances for several __subclasses__ of
+-- 'Semigroup' and 'Monoid'.
 --
 -- In general, these instances are defined according to a common pattern that
 -- is /analogous/ to the 'Semigroup' instance, where binary operations on
