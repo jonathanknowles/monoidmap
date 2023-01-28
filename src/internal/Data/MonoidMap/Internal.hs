@@ -295,15 +295,24 @@ import qualified GHC.Exts as GHC
 --
 -- == Constraints on value types
 --
--- For 'MonoidMap' operations that test for equality with the 'mempty' value,
--- the value type is required to be an instance of 'MonoidNull'.
+-- 'MonoidMap' operations generally require the value type to be an instance of
+-- 'MonoidNull', which provides a convenient way to test whether or not a value
+-- is 'mempty'.
 --
--- There is /no/ general requirement for value types to be instances of 'Eq'.
+-- Types that are instances of both 'MonoidNull' and 'Eq' satisfy the following
+-- equivalence:
+--
+-- @
+-- 'Null.null' v '==' (v '==' 'mempty')
+-- @
+--
+-- However, 'MonoidMap' operations generally do /not/ require that value types
+-- are instances of 'Eq'.
 --
 -- === Justification
 --
--- In general, the set of types that admit a 'MonoidNull' instance is
--- /strictly/ /larger/ than the set of types that admit an 'Eq' instance.
+-- The set of monoidal types that admit a 'MonoidNull' instance is /strictly/
+-- /larger/ than the set of monoidal types that admit an 'Eq' instance.
 --
 -- For any type __@v@__ that is an instance of both 'Eq' and 'Monoid', it is
 -- /always/ possible to define a 'MonoidNull' instance:
@@ -313,7 +322,7 @@ import qualified GHC.Exts as GHC
 --     'C.null' = ('==' 'mempty')
 -- @
 --
--- However, there are some types for which it /is/ possible to define a
+-- However, there are monoidal types for which it /is/ possible to define a
 -- 'MonoidNull' instance, but /not/ practical (or possible) to define a lawful
 -- 'Eq' instance.
 --
