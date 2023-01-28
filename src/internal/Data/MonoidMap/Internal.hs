@@ -186,79 +186,101 @@ import qualified GHC.Exts as GHC
 -- query a key for its value, for both types:
 --
 -- @
---       'Map'.'lookup' :: 'Ord' k => k ->       'Map' k v -> 'Maybe' v
--- 'MonoidMap'.'get'    :: 'Ord' k => k -> 'MonoidMap' k v -> \     \ v
+-- 'lookup' :: ('Ord' k  \      \  ) => k ->       'Map' k v -> 'Maybe' v
+-- 'get'    :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> \     \ v
 -- @
 --
--- For types that have no natural notion of an "empty" value, the ability to
--- represent empty values with 'Nothing' is important.
+-- For an /unconstrained/ value type __@v@__, using 'Maybe' makes it possible
+-- to signal the /presence/ or /absence/ of a value for a particular key.
 --
--- However, /monoidal/ types /do/ have a way to represent empty values: the
--- special 'mempty' value.
+-- However, /monoidal/ types have a natural way to represent empty values:
+-- the special 'mempty' constant.
 --
--- Consequently, if we use an ordinary 'Map' with a monoidal value type, we now
--- have __two__ possible ways to represent values that are "empty":
+-- As a consequence, using a standard 'Map' with a /monoidal/ value type gives
+-- rise to two distinct representations for missing or empty values:
 --
---  - Representation #1: (if a 'Map' has __no__ entry for a given key)
+--  1. When a 'Map' has /no/ entry for a given key:
 --
 --      @
 --      'Nothing'
 --      @
 --
---  - Representation #2: (if a 'Map' __has__ an entry for a given key)
+--  2. When a 'Map' /has/ an entry for a given key, but the value is /empty/:
 --
 --      @
 --      'Just' 'mempty'
 --      @
 --
--- In many situations, even for monoidal value types, the ability to clearly
--- distinguish between "values that are not present" and "values that are
--- present but empty" is still important.
+-- Of course, in many situations where map types are used, it's important to be
+-- able to clearly distinguish between these two cases, even for monoidal value
+-- types.
 --
--- However, for situations where we do /not/ care to distinguish between these
--- two cases, the 'MonoidMap' type provides a single unified representation for
--- empty values: 'mempty'.
+-- However, for situations where we do /not/ want to distinguish between these
+-- two cases, or where it's important to treat these two cases /equivalently/,
+-- the 'MonoidMap' type provides a single /unified/ representation for empty
+-- values: the 'mempty' constant.
 --
 -- == Instances of 'Semigroup' and 'Monoid'
 --
--- This module provides a 'Semigroup' instance that combines /matching/ values
--- with the '<>' operator.
---
--- In addition, this module /also/ provides instances of several __subclasses__
--- of 'Semigroup' and 'Monoid'.
---
--- The 'Semigroup' and 'Monoid' subclass instances provided by this module
--- generally follow a similar pattern:
---
--- For a given subclass __@C@__:
---
---  - the instance definition for 'MonoidMap' __@k@__ __@v@__ will generally
---    require that the value type __@v@__ is also an instance of __@C@__:
---
---      @
---      instance (C v) => C ('MonoidMap' k v)
---      @
---
---  - if class __@C@__ defines a /unary/ function __@f@__, then the result of
---    applying __@f@__ to map __@m@__ will generally satisfy the following
---    property:
---
---      @
---      ∀ k m. 'get' k (f m) == f ('get' k m)
---      @
---
---  - if class __@C@__ defines a /binary/ function __@f@__, then the result of
---    applying __@f@__ to maps __@m1@__ and __@m2@__ will generally satisfy the
---    following property:
---
---      @
---      ∀ k m1 m2. 'get' k (f m1 m2) == f ('get' k m1) ('get' k m2)
---      @
---
--- For example, the 'Semigroup' operator '<>' satisfies the following property:
+-- This module provides a 'Semigroup' instance that uses the '<>' operator to
+-- combines values for matching keys, satisfying the following property:
 --
 -- @
--- ∀ k m1 m2. 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
+-- 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
+-- @
+--
+-- The 'Monoid' instance satisfies the following property for all keys:
+--
+-- @
+-- 'get' k 'mempty' == 'mempty'
+-- @
+--
+-- == Subclasses of 'Semigroup' and 'Monoid'
+--
+-- This module also provides instances for several __subclasses__ of
+-- 'Semigroup' and 'Monoid'.
+--
+-- In general, these instances are defined according to a common pattern that
+-- is /analogous/ to the 'Semigroup' instance, where binary operations on
+-- /pairs/ /of/ /maps/ are defined in terms of their application to /pairs/
+-- /of/ /values/ for matching keys.
+--
+-- For example, if subclass __@C@__ defines a binary operation __@f@__ of the
+-- form:
+--
+-- @
+-- class 'Semigroup' a => C a where
+--    f :: a -> a -> a
+-- @
+--
+-- Then the result of applying __@f@__ to maps __@m1@__ and __@m2@__ will
+-- typically satisfy a property of the following form:
+--
+-- @
+-- ∀ k m1 m2. 'get' k (f m1 m2) == f ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- The 'commonPrefix' function from 'LeftGCDMonoid':
+--
+-- @
+-- 'get' k ('C.commonPrefix' m1 m2)
+--     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- The 'commonSuffix' function from 'RightGCDMonoid':
+--
+-- @
+-- 'get' k ('C.commonSuffix' m1 m2)
+--     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
+-- @
+--
+-- The 'overlap' function from 'OverlappingGCDMonoid':
+--
+-- @
+-- 'get' k ('C.overlap' m1 m2)
+--     '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
 --
 -- == Internal data structure
@@ -274,15 +296,24 @@ import qualified GHC.Exts as GHC
 --
 -- == Constraints on value types
 --
--- For 'MonoidMap' operations that test for equality with the 'mempty' value,
--- the value type is required to be an instance of 'MonoidNull'.
+-- 'MonoidMap' operations generally require the value type to be an instance of
+-- 'MonoidNull', which provides a convenient way to test whether or not a value
+-- is 'mempty'.
 --
--- There is /no/ general requirement for value types to be instances of 'Eq'.
+-- Types that are instances of both 'MonoidNull' and 'Eq' satisfy the following
+-- equivalence:
+--
+-- @
+-- 'Null.null' v '==' (v '==' 'mempty')
+-- @
+--
+-- However, 'MonoidMap' operations generally do /not/ require that value types
+-- are instances of 'Eq'.
 --
 -- === Justification
 --
--- In general, the set of types that admit a 'MonoidNull' instance is
--- /strictly/ /larger/ than the set of types that admit an 'Eq' instance.
+-- The set of monoidal types that admit a 'MonoidNull' instance is /strictly/
+-- /larger/ than the set of monoidal types that admit an 'Eq' instance.
 --
 -- For any type __@v@__ that is an instance of both 'Eq' and 'Monoid', it is
 -- /always/ possible to define a 'MonoidNull' instance:
@@ -292,7 +323,7 @@ import qualified GHC.Exts as GHC
 --     'C.null' = ('==' 'mempty')
 -- @
 --
--- However, there are some types for which it /is/ possible to define a
+-- However, there are monoidal types for which it /is/ possible to define a
 -- 'MonoidNull' instance, but /not/ practical (or possible) to define a lawful
 -- 'Eq' instance.
 --
@@ -1172,8 +1203,8 @@ stripSuffix = unionWithA C.stripSuffix
 -- Satisifies the following property:
 --
 -- @
--- 'get' k ('commonPrefix' m1 m2) '=='
---    'C.commonPrefix' ('get' k m1) ('get' k m2)
+-- 'get' k ('commonPrefix' m1 m2)
+--     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
 -- This function is a synonym for the 'C.commonPrefix' method of the
@@ -1217,8 +1248,8 @@ commonPrefix = intersectionWith C.commonPrefix
 -- Satisifies the following property:
 --
 -- @
--- 'get' k ('commonSuffix' m1 m2) '=='
---    'C.commonSuffix' ('get' k m1) ('get' k m2)
+-- 'get' k ('commonSuffix' m1 m2)
+--     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
 --
 -- This function is a synonym for the 'C.commonSuffix' method of the
