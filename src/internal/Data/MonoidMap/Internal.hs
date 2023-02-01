@@ -81,7 +81,7 @@ module Data.MonoidMap.Internal
     , stripOverlap
 
     -- * Subtraction
-    , minus
+    , minusMaybe
     , monus
 
     -- * GCD
@@ -376,7 +376,7 @@ instance (Ord k, MonoidNull v, RightReductive v) =>
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = minus
+    (</>) = minusMaybe
 
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -1781,7 +1781,8 @@ gcd = intersectionWith C.gcd
 -- from the value for __@k@__ in the first map:
 --
 -- @
--- 'isJust' (m1 '`minus`' m2) '==' (∀ k. 'isJust' ('get' k m1 '</>' 'get' k m2))
+-- 'isJust' (m1 '`minusMaybe`' m2)
+--     '==' (∀ k. 'isJust' ('get' k m1 '</>' 'get' k m2))
 -- @
 --
 -- Otherwise, this function returns 'Nothing'.
@@ -1792,7 +1793,7 @@ gcd = intersectionWith C.gcd
 -- @
 -- 'all'
 --    (\\r -> 'Just' ('get' k r) '==' 'get' k m1 '</>' 'get' k m2)
---    (m1 '`minus`' m2)
+--    (m1 '`minusMaybe`' m2)
 -- @
 --
 -- This function is a synonym for the '</>' method of the 'Reductive' class.
@@ -1813,7 +1814,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = f [("a", [0,1,2]), ("b", [     ])]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1823,7 +1824,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = f [("a", [  1,2]), ("b", [0,  2]), ("c", [0,1  ])]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1832,7 +1833,7 @@ gcd = intersectionWith C.gcd
 -- >>> m2 = f [("a", [    2,3,4]), ("b", [  1,2,3,4]), ("c", [0,1,2,3,4])]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Nothing'
+-- >>> m1 '`minusMaybe`' m2 '==' 'Nothing'
 -- 'True'
 -- @
 --
@@ -1847,7 +1848,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1857,7 +1858,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = 'fromList' [("a", 1), ("b", 1), ("c", 2), ("d", 3)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1867,7 +1868,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1876,24 +1877,24 @@ gcd = intersectionWith C.gcd
 -- >>> m2 = 'fromList' [("a", 3), ("b", 3), ("c", 5), ("d", 8)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Nothing'
+-- >>> m1 '`minusMaybe`' m2 '==' 'Nothing'
 -- 'True'
 -- @
 --
-minus
+minusMaybe
     :: (Ord k, MonoidNull v, Reductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-minus = unionWithA (</>)
+minusMaybe = unionWithA (</>)
 
 -- | Subtracts the second map from the first, with no possibility of failure.
 --
 -- Uses '<\>' to subtract each value in the second map from its matching value
 -- in the first map.
 --
--- Unlike the 'minus' function, which /may/ fail with 'Nothing', the 'monus'
--- function can /never/ fail, and /always/ produces a result.
+-- Unlike the 'minusMaybe' function, which /may/ fail with 'Nothing', the
+-- 'monus' function can /never/ fail, and /always/ produces a result.
 --
 -- For all possible keys __@k@__, values associated with __@k@__ satisfy the
 -- following property:

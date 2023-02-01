@@ -80,7 +80,7 @@ module Data.MonoidMap
     , stripOverlap
 
     -- * Subtraction
-    , minus
+    , minusMaybe
     , monus
 
     -- * GCD
