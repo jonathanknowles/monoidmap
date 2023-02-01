@@ -85,6 +85,9 @@ module Data.MonoidMap.Internal
     , minusMaybe
     , monus
 
+    -- * Inversion
+    , invert
+
     -- * GCD
     , gcd
 
@@ -108,7 +111,7 @@ import Data.Function
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Group
-    ( Group (..) )
+    ( Group )
 import Data.Map.Merge.Strict
     ( dropMissing
     , mapMaybeMissing
@@ -143,6 +146,7 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
+import qualified Data.Group as C
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
@@ -432,9 +436,9 @@ instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
-    invert = mapValues invert
+    invert = invert
     (~~) = minus
-    m `pow` x = mapValues (`pow` x) m
+    m `pow` x = mapValues (`C.pow` x) m
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -1776,7 +1780,7 @@ minus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-minus = unionWith (~~)
+minus = unionWith (C.~~)
 
 -- | Subtracts the second map from the first, returning 'Nothing' in the case
 --   of failure.
@@ -2001,6 +2005,16 @@ monus
     -> MonoidMap k v
     -> MonoidMap k v
 monus = unionWith (<\>)
+
+--------------------------------------------------------------------------------
+-- Inversion
+--------------------------------------------------------------------------------
+
+invert
+    :: (Ord k, MonoidNull v, Group v)
+    => MonoidMap k v
+    -> MonoidMap k v
+invert = mapValues C.invert
 
 --------------------------------------------------------------------------------
 -- Binary operations
