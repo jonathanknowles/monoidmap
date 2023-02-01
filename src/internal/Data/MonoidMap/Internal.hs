@@ -62,6 +62,14 @@ module Data.MonoidMap.Internal
     -- * Association
     , append
 
+    -- * Subtraction
+    , minus
+    , minusMaybe
+    , monus
+
+    -- * Inversion
+    , invert
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
@@ -79,14 +87,6 @@ module Data.MonoidMap.Internal
     , stripPrefixOverlap
     , stripSuffixOverlap
     , stripOverlap
-
-    -- * Subtraction
-    , minus
-    , minusMaybe
-    , monus
-
-    -- * Inversion
-    , invert
 
     -- * GCD
     , gcd
