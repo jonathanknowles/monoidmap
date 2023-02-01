@@ -84,6 +84,9 @@ module Data.MonoidMap
     , minusMaybe
     , monus
 
+    -- * Inversion
+    , invert
+
     -- * GCD
     , gcd
     )
