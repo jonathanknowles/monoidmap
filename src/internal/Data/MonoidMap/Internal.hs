@@ -81,6 +81,7 @@ module Data.MonoidMap.Internal
     , stripOverlap
 
     -- * Subtraction
+    , minus
     , minusMaybe
     , monus
 
@@ -432,7 +433,7 @@ instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
     invert = mapValues invert
-    (~~) = unionWith (~~)
+    (~~) = minus
     m `pow` x = mapValues (`pow` x) m
 
 --------------------------------------------------------------------------------
@@ -1769,6 +1770,13 @@ gcd = intersectionWith C.gcd
 --------------------------------------------------------------------------------
 -- Subtraction
 --------------------------------------------------------------------------------
+
+minus
+    :: (Ord k, MonoidNull v, Group v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+minus = unionWith (~~)
 
 -- | Subtracts the second map from the first, returning 'Nothing' in the case
 --   of failure.
