@@ -773,7 +773,11 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 -- | Appends a pair of maps together.
 --
--- Satisfies the following property:
+-- Uses the 'Semigroup' operator '<>' to append each value in the first map to
+-- its matching value in the second map.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
