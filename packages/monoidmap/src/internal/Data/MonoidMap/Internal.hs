@@ -1784,7 +1784,7 @@ gcd = intersectionWith C.gcd
 -- Subtraction
 --------------------------------------------------------------------------------
 
--- | Subtracts the second map from the first.
+-- | Performs /group subtraction/ of the second map from the first.
 --
 -- Uses the 'Group' subtraction operator 'C.~~' to subtract each value in the
 -- second map from its matching value in the first map.
@@ -1831,11 +1831,10 @@ minus
     -> MonoidMap k v
 minus = unionWith (C.~~)
 
--- | Subtracts the second map from the first, returning 'Nothing' in the case
---   of failure.
+-- | Performs /reductive subtraction/ of the second map from the first.
 --
--- Uses '</>' to subtract each value in the second map from its matching value
--- in the first map.
+-- Uses the 'Reductive' subtraction operator '</>' to subtract each value in
+-- the second map from its matching value in the first map.
 --
 -- This function produces a result if (and only if) for all possible keys
 -- __@k@__, it is possible to subtract the value for __@k@__ in the second map
@@ -1950,13 +1949,10 @@ minusMaybe
     -> Maybe (MonoidMap k v)
 minusMaybe = unionWithA (</>)
 
--- | Subtracts the second map from the first, with no possibility of failure.
+-- | Performs /monus subtraction/ of the second map from the first.
 --
--- Uses '<\>' to subtract each value in the second map from its matching value
--- in the first map.
---
--- Unlike the 'minusMaybe' function, which /may/ fail with 'Nothing', the
--- 'monus' function can /never/ fail, and /always/ produces a result.
+-- Uses the 'Monus' subtraction operator '<\>' to subtract each value in
+-- the second map from its matching value in the first map.
 --
 -- For all possible keys __@k@__, values associated with __@k@__ satisfy the
 -- following property:
