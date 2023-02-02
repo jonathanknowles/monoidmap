@@ -2059,7 +2059,7 @@ monus = unionWith (<\>)
 
 -- | Inverts every value in a map.
 --
--- Uses the 'Group' inversion method 'C.invert' to invert every value in a map.
+-- Applies the 'Group' method 'C.invert' to every value in a map.
 --
 -- For all possible keys __@k@__, values associated with __@k@__ satisfy the
 -- following property:
