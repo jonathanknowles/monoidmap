@@ -21,7 +21,7 @@ module Data.MonoidMap.Internal
     , toList
     , toMap
 
-    -- * Querying
+    -- * Lookup
     , get
 
     -- * Modification
