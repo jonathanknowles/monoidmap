@@ -779,7 +779,8 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- This function is a synonym for the '`<>`' method of the 'Semigroup' class.
+-- This function provides the implementation of the '<>' operator for the
+-- 'MonoidMap' instance of 'Semigroup'.
 --
 -- === __Examples__
 --
@@ -828,8 +829,8 @@ append = unionWith (<>)
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.isPrefixOf' method of the
--- 'LeftReductive' class.
+-- This function provides the implementation of the 'C.isPrefixOf' method for
+-- the 'MonoidMap' instance of 'LeftReductive'.
 --
 -- === __Examples__
 --
@@ -944,8 +945,8 @@ isPrefixOf m1 m2 =
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.isSuffixOf' method of the
--- 'RightReductive' class.
+-- This function provides the implementation of the 'C.isSuffixOf' method for
+-- the 'MonoidMap' instance of 'RightReductive'.
 --
 -- === __Examples__
 --
@@ -1084,8 +1085,8 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
--- This function is a synonym for the 'C.stripPrefix' method of the
--- 'LeftReductive' class.
+-- This function provides the implementation of the 'C.stripPrefix' method for
+-- the 'MonoidMap' instance of 'LeftReductive'.
 --
 -- === __Examples__
 --
@@ -1162,8 +1163,8 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
--- This function is a synonym for the 'C.stripSuffix' method of the
--- 'RightReductive' class.
+-- This function provides the implementation of the 'C.stripSuffix' method for
+-- the 'MonoidMap' instance of 'RightReductive'.
 --
 -- === __Examples__
 --
@@ -1215,8 +1216,8 @@ stripSuffix = unionWithA C.stripSuffix
 --     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.commonPrefix' method of the
--- 'LeftGCDMonoid' class.
+-- This function provides the implementation of the 'C.commonPrefix' method for
+-- the 'MonoidMap' instance of 'LeftGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1260,8 +1261,8 @@ commonPrefix = intersectionWith C.commonPrefix
 --     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.commonSuffix' method of the
--- 'RightGCDMonoid' class.
+-- This function provides the implementation of the 'C.commonSuffix' method for
+-- the 'MonoidMap' instance of 'RightGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1335,8 +1336,8 @@ commonSuffix = intersectionWith C.commonSuffix
 --    '&' \\(p, _, r2) -> 'Just' r2 '==' 'stripPrefix' p m2
 -- @
 --
--- This function is a synonym for the 'C.stripCommonPrefix' method of the
--- 'LeftGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripCommonPrefix'
+-- method for the 'MonoidMap' instance of 'LeftGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1418,8 +1419,8 @@ stripCommonPrefix = C.stripCommonPrefix
 --    '&' \\(_, r2, s) -> 'Just' r2 '==' 'stripSuffix' s m2
 -- @
 --
--- This function is a synonym for the 'C.stripCommonSuffix' method of the
--- 'RightGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripCommonSuffix'
+-- method for the 'MonoidMap' instance of 'RightGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1495,8 +1496,8 @@ stripCommonSuffix = C.stripCommonSuffix
 -- 'get' k ('overlap' m1 m2) '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.overlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.overlap' method for the
+-- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1554,8 +1555,8 @@ overlap = intersectionWith C.overlap
 --     '==' 'C.stripPrefixOverlap' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.stripPrefixOverlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripPrefixOverlap'
+-- method for the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1613,8 +1614,8 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 --     '==' 'C.stripSuffixOverlap' ('get' k m2) ('get' k m1)
 -- @
 --
--- This function is a synonym for the 'C.stripSuffixOverlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripSuffixOverlap'
+-- method for the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1687,8 +1688,8 @@ stripSuffixOverlap = unionWith C.stripSuffixOverlap
 --    )
 -- @
 --
--- This function is a synonym for the 'C.stripOverlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripOverlap' method for
+-- the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 stripOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
@@ -1713,7 +1714,8 @@ stripOverlap m1 m2 =
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.gcd' method of the 'GCDMonoid' class.
+-- This function provides the implementation of the 'C.gcd' method for the
+-- 'MonoidMap' instance of 'GCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1851,7 +1853,8 @@ minus = unionWith (C.~~)
 --    (m1 '`minusMaybe`' m2)
 -- @
 --
--- This function is a synonym for the '</>' method of the 'Reductive' class.
+-- This function provides the implementation of the '</>' operator for the
+-- 'MonoidMap' instance of 'Reductive'.
 --
 -- === __Examples__
 --
@@ -1958,7 +1961,8 @@ minusMaybe = unionWithA (</>)
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
 --
--- This function is a synonym for the '`<\>`' method of the 'Monus' class.
+-- This function provides the implementation of the '<\>' operator for the
+-- 'MonoidMap' instance of 'Monus'.
 --
 -- === __Examples__
 --
