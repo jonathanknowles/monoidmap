@@ -1795,7 +1795,7 @@ gcd = intersectionWith C.gcd
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Sum' 'Integer' values, this function perfoms normal
+-- With 'Data.Monoid.Sum' 'Integer' values, this function performs normal
 -- integer subtraction of matching values:
 --
 -- @
@@ -1893,7 +1893,7 @@ minus = unionWith (C.~~)
 -- @
 --
 -- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- perfoms /ordinary/ /subtraction/ of matching values, succeeding if (and only
+-- performs /ordinary/ /subtraction/ of matching values, succeeding if (and only
 -- if) each value from the second map is less than or equal to its matching
 -- value from the first map:
 --
@@ -2000,7 +2000,7 @@ minusMaybe = unionWithA (</>)
 -- @
 --
 -- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- perfoms /truncated/ /subtraction/ of matching values:
+-- performs /truncated/ /subtraction/ of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -2069,7 +2069,7 @@ monus = unionWith (<\>)
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Sum' 'Integer' values, this function perfoms negation
+-- With 'Data.Monoid.Sum' 'Integer' values, this function performs negation
 -- of values:
 --
 -- @
