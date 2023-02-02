@@ -69,6 +69,9 @@ module Data.MonoidMap
     -- * Inversion
     , invert
 
+    -- * Exponentiation
+    , power
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
