@@ -20,7 +20,7 @@ module Data.MonoidMap
     , toList
     , toMap
 
-    -- * Querying
+    -- * Lookup
     , get
 
     -- * Modification
@@ -61,6 +61,17 @@ module Data.MonoidMap
     -- * Association
     , append
 
+    -- * Subtraction
+    , minus
+    , minusMaybe
+    , monus
+
+    -- * Inversion
+    , invert
+
+    -- * Exponentiation
+    , power
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
@@ -78,10 +89,6 @@ module Data.MonoidMap
     , stripPrefixOverlap
     , stripSuffixOverlap
     , stripOverlap
-
-    -- * Subtraction
-    , minus
-    , monus
 
     -- * GCD
     , gcd

@@ -21,7 +21,7 @@ module Data.MonoidMap.Internal
     , toList
     , toMap
 
-    -- * Querying
+    -- * Lookup
     , get
 
     -- * Modification
@@ -62,6 +62,17 @@ module Data.MonoidMap.Internal
     -- * Association
     , append
 
+    -- * Subtraction
+    , minus
+    , minusMaybe
+    , monus
+
+    -- * Inversion
+    , invert
+
+    -- * Exponentiation
+    , power
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
@@ -79,10 +90,6 @@ module Data.MonoidMap.Internal
     , stripPrefixOverlap
     , stripSuffixOverlap
     , stripOverlap
-
-    -- * Subtraction
-    , minus
-    , monus
 
     -- * GCD
     , gcd
@@ -107,7 +114,7 @@ import Data.Function
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Group
-    ( Group (..) )
+    ( Group )
 import Data.Map.Merge.Strict
     ( dropMissing
     , mapMaybeMissing
@@ -142,6 +149,7 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
+import qualified Data.Group as C
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
@@ -240,10 +248,9 @@ import qualified GHC.Exts as GHC
 -- This module also provides instances for several __subclasses__ of
 -- 'Semigroup' and 'Monoid'.
 --
--- In general, these instances are defined according to a common pattern that
--- is /analogous/ to the 'Semigroup' instance, where binary operations on
--- /pairs/ /of/ /maps/ are defined in terms of their application to /pairs/
--- /of/ /values/ for matching keys.
+-- In general, these instances are defined /analogously/ to the 'Semigroup'
+-- instance, where binary operations on /pairs/ /of/ /maps/ are defined in
+-- terms of their application to /pairs/ /of/ /values/ for matching keys.
 --
 -- For example, if subclass __@C@__ defines a binary operation __@f@__ of the
 -- form:
@@ -376,7 +383,7 @@ instance (Ord k, MonoidNull v, RightReductive v) =>
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
-    (</>) = minus
+    (</>) = minusMaybe
 
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
@@ -431,9 +438,9 @@ instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
-    invert = mapValues invert
-    (~~) = unionWith (~~)
-    m `pow` x = mapValues (`pow` x) m
+    invert = invert
+    (~~) = minus
+    pow = power
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -765,13 +772,18 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 -- | Appends a pair of maps together.
 --
--- Satisfies the following property:
+-- Uses the 'Semigroup' operator '<>' to append each value in the first map to
+-- its matching value in the second map.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
 --
 -- @
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- This function is a synonym for the '`<>`' method of the 'Semigroup' class.
+-- This function provides the implementation of the '<>' operator for the
+-- 'MonoidMap' instance of 'Semigroup'.
 --
 -- === __Examples__
 --
@@ -820,8 +832,8 @@ append = unionWith (<>)
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.isPrefixOf' method of the
--- 'LeftReductive' class.
+-- This function provides the implementation of the 'C.isPrefixOf' method for
+-- the 'MonoidMap' instance of 'LeftReductive'.
 --
 -- === __Examples__
 --
@@ -936,8 +948,8 @@ isPrefixOf m1 m2 =
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.isSuffixOf' method of the
--- 'RightReductive' class.
+-- This function provides the implementation of the 'C.isSuffixOf' method for
+-- the 'MonoidMap' instance of 'RightReductive'.
 --
 -- === __Examples__
 --
@@ -1076,8 +1088,8 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
--- This function is a synonym for the 'C.stripPrefix' method of the
--- 'LeftReductive' class.
+-- This function provides the implementation of the 'C.stripPrefix' method for
+-- the 'MonoidMap' instance of 'LeftReductive'.
 --
 -- === __Examples__
 --
@@ -1154,8 +1166,8 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
--- This function is a synonym for the 'C.stripSuffix' method of the
--- 'RightReductive' class.
+-- This function provides the implementation of the 'C.stripSuffix' method for
+-- the 'MonoidMap' instance of 'RightReductive'.
 --
 -- === __Examples__
 --
@@ -1207,8 +1219,8 @@ stripSuffix = unionWithA C.stripSuffix
 --     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.commonPrefix' method of the
--- 'LeftGCDMonoid' class.
+-- This function provides the implementation of the 'C.commonPrefix' method for
+-- the 'MonoidMap' instance of 'LeftGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1252,8 +1264,8 @@ commonPrefix = intersectionWith C.commonPrefix
 --     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.commonSuffix' method of the
--- 'RightGCDMonoid' class.
+-- This function provides the implementation of the 'C.commonSuffix' method for
+-- the 'MonoidMap' instance of 'RightGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1327,8 +1339,8 @@ commonSuffix = intersectionWith C.commonSuffix
 --    '&' \\(p, _, r2) -> 'Just' r2 '==' 'stripPrefix' p m2
 -- @
 --
--- This function is a synonym for the 'C.stripCommonPrefix' method of the
--- 'LeftGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripCommonPrefix'
+-- method for the 'MonoidMap' instance of 'LeftGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1410,8 +1422,8 @@ stripCommonPrefix = C.stripCommonPrefix
 --    '&' \\(_, r2, s) -> 'Just' r2 '==' 'stripSuffix' s m2
 -- @
 --
--- This function is a synonym for the 'C.stripCommonSuffix' method of the
--- 'RightGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripCommonSuffix'
+-- method for the 'MonoidMap' instance of 'RightGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1487,8 +1499,8 @@ stripCommonSuffix = C.stripCommonSuffix
 -- 'get' k ('overlap' m1 m2) '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.overlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.overlap' method for the
+-- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1546,8 +1558,8 @@ overlap = intersectionWith C.overlap
 --     '==' 'C.stripPrefixOverlap' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.stripPrefixOverlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripPrefixOverlap'
+-- method for the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1605,8 +1617,8 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 --     '==' 'C.stripSuffixOverlap' ('get' k m2) ('get' k m1)
 -- @
 --
--- This function is a synonym for the 'C.stripSuffixOverlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripSuffixOverlap'
+-- method for the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1679,8 +1691,8 @@ stripSuffixOverlap = unionWith C.stripSuffixOverlap
 --    )
 -- @
 --
--- This function is a synonym for the 'C.stripOverlap' method of the
--- 'OverlappingGCDMonoid' class.
+-- This function provides the implementation of the 'C.stripOverlap' method for
+-- the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 stripOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
@@ -1705,7 +1717,8 @@ stripOverlap m1 m2 =
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function is a synonym for the 'C.gcd' method of the 'GCDMonoid' class.
+-- This function provides the implementation of the 'C.gcd' method for the
+-- 'MonoidMap' instance of 'GCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1770,18 +1783,65 @@ gcd = intersectionWith C.gcd
 -- Subtraction
 --------------------------------------------------------------------------------
 
--- | Subtracts the second map from the first, returning 'Nothing' in the case
---   of failure.
+-- | Performs /group subtraction/ of the second map from the first.
 --
--- Uses '</>' to subtract each value in the second map from its matching value
--- in the first map.
+-- Uses the 'Group' subtraction operator 'C.~~' to subtract each value in the
+-- second map from its matching value in the first map.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
+-- @
+--
+-- This function provides the implementation of the 'C.~~' operator for
+-- the 'MonoidMap' instance of 'Group'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Sum' 'Integer' values, this function performs normal
+-- integer subtraction of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", (-1)), ("b",   0 ), ("c", 1)]
+-- >>> m2 = 'fromList' [("a",   1 ), ("b",   1 ), ("c", 1)]
+-- >>> m3 = 'fromList' [("a", (-2)), ("b", (-1)), ("c", 0)]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", (-1)), ("b",   0 ), ("c",   1 )]
+-- >>> m2 = 'fromList' [("a", (-1)), ("b", (-1)), ("c", (-1))]
+-- >>> m3 = 'fromList' [("a",   0 ), ("b",   1 ), ("c",   2 )]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' m3
+-- 'True'
+-- @
+--
+minus
+    :: (Ord k, MonoidNull v, Group v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+minus = unionWith (C.~~)
+
+-- | Performs /reductive subtraction/ of the second map from the first.
+--
+-- Uses the 'Reductive' subtraction operator '</>' to subtract each value in
+-- the second map from its matching value in the first map.
 --
 -- This function produces a result if (and only if) for all possible keys
 -- __@k@__, it is possible to subtract the value for __@k@__ in the second map
 -- from the value for __@k@__ in the first map:
 --
 -- @
--- 'isJust' (m1 '`minus`' m2) '==' (∀ k. 'isJust' ('get' k m1 '</>' 'get' k m2))
+-- 'isJust' (m1 '`minusMaybe`' m2)
+--     '==' (∀ k. 'isJust' ('get' k m1 '</>' 'get' k m2))
 -- @
 --
 -- Otherwise, this function returns 'Nothing'.
@@ -1792,10 +1852,11 @@ gcd = intersectionWith C.gcd
 -- @
 -- 'all'
 --    (\\r -> 'Just' ('get' k r) '==' 'get' k m1 '</>' 'get' k m2)
---    (m1 '`minus`' m2)
+--    (m1 '`minusMaybe`' m2)
 -- @
 --
--- This function is a synonym for the '</>' method of the 'Reductive' class.
+-- This function provides the implementation of the '</>' operator for the
+-- 'MonoidMap' instance of 'Reductive'.
 --
 -- === __Examples__
 --
@@ -1813,7 +1874,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = f [("a", [0,1,2]), ("b", [     ])]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1823,7 +1884,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = f [("a", [  1,2]), ("b", [0,  2]), ("c", [0,1  ])]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1832,12 +1893,12 @@ gcd = intersectionWith C.gcd
 -- >>> m2 = f [("a", [    2,3,4]), ("b", [  1,2,3,4]), ("c", [0,1,2,3,4])]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Nothing'
+-- >>> m1 '`minusMaybe`' m2 '==' 'Nothing'
 -- 'True'
 -- @
 --
 -- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- perfoms /ordinary/ /subtraction/ of matching values, succeeding if (and only
+-- performs /ordinary/ /subtraction/ of matching values, succeeding if (and only
 -- if) each value from the second map is less than or equal to its matching
 -- value from the first map:
 --
@@ -1847,7 +1908,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1857,7 +1918,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = 'fromList' [("a", 1), ("b", 1), ("c", 2), ("d", 3)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1867,7 +1928,7 @@ gcd = intersectionWith C.gcd
 -- >>> m3 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Just' m3
+-- >>> m1 '`minusMaybe`' m2 '==' 'Just' m3
 -- 'True'
 -- @
 --
@@ -1876,24 +1937,21 @@ gcd = intersectionWith C.gcd
 -- >>> m2 = 'fromList' [("a", 3), ("b", 3), ("c", 5), ("d", 8)]
 -- @
 -- @
--- >>> m1 '`minus`' m2 '==' 'Nothing'
+-- >>> m1 '`minusMaybe`' m2 '==' 'Nothing'
 -- 'True'
 -- @
 --
-minus
+minusMaybe
     :: (Ord k, MonoidNull v, Reductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-minus = unionWithA (</>)
+minusMaybe = unionWithA (</>)
 
--- | Subtracts the second map from the first, with no possibility of failure.
+-- | Performs /monus subtraction/ of the second map from the first.
 --
--- Uses '<\>' to subtract each value in the second map from its matching value
--- in the first map.
---
--- Unlike the 'minus' function, which /may/ fail with 'Nothing', the 'monus'
--- function can /never/ fail, and /always/ produces a result.
+-- Uses the 'Monus' subtraction operator '<\>' to subtract each value in
+-- the second map from its matching value in the first map.
 --
 -- For all possible keys __@k@__, values associated with __@k@__ satisfy the
 -- following property:
@@ -1902,7 +1960,8 @@ minus = unionWithA (</>)
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
 --
--- This function is a synonym for the '`<\>`' method of the 'Monus' class.
+-- This function provides the implementation of the '<\>' operator for the
+-- 'MonoidMap' instance of 'Monus'.
 --
 -- === __Examples__
 --
@@ -1944,7 +2003,7 @@ minus = unionWithA (</>)
 -- @
 --
 -- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- perfoms /truncated/ /subtraction/ of matching values:
+-- performs /truncated/ /subtraction/ of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -1992,6 +2051,93 @@ monus
     -> MonoidMap k v
     -> MonoidMap k v
 monus = unionWith (<\>)
+
+--------------------------------------------------------------------------------
+-- Inversion
+--------------------------------------------------------------------------------
+
+-- | Inverts every value in a map.
+--
+-- Applies the 'Group' method 'C.invert' to every value in a map.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k ('invert' m) '==' 'C.invert' ('get' k m2)
+-- @
+--
+-- This function provides the implementation of the 'C.invert' method for
+-- the 'MonoidMap' instance of 'Group'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Sum' 'Integer' values, this function performs negation
+-- of values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", (-1)), ("b", 0), ("c",   1) ]
+-- >>> m2 = 'fromList' [("a",   1 ), ("b", 0), ("c", (-1))]
+-- @
+-- @
+-- >>> 'negate' m1 '==' m2
+-- 'True'
+-- @
+--
+invert
+    :: (Ord k, MonoidNull v, Group v)
+    => MonoidMap k v
+    -> MonoidMap k v
+invert = mapValues C.invert
+
+--------------------------------------------------------------------------------
+-- Exponentiation
+--------------------------------------------------------------------------------
+
+-- | Performs exponentiation of every value in a map.
+--
+-- Uses the 'Group' exponentiation method 'C.pow' to raise every value in a map
+-- to the power of the given exponent.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k (m '`power`' i) '==' 'get' k m '`C.pow`' i
+-- @
+--
+-- This function provides the implementation of the 'C.pow' method for the
+-- 'MonoidMap' instance of 'Group'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
+-- performs /ordinary multiplication/ of all values by the given exponent:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 0), ("b", 2), ("c", 4), ("d", 6)]
+-- @
+-- @
+-- >>> m1 '`power`' 2 '==' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b",   1 ), ("c",   2 ), ("d",   3 )]
+-- >>> m2 = 'fromList' [("a", 0), ("b", (-1)), ("c", (-2)), ("d", (-3))]
+-- @
+-- @
+-- >>> m1 '`power`' (-1) '==' m2
+-- 'True'
+-- @
+--
+power
+    :: (Integral i, MonoidNull v, Group v)
+    => MonoidMap k v
+    -> i
+    -> MonoidMap k v
+power m i = mapValues (`C.pow` i) m
 
 --------------------------------------------------------------------------------
 -- Binary operations
