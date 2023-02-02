@@ -70,6 +70,9 @@ module Data.MonoidMap.Internal
     -- * Inversion
     , invert
 
+    -- * Exponentiation
+    , power
+
     -- * Prefixes
     , isPrefixOf
     , stripPrefix
@@ -438,7 +441,7 @@ instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
   where
     invert = invert
     (~~) = minus
-    m `pow` x = mapValues (`C.pow` x) m
+    pow = power
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -2083,6 +2086,17 @@ invert
     => MonoidMap k v
     -> MonoidMap k v
 invert = mapValues C.invert
+
+--------------------------------------------------------------------------------
+-- Exponentiation
+--------------------------------------------------------------------------------
+
+power
+    :: (Integral i, MonoidNull v, Group v)
+    => MonoidMap k v
+    -> i
+    -> MonoidMap k v
+power m i = mapValues (`C.pow` i) m
 
 --------------------------------------------------------------------------------
 -- Binary operations
