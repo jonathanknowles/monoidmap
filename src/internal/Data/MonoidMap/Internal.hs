@@ -1775,6 +1775,46 @@ gcd = intersectionWith C.gcd
 -- Subtraction
 --------------------------------------------------------------------------------
 
+-- | Subtracts the second map from the first.
+--
+-- Uses the 'Group' subtraction operator 'C.~~' to subtract each value in the
+-- second map from its matching value in the first map.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
+-- @
+--
+-- This function provides the implementation of the 'C.~~' operator for
+-- the 'MonoidMap' instance of 'Group'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Sum' 'Integer' values, this function perfoms normal
+-- integer subtraction of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", (-1)), ("b",   0 ), ("c", 1)]
+-- >>> m2 = 'fromList' [("a",   1 ), ("b",   1 ), ("c", 1)]
+-- >>> m3 = 'fromList' [("a", (-2)), ("b", (-1)), ("c", 0)]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' m3
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", (-1)), ("b",   0 ), ("c",   1 )]
+-- >>> m2 = 'fromList' [("a", (-1)), ("b", (-1)), ("c", (-1))]
+-- >>> m3 = 'fromList' [("a",   0 ), ("b",   1 ), ("c",   2 )]
+-- @
+-- @
+-- >>> m1 '`minus`' m2 '==' m3
+-- 'True'
+-- @
+--
 minus
     :: (Ord k, MonoidNull v, Group v)
     => MonoidMap k v
