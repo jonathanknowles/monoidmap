@@ -2091,6 +2091,44 @@ invert = mapValues C.invert
 -- Exponentiation
 --------------------------------------------------------------------------------
 
+-- | Performs exponentiation of every value in a map.
+--
+-- Uses the 'Group' exponentiation method 'C.pow' to raise every value in a map
+-- to the power of the given exponent.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k (m '`power`' i) '==' 'get' k m '`C.pow`' i
+-- @
+--
+-- This function provides the implementation of the 'C.pow' method for the
+-- 'MonoidMap' instance of 'Group'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
+-- performs /ordinary multiplication/ of all values by the given exponent:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 0), ("b", 2), ("c", 4), ("d", 6)]
+-- @
+-- @
+-- >>> m1 '`power`' 2 '==' m2
+-- 'True'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b",   1 ), ("c",   2 ), ("d",   3 )]
+-- >>> m2 = 'fromList' [("a", 0), ("b", (-1)), ("c", (-2)), ("d", (-3))]
+-- @
+-- @
+-- >>> m1 '`power`' (-1) '==' m2
+-- 'True'
+-- @
+--
 power
     :: (Integral i, MonoidNull v, Group v)
     => MonoidMap k v
