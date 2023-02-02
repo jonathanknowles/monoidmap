@@ -20,7 +20,7 @@ module Data.MonoidMap
     , toList
     , toMap
 
-    -- * Querying
+    -- * Lookup
     , get
 
     -- * Modification
