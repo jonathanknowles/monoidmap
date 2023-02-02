@@ -2050,6 +2050,34 @@ monus = unionWith (<\>)
 -- Inversion
 --------------------------------------------------------------------------------
 
+-- | Inverts every value in a map.
+--
+-- Uses the 'Group' inversion method 'C.invert' to invert every value in a map.
+--
+-- For all possible keys __@k@__, values associated with __@k@__ satisfy the
+-- following property:
+--
+-- @
+-- 'get' k ('invert' m) '==' 'C.invert' ('get' k m2)
+-- @
+--
+-- This function provides the implementation of the 'C.invert' method for
+-- the 'MonoidMap' instance of 'Group'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Sum' 'Integer' values, this function perfoms negation
+-- of values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", (-1)), ("b", 0), ("c",   1) ]
+-- >>> m2 = 'fromList' [("a",   1 ), ("b", 0), ("c", (-1))]
+-- @
+-- @
+-- >>> 'negate' m1 '==' m2
+-- 'True'
+-- @
+--
 invert
     :: (Ord k, MonoidNull v, Group v)
     => MonoidMap k v
