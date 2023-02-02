@@ -248,10 +248,9 @@ import qualified GHC.Exts as GHC
 -- This module also provides instances for several __subclasses__ of
 -- 'Semigroup' and 'Monoid'.
 --
--- In general, these instances are defined according to a common pattern that
--- is /analogous/ to the 'Semigroup' instance, where binary operations on
--- /pairs/ /of/ /maps/ are defined in terms of their application to /pairs/
--- /of/ /values/ for matching keys.
+-- In general, these instances are defined /analogously/ to the 'Semigroup'
+-- instance, where binary operations on /pairs/ /of/ /maps/ are defined in
+-- terms of their application to /pairs/ /of/ /values/ for matching keys.
 --
 -- For example, if subclass __@C@__ defines a binary operation __@f@__ of the
 -- form:
