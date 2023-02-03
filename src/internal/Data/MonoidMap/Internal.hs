@@ -628,6 +628,13 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 --
 -- Satisfies the following property:
 --
+-- @
+-- 'null' m '==' (∀ k. 'nullKey' k m)
+-- @
+--
+-- Provides the definition of 'C.null' for the 'MonoidMap' instance of
+-- 'MonoidNull'.
+--
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
