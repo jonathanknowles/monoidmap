@@ -797,8 +797,7 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- Uses the 'Semigroup' operator '<>' to append each value in the first map to
 -- its matching value in the second map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property for all keys __@k@__:
 --
 -- @
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
@@ -1514,8 +1513,7 @@ stripCommonSuffix = C.stripCommonSuffix
 --
 --      (see 'stripPrefixOverlap')
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'get' k ('overlap' m1 m2) '==' 'C.overlap' ('get' k m1) ('get' k m2)
@@ -1572,8 +1570,7 @@ overlap = intersectionWith C.overlap
 -- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
 -- __@m2@__.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'get' k ('stripPrefixOverlap' m1 m2)
@@ -1631,8 +1628,7 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 -- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
 -- __@m2@__.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'get' k ('stripSuffixOverlap' m2 m1)
@@ -1703,7 +1699,7 @@ stripSuffixOverlap = unionWith C.stripSuffixOverlap
 --
 --      (see 'stripPrefixOverlap')
 --
--- Satisfies the following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'stripOverlap' m1 m2 '=='
@@ -1810,8 +1806,7 @@ gcd = intersectionWith C.gcd
 -- Uses the 'Group' subtraction operator 'C.~~' to subtract each value in the
 -- second map from its matching value in the first map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
@@ -1868,8 +1863,7 @@ minus = unionWith (C.~~)
 --
 -- Otherwise, this function returns 'Nothing'.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'all'
@@ -1975,8 +1969,7 @@ minusMaybe = unionWithA (</>)
 -- Uses the 'Monus' subtraction operator '<\>' to subtract each value in
 -- the second map from its matching value in the first map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
@@ -2082,8 +2075,7 @@ monus = unionWith (<\>)
 --
 -- Applies the 'Group' method 'C.invert' to every value in a map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k ('invert' m) '==' 'C.invert' ('get' k m2)
@@ -2121,8 +2113,7 @@ invert = mapValues C.invert
 -- Uses the 'Group' exponentiation method 'C.pow' to raise every value in a map
 -- to the power of the given exponent.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k (m '`power`' i) '==' 'get' k m '`C.pow`' i
