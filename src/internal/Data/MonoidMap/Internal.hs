@@ -149,14 +149,15 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
-import qualified Data.Group as C
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
-import qualified Data.Monoid.GCD as C
-import qualified Data.Monoid.Null as Null
-import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
+
+import qualified Data.Group as C
+import qualified Data.Monoid.GCD as C
+import qualified Data.Monoid.Null as C
+import qualified Data.Semigroup.Cancellative as C
 
 --------------------------------------------------------------------------------
 -- Type
@@ -311,7 +312,7 @@ import qualified GHC.Exts as GHC
 -- equivalence:
 --
 -- @
--- 'Null.null' v '==' (v '==' 'mempty')
+-- 'C.null' v '==' (v '==' 'mempty')
 -- @
 --
 -- However, 'MonoidMap' operations generally do /not/ require that value types
@@ -494,7 +495,7 @@ fromListWith f = fromMap . Map.fromListWith f
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = MonoidMap . Map.filter (not . Null.null)
+fromMap = MonoidMap . Map.filter (not . C.null)
 
 -- | Constructs a 'MonoidMap' from a single key-value pair.
 --
@@ -507,14 +508,14 @@ singleton k v = set k v mempty
 
 -- | Converts a 'MonoidMap' to a list of key-value pairs.
 --
--- The result only includes entries with values that are not 'Null.null'.
+-- The result only includes entries with values that are not 'C.null'.
 --
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toList . unMonoidMap
 
 -- | Converts a 'MonoidMap' to a 'Map'.
 --
--- The result only includes entries with values that are not 'Null.null'.
+-- The result only includes entries with values that are not 'C.null'.
 --
 toMap :: MonoidMap k v -> Map k v
 toMap = unMonoidMap
@@ -532,8 +533,8 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 --
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v m
-    | Null.null v = MonoidMap $ Map.delete k   $ unMonoidMap m
-    | otherwise   = MonoidMap $ Map.insert k v $ unMonoidMap m
+    | C.null v  = MonoidMap $ Map.delete k   $ unMonoidMap m
+    | otherwise = MonoidMap $ Map.insert k v $ unMonoidMap m
 
 -- | Adjusts the value associated with the given key.
 --
@@ -554,35 +555,37 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 -- Membership
 --------------------------------------------------------------------------------
 
--- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
+-- | Returns 'True' if (and only if) all values in the map are 'C.null'.
+--
+-- Satisfies the following property:
 --
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'Null.null'.
+--   that is 'C.null'.
 --
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
 -- | Returns 'True' if (and only if) the map contains at least one value that
---   is not 'Null.null'.
+--   is not 'C.null'.
 --
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
--- | Returns a count of all values in the map that are not 'Null.null'.
+-- | Returns a count of all values in the map that are not 'C.null'.
 --
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'Null.null'.
+--   that is not 'C.null'.
 --
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
--- | Returns the set of keys associated with values that are not 'Null.null'.
+-- | Returns the set of keys associated with values that are not 'C.null'.
 --
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
@@ -768,7 +771,7 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk (MonoidMap m) =
-    MonoidMap $ Map.filter (not . Null.null) $ Map.mapKeysWith combine fk m
+    MonoidMap $ Map.filter (not . C.null) $ Map.mapKeysWith combine fk m
 
 -- | Maps over the values of a 'MonoidMap'.
 --
@@ -2216,6 +2219,6 @@ unionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
 
 guardNotNull :: MonoidNull v => v -> Maybe v
 guardNotNull v
-    | Null.null v = Nothing
-    | otherwise   = Just v
+    | C.null v = Nothing
+    | otherwise = Just v
 {-# INLINE guardNotNull #-}
