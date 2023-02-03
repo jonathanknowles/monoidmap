@@ -776,9 +776,13 @@ splitAt i m = (take i m, drop i m)
 filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
--- | Filters a map according to a predicate on keys.
+-- | Filters the non-'C.null' entries of a map according to a predicate on
+--   /keys/.
 --
--- The result contains just the subset of entries that satisfy the predicate.
+-- The result includes just the subset of non-'C.null' entries that /satisfy/
+-- the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'filterKeys' f m '==' 'filter' (\\k _ -> f k) m
