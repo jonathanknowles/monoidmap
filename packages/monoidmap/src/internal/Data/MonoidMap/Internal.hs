@@ -571,6 +571,12 @@ toMap = unMonoidMap
 
 -- | Gets the value associated with the given key.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('set' k v m) '==' v
+-- @
+--
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
