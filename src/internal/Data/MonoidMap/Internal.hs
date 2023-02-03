@@ -676,6 +676,12 @@ nonNullCount = Map.size . toMap
 -- | Returns 'True' if (and only if) the given key is associated with a value
 --   that is not 'C.null'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'nonNullKey' k m '==' 'not' ('C.null' ('get' k m))
+-- @
+--
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
