@@ -653,6 +653,12 @@ nullKey k = Map.notMember k . toMap
 -- | Returns 'True' if (and only if) the map contains at least one value that
 --   is not 'C.null'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'nonNull' m '==' (∃ k. 'nonNullKey' k m)
+-- @
+--
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
