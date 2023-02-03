@@ -231,7 +231,7 @@ import qualified Data.Semigroup.Cancellative as C
 --
 -- == Instances of 'Semigroup' and 'Monoid'
 --
--- This module provides a 'Semigroup' instance that uses the '<>' operator to
+-- This module provides a 'Semigroup' instance that uses the '(<>)' operator to
 -- combines values for matching keys, satisfying the following property:
 --
 -- @
@@ -483,7 +483,7 @@ empty = MonoidMap Map.empty
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '<>'.
+-- combined together with '(<>)'.
 --
 -- Satisfies the following property:
 --
@@ -900,8 +900,8 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 -- | Appends a pair of maps together.
 --
--- Uses the 'Semigroup' operator '<>' to append each value in the first map to
--- its matching value in the second map.
+-- Uses the 'Semigroup' operator '(<>)' to append each value in the first map
+-- to its matching value in the second map.
 --
 -- Satisfies the following property for all keys __@k@__:
 --
@@ -909,7 +909,7 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- This function provides the definition of '<>' for the 'MonoidMap' instance
+-- This function provides the definition of '(<>)' for the 'MonoidMap' instance
 -- of 'Semigroup'.
 --
 -- === __Examples__
@@ -1909,7 +1909,7 @@ gcd = intersectionWith C.gcd
 
 -- | Performs /group subtraction/ of the second map from the first.
 --
--- Uses the 'Group' subtraction operator 'C.~~' to subtract each value in the
+-- Uses the 'Group' subtraction operator '(C.~~)' to subtract each value in the
 -- second map from its matching value in the first map.
 --
 -- Satisfies the following property:
@@ -1918,8 +1918,8 @@ gcd = intersectionWith C.gcd
 -- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
 -- @
 --
--- This function provides the definition of 'C.~~' for the 'MonoidMap' instance
--- of 'Group'.
+-- This function provides the definition of '(C.~~)' for the 'MonoidMap'
+-- instance of 'Group'.
 --
 -- === __Examples__
 --
@@ -1955,7 +1955,7 @@ minus = unionWith (C.~~)
 
 -- | Performs /reductive subtraction/ of the second map from the first.
 --
--- Uses the 'Reductive' subtraction operator '</>' to subtract each value in
+-- Uses the 'Reductive' subtraction operator '(</>)' to subtract each value in
 -- the second map from its matching value in the first map.
 --
 -- This function produces a result if (and only if) for all possible keys
@@ -1977,8 +1977,8 @@ minus = unionWith (C.~~)
 --    (m1 '`minusMaybe`' m2)
 -- @
 --
--- This function provides the definition of '</>' for the 'MonoidMap' instance
--- of 'Reductive'.
+-- This function provides the definition of '(</>)' for the 'MonoidMap'
+-- instance of 'Reductive'.
 --
 -- === __Examples__
 --
@@ -2072,7 +2072,7 @@ minusMaybe = unionWithA (</>)
 
 -- | Performs /monus subtraction/ of the second map from the first.
 --
--- Uses the 'Monus' subtraction operator '<\>' to subtract each value in
+-- Uses the 'Monus' subtraction operator '(<\>)' to subtract each value in
 -- the second map from its matching value in the first map.
 --
 -- Satisfies the following property:
@@ -2081,8 +2081,8 @@ minusMaybe = unionWithA (</>)
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
 --
--- This function provides the definition of '<\>' for the 'MonoidMap' instance
--- of 'Monus'.
+-- This function provides the definition of '(<\>)' for the 'MonoidMap'
+-- instance of 'Monus'.
 --
 -- === __Examples__
 --
