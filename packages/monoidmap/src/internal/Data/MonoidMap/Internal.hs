@@ -761,9 +761,13 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters a map according to a predicate on keys and values.
+-- | Filters the non-'C.null' entries of a map according to a predicate on
+--   /keys and values/.
 --
--- The result contains just the subset of entries that satisfy the predicate.
+-- The result includes just the subset of non-'C.null' entries that /satisfy/
+-- the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'toList' ('filter' f m) '==' 'List.filter' ('uncurry' f) ('toList' m)
