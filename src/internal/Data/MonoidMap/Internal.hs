@@ -700,8 +700,14 @@ nonNullKeys = Map.keysSet . toMap
 -- Slicing
 --------------------------------------------------------------------------------
 
--- | Takes a given number of entries in key order, beginning with the smallest
---   keys.
+-- | /Takes/ a slice from a map.
+--
+-- This function takes a given number of non-'C.null' entries from a map,
+-- producing a new map from the entries that were /taken/.
+--
+-- Entries are taken in /key order/, beginning with the /smallest/ keys.
+--
+-- Satifies the following property:
 --
 -- @
 -- 'take' n '==' 'fromList' . 'Prelude.take' n . 'toList'
