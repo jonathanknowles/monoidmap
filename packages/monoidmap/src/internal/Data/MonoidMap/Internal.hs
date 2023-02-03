@@ -346,24 +346,32 @@ import qualified GHC.Exts as GHC
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k v }
     deriving newtype
-        (Bifoldable, Eq, Eq1, Eq2, Foldable, NFData, Show, Show1, Show2)
+        (Eq, Eq1, Eq2, Foldable, Bifoldable, NFData, Show, Show1, Show2)
 
 --------------------------------------------------------------------------------
 -- Instances
 --------------------------------------------------------------------------------
+
+instance (Ord k, MonoidNull v) =>
+    IsList (MonoidMap k v)
+  where
+    type Item (MonoidMap k v) = (k, v)
+    fromList = fromList
+    toList = toList
 
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
 
-instance (Ord k, MonoidNull v) =>
-    MonoidNull (MonoidMap k v)
-  where
-    null = null
+--------------------------------------------------------------------------------
+-- Instances: Semigroup and subclasses
+--------------------------------------------------------------------------------
 
-instance (Ord k, PositiveMonoid v) =>
-    PositiveMonoid (MonoidMap k v)
+instance (Ord k, MonoidNull v) =>
+    Semigroup (MonoidMap k v)
+  where
+    (<>) = append
 
 instance (Ord k, MonoidNull v, Commutative v) =>
     Commutative (MonoidMap k v)
@@ -394,10 +402,22 @@ instance (Ord k, MonoidNull v, RightCancellative v) =>
 instance (Ord k, MonoidNull v, Cancellative v) =>
     Cancellative (MonoidMap k v)
 
-instance (Ord k, MonoidNull v, GCDMonoid v) =>
-    GCDMonoid (MonoidMap k v)
+--------------------------------------------------------------------------------
+-- Instances: Monoid and subclasses
+--------------------------------------------------------------------------------
+
+instance (Ord k, MonoidNull v) =>
+    Monoid (MonoidMap k v)
   where
-    gcd = gcd
+    mempty = empty
+
+instance (Ord k, MonoidNull v) =>
+    MonoidNull (MonoidMap k v)
+  where
+    null = null
+
+instance (Ord k, PositiveMonoid v) =>
+    PositiveMonoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
@@ -417,32 +437,29 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     stripSuffixOverlap = stripSuffixOverlap
     stripOverlap = stripOverlap
 
+instance (Ord k, MonoidNull v, GCDMonoid v) =>
+    GCDMonoid (MonoidMap k v)
+  where
+    gcd = gcd
+
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
     (<\>) = monus
 
-instance (Ord k, MonoidNull v) => IsList (MonoidMap k v)
-  where
-    type Item (MonoidMap k v) = (k, v)
-    fromList = fromList
-    toList = toList
+--------------------------------------------------------------------------------
+-- Instances: Group and subclasses
+--------------------------------------------------------------------------------
 
-instance (Ord k, MonoidNull v) => Monoid (MonoidMap k v)
-  where
-    mempty = empty
-
-instance (Ord k, MonoidNull v) => Semigroup (MonoidMap k v)
-  where
-    (<>) = append
-
-instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
+instance (Ord k, MonoidNull v, Group v) =>
+    Group (MonoidMap k v)
   where
     invert = invert
     (~~) = minus
     pow = power
 
-instance (Ord k, MonoidNull v, Abelian v) => Abelian (MonoidMap k v)
+instance (Ord k, MonoidNull v, Abelian v) =>
+    Abelian (MonoidMap k v)
 
 --------------------------------------------------------------------------------
 -- Construction
