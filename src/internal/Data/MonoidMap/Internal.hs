@@ -114,7 +114,7 @@ import Data.Function
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Group
-    ( Group )
+    ( Abelian, Group )
 import Data.Map.Merge.Strict
     ( dropMissing
     , mapMaybeMissing
@@ -441,6 +441,8 @@ instance (Ord k, MonoidNull v, Group v) => Group (MonoidMap k v)
     invert = invert
     (~~) = minus
     pow = power
+
+instance (Ord k, MonoidNull v, Abelian v) => Abelian (MonoidMap k v)
 
 --------------------------------------------------------------------------------
 -- Construction
