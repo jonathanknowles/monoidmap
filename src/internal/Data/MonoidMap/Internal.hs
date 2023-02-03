@@ -149,14 +149,15 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
-import qualified Data.Group as C
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
-import qualified Data.Monoid.GCD as C
-import qualified Data.Monoid.Null as Null
-import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
+
+import qualified Data.Group as C
+import qualified Data.Monoid.GCD as C
+import qualified Data.Monoid.Null as C
+import qualified Data.Semigroup.Cancellative as C
 
 --------------------------------------------------------------------------------
 -- Type
@@ -230,7 +231,7 @@ import qualified GHC.Exts as GHC
 --
 -- == Instances of 'Semigroup' and 'Monoid'
 --
--- This module provides a 'Semigroup' instance that uses the '<>' operator to
+-- This module provides a 'Semigroup' instance that uses the '(<>)' operator to
 -- combines values for matching keys, satisfying the following property:
 --
 -- @
@@ -311,7 +312,7 @@ import qualified GHC.Exts as GHC
 -- equivalence:
 --
 -- @
--- 'Null.null' v '==' (v '==' 'mempty')
+-- 'C.null' v '==' (v '==' 'mempty')
 -- @
 --
 -- However, 'MonoidMap' operations generally do /not/ require that value types
@@ -467,13 +468,28 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 
 -- | The empty 'MonoidMap'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k 'empty' == 'mempty'
+-- @
+--
+-- Provides the definition of 'mempty' for the 'MonoidMap' instance of
+-- 'Monoid'.
+--
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
 
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '<>'.
+-- combined together with '(<>)'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'fromList' ('toList' m) '==' m
+-- @
 --
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
@@ -493,10 +509,28 @@ fromListWith f = fromMap . Map.fromListWith f
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
+-- @
+--
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = MonoidMap . Map.filter (not . Null.null)
+fromMap = MonoidMap . Map.filter (not . C.null)
 
 -- | Constructs a 'MonoidMap' from a single key-value pair.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' 'k' ('singleton' k v) '==' v
+-- @
+--
+-- Nullifying the value for key __@k@__ produces an 'empty' map:
+--
+-- @
+-- 'nullify' 'k' ('singleton' k v) '==' 'empty'
+-- @
 --
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
@@ -507,14 +541,26 @@ singleton k v = set k v mempty
 
 -- | Converts a 'MonoidMap' to a list of key-value pairs.
 --
--- The result only includes entries with values that are not 'Null.null'.
+-- The result only includes entries with values that are not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'fromList' ('toList' m) '==' m
+-- @
 --
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toList . unMonoidMap
 
--- | Converts a 'MonoidMap' to a 'Map'.
+-- | Converts a 'MonoidMap' to an ordinary 'Map'.
 --
--- The result only includes entries with values that are not 'Null.null'.
+-- The result only includes entries with values that are not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'fromMap' ('toMap' m) == m
+-- @
 --
 toMap :: MonoidMap k v -> Map k v
 toMap = unMonoidMap
@@ -525,17 +571,35 @@ toMap = unMonoidMap
 
 -- | Gets the value associated with the given key.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('set' k v m) '==' v
+-- @
+--
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
 -- | Sets the value associated with the given key.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('set' k v m) '==' v
+-- @
+--
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v m
-    | Null.null v = MonoidMap $ Map.delete k   $ unMonoidMap m
-    | otherwise   = MonoidMap $ Map.insert k v $ unMonoidMap m
+    | C.null v  = MonoidMap $ Map.delete k   $ unMonoidMap m
+    | otherwise = MonoidMap $ Map.insert k v $ unMonoidMap m
 
 -- | Adjusts the value associated with the given key.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'adjust' f k m '==' 'set' k (f ('get' k m)) m
+-- @
 --
 adjust
     :: (Ord k, MonoidNull v)
@@ -547,6 +611,12 @@ adjust f k m = set k (f (get k m)) m
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('nullify' k m) '==' 'mempty'
+-- @
+--
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 
@@ -554,35 +624,74 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 -- Membership
 --------------------------------------------------------------------------------
 
--- | Returns 'True' if (and only if) all values in the map are 'Null.null'.
+-- | Returns 'True' if (and only if) all values in the map are 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'null' m '==' (∀ k. 'nullKey' k m)
+-- @
+--
+-- Provides the definition of 'C.null' for the 'MonoidMap' instance of
+-- 'MonoidNull'.
 --
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'Null.null'.
+--   that is 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'nullKey' k m '==' 'C.null' ('get' k m)
+-- @
 --
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
 -- | Returns 'True' if (and only if) the map contains at least one value that
---   is not 'Null.null'.
+--   is not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'nonNull' m '==' (∃ k. 'nonNullKey' k m)
+-- @
 --
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
--- | Returns a count of all values in the map that are not 'Null.null'.
+-- | Returns a count of all values in the map that are not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'nonNullCount' m '==' 'Set.size' ('nonNullKeys' m)
+-- @
 --
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
 
 -- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'Null.null'.
+--   that is not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'nonNullKey' k m '==' 'not' ('C.null' ('get' k m))
+-- @
 --
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
--- | Returns the set of keys associated with values that are not 'Null.null'.
+-- | Returns the set of keys associated with values that are not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- k '`Set.member`' ('nonNullKeys' m) '==' 'nonNullKey' k m
+-- @
 --
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
@@ -591,8 +700,14 @@ nonNullKeys = Map.keysSet . toMap
 -- Slicing
 --------------------------------------------------------------------------------
 
--- | Takes a given number of entries in key order, beginning with the smallest
---   keys.
+-- | /Takes/ a slice from a map.
+--
+-- This function takes a given number of non-'C.null' entries from a map,
+-- producing a new map from the entries that were /taken/.
+--
+-- Entries are taken in /key order/, beginning with the /smallest/ keys.
+--
+-- Satifies the following property:
 --
 -- @
 -- 'take' n '==' 'fromList' . 'Prelude.take' n . 'toList'
@@ -601,8 +716,14 @@ nonNullKeys = Map.keysSet . toMap
 take :: Int -> MonoidMap k v -> MonoidMap k v
 take i (MonoidMap m) = MonoidMap (Map.take i m)
 
--- | Drops a given number of entries in key order, beginning with the smallest
---   keys.
+-- | /Drops/ a slice from a map.
+--
+-- This function drops a given number of non-'C.null' entries from a map,
+-- producing a new map from the entries that /remain/.
+--
+-- Entries are dropped in /key order/, beginning with the /smallest/ keys.
+--
+-- Satifies the following property:
 --
 -- @
 -- 'drop' n '==' 'fromList' . 'Prelude.drop' n . 'toList'
@@ -611,10 +732,26 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 drop :: Int -> MonoidMap k v -> MonoidMap k v
 drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 
--- | Splits a map at a particular index.
+-- | /Splits/ a map into /two/ slices.
+--
+-- This function is equivalent to a combination of 'take' and 'drop':
 --
 -- @
--- 'splitAt' n xs '==' ('take' n xs, 'drop' n xs)
+-- 'splitAt' n m '==' ('take' n m, 'drop' n m)
+-- @
+--
+-- The resulting maps can be combined to reproduce the original map:
+--
+-- @
+-- 'splitAt' n m '&'
+--     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- @
+--
+-- The resulting maps have disjoint sets of non-'C.null' entries:
+--
+-- @
+-- 'splitAt' n m '&'
+--     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
@@ -624,9 +761,13 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters a map according to a predicate on keys and values.
+-- | Filters the non-'C.null' entries of a map according to a predicate on
+--   /keys and values/.
 --
--- The result contains just the subset of entries that satisfy the predicate.
+-- The result includes just the subset of non-'C.null' entries that /satisfy/
+-- the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'toList' ('filter' f m) '==' 'List.filter' ('uncurry' f) ('toList' m)
@@ -635,9 +776,13 @@ splitAt i m = (take i m, drop i m)
 filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
--- | Filters a map according to a predicate on keys.
+-- | Filters the non-'C.null' entries of a map according to a predicate on
+--   /keys/.
 --
--- The result contains just the subset of entries that satisfy the predicate.
+-- The result includes just the subset of non-'C.null' entries that /satisfy/
+-- the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'filterKeys' f m '==' 'filter' (\\k _ -> f k) m
@@ -646,9 +791,13 @@ filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters a map according to a predicate on values.
+-- | Filters the non-'C.null' entries of a map according to a predicate on
+--   /values/.
 --
--- The result contains just the subset of entries that satisfy the predicate.
+-- The result includes just the subset of non-'C.null' entries that /satisfy/
+-- the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'filterValues' f m '==' 'filter' (\\_ v -> f v) m
@@ -661,13 +810,31 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions a map according to a predicate on keys and values.
+-- | Partitions the non-'C.null' entries of a map according to a predicate on
+--   /keys and values/.
 --
--- The first map contains all entries that satisfy the predicate, and the
--- second map contains all entries that fail the predicate.
+-- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
+-- the predicate, and the /second/ map includes the subset of non-'C.null'
+-- entries that /fail/ the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'partition' f m '==' ('filter' f m, 'filter' (('fmap' . 'fmap') 'not' f) m)
+-- @
+--
+-- The resulting maps can be combined to reproduce the original map:
+--
+-- @
+-- 'partition' f m '&'
+--     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- @
+--
+-- The resulting maps have disjoint sets of non-'C.null' entries:
+--
+-- @
+-- 'partition' f m '&'
+--     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
 partition
@@ -675,13 +842,31 @@ partition
 partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
 
--- | Partitions a map according to a predicate on keys.
+-- | Partitions the non-'C.null' entries of a map according to a predicate on
+--   /keys/.
 --
--- The first map contains all entries that satisfy the predicate, and the
--- second map contains all entries that fail the predicate.
+-- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
+-- the predicate, and the /second/ map includes the subset of non-'C.null'
+-- entries that /fail/ the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'partitionKeys' f m '==' ('filterKeys' f m, 'filterKeys' ('not' . f) m)
+-- @
+--
+-- The resulting maps can be combined to reproduce the original map:
+--
+-- @
+-- 'partitionKeys' f m '&'
+--     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- @
+--
+-- The resulting maps have disjoint sets of non-'C.null' entries:
+--
+-- @
+-- 'partitionKeys' f m '&'
+--     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
 partitionKeys
@@ -689,13 +874,31 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions a map according to a predicate on values.
+-- | Partitions the non-'C.null' entries of a map according to a predicate on
+--   /values/.
 --
--- The first map contains all entries that satisfy the predicate, and the
--- second map contains all entries that fail the predicate.
+-- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
+-- the predicate, and the /second/ map includes the subset of non-'C.null'
+-- entries that /fail/ the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'partitionValues' f m '==' ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- @
+--
+-- The resulting maps can be combined to reproduce the original map:
+--
+-- @
+-- 'partitionValues' f m '&'
+--     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- @
+--
+-- The resulting maps have disjoint sets of non-'C.null' entries:
+--
+-- @
+-- 'partitionValues' f m '&'
+--     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
 partitionValues
@@ -768,7 +971,7 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk (MonoidMap m) =
-    MonoidMap $ Map.filter (not . Null.null) $ Map.mapKeysWith combine fk m
+    MonoidMap $ Map.filter (not . C.null) $ Map.mapKeysWith combine fk m
 
 -- | Maps over the values of a 'MonoidMap'.
 --
@@ -791,18 +994,17 @@ mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 -- | Appends a pair of maps together.
 --
--- Uses the 'Semigroup' operator '<>' to append each value in the first map to
--- its matching value in the second map.
+-- Uses the 'Semigroup' operator '(<>)' to append each value in the first map
+-- to its matching value in the second map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property for all keys __@k@__:
 --
 -- @
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- This function provides the implementation of the '<>' operator for the
--- 'MonoidMap' instance of 'Semigroup'.
+-- This function provides the definition of '(<>)' for the 'MonoidMap' instance
+-- of 'Semigroup'.
 --
 -- === __Examples__
 --
@@ -851,8 +1053,8 @@ append = unionWith (<>)
 -- m1 '`isPrefixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isPrefixOf`' 'get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.isPrefixOf' method for
--- the 'MonoidMap' instance of 'LeftReductive'.
+-- This function provides the definition of 'C.isPrefixOf' for the 'MonoidMap'
+-- instance of 'LeftReductive'.
 --
 -- === __Examples__
 --
@@ -967,8 +1169,8 @@ isPrefixOf m1 m2 =
 -- m1 '`isSuffixOf`' m2 '==' (∀ k. 'get' k m1 '`C.isSuffixOf`' 'get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.isSuffixOf' method for
--- the 'MonoidMap' instance of 'RightReductive'.
+-- This function provides the definition of 'C.isSuffixOf' for the 'MonoidMap'
+-- instance of 'RightReductive'.
 --
 -- === __Examples__
 --
@@ -1107,8 +1309,8 @@ isSuffixOf m1 m2 =
 --    ('stripPrefix' m1 m2)
 -- @
 --
--- This function provides the implementation of the 'C.stripPrefix' method for
--- the 'MonoidMap' instance of 'LeftReductive'.
+-- This function provides the definition of 'C.stripPrefix' for the 'MonoidMap'
+-- instance of 'LeftReductive'.
 --
 -- === __Examples__
 --
@@ -1185,8 +1387,8 @@ stripPrefix = unionWithA C.stripPrefix
 --    ('stripSuffix' m1 m2)
 -- @
 --
--- This function provides the implementation of the 'C.stripSuffix' method for
--- the 'MonoidMap' instance of 'RightReductive'.
+-- This function provides the definition of 'C.stripSuffix' for the 'MonoidMap'
+-- instance of 'RightReductive'.
 --
 -- === __Examples__
 --
@@ -1238,8 +1440,8 @@ stripSuffix = unionWithA C.stripSuffix
 --     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.commonPrefix' method for
--- the 'MonoidMap' instance of 'LeftGCDMonoid'.
+-- This function provides the definition of 'C.commonPrefix' for the
+-- 'MonoidMap' instance of 'LeftGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1283,8 +1485,8 @@ commonPrefix = intersectionWith C.commonPrefix
 --     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.commonSuffix' method for
--- the 'MonoidMap' instance of 'RightGCDMonoid'.
+-- This function provides the definition of 'C.commonSuffix' for the
+-- 'MonoidMap' instance of 'RightGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1358,8 +1560,8 @@ commonSuffix = intersectionWith C.commonSuffix
 --    '&' \\(p, _, r2) -> 'Just' r2 '==' 'stripPrefix' p m2
 -- @
 --
--- This function provides the implementation of the 'C.stripCommonPrefix'
--- method for the 'MonoidMap' instance of 'LeftGCDMonoid'.
+-- This function provides the definition of 'C.stripCommonPrefix' for the
+-- 'MonoidMap' instance of 'LeftGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1441,8 +1643,8 @@ stripCommonPrefix = C.stripCommonPrefix
 --    '&' \\(_, r2, s) -> 'Just' r2 '==' 'stripSuffix' s m2
 -- @
 --
--- This function provides the implementation of the 'C.stripCommonSuffix'
--- method for the 'MonoidMap' instance of 'RightGCDMonoid'.
+-- This function provides the definition of 'C.stripCommonSuffix' for the
+-- 'MonoidMap' instance of 'RightGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1511,15 +1713,14 @@ stripCommonSuffix = C.stripCommonSuffix
 --
 --      (see 'stripPrefixOverlap')
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'get' k ('overlap' m1 m2) '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.overlap' method for the
--- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
+-- This function provides the definition of 'C.overlap' for the 'MonoidMap'
+-- instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1569,16 +1770,15 @@ overlap = intersectionWith C.overlap
 -- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
 -- __@m2@__.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'get' k ('stripPrefixOverlap' m1 m2)
 --     '==' 'C.stripPrefixOverlap' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.stripPrefixOverlap'
--- method for the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
+-- This function provides the definition of 'C.stripPrefixOverlap' for the
+-- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1628,16 +1828,15 @@ stripPrefixOverlap = unionWith C.stripPrefixOverlap
 -- /unique/ greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of
 -- __@m2@__.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'get' k ('stripSuffixOverlap' m2 m1)
 --     '==' 'C.stripSuffixOverlap' ('get' k m2) ('get' k m1)
 -- @
 --
--- This function provides the implementation of the 'C.stripSuffixOverlap'
--- method for the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
+-- This function provides the definition of 'C.stripSuffixOverlap' for the
+-- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1700,7 +1899,7 @@ stripSuffixOverlap = unionWith C.stripSuffixOverlap
 --
 --      (see 'stripPrefixOverlap')
 --
--- Satisfies the following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'stripOverlap' m1 m2 '=='
@@ -1710,8 +1909,8 @@ stripSuffixOverlap = unionWith C.stripSuffixOverlap
 --    )
 -- @
 --
--- This function provides the implementation of the 'C.stripOverlap' method for
--- the 'MonoidMap' instance of 'OverlappingGCDMonoid'.
+-- This function provides the definition of 'C.stripOverlap' for the
+-- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
 --
 stripOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
@@ -1736,8 +1935,8 @@ stripOverlap m1 m2 =
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.gcd' method for the
--- 'MonoidMap' instance of 'GCDMonoid'.
+-- This function provides the definition of 'C.gcd' for the 'MonoidMap'
+-- instance of 'GCDMonoid'.
 --
 -- === __Examples__
 --
@@ -1804,18 +2003,17 @@ gcd = intersectionWith C.gcd
 
 -- | Performs /group subtraction/ of the second map from the first.
 --
--- Uses the 'Group' subtraction operator 'C.~~' to subtract each value in the
+-- Uses the 'Group' subtraction operator '(C.~~)' to subtract each value in the
 -- second map from its matching value in the first map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
 -- @
 --
--- This function provides the implementation of the 'C.~~' operator for
--- the 'MonoidMap' instance of 'Group'.
+-- This function provides the definition of '(C.~~)' for the 'MonoidMap'
+-- instance of 'Group'.
 --
 -- === __Examples__
 --
@@ -1851,7 +2049,7 @@ minus = unionWith (C.~~)
 
 -- | Performs /reductive subtraction/ of the second map from the first.
 --
--- Uses the 'Reductive' subtraction operator '</>' to subtract each value in
+-- Uses the 'Reductive' subtraction operator '(</>)' to subtract each value in
 -- the second map from its matching value in the first map.
 --
 -- This function produces a result if (and only if) for all possible keys
@@ -1865,8 +2063,7 @@ minus = unionWith (C.~~)
 --
 -- Otherwise, this function returns 'Nothing'.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- This function satisfies the following property:
 --
 -- @
 -- 'all'
@@ -1874,8 +2071,8 @@ minus = unionWith (C.~~)
 --    (m1 '`minusMaybe`' m2)
 -- @
 --
--- This function provides the implementation of the '</>' operator for the
--- 'MonoidMap' instance of 'Reductive'.
+-- This function provides the definition of '(</>)' for the 'MonoidMap'
+-- instance of 'Reductive'.
 --
 -- === __Examples__
 --
@@ -1969,18 +2166,17 @@ minusMaybe = unionWithA (</>)
 
 -- | Performs /monus subtraction/ of the second map from the first.
 --
--- Uses the 'Monus' subtraction operator '<\>' to subtract each value in
+-- Uses the 'Monus' subtraction operator '(<\>)' to subtract each value in
 -- the second map from its matching value in the first map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
 --
--- This function provides the implementation of the '<\>' operator for the
--- 'MonoidMap' instance of 'Monus'.
+-- This function provides the definition of '(<\>)' for the 'MonoidMap'
+-- instance of 'Monus'.
 --
 -- === __Examples__
 --
@@ -2079,15 +2275,14 @@ monus = unionWith (<\>)
 --
 -- Applies the 'Group' method 'C.invert' to every value in a map.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k ('invert' m) '==' 'C.invert' ('get' k m2)
 -- @
 --
--- This function provides the implementation of the 'C.invert' method for
--- the 'MonoidMap' instance of 'Group'.
+-- This function provides the definition of 'C.invert' for the 'MonoidMap'
+-- instance of 'Group'.
 --
 -- === __Examples__
 --
@@ -2118,15 +2313,14 @@ invert = mapValues C.invert
 -- Uses the 'Group' exponentiation method 'C.pow' to raise every value in a map
 -- to the power of the given exponent.
 --
--- For all possible keys __@k@__, values associated with __@k@__ satisfy the
--- following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k (m '`power`' i) '==' 'get' k m '`C.pow`' i
 -- @
 --
--- This function provides the implementation of the 'C.pow' method for the
--- 'MonoidMap' instance of 'Group'.
+-- This function provides the definition of 'C.pow' for the 'MonoidMap'
+-- instance of 'Group'.
 --
 -- === __Examples__
 --
@@ -2216,6 +2410,6 @@ unionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
 
 guardNotNull :: MonoidNull v => v -> Maybe v
 guardNotNull v
-    | Null.null v = Nothing
-    | otherwise   = Just v
+    | C.null v = Nothing
+    | otherwise = Just v
 {-# INLINE guardNotNull #-}
