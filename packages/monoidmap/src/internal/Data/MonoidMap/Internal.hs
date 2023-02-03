@@ -468,6 +468,15 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 
 -- | The empty 'MonoidMap'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k 'empty' == 'mempty'
+-- @
+--
+-- Provides the definition of 'mempty' for the 'MonoidMap' instance of
+-- 'Monoid'.
+--
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
 
