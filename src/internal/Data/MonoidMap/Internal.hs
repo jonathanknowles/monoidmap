@@ -611,6 +611,12 @@ adjust f k m = set k (f (get k m)) m
 
 -- | Sets the value associated with the given key to 'mempty'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('nullify' k m) '==' 'mempty'
+-- @
+--
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 
