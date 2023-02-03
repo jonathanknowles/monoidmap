@@ -595,6 +595,12 @@ set k v m
 
 -- | Adjusts the value associated with the given key.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'adjust' f k m '==' 'set' k (f ('get' k m)) m
+-- @
+--
 adjust
     :: (Ord k, MonoidNull v)
     => (v -> v)
