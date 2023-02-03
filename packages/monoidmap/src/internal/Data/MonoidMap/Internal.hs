@@ -791,9 +791,13 @@ filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters a map according to a predicate on values.
+-- | Filters the non-'C.null' entries of a map according to a predicate on
+--   /values/.
 --
--- The result contains just the subset of entries that satisfy the predicate.
+-- The result includes just the subset of non-'C.null' entries that /satisfy/
+-- the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'filterValues' f m '==' 'filter' (\\_ v -> f v) m
