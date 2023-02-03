@@ -732,10 +732,26 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 drop :: Int -> MonoidMap k v -> MonoidMap k v
 drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 
--- | Splits a map at a particular index.
+-- | /Splits/ a map into /two/ slices.
+--
+-- This function is equivalent to a combination of 'take' and 'drop':
 --
 -- @
--- 'splitAt' n xs '==' ('take' n xs, 'drop' n xs)
+-- 'splitAt' n m '==' ('take' n m, 'drop' n m)
+-- @
+--
+-- The resulting maps can be combined to reproduce the original map:
+--
+-- @
+-- 'splitAt' n m '&'
+--     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- @
+--
+-- The resulting maps have disjoint sets of non-'C.null' entries:
+--
+-- @
+-- 'splitAt' n m '&'
+--     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
