@@ -874,13 +874,31 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions a map according to a predicate on values.
+-- | Partitions the non-'C.null' entries of a map according to a predicate on
+--   /values/.
 --
--- The first map contains all entries that satisfy the predicate, and the
--- second map contains all entries that fail the predicate.
+-- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
+-- the predicate, and the /second/ map includes the subset of non-'C.null'
+-- entries that /fail/ the predicate.
+--
+-- Satisfies the following property:
 --
 -- @
 -- 'partitionValues' f m '==' ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- @
+--
+-- The resulting maps can be combined to reproduce the original map:
+--
+-- @
+-- 'partitionValues' f m '&'
+--     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- @
+--
+-- The resulting maps have disjoint sets of non-'C.null' entries:
+--
+-- @
+-- 'partitionValues' f m '&'
+--     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
 partitionValues
