@@ -716,8 +716,14 @@ nonNullKeys = Map.keysSet . toMap
 take :: Int -> MonoidMap k v -> MonoidMap k v
 take i (MonoidMap m) = MonoidMap (Map.take i m)
 
--- | Drops a given number of entries in key order, beginning with the smallest
---   keys.
+-- | /Drops/ a slice from a map.
+--
+-- This function drops a given number of non-'C.null' entries from a map,
+-- producing a new map from the entries that /remain/.
+--
+-- Entries are dropped in /key order/, beginning with the /smallest/ keys.
+--
+-- Satifies the following property:
 --
 -- @
 -- 'drop' n '==' 'fromList' . 'Prelude.drop' n . 'toList'
