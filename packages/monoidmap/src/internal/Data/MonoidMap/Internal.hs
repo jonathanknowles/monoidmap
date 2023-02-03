@@ -687,6 +687,12 @@ nonNullKey k = Map.member k . toMap
 
 -- | Returns the set of keys associated with values that are not 'C.null'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- k '`Set.member`' ('nonNullKeys' m) '==' 'nonNullKey' k m
+-- @
+--
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
 
