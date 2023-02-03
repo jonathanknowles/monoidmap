@@ -552,9 +552,15 @@ singleton k v = set k v mempty
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toList . unMonoidMap
 
--- | Converts a 'MonoidMap' to a 'Map'.
+-- | Converts a 'MonoidMap' to an ordinary 'Map'.
 --
 -- The result only includes entries with values that are not 'C.null'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'fromMap' ('toMap' m) == m
+-- @
 --
 toMap :: MonoidMap k v -> Map k v
 toMap = unMonoidMap
