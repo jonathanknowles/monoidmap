@@ -520,6 +520,18 @@ fromMap = MonoidMap . Map.filter (not . C.null)
 
 -- | Constructs a 'MonoidMap' from a single key-value pair.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' 'k' ('singleton' k v) '==' v
+-- @
+--
+-- Nullifying the value for key __@k@__ produces an 'empty' map:
+--
+-- @
+-- 'nullify' 'k' ('singleton' k v) '==' 'empty'
+-- @
+--
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
 
