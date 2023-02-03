@@ -641,6 +641,12 @@ null = Map.null . toMap
 -- | Returns 'True' if (and only if) the given key is associated with a value
 --   that is 'C.null'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'nullKey' k m '==' 'C.null' ('get' k m)
+-- @
+--
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
