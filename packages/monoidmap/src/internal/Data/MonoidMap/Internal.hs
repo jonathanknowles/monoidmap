@@ -664,6 +664,12 @@ nonNull = not . null
 
 -- | Returns a count of all values in the map that are not 'C.null'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'nonNullCount' m '==' 'Set.size' ('nonNullKeys' m)
+-- @
+--
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
 
