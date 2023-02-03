@@ -509,6 +509,12 @@ fromListWith f = fromMap . Map.fromListWith f
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
+-- @
+--
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.filter (not . C.null)
 
