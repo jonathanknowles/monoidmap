@@ -485,6 +485,12 @@ empty = MonoidMap Map.empty
 -- If the list contains more than one value for the same key, values are
 -- combined together with '<>'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'fromList' ('toList' m) '==' m
+-- @
+--
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
