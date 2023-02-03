@@ -582,6 +582,12 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
 -- | Sets the value associated with the given key.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('set' k v m) '==' v
+-- @
+--
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v m
     | C.null v  = MonoidMap $ Map.delete k   $ unMonoidMap m
