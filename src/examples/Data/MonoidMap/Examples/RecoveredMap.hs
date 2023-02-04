@@ -11,12 +11,12 @@ import Data.Maybe
     ( mapMaybe )
 import Data.Monoid
     ( First (..) )
-import Data.MonoidMap
-    ( MonoidMap )
 import Data.Set
     ( Set )
+import Data.Total.MonoidMap
+    ( MonoidMap )
 
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.Total.MonoidMap as MonoidMap
 
 newtype Map k v = Map
     {unMap :: MonoidMap k (First v)}
