@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           total-monoidal-maps
-version:        0.0.0
+version:        0.0.0.0
 bug-reports:    https://github.com/jonathanknowles/total-monoidal-maps/issues
 license:        Apache-2.0
 license-file:   LICENSE
@@ -12,10 +12,39 @@ synopsis:       Total monoidal maps
 description:
     Total monoidal map types with support for semigroup and monoid subclasses.
 
-extra-source-files:
+extra-doc-files:
     README.md
 
-common common-extensions
+common dependency-base
+    build-depends:base                          >= 4.14.3.0   && < 4.18
+common dependency-containers
+    build-depends:containers                    >= 0.6.5.1    && < 0.7
+common dependency-deepseq
+    build-depends:deepseq                       >= 1.4.4.0    && < 1.5
+common dependency-groups
+    build-depends:groups                        >= 0.5.3      && < 0.6
+common dependency-hspec
+    build-depends:hspec                         >= 2.10.9     && < 2.11
+common dependency-monoid-subclasses
+    build-depends:monoid-subclasses             >= 1.2.1      && < 1.3
+common dependency-pretty-show
+    build-depends:pretty-show                   >= 1.10       && < 1.11
+common dependency-QuickCheck
+    build-depends:QuickCheck                    >= 2.14.2     && < 2.15
+common dependency-quickcheck-classes
+    build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
+common dependency-quickcheck-instances
+    build-depends:quickcheck-instances          >= 0.3.28     && < 0.4
+common dependency-quickcheck-monoid-subclasses
+    build-depends:quickcheck-monoid-subclasses  >= 0.0.0.1    && < 0.1
+common dependency-tasty-bench
+    build-depends:tasty-bench                   >= 0.3.2      && < 0.4
+common dependency-tasty-hunit
+    build-depends:tasty-hunit                   >= 0.10.0.3   && < 0.11
+common dependency-text
+    build-depends:text                          >= 1.2.4.1    && < 2.1
+
+common extensions
     default-extensions:
         DerivingStrategies
         FlexibleContexts
@@ -30,13 +59,6 @@ common common-extensions
         TypeFamilies
         TypeOperators
         ViewPatterns
-    ghc-options:
-        -Widentities
-        -Wincomplete-record-updates
-        -Wincomplete-uni-patterns
-        -Wmissing-home-modules
-        -Wpartial-fields
-        -Wredundant-constraints
 
 source-repository head
     type: git
@@ -44,7 +66,8 @@ source-repository head
 
 library
     import:
-        common-extensions
+      , dependency-base
+      , extensions
     hs-source-dirs:
         src/public
     exposed-modules:
@@ -52,12 +75,15 @@ library
     default-language:
         Haskell2010
     build-depends:
-      , base >=4.7 && <5
       , total-monoidal-maps:internal
 
 library examples
     import:
-        common-extensions
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-monoid-subclasses
+      , extensions
     hs-source-dirs:
         src/examples
     exposed-modules:
@@ -66,31 +92,37 @@ library examples
     default-language:
         Haskell2010
     build-depends:
-      , base >=4.7 && <5
-      , containers
-      , deepseq
-      , monoid-subclasses
       , total-monoidal-maps
 
 library internal
     import:
-        common-extensions
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-groups
+      , dependency-monoid-subclasses
+      , extensions
     hs-source-dirs:
         src/internal
     exposed-modules:
         Data.Total.MonoidMap.Internal
     default-language:
         Haskell2010
-    build-depends:
-      , base >=4.7 && <5
-      , containers
-      , deepseq
-      , groups
-      , monoid-subclasses
 
 test-suite test
     import:
-        common-extensions
+      , dependency-base
+      , dependency-containers
+      , dependency-groups
+      , dependency-hspec
+      , dependency-monoid-subclasses
+      , dependency-pretty-show
+      , dependency-QuickCheck
+      , dependency-quickcheck-classes
+      , dependency-quickcheck-instances
+      , dependency-quickcheck-monoid-subclasses
+      , dependency-text
+      , extensions
     ghc-options:
         -threaded -with-rtsopts=-N
     main-is:
@@ -110,22 +142,17 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-      , base >=4.7 && <5
-      , containers
-      , groups
-      , hspec >= 2.8.3
-      , monoid-subclasses
-      , pretty-show
-      , QuickCheck
-      , quickcheck-classes
       , quickcheck-groups
-      , quickcheck-instances
-      , quickcheck-monoid-subclasses
-      , text
       , total-monoidal-maps
       , total-monoidal-maps:examples
 
 benchmark benchmark
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-tasty-bench
+      , dependency-tasty-hunit
     default-language:
         Haskell2010
     type:
@@ -135,10 +162,5 @@ benchmark benchmark
     main-is:
         Main.hs
     build-depends:
-      , base >=4.7 && <5
-      , containers
-      , deepseq
-      , tasty-bench
-      , tasty-hunit
       , total-monoidal-maps
       , total-monoidal-maps:examples
