@@ -12,7 +12,7 @@ synopsis:       Total monoidal maps
 description:
     Total monoidal map types with support for semigroup and monoid subclasses.
 
-extra-source-files:
+extra-doc-files:
     README.md
 
 common common-extensions
