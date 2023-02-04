@@ -95,4 +95,4 @@ module Data.MonoidMap
     )
     where
 
-import Data.MonoidMap.Internal
+import Data.Total.MonoidMap.Internal

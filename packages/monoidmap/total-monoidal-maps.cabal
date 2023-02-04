@@ -78,7 +78,7 @@ library internal
     hs-source-dirs:
         src/internal
     exposed-modules:
-        Data.MonoidMap.Internal
+        Data.Total.MonoidMap.Internal
     default-language:
         Haskell2010
     build-depends:
