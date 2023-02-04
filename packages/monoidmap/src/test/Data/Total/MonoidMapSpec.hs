@@ -8,7 +8,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMapSpec
+module Data.Total.MonoidMapSpec
     where
 
 import Prelude hiding
@@ -32,8 +32,6 @@ import Data.Monoid.Monus
     ( OverlappingGCDMonoid (..), (<\>) )
 import Data.Monoid.Null
     ( MonoidNull )
-import Data.MonoidMap
-    ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Ratio
@@ -44,6 +42,8 @@ import Data.Set
     ( Set )
 import Data.Text
     ( Text )
+import Data.Total.MonoidMap
+    ( MonoidMap, nonNullCount )
 import Data.Typeable
     ( Typeable, typeRep )
 import GHC.Exts
@@ -117,8 +117,8 @@ import Test.QuickCheck.Instances.Text
 
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
-import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
+import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec

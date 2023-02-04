@@ -4,7 +4,7 @@
 --
 -- Total monoidal map type with support for semigroup and monoid subclasses.
 --
-module Data.MonoidMap
+module Data.Total.MonoidMap
     (
     -- * Type
       MonoidMap
@@ -95,4 +95,4 @@ module Data.MonoidMap
     )
     where
 
-import Data.MonoidMap.Internal
+import Data.Total.MonoidMap.Internal
