@@ -15,7 +15,7 @@ description:
 extra-doc-files:
     README.md
 
-common common-extensions
+common extensions
     default-extensions:
         DerivingStrategies
         FlexibleContexts
@@ -44,7 +44,7 @@ source-repository head
 
 library
     import:
-        common-extensions
+        extensions
     hs-source-dirs:
         src/public
     exposed-modules:
@@ -57,7 +57,7 @@ library
 
 library examples
     import:
-        common-extensions
+        extensions
     hs-source-dirs:
         src/examples
     exposed-modules:
@@ -74,7 +74,7 @@ library examples
 
 library internal
     import:
-        common-extensions
+        extensions
     hs-source-dirs:
         src/internal
     exposed-modules:
@@ -90,7 +90,7 @@ library internal
 
 test-suite test
     import:
-        common-extensions
+        extensions
     ghc-options:
         -threaded -with-rtsopts=-N
     main-is:
