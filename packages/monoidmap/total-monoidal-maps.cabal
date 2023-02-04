@@ -15,6 +15,35 @@ description:
 extra-doc-files:
     README.md
 
+common dependency-base
+    build-depends:base
+common dependency-containers
+    build-depends:containers
+common dependency-deepseq
+    build-depends:deepseq
+common dependency-groups
+    build-depends:groups
+common dependency-hspec
+    build-depends:hspec
+common dependency-monoid-subclasses
+    build-depends:monoid-subclasses
+common dependency-pretty-show
+    build-depends:pretty-show
+common dependency-QuickCheck
+    build-depends:QuickCheck
+common dependency-quickcheck-classes
+    build-depends:quickcheck-classes
+common dependency-quickcheck-instances
+    build-depends:quickcheck-instances
+common dependency-quickcheck-monoid-subclasses
+    build-depends:quickcheck-monoid-subclasses
+common dependency-tasty-bench
+    build-depends:tasty-bench
+common dependency-tasty-hunit
+    build-depends:tasty-hunit
+common dependency-text
+    build-depends:text
+
 common extensions
     default-extensions:
         DerivingStrategies
@@ -37,7 +66,8 @@ source-repository head
 
 library
     import:
-        extensions
+      , dependency-base
+      , extensions
     hs-source-dirs:
         src/public
     exposed-modules:
@@ -45,12 +75,15 @@ library
     default-language:
         Haskell2010
     build-depends:
-      , base >=4.7 && <5
       , total-monoidal-maps:internal
 
 library examples
     import:
-        extensions
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-monoid-subclasses
+      , extensions
     hs-source-dirs:
         src/examples
     exposed-modules:
@@ -59,31 +92,37 @@ library examples
     default-language:
         Haskell2010
     build-depends:
-      , base >=4.7 && <5
-      , containers
-      , deepseq
-      , monoid-subclasses
       , total-monoidal-maps
 
 library internal
     import:
-        extensions
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-groups
+      , dependency-monoid-subclasses
+      , extensions
     hs-source-dirs:
         src/internal
     exposed-modules:
         Data.Total.MonoidMap.Internal
     default-language:
         Haskell2010
-    build-depends:
-      , base >=4.7 && <5
-      , containers
-      , deepseq
-      , groups
-      , monoid-subclasses
 
 test-suite test
     import:
-        extensions
+      , dependency-base
+      , dependency-containers
+      , dependency-groups
+      , dependency-hspec
+      , dependency-monoid-subclasses
+      , dependency-pretty-show
+      , dependency-QuickCheck
+      , dependency-quickcheck-classes
+      , dependency-quickcheck-instances
+      , dependency-quickcheck-monoid-subclasses
+      , dependency-text
+      , extensions
     ghc-options:
         -threaded -with-rtsopts=-N
     main-is:
@@ -103,22 +142,17 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-      , base >=4.7 && <5
-      , containers
-      , groups
-      , hspec >= 2.8.3
-      , monoid-subclasses
-      , pretty-show
-      , QuickCheck
-      , quickcheck-classes
       , quickcheck-groups
-      , quickcheck-instances
-      , quickcheck-monoid-subclasses
-      , text
       , total-monoidal-maps
       , total-monoidal-maps:examples
 
 benchmark benchmark
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-tasty-bench
+      , dependency-tasty-hunit
     default-language:
         Haskell2010
     type:
@@ -128,10 +162,5 @@ benchmark benchmark
     main-is:
         Main.hs
     build-depends:
-      , base >=4.7 && <5
-      , containers
-      , deepseq
-      , tasty-bench
-      , tasty-hunit
       , total-monoidal-maps
       , total-monoidal-maps:examples
