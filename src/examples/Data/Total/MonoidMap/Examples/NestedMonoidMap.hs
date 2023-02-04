@@ -4,7 +4,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Examples.NestedMonoidMap
+module Data.Total.MonoidMap.Examples.NestedMonoidMap
     (
     -- * Type
       NestedMonoidMap
@@ -45,8 +45,6 @@ import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
     ( MonoidNull, PositiveMonoid )
-import Data.MonoidMap
-    ( MonoidMap )
 import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
@@ -58,13 +56,15 @@ import Data.Semigroup.Cancellative
     )
 import Data.Set
     ( Set )
+import Data.Total.MonoidMap
+    ( MonoidMap )
 import GHC.Exts
     ( IsList (..) )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
-import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
+import qualified Data.Total.MonoidMap as MonoidMap
 
 --------------------------------------------------------------------------------
 -- Type
