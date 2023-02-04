@@ -1,7 +1,7 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module Data.MonoidMap.Examples.RecoveredMap where
+module Data.Total.MonoidMap.Examples.RecoveredMap where
 
 import Prelude
 
