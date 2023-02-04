@@ -1,16 +1,16 @@
 cabal-version:  3.0
-name:           monoidmap
+name:           total-monoidal-maps
 version:        0.0.0
-bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
+bug-reports:    https://github.com/jonathanknowles/total-monoidal-maps/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2023 Jonathan Knowles
 category:       Testing
-synopsis:       Total monoidal map type
+synopsis:       Total monoidal maps
 description:
-    Total monoidal map type with support for semigroup and monoid subclasses.
+    Total monoidal map types with support for semigroup and monoid subclasses.
 
 extra-source-files:
     README.md
@@ -40,7 +40,7 @@ common common-extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/monoidmap
+    location: https://github.com/jonathanknowles/total-monoidal-maps
 
 library
     import:
@@ -53,7 +53,7 @@ library
         Haskell2010
     build-depends:
       , base >=4.7 && <5
-      , monoidmap:internal
+      , total-monoidal-maps:internal
 
 library examples
     import:
@@ -70,7 +70,7 @@ library examples
       , containers
       , deepseq
       , monoid-subclasses
-      , monoidmap
+      , total-monoidal-maps
 
 library internal
     import:
@@ -115,8 +115,6 @@ test-suite test
       , groups
       , hspec >= 2.8.3
       , monoid-subclasses
-      , monoidmap
-      , monoidmap:examples
       , pretty-show
       , QuickCheck
       , quickcheck-classes
@@ -124,6 +122,8 @@ test-suite test
       , quickcheck-instances
       , quickcheck-monoid-subclasses
       , text
+      , total-monoidal-maps
+      , total-monoidal-maps:examples
 
 benchmark benchmark
     default-language:
@@ -138,7 +138,7 @@ benchmark benchmark
       , base >=4.7 && <5
       , containers
       , deepseq
-      , monoidmap
-      , monoidmap:examples
       , tasty-bench
       , tasty-hunit
+      , total-monoidal-maps
+      , total-monoidal-maps:examples
