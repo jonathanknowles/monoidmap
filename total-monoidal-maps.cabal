@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           total-monoidal-maps
-version:        0.0.0
+version:        0.0.0.0
 bug-reports:    https://github.com/jonathanknowles/total-monoidal-maps/issues
 license:        Apache-2.0
 license-file:   LICENSE
