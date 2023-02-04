@@ -1,3 +1,3 @@
-Total monoidal map type with support for semigroup and monoid subclasses.
+Total monoidal map types with support for semigroup and monoid subclasses.
 
-<a href="http://jonathanknowles.net/monoidmap/Data-MonoidMap.html"><img src="https://img.shields.io/badge/API-Documentation-green" /></a>
+<a href="http://jonathanknowles.net/total-monoidal-maps/Data-MonoidMap.html"><img src="https://img.shields.io/badge/API-Documentation-green" /></a>
