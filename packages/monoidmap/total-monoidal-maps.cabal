@@ -99,7 +99,7 @@ test-suite test
         src/test
     other-modules:
         SpecHook
-        Data.MonoidMapSpec
+        Data.Total.MonoidMapSpec
         Data.RecoveredMapSpec
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit

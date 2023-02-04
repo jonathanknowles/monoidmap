@@ -8,7 +8,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMapSpec
+module Data.Total.MonoidMapSpec
     where
 
 import Prelude hiding
