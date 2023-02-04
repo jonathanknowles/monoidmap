@@ -1,4 +1,4 @@
-packages: monoidmap.cabal
+packages: total-monoidal-maps.cabal
 
 constraints:
     vector < 0.13
