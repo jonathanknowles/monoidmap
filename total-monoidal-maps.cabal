@@ -33,6 +33,8 @@ common dependency-QuickCheck
     build-depends:QuickCheck                    >= 2.14.2     && < 2.15
 common dependency-quickcheck-classes
     build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
+common dependency-quickcheck-groups
+    build-depends:quickcheck-groups             >= 0.0.0.0    && < 0.1
 common dependency-quickcheck-instances
     build-depends:quickcheck-instances          >= 0.3.28     && < 0.4
 common dependency-quickcheck-monoid-subclasses
@@ -119,6 +121,7 @@ test-suite test
       , dependency-pretty-show
       , dependency-QuickCheck
       , dependency-quickcheck-classes
+      , dependency-quickcheck-groups
       , dependency-quickcheck-instances
       , dependency-quickcheck-monoid-subclasses
       , dependency-text
@@ -142,7 +145,6 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-      , quickcheck-groups
       , total-monoidal-maps
       , total-monoidal-maps:examples
 
