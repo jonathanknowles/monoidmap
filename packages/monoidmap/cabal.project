@@ -5,8 +5,3 @@ constraints:
 
 allow-newer:
     all
-
-source-repository-package
-    type: git
-    location: https://github.com/jonathanknowles/quickcheck-groups.git
-    tag: d486f32d742e0ff471cc3256813fd0a00db6f139
