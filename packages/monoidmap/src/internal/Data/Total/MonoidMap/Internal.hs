@@ -229,6 +229,17 @@ import qualified Data.Semigroup.Cancellative as C
 -- the 'MonoidMap' type provides a single /unified/ representation for empty
 -- values: the 'mempty' constant.
 --
+-- == Internal data structure
+--
+-- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
+-- its key-value mappings, and only stores values that are /not/ equal to
+-- 'mempty'.
+--
+-- Values that /are/ equal to 'mempty' are automatically garbage collected, and
+-- /never/ included in the internal data structure.
+--
+-- As a result, the internal data structure is /always/ in a canonical form.
+--
 -- == Instances of 'Semigroup' and 'Monoid'
 --
 -- This module provides a 'Semigroup' instance that uses the '(<>)' operator to
@@ -290,17 +301,6 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'get' k ('C.overlap' m1 m2)
 --     '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
---
--- == Internal data structure
---
--- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
--- its key-value mappings, and only stores values that are /not/ equal to
--- 'mempty'.
---
--- Values that /are/ equal to 'mempty' are automatically garbage collected, and
--- /never/ included in the internal data structure.
---
--- As a result, the internal data structure is /always/ in a canonical form.
 --
 -- == Constraints on value types
 --
