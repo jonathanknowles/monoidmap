@@ -35,6 +35,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Environment (Permission)
+        # https://github.com/actions/runner-images/issues/7061
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo chown -R "runner" $GHCUP_INSTALL_BASE_PREFIX/.ghcup
+
       - name: Environment (Purge)
         # The version of `ghc` that comes pre-installed on runner images does
         # not have documentation for core libraries. This makes it impossible
