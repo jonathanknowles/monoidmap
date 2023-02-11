@@ -1852,7 +1852,10 @@ stripPrefixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripPrefixOverlap = unionWith C.stripPrefixOverlap
+stripPrefixOverlap = merge
+    (dropNonNull)
+    (keepNonNull)
+    (withNonNullPair C.stripPrefixOverlap)
 
 -- | /Strips/ from the second map its /greatest suffix overlap/ with prefixes
 --   of the first map.
