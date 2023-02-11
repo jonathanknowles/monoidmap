@@ -2460,16 +2460,6 @@ unionWithA f = mergeA
     (withNonNullPairA f)
 
 --------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-guardNotNull :: MonoidNull v => v -> Maybe v
-guardNotNull v
-    | C.null v = Nothing
-    | otherwise = Just v
-{-# INLINE guardNotNull #-}
-
---------------------------------------------------------------------------------
 -- Merging
 --------------------------------------------------------------------------------
 
@@ -2567,3 +2557,13 @@ withNonNullPairA
     => (v1 -> v2 -> f v3)
     -> Map.WhenMatched f k v1 v2 v3
 withNonNullPairA f = zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+guardNotNull :: MonoidNull v => v -> Maybe v
+guardNotNull v
+    | C.null v = Nothing
+    | otherwise = Just v
+{-# INLINE guardNotNull #-}
