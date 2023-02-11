@@ -202,32 +202,57 @@ import qualified Data.Semigroup.Cancellative as C
 -- For an /unconstrained/ value type __@v@__, using 'Maybe' makes it possible
 -- to signal the /presence/ or /absence/ of a value for a particular key.
 --
--- However, /monoidal/ types have a natural way to represent empty values:
--- the special 'mempty' constant.
+-- However, /monoidal/ types have a natural way to represent empty values: the
+-- 'mempty' constant, which represents the identity element of a monoid.
 --
--- As a consequence, using a standard 'Map' with a /monoidal/ value type gives
--- rise to two distinct representations for missing or empty values:
+-- Consequently, using a standard 'Map' with a /monoidal/ value type gives rise
+-- to /two/ distinct representations for missing or empty values:
 --
---  1. When a 'Map' has /no/ entry for a given key:
+-- +---------------------+--------------------------------------------+
+-- | @                   |                                            |
+-- | 'Map'.'lookup' k m  |                                            |
+-- | @                   |                                            |
+-- +=====================+============================================+
+-- | @                   | Map __@m@__ has /no/ entry                 |
+-- | 'Nothing'           | for key __@k@__.                           |
+-- | @                   |                                            |
+-- +---------------------+--------------------------------------------+
+-- | @                   | Map __@m@__ /does/ have an entry           |
+-- | 'Just' 'mempty'     | for key __@k@__, but the value is /empty/. |
+-- | @                   |                                            |
+-- +---------------------+--------------------------------------------+
 --
---      @
---      'Nothing'
---      @
+-- In constrast, the 'MonoidMap' type provides a single, /canonical/
+-- representation for empty values, according to the following mapping:
 --
---  2. When a 'Map' /has/ an entry for a given key, but the value is /empty/:
+-- +------------------------------------+---+-------------------------+
+-- | @                                  |   | @                       |
+-- | 'Map'.'lookup' k m                 |   | 'MonoidMap'.'get' k m   |
+-- | @                                  |   | @                       |
+-- +====================================+===+=========================+
+-- | @                                  |   | @                       |
+-- | 'Nothing'                          | ⟼ | 'mempty'                |
+-- | @                                  |   | @                       |
+-- +--------------+---------------------+---+-------------------------+
+-- | @            | @                   |   | @                       |
+-- | 'Just' __v__ | __v__ '==' 'mempty' | ⟼ | 'mempty'                |
+-- | @            | @                   |   | @                       |
+-- +--------------+---------------------+---+-------------------------+
+-- | @            | @                   |   | @                       |
+-- | 'Just' __v__ | __v__ '/=' 'mempty' | ⟼ | __v__                   |
+-- | @            | @                   |   | @                       |
+-- +--------------+---------------------+---+-------------------------+
 --
---      @
---      'Just' 'mempty'
---      @
+-- == Internal data structure
 --
--- Of course, in many situations where map types are used, it's important to be
--- able to clearly distinguish between these two cases, even for monoidal value
--- types.
+-- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
+-- its key-value mappings, and only stores values that are /not/ equal to
+-- 'mempty'.
 --
--- However, for situations where we do /not/ want to distinguish between these
--- two cases, or where it's important to treat these two cases /equivalently/,
--- the 'MonoidMap' type provides a single /unified/ representation for empty
--- values: the 'mempty' constant.
+-- Values that /are/ equal to 'mempty' are automatically garbage collected, and
+-- /never/ included in the internal data structure.
+--
+-- As a result, the internal data structure is /always/ in a canonical form.
 --
 -- == Instances of 'Semigroup' and 'Monoid'
 --
@@ -290,17 +315,6 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'get' k ('C.overlap' m1 m2)
 --     '==' 'C.overlap' ('get' k m1) ('get' k m2)
 -- @
---
--- == Internal data structure
---
--- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
--- its key-value mappings, and only stores values that are /not/ equal to
--- 'mempty'.
---
--- Values that /are/ equal to 'mempty' are automatically garbage collected, and
--- /never/ included in the internal data structure.
---
--- As a result, the internal data structure is /always/ in a canonical form.
 --
 -- == Constraints on value types
 --
