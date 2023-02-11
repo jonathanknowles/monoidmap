@@ -5,10 +5,12 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
+-- Provides /internal/ operations for the 'MonoidMap' type.
+--
 module Data.Total.MonoidMap.Internal
     (
     -- * Type
-      MonoidMap
+      MonoidMap (..)
 
     -- * Construction
     , empty
