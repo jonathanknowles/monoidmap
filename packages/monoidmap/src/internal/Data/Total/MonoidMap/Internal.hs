@@ -2095,7 +2095,10 @@ minus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-minus = unionWith (C.~~)
+minus = merge
+    (keepNonNull)
+    (withNonNull C.invert)
+    (withNonNullPair (C.~~))
 
 -- | Performs /reductive subtraction/ of the second map from the first.
 --
