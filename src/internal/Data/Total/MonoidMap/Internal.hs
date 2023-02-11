@@ -1554,7 +1554,10 @@ commonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonSuffix = intersectionWith C.commonSuffix
+commonSuffix = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.commonSuffix)
 
 -- | Strips the /greatest common prefix/ from a pair of maps.
 --
