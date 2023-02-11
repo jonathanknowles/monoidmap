@@ -2042,7 +2042,10 @@ gcd
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-gcd = intersectionWith C.gcd
+gcd = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.gcd)
 
 --------------------------------------------------------------------------------
 -- Subtraction
