@@ -195,12 +195,12 @@ import qualified Data.Semigroup.Cancellative as C
 -- query a key for its value, for both types:
 --
 -- @
--- 'lookup' :: ('Ord' k  \      \  ) => k ->       'Map' k v -> 'Maybe' v
--- 'get'    :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> \     \ v
+--       'Map'.'lookup' :: \      \      k ->       'Map' k v -> 'Maybe' v
+-- 'MonoidMap'.'get'    :: 'Monoid' v => k -> 'MonoidMap' k v -> \     \ v
 -- @
 --
--- For an /unconstrained/ value type __@v@__, using 'Maybe' makes it possible
--- to signal the /presence/ or /absence/ of a value for a particular key.
+-- For /unconstrained/ value types, using 'Maybe' makes it possible to signal
+-- the /presence/ or /absence/ of a value for a particular key.
 --
 -- However, /monoidal/ types have a natural way to represent empty values: the
 -- 'mempty' constant, which represents the identity element of a monoid.
