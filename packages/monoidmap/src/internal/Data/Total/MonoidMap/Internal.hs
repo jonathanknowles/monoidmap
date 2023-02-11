@@ -2321,7 +2321,10 @@ monus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-monus = unionWith (<\>)
+monus = merge
+    (keepNonNull)
+    (dropNonNull)
+    (withNonNullPair (<\>))
 
 --------------------------------------------------------------------------------
 -- Inversion
