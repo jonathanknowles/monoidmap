@@ -1506,7 +1506,10 @@ commonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonPrefix = intersectionWith C.commonPrefix
+commonPrefix = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.commonPrefix)
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
