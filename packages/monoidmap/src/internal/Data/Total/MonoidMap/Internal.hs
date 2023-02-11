@@ -1060,7 +1060,10 @@ append
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-append = unionWith (<>)
+append = merge
+    (keepNonNull)
+    (keepNonNull)
+    (withNonNullPair (<>))
 
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
