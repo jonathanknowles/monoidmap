@@ -2418,11 +2418,10 @@ unionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
-    (traverseMaybeMissing $ \_ v1 -> guardNotNull <$> f v1 mempty)
-    (traverseMaybeMissing $ \_ v2 -> guardNotNull <$> f mempty v2)
-    (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
-    m1 m2
+unionWithA f = mergeA
+    (withNonNullLeftA f)
+    (withNonNullRightA f)
+    (withNonNullPairA f)
 
 --------------------------------------------------------------------------------
 -- Utilities
