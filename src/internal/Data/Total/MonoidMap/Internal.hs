@@ -2412,7 +2412,7 @@ power
 power m i = mapValues (`C.pow` i) m
 
 --------------------------------------------------------------------------------
--- Binary operations
+-- Intersection
 --------------------------------------------------------------------------------
 
 intersectionWith
@@ -2436,6 +2436,10 @@ intersectionWithA f = mergeA
     (dropNonNull)
     (dropNonNull)
     (withNonNullPairA f)
+
+--------------------------------------------------------------------------------
+-- Union
+--------------------------------------------------------------------------------
 
 unionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
