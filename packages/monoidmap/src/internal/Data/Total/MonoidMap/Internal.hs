@@ -2215,7 +2215,10 @@ minusMaybe
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-minusMaybe = unionWithA (</>)
+minusMaybe = mergeA
+    (keepNonNull)
+    (withNonNullRightA (</>))
+    (withNonNullPairA (</>))
 
 -- | Performs /monus subtraction/ of the second map from the first.
 --
