@@ -2396,11 +2396,10 @@ intersectionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
-    dropMissing
-    dropMissing
-    (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
-    m1 m2
+intersectionWithA f = mergeA
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPairA f)
 
 unionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
