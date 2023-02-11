@@ -1913,7 +1913,10 @@ stripSuffixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripSuffixOverlap = unionWith C.stripSuffixOverlap
+stripSuffixOverlap = merge
+    (dropNonNull)
+    (keepNonNull)
+    (withNonNullPair C.stripSuffixOverlap)
 
 -- | Finds the /greatest overlap/ of two maps and /strips/ it from both maps.
 --
