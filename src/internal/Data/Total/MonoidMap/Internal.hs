@@ -8,7 +8,7 @@
 module Data.Total.MonoidMap.Internal
     (
     -- * Type
-      MonoidMap
+      MonoidMap (..)
 
     -- * Construction
     , empty
