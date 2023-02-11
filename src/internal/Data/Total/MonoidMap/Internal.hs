@@ -1,5 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{- HLINT ignore "Avoid lambda" -}
+{- HLINT ignore "Avoid lambda using `infix`" -}
+{- HLINT ignore "Redundant bracket" -}
 
 -- |
 -- Copyright: © 2022–2023 Jonathan Knowles
@@ -115,11 +118,15 @@ import Data.Function
     ( (&) )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
+import Data.Functor.Identity
+    ( Identity )
 import Data.Group
     ( Abelian, Group )
 import Data.Map.Merge.Strict
     ( dropMissing
     , mapMaybeMissing
+    , mapMissing
+    , preserveMissing
     , traverseMaybeMissing
     , zipWithMaybeAMatched
     , zipWithMaybeMatched
@@ -1053,7 +1060,10 @@ append
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-append = unionWith (<>)
+append = merge
+    (keepNonNull)
+    (keepNonNull)
+    (withNonNullPair (<>))
 
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
@@ -1367,7 +1377,10 @@ stripPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripPrefix = unionWithA C.stripPrefix
+stripPrefix = mergeA
+    (withNonNullLeftA C.stripPrefix)
+    (keepNonNull)
+    (withNonNullPairA C.stripPrefix)
 
 -- | Strips a /suffix/ from a 'MonoidMap'.
 --
@@ -1445,7 +1458,10 @@ stripSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripSuffix = unionWithA C.stripSuffix
+stripSuffix = mergeA
+    (withNonNullLeftA C.stripSuffix)
+    (keepNonNull)
+    (withNonNullPairA C.stripSuffix)
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
@@ -1490,7 +1506,10 @@ commonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonPrefix = intersectionWith C.commonPrefix
+commonPrefix = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.commonPrefix)
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
@@ -1535,7 +1554,10 @@ commonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonSuffix = intersectionWith C.commonSuffix
+commonSuffix = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.commonSuffix)
 
 -- | Strips the /greatest common prefix/ from a pair of maps.
 --
@@ -1769,7 +1791,10 @@ overlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-overlap = intersectionWith C.overlap
+overlap = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.overlap)
 
 -- | /Strips/ from the second map its /greatest prefix overlap/ with suffixes
 --   of the first map.
@@ -1827,7 +1852,10 @@ stripPrefixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripPrefixOverlap = unionWith C.stripPrefixOverlap
+stripPrefixOverlap = merge
+    (dropNonNull)
+    (keepNonNull)
+    (withNonNullPair C.stripPrefixOverlap)
 
 -- | /Strips/ from the second map its /greatest suffix overlap/ with prefixes
 --   of the first map.
@@ -1885,7 +1913,10 @@ stripSuffixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripSuffixOverlap = unionWith C.stripSuffixOverlap
+stripSuffixOverlap = merge
+    (dropNonNull)
+    (keepNonNull)
+    (withNonNullPair C.stripSuffixOverlap)
 
 -- | Finds the /greatest overlap/ of two maps and /strips/ it from both maps.
 --
@@ -2011,7 +2042,10 @@ gcd
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-gcd = intersectionWith C.gcd
+gcd = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.gcd)
 
 --------------------------------------------------------------------------------
 -- Subtraction
@@ -2061,7 +2095,10 @@ minus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-minus = unionWith (C.~~)
+minus = merge
+    (keepNonNull)
+    (withNonNull C.invert)
+    (withNonNullPair (C.~~))
 
 -- | Performs /reductive subtraction/ of the second map from the first.
 --
@@ -2178,7 +2215,10 @@ minusMaybe
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-minusMaybe = unionWithA (</>)
+minusMaybe = mergeA
+    (keepNonNull)
+    (withNonNullRightA (</>))
+    (withNonNullPairA (</>))
 
 -- | Performs /monus subtraction/ of the second map from the first.
 --
@@ -2281,7 +2321,10 @@ monus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-monus = unionWith (<\>)
+monus = merge
+    (keepNonNull)
+    (dropNonNull)
+    (withNonNullPair (<\>))
 
 --------------------------------------------------------------------------------
 -- Inversion
@@ -2369,7 +2412,7 @@ power
 power m i = mapValues (`C.pow` i) m
 
 --------------------------------------------------------------------------------
--- Binary operations
+-- Intersection
 --------------------------------------------------------------------------------
 
 intersectionWith
@@ -2378,11 +2421,10 @@ intersectionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    dropMissing
-    dropMissing
-    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
-    m1 m2
+intersectionWith f = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair f)
 
 intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
@@ -2390,11 +2432,14 @@ intersectionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
-    dropMissing
-    dropMissing
-    (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
-    m1 m2
+intersectionWithA f = mergeA
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPairA f)
+
+--------------------------------------------------------------------------------
+-- Union
+--------------------------------------------------------------------------------
 
 unionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
@@ -2402,11 +2447,10 @@ unionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-unionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    (mapMaybeMissing $ \_ v1 -> guardNotNull $ f v1 mempty)
-    (mapMaybeMissing $ \_ v2 -> guardNotNull $ f mempty v2)
-    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
-    m1 m2
+unionWith f = merge
+    (withNonNullLeft f)
+    (withNonNullRight f)
+    (withNonNullPair f)
 
 unionWithA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
@@ -2414,11 +2458,109 @@ unionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithA f (MonoidMap m1) (MonoidMap m2) = MonoidMap <$> Map.mergeA
-    (traverseMaybeMissing $ \_ v1 -> guardNotNull <$> f v1 mempty)
-    (traverseMaybeMissing $ \_ v2 -> guardNotNull <$> f mempty v2)
-    (zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2)
-    m1 m2
+unionWithA f = mergeA
+    (withNonNullLeftA f)
+    (withNonNullRightA f)
+    (withNonNullPairA f)
+
+--------------------------------------------------------------------------------
+-- Merging
+--------------------------------------------------------------------------------
+
+type WhenOneSideNull f k v     v3 = Map.WhenMissing f k v     v3
+type WhenBothNonNull f k v1 v2 v3 = Map.WhenMatched f k v1 v2 v3
+
+merge
+    :: Ord k
+    => WhenOneSideNull Identity k v1    v3
+    -> WhenOneSideNull Identity k    v2 v3
+    -> WhenBothNonNull Identity k v1 v2 v3
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> MonoidMap k v3
+merge whenNullRight whenNullLeft whenBothNonNull m1 m2 =
+    MonoidMap $
+        Map.merge
+            (whenNullRight)
+            (whenNullLeft)
+            (whenBothNonNull)
+            (unMonoidMap m1)
+            (unMonoidMap m2)
+
+mergeA
+    :: (Applicative f, Ord k)
+    => WhenOneSideNull f k v1    v3
+    -> WhenOneSideNull f k    v2 v3
+    -> WhenBothNonNull f k v1 v2 v3
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> f (MonoidMap k v3)
+mergeA whenNullRight whenNullLeft whenBothNonNull m1 m2 =
+    MonoidMap <$>
+        Map.mergeA
+            (whenNullRight)
+            (whenNullLeft)
+            (whenBothNonNull)
+            (unMonoidMap m1)
+            (unMonoidMap m2)
+
+dropNonNull
+    :: Applicative f
+    => WhenOneSideNull f k v1 v2
+dropNonNull = dropMissing
+
+keepNonNull
+    :: Applicative f
+    => WhenOneSideNull f k v v
+keepNonNull = preserveMissing
+
+withNonNull
+    :: (Applicative f, MonoidNull v2)
+    => (v1 -> v2)
+    -> WhenOneSideNull f k v1 v2
+withNonNull f = mapMaybeMissing $ \_k v -> guardNotNull $ f v
+
+withNonNullA
+    :: (Applicative f, MonoidNull v2)
+    => (v1 -> f v2)
+    -> WhenOneSideNull f k v1 v2
+withNonNullA f = traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
+
+withNonNullLeft
+    :: (Applicative f, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> WhenOneSideNull f k v1 v3
+withNonNullLeft f = withNonNull (\v -> f v mempty)
+
+withNonNullLeftA
+    :: (Applicative f, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> WhenOneSideNull f k v1 v3
+withNonNullLeftA f = withNonNullA (\v -> f v mempty)
+
+withNonNullRight
+    :: (Applicative f, Monoid v1, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> WhenOneSideNull f k v2 v3
+withNonNullRight f = withNonNull (\v -> f mempty v)
+
+withNonNullRightA
+    :: (Applicative f, Monoid v1, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> WhenOneSideNull f k v2 v3
+withNonNullRightA f = withNonNullA (\v -> f mempty v)
+
+withNonNullPair
+    :: (Applicative f, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> WhenBothNonNull f k v1 v2 v3
+withNonNullPair f = zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2
+
+withNonNullPairA
+    :: (Applicative f, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> Map.WhenMatched f k v1 v2 v3
+withNonNullPairA f = zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2
 
 --------------------------------------------------------------------------------
 -- Utilities
