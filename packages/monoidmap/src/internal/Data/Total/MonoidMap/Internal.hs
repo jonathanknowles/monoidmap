@@ -2385,11 +2385,10 @@ intersectionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    dropMissing
-    dropMissing
-    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
-    m1 m2
+intersectionWith f = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair f)
 
 intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
