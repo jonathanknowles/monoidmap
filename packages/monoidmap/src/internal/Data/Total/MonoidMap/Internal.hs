@@ -1458,7 +1458,10 @@ stripSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripSuffix = unionWithA C.stripSuffix
+stripSuffix = mergeA
+    (withNonNullLeftA C.stripSuffix)
+    (keepNonNull)
+    (withNonNullPairA C.stripSuffix)
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
