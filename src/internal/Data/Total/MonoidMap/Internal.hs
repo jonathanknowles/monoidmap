@@ -1,5 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{- HLINT ignore "Avoid lambda" -}
+{- HLINT ignore "Avoid lambda using `infix`" -}
+{- HLINT ignore "Redundant bracket" -}
 
 -- |
 -- Copyright: © 2022–2023 Jonathan Knowles
@@ -115,11 +118,15 @@ import Data.Function
     ( (&) )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
+import Data.Functor.Identity
+    ( Identity )
 import Data.Group
     ( Abelian, Group )
 import Data.Map.Merge.Strict
     ( dropMissing
     , mapMaybeMissing
+    , mapMissing
+    , preserveMissing
     , traverseMaybeMissing
     , zipWithMaybeAMatched
     , zipWithMaybeMatched
@@ -2429,3 +2436,102 @@ guardNotNull v
     | C.null v = Nothing
     | otherwise = Just v
 {-# INLINE guardNotNull #-}
+
+--------------------------------------------------------------------------------
+-- Merging
+--------------------------------------------------------------------------------
+
+type WhenOneSideNull f k v     v3 = Map.WhenMissing f k v     v3
+type WhenBothNonNull f k v1 v2 v3 = Map.WhenMatched f k v1 v2 v3
+
+merge
+    :: Ord k
+    => WhenOneSideNull Identity k v1    v3
+    -> WhenOneSideNull Identity k    v2 v3
+    -> WhenBothNonNull Identity k v1 v2 v3
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> MonoidMap k v3
+merge whenNullRight whenNullLeft whenBothNonNull m1 m2 =
+    MonoidMap $
+        Map.merge
+            (whenNullRight)
+            (whenNullLeft)
+            (whenBothNonNull)
+            (unMonoidMap m1)
+            (unMonoidMap m2)
+
+mergeA
+    :: (Applicative f, Ord k)
+    => WhenOneSideNull f k v1    v3
+    -> WhenOneSideNull f k    v2 v3
+    -> WhenBothNonNull f k v1 v2 v3
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> f (MonoidMap k v3)
+mergeA whenNullRight whenNullLeft whenBothNonNull m1 m2 =
+    MonoidMap <$>
+        Map.mergeA
+            (whenNullRight)
+            (whenNullLeft)
+            (whenBothNonNull)
+            (unMonoidMap m1)
+            (unMonoidMap m2)
+
+dropNonNull
+    :: Applicative f
+    => WhenOneSideNull f k v1 v2
+dropNonNull = dropMissing
+
+keepNonNull
+    :: Applicative f
+    => WhenOneSideNull f k v v
+keepNonNull = preserveMissing
+
+withNonNull
+    :: (Applicative f, MonoidNull v2)
+    => (v1 -> v2)
+    -> WhenOneSideNull f k v1 v2
+withNonNull f = mapMaybeMissing $ \_k v -> guardNotNull $ f v
+
+withNonNullA
+    :: (Applicative f, MonoidNull v2)
+    => (v1 -> f v2)
+    -> WhenOneSideNull f k v1 v2
+withNonNullA f = traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
+
+withNonNullLeft
+    :: (Applicative f, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> WhenOneSideNull f k v1 v3
+withNonNullLeft f = withNonNull (\v -> f v mempty)
+
+withNonNullLeftA
+    :: (Applicative f, Monoid v2, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> WhenOneSideNull f k v1 v3
+withNonNullLeftA f = withNonNullA (\v -> f v mempty)
+
+withNonNullRight
+    :: (Applicative f, Monoid v1, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> WhenOneSideNull f k v2 v3
+withNonNullRight f = withNonNull (\v -> f mempty v)
+
+withNonNullRightA
+    :: (Applicative f, Monoid v1, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> WhenOneSideNull f k v2 v3
+withNonNullRightA f = withNonNullA (\v -> f mempty v)
+
+withNonNullPair
+    :: (Applicative f, MonoidNull v3)
+    => (v1 -> v2 -> v3)
+    -> WhenBothNonNull f k v1 v2 v3
+withNonNullPair f = zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2
+
+withNonNullPairA
+    :: (Applicative f, MonoidNull v3)
+    => (v1 -> v2 -> f v3)
+    -> Map.WhenMatched f k v1 v2 v3
+withNonNullPairA f = zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2
