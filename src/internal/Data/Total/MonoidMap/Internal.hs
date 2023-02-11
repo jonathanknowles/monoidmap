@@ -2407,11 +2407,10 @@ unionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-unionWith f (MonoidMap m1) (MonoidMap m2) = MonoidMap $ Map.merge
-    (mapMaybeMissing $ \_ v1 -> guardNotNull $ f v1 mempty)
-    (mapMaybeMissing $ \_ v2 -> guardNotNull $ f mempty v2)
-    (zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2)
-    m1 m2
+unionWith f = merge
+    (withNonNullLeft f)
+    (withNonNullRight f)
+    (withNonNullPair f)
 
 unionWithA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
