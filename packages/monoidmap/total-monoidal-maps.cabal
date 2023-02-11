@@ -69,11 +69,14 @@ source-repository head
 library
     import:
       , dependency-base
+      , dependency-containers
+      , dependency-monoid-subclasses
       , extensions
     hs-source-dirs:
         src/public
     exposed-modules:
         Data.Total.MonoidMap
+        Data.Total.MonoidMap.Unsafe
     default-language:
         Haskell2010
     build-depends:
