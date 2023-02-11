@@ -1377,7 +1377,10 @@ stripPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripPrefix = unionWithA C.stripPrefix
+stripPrefix = mergeA
+    (withNonNullLeftA C.stripPrefix)
+    (keepNonNull)
+    (withNonNullPairA C.stripPrefix)
 
 -- | Strips a /suffix/ from a 'MonoidMap'.
 --
