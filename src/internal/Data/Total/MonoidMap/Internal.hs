@@ -1791,7 +1791,10 @@ overlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-overlap = intersectionWith C.overlap
+overlap = merge
+    (dropNonNull)
+    (dropNonNull)
+    (withNonNullPair C.overlap)
 
 -- | /Strips/ from the second map its /greatest prefix overlap/ with suffixes
 --   of the first map.
