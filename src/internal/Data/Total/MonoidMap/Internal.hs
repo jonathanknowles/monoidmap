@@ -122,15 +122,6 @@ import Data.Functor.Identity
     ( Identity )
 import Data.Group
     ( Abelian, Group )
-import Data.Map.Merge.Strict
-    ( dropMissing
-    , mapMaybeMissing
-    , mapMissing
-    , preserveMissing
-    , traverseMaybeMissing
-    , zipWithMaybeAMatched
-    , zipWithMaybeMatched
-    )
 import Data.Map.Strict
     ( Map, lookup )
 import Data.Maybe
@@ -1060,10 +1051,20 @@ append
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-append = merge
-    (keepNonNull)
-    (keepNonNull)
-    (withNonNullPair (<>))
+append = merge MergeStrategy
+    { mergeNullWithNonNull =
+        keepNonNull
+        -- Justification:
+        -- mempty <> v ≡ v
+
+    , mergeNonNullWithNull =
+        keepNonNull
+        -- Justification:
+        -- v <> mempty ≡ v
+
+    , mergeNonNullWithNonNull =
+        withBoth (<>)
+    }
 
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
@@ -1377,10 +1378,18 @@ stripPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripPrefix = mergeA
-    (withNonNullLeftA C.stripPrefix)
-    (keepNonNull)
-    (withNonNullPairA C.stripPrefix)
+stripPrefix = mergeA MergeStrategy
+    { mergeNonNullWithNull =
+        withNonNullA (\v -> C.stripPrefix v mempty)
+
+    , mergeNullWithNonNull =
+        keepNonNull
+        -- Justification:
+        -- stripPrefix mempty a ≡ a
+
+    , mergeNonNullWithNonNull =
+        withBothA C.stripPrefix
+    }
 
 -- | Strips a /suffix/ from a 'MonoidMap'.
 --
@@ -1458,10 +1467,18 @@ stripSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripSuffix = mergeA
-    (withNonNullLeftA C.stripSuffix)
-    (keepNonNull)
-    (withNonNullPairA C.stripSuffix)
+stripSuffix = mergeA MergeStrategy
+    { mergeNonNullWithNull =
+        withNonNullA (\v -> C.stripSuffix v mempty)
+
+    , mergeNullWithNonNull =
+        keepNonNull
+        -- Justification:
+        -- stripSuffix mempty a ≡ a
+
+    , mergeNonNullWithNonNull =
+        withBothA C.stripSuffix
+    }
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
@@ -1506,10 +1523,20 @@ commonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonPrefix = merge
-    (dropNonNull)
-    (dropNonNull)
-    (withNonNullPair C.commonPrefix)
+commonPrefix = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNull
+        -- Justification:
+        -- commonPrefix a mempty ≡ mempty
+
+    , mergeNullWithNonNull =
+        keepNull
+        -- Justification:
+        -- commonPrefix mempty a ≡ mempty
+
+    , mergeNonNullWithNonNull =
+        withBoth C.commonPrefix
+    }
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
@@ -1554,10 +1581,20 @@ commonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonSuffix = merge
-    (dropNonNull)
-    (dropNonNull)
-    (withNonNullPair C.commonSuffix)
+commonSuffix = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNull
+        -- Justification:
+        -- commonSuffix a mempty ≡ mempty
+
+    , mergeNullWithNonNull =
+        keepNull
+        -- Justification:
+        -- commonSuffix mempty a ≡ mempty
+
+    , mergeNonNullWithNonNull =
+        withBoth C.commonSuffix
+    }
 
 -- | Strips the /greatest common prefix/ from a pair of maps.
 --
@@ -1791,10 +1828,20 @@ overlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-overlap = merge
-    (dropNonNull)
-    (dropNonNull)
-    (withNonNullPair C.overlap)
+overlap = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNull
+        -- Justification:
+        -- overlap a mempty ≡ mempty
+
+    , mergeNullWithNonNull =
+        keepNull
+        -- Justification:
+        -- overlap mempty a ≡ mempty
+
+    , mergeNonNullWithNonNull =
+        withBoth C.overlap
+    }
 
 -- | /Strips/ from the second map its /greatest prefix overlap/ with suffixes
 --   of the first map.
@@ -1852,10 +1899,29 @@ stripPrefixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripPrefixOverlap = merge
-    (dropNonNull)
-    (keepNonNull)
-    (withNonNullPair C.stripPrefixOverlap)
+stripPrefixOverlap = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNull
+        -- Justification:
+        --
+        -- overlap a b      <> stripPrefixOverlap a b      ≡ b
+        -- overlap a mempty <> stripPrefixOverlap a mempty ≡ mempty
+        --           mempty <> stripPrefixOverlap a mempty ≡ mempty
+        --                     stripPrefixOverlap a mempty ≡ mempty
+
+    , mergeNullWithNonNull =
+        keepNonNull
+        -- Justification:
+        --
+        -- overlap a      b <> stripPrefixOverlap a      b ≡ b
+        -- overlap mempty b <> stripPrefixOverlap mempty b ≡ b
+        --         mempty   <> stripPrefixOverlap mempty b ≡ b
+        --                     stripPrefixOverlap mempty b ≡ b
+        --                     stripPrefixOverlap mempty b ≡ b
+
+    , mergeNonNullWithNonNull =
+        withBoth C.stripPrefixOverlap
+    }
 
 -- | /Strips/ from the second map its /greatest suffix overlap/ with prefixes
 --   of the first map.
@@ -1913,10 +1979,28 @@ stripSuffixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripSuffixOverlap = merge
-    (dropNonNull)
-    (keepNonNull)
-    (withNonNullPair C.stripSuffixOverlap)
+stripSuffixOverlap = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNull
+        -- Justification:
+        --
+        -- stripSuffixOverlap b a      <> overlap a      b ≡ a
+        -- stripSuffixOverlap b mempty <> overlap mempty b ≡ mempty
+        -- stripSuffixOverlap b mempty <>         mempty   ≡ mempty
+        -- stripSuffixOverlap b mempty                     ≡ mempty
+
+    , mergeNullWithNonNull =
+        keepNonNull
+        -- Justification:
+        --
+        -- stripSuffixOverlap b      a <> overlap a b      ≡ a
+        -- stripSuffixOverlap mempty a <> overlap a mempty ≡ a
+        -- stripSuffixOverlap mempty a <>           mempty ≡ a
+        -- stripSuffixOverlap mempty a                     ≡ a
+
+    , mergeNonNullWithNonNull =
+        withBoth C.stripSuffixOverlap
+    }
 
 -- | Finds the /greatest overlap/ of two maps and /strips/ it from both maps.
 --
@@ -2042,10 +2126,24 @@ gcd
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-gcd = merge
-    (dropNonNull)
-    (dropNonNull)
-    (withNonNullPair C.gcd)
+gcd = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNull
+        -- Justification:
+        -- gcd a b      ≡ commonPrefix a b      ≡ commonSuffix a b
+        -- gcd a mempty ≡ commonPrefix a mempty ≡ commonSuffix a mempty
+        -- gcd a mempty ≡                mempty ≡                mempty
+
+    , mergeNullWithNonNull =
+        keepNull
+        -- Justification:
+        -- gcd a      b ≡ commonPrefix a      b ≡ commonSuffix a      b
+        -- gcd mempty b ≡ commonPrefix mempty b ≡ commonSuffix mempty b
+        -- gcd mempty b ≡              mempty   ≡              mempty
+
+    , mergeNonNullWithNonNull =
+        withBoth C.gcd
+    }
 
 --------------------------------------------------------------------------------
 -- Subtraction
@@ -2095,10 +2193,22 @@ minus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-minus = merge
-    (keepNonNull)
-    (withNonNull C.invert)
-    (withNonNullPair (C.~~))
+minus = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNonNull
+        -- Justification:
+        -- a ~~ mempty ≡ a
+
+    , mergeNullWithNonNull =
+        withNonNull C.invert
+        -- Justification:
+        -- a      ~~ b ≡ a      <> invert b
+        -- mempty ~~ b ≡ mempty <> invert b
+        -- mempty ~~ b ≡           invert b
+
+    , mergeNonNullWithNonNull =
+        withBoth (C.~~)
+    }
 
 -- | Performs /reductive subtraction/ of the second map from the first.
 --
@@ -2215,10 +2325,35 @@ minusMaybe
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-minusMaybe = mergeA
-    (keepNonNull)
-    (withNonNullRightA (</>))
-    (withNonNullPairA (</>))
+minusMaybe = mergeA MergeStrategy
+    { mergeNonNullWithNull =
+        keepNonNull
+        -- Justification:
+        --
+        -- According to laws for Reductive:
+        -- maybe a (b      <>) (a </> b     ) ≡       a
+        -- maybe a (mempty <>) (a </> mempty) ≡       a
+        -- maybe a (id       ) (a </> mempty) ≡       a
+        --                     (a </> mempty) ∈ {Just a, Nothing}
+        --
+        -- According to laws for LeftReductive and RightReductive:
+        -- isJust (a </> b     ) ≡ b      `isPrefixOf` a ≡ b      `isSuffixOf` a
+        -- isJust (a </> mempty) ≡ mempty `isPrefixOf` a ≡ mempty `isSuffixOf` a
+        --
+        -- According to laws for LeftReductive and RightReductive:
+        -- b      `isPrefixOf` (b      <> a)
+        -- mempty `isPrefixOf` (mempty <> a)
+        -- mempty `isPrefixOf`            a
+        --
+        -- Therefore:
+        -- a </> mempty ≡ Just a
+        --
+    , mergeNullWithNonNull =
+        withNonNullA (\v -> mempty </> v)
+
+    , mergeNonNullWithNonNull =
+        withBothA (</>)
+    }
 
 -- | Performs /monus subtraction/ of the second map from the first.
 --
@@ -2321,10 +2456,24 @@ monus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-monus = merge
-    (keepNonNull)
-    (dropNonNull)
-    (withNonNullPair (<\>))
+monus = merge MergeStrategy
+    { mergeNullWithNonNull =
+        keepNull
+        -- Justification:
+        -- mempty <\> a ≡ mempty
+
+    , mergeNonNullWithNull =
+        keepNonNull
+        -- Justification:
+        -- a      <> (b <\> a     ) ≡ b <> (a      <\> b)
+        -- mempty <> (b <\> mempty) ≡ b <> (mempty <\> a)
+        --            b <\> mempty  ≡ b <> (mempty <\> a)
+        --            b <\> mempty  ≡ b <>  mempty
+        --            b <\> mempty  ≡ b
+
+    , mergeNonNullWithNonNull =
+        withBoth (<\>)
+    }
 
 --------------------------------------------------------------------------------
 -- Inversion
@@ -2421,10 +2570,14 @@ intersectionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith f = merge
-    (dropNonNull)
-    (dropNonNull)
-    (withNonNullPair f)
+intersectionWith f = merge MergeStrategy
+    { mergeNullWithNonNull =
+        keepNull
+    , mergeNonNullWithNull =
+        keepNull
+    , mergeNonNullWithNonNull =
+        withBoth f
+    }
 
 intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
@@ -2432,10 +2585,14 @@ intersectionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithA f = mergeA
-    (dropNonNull)
-    (dropNonNull)
-    (withNonNullPairA f)
+intersectionWithA f = mergeA MergeStrategy
+    { mergeNullWithNonNull =
+        keepNull
+    , mergeNonNullWithNull =
+        keepNull
+    , mergeNonNullWithNonNull =
+        withBothA f
+    }
 
 --------------------------------------------------------------------------------
 -- Union
@@ -2447,10 +2604,14 @@ unionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-unionWith f = merge
-    (withNonNullLeft f)
-    (withNonNullRight f)
-    (withNonNullPair f)
+unionWith f = merge MergeStrategy
+    { mergeNullWithNonNull =
+        withNonNull (\v -> f mempty v)
+    , mergeNonNullWithNull =
+        withNonNull (\v -> f v mempty)
+    , mergeNonNullWithNonNull =
+        withBoth f
+    }
 
 unionWithA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
@@ -2458,10 +2619,14 @@ unionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithA f = mergeA
-    (withNonNullLeftA f)
-    (withNonNullRightA f)
-    (withNonNullPairA f)
+unionWithA f = mergeA MergeStrategy
+    { mergeNullWithNonNull =
+        withNonNullA (\v -> f mempty v)
+    , mergeNonNullWithNull =
+        withNonNullA (\v -> f v mempty)
+    , mergeNonNullWithNonNull =
+        withBothA f
+    }
 
 --------------------------------------------------------------------------------
 -- Merging
@@ -2470,97 +2635,75 @@ unionWithA f = mergeA
 type WhenOneSideNull f k v     v3 = Map.WhenMissing f k v     v3
 type WhenBothNonNull f k v1 v2 v3 = Map.WhenMatched f k v1 v2 v3
 
+data MergeStrategy f k v1 v2 v3 = MergeStrategy
+    { mergeNonNullWithNull    :: WhenOneSideNull f k v1    v3
+    , mergeNullWithNonNull    :: WhenOneSideNull f k    v2 v3
+    , mergeNonNullWithNonNull :: WhenBothNonNull f k v1 v2 v3
+    }
+
 merge
     :: Ord k
-    => WhenOneSideNull Identity k v1    v3
-    -> WhenOneSideNull Identity k    v2 v3
-    -> WhenBothNonNull Identity k v1 v2 v3
+    => MergeStrategy Identity k v1 v2 v3
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-merge whenNullRight whenNullLeft whenBothNonNull m1 m2 =
+merge strategy m1 m2 =
     MonoidMap $
         Map.merge
-            (whenNullRight)
-            (whenNullLeft)
-            (whenBothNonNull)
+            (strategy & mergeNonNullWithNull)
+            (strategy & mergeNullWithNonNull)
+            (strategy & mergeNonNullWithNonNull)
             (unMonoidMap m1)
             (unMonoidMap m2)
 
 mergeA
     :: (Applicative f, Ord k)
-    => WhenOneSideNull f k v1    v3
-    -> WhenOneSideNull f k    v2 v3
-    -> WhenBothNonNull f k v1 v2 v3
+    => MergeStrategy f k v1 v2 v3
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-mergeA whenNullRight whenNullLeft whenBothNonNull m1 m2 =
+mergeA strategy m1 m2 =
     MonoidMap <$>
         Map.mergeA
-            (whenNullRight)
-            (whenNullLeft)
-            (whenBothNonNull)
+            (strategy & mergeNonNullWithNull)
+            (strategy & mergeNullWithNonNull)
+            (strategy & mergeNonNullWithNonNull)
             (unMonoidMap m1)
             (unMonoidMap m2)
 
-dropNonNull
+keepNull
     :: Applicative f
     => WhenOneSideNull f k v1 v2
-dropNonNull = dropMissing
+keepNull = Map.dropMissing
 
 keepNonNull
     :: Applicative f
     => WhenOneSideNull f k v v
-keepNonNull = preserveMissing
+keepNonNull = Map.preserveMissing
 
 withNonNull
     :: (Applicative f, MonoidNull v2)
     => (v1 -> v2)
     -> WhenOneSideNull f k v1 v2
-withNonNull f = mapMaybeMissing $ \_k v -> guardNotNull $ f v
+withNonNull f = Map.mapMaybeMissing $ \_k v -> guardNotNull $ f v
 
 withNonNullA
     :: (Applicative f, MonoidNull v2)
     => (v1 -> f v2)
     -> WhenOneSideNull f k v1 v2
-withNonNullA f = traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
+withNonNullA f = Map.traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
 
-withNonNullLeft
-    :: (Applicative f, Monoid v2, MonoidNull v3)
-    => (v1 -> v2 -> v3)
-    -> WhenOneSideNull f k v1 v3
-withNonNullLeft f = withNonNull (\v -> f v mempty)
-
-withNonNullLeftA
-    :: (Applicative f, Monoid v2, MonoidNull v3)
-    => (v1 -> v2 -> f v3)
-    -> WhenOneSideNull f k v1 v3
-withNonNullLeftA f = withNonNullA (\v -> f v mempty)
-
-withNonNullRight
-    :: (Applicative f, Monoid v1, MonoidNull v3)
-    => (v1 -> v2 -> v3)
-    -> WhenOneSideNull f k v2 v3
-withNonNullRight f = withNonNull (\v -> f mempty v)
-
-withNonNullRightA
-    :: (Applicative f, Monoid v1, MonoidNull v3)
-    => (v1 -> v2 -> f v3)
-    -> WhenOneSideNull f k v2 v3
-withNonNullRightA f = withNonNullA (\v -> f mempty v)
-
-withNonNullPair
+withBoth
     :: (Applicative f, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -> WhenBothNonNull f k v1 v2 v3
-withNonNullPair f = zipWithMaybeMatched $ \_ v1 v2 -> guardNotNull $ f v1 v2
+withBoth f = Map.zipWithMaybeMatched $ \_k v1 v2 -> guardNotNull $ f v1 v2
 
-withNonNullPairA
+withBothA
     :: (Applicative f, MonoidNull v3)
     => (v1 -> v2 -> f v3)
-    -> Map.WhenMatched f k v1 v2 v3
-withNonNullPairA f = zipWithMaybeAMatched $ \_ v1 v2 -> guardNotNull <$> f v1 v2
+    -> WhenBothNonNull f k v1 v2 v3
+withBothA f = Map.zipWithMaybeAMatched $ \_k v1 v2 -> guardNotNull <$> f v1 v2
 
 --------------------------------------------------------------------------------
 -- Utilities
