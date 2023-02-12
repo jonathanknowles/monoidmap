@@ -139,8 +139,8 @@ test-suite test
         SpecHook
         Data.Total.MonoidMap.ClassSpec
         Data.Total.MonoidMap.ExampleSpec
+        Data.Total.MonoidMap.RecoveredMapSpec
         Data.Total.MonoidMap.TypeSpec
-        Data.Total.MonoidMap.Examples.RecoveredMapSpec
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
     type:
