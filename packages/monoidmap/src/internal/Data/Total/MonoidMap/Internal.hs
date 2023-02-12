@@ -122,15 +122,6 @@ import Data.Functor.Identity
     ( Identity )
 import Data.Group
     ( Abelian, Group )
-import Data.Map.Merge.Strict
-    ( dropMissing
-    , mapMaybeMissing
-    , mapMissing
-    , preserveMissing
-    , traverseMaybeMissing
-    , zipWithMaybeAMatched
-    , zipWithMaybeMatched
-    )
 import Data.Map.Strict
     ( Map, lookup )
 import Data.Maybe
@@ -2683,36 +2674,36 @@ mergeA strategy m1 m2 =
 keepNull
     :: Applicative f
     => WhenOneSideNull f k v1 v2
-keepNull = dropMissing
+keepNull = Map.dropMissing
 
 keepNonNull
     :: Applicative f
     => WhenOneSideNull f k v v
-keepNonNull = preserveMissing
+keepNonNull = Map.preserveMissing
 
 withNonNull
     :: (Applicative f, MonoidNull v2)
     => (v1 -> v2)
     -> WhenOneSideNull f k v1 v2
-withNonNull f = mapMaybeMissing $ \_k v -> guardNotNull $ f v
+withNonNull f = Map.mapMaybeMissing $ \_k v -> guardNotNull $ f v
 
 withNonNullA
     :: (Applicative f, MonoidNull v2)
     => (v1 -> f v2)
     -> WhenOneSideNull f k v1 v2
-withNonNullA f = traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
+withNonNullA f = Map.traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
 
 withBoth
     :: (Applicative f, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -> WhenBothNonNull f k v1 v2 v3
-withBoth f = zipWithMaybeMatched $ \_k v1 v2 -> guardNotNull $ f v1 v2
+withBoth f = Map.zipWithMaybeMatched $ \_k v1 v2 -> guardNotNull $ f v1 v2
 
 withBothA
     :: (Applicative f, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> WhenBothNonNull f k v1 v2 v3
-withBothA f = zipWithMaybeAMatched $ \_k v1 v2 -> guardNotNull <$> f v1 v2
+withBothA f = Map.zipWithMaybeAMatched $ \_k v1 v2 -> guardNotNull <$> f v1 v2
 
 --------------------------------------------------------------------------------
 -- Utilities
