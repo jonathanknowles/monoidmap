@@ -138,6 +138,7 @@ test-suite test
     other-modules:
         SpecHook
         Data.Total.MonoidMapSpec
+        Data.Total.MonoidMap.ExampleSpec
         Data.Total.MonoidMap.Examples.RecoveredMapSpec
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
