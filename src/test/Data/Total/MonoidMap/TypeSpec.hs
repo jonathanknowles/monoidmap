@@ -7,7 +7,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMapSpec
+module Data.Total.MonoidMap.TypeSpec
     where
 
 import Prelude
@@ -75,10 +75,7 @@ import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
-spec = specProperties
-
-specProperties :: Spec
-specProperties = describe "Properties" $ do
+spec = describe "Type properties" $ do
     specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
     specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
     specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
