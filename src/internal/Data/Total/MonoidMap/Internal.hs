@@ -2495,7 +2495,7 @@ monus = merge MergeStrategy
 -- Satisfies the following property:
 --
 -- @
--- 'get' k ('invert' m) '==' 'C.invert' ('get' k m2)
+-- 'get' k ('invert' m) '==' 'C.invert' ('get' k m)
 -- @
 --
 -- This function provides the definition of 'C.invert' for the 'MonoidMap'
