@@ -926,7 +926,7 @@ partitionValues f (MonoidMap m) =
 
 -- | Maps over the keys and values of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'map' f g '==' 'fromList' . 'fmap' ('B.bimap' f g) . 'toList'
@@ -941,7 +941,7 @@ map = mapWith (<>)
 
 -- | Maps over the keys and values of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'mapWith' c f g '==' 'fromListWith' c . 'fmap' ('B.bimap' f g) . 'toList'
@@ -957,7 +957,7 @@ mapWith combine fk fv = fromListWith combine . fmap (B.bimap fk fv) . toList
 
 -- | Maps over the keys of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'mapKeys' f '==' 'fromList' . 'fmap' ('B.first' f) . 'toList'
@@ -972,7 +972,7 @@ mapKeys = mapKeysWith (<>)
 
 -- | Maps over the keys of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'mapKeysWith' c f '==' 'fromListWith' c . 'fmap' ('B.first' f) . 'toList'
@@ -987,12 +987,21 @@ mapKeysWith
 mapKeysWith combine fk (MonoidMap m) =
     MonoidMap $ Map.filter (not . C.null) $ Map.mapKeysWith combine fk m
 
--- | Maps over the values of a 'MonoidMap'.
+-- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following properties for all functions __@f@__:
 --
 -- @
--- 'mapValues' f '==' 'fromList' . 'fmap' ('B.second' f) . 'toList'
+-- ('get' k m '==' 'mempty') ==> ('get' k ('mapValues' f m) '==' 'mempty'     )
+-- ('get' k m '/=' 'mempty') ==> ('get' k ('mapValues' f m) '==' f ('get' k m))
+-- @
+--
+-- If function __@f@__ is a /monoid homomorphism/, then the mapping is /total/
+-- for all possible keys __@k@__:
+--
+-- @
+-- (f 'mempty' '==' 'mempty') ==>
+--     (∀ k. 'get' k ('mapValues' f m) '==' f ('get' k m)))
 -- @
 --
 mapValues
@@ -1482,7 +1491,7 @@ stripSuffix = mergeA MergeStrategy
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k ('commonPrefix' m1 m2)
@@ -1540,7 +1549,7 @@ commonPrefix = merge MergeStrategy
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k ('commonSuffix' m1 m2)
@@ -2486,7 +2495,7 @@ monus = merge MergeStrategy
 -- Satisfies the following property:
 --
 -- @
--- 'get' k ('invert' m) '==' 'C.invert' ('get' k m2)
+-- 'get' k ('invert' m) '==' 'C.invert' ('get' k m)
 -- @
 --
 -- This function provides the definition of 'C.invert' for the 'MonoidMap'
