@@ -987,12 +987,21 @@ mapKeysWith
 mapKeysWith combine fk (MonoidMap m) =
     MonoidMap $ Map.filter (not . C.null) $ Map.mapKeysWith combine fk m
 
--- | Maps over the values of a 'MonoidMap'.
+-- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following properties for all functions __@f@__:
 --
 -- @
--- 'mapValues' f '==' 'fromList' . 'fmap' ('B.second' f) . 'toList'
+-- ('get' k m '==' 'mempty') ==> ('get' k ('mapValues' f m) '==' 'mempty'     )
+-- ('get' k m '/=' 'mempty') ==> ('get' k ('mapValues' f m) '==' f ('get' k m))
+-- @
+--
+-- If function __@f@__ is a /monoid homomorphism/, then the mapping is /total/
+-- for all possible keys __@k@__:
+--
+-- @
+-- (f 'mempty' '==' 'mempty') ==>
+--     (∀ k. 'get' k ('mapValues' f m) '==' f ('get' k m)))
 -- @
 --
 mapValues
