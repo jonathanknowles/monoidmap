@@ -926,7 +926,7 @@ partitionValues f (MonoidMap m) =
 
 -- | Maps over the keys and values of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'map' f g '==' 'fromList' . 'fmap' ('B.bimap' f g) . 'toList'
@@ -941,7 +941,7 @@ map = mapWith (<>)
 
 -- | Maps over the keys and values of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'mapWith' c f g '==' 'fromListWith' c . 'fmap' ('B.bimap' f g) . 'toList'
@@ -957,7 +957,7 @@ mapWith combine fk fv = fromListWith combine . fmap (B.bimap fk fv) . toList
 
 -- | Maps over the keys of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'mapKeys' f '==' 'fromList' . 'fmap' ('B.first' f) . 'toList'
@@ -972,7 +972,7 @@ mapKeys = mapKeysWith (<>)
 
 -- | Maps over the keys of a 'MonoidMap'.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'mapKeysWith' c f '==' 'fromListWith' c . 'fmap' ('B.first' f) . 'toList'
@@ -1491,7 +1491,7 @@ stripSuffix = mergeA MergeStrategy
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k ('commonPrefix' m1 m2)
@@ -1549,7 +1549,7 @@ commonPrefix = merge MergeStrategy
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
--- Satisifies the following property:
+-- Satisfies the following property:
 --
 -- @
 -- 'get' k ('commonSuffix' m1 m2)
