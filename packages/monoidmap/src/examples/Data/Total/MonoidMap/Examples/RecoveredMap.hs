@@ -33,7 +33,7 @@ singleton :: Ord k => k -> v -> Map k v
 singleton k = Map . MonoidMap.singleton k . pure
 
 fromList :: Ord k => [(k, v)] -> Map k v
-fromList = Map . MonoidMap.fromListWith const . fmap (fmap pure)
+fromList = Map . MonoidMap.fromListWith (const id) . fmap (fmap pure)
 
 toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
