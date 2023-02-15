@@ -272,7 +272,7 @@ prop_fromList_toMap kvs =
         "MonoidMap.nonNull m && nonNullCount m == Map.size o"
   where
     m = MonoidMap.fromList kvs
-    o = Map.fromListWith (<>) kvs
+    o = Map.fromListWith (flip (<>)) kvs
 
 prop_fromList_toList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -288,7 +288,7 @@ prop_fromList_toList kvs =
         "MonoidMap.nonNull m && nonNullCount m == Map.size o"
   where
     m = MonoidMap.fromList kvs
-    o = Map.fromListWith (<>) kvs
+    o = Map.fromListWith (flip (<>)) kvs
 
 prop_toList_fromList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
