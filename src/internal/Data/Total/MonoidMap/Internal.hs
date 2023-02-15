@@ -564,7 +564,7 @@ singleton k v = set k v mempty
 -- @
 --
 toList :: MonoidMap k v -> [(k, v)]
-toList = Map.toList . unMonoidMap
+toList = Map.toAscList . unMonoidMap
 
 -- | Converts a 'MonoidMap' to an ordinary 'Map'.
 --
