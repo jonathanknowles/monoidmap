@@ -497,9 +497,15 @@ empty = MonoidMap Map.empty
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '(<>)'.
+-- combined together with '(<>)' in the order that they appear in the list.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromList' kvs) '==' 'foldMap' 'snd' ('filter' (('==' k) . fst) kvs)
+-- @
+--
+-- Satisfies the following round-trip property:
 --
 -- @
 -- 'fromList' ('toList' m) '==' m
@@ -511,7 +517,8 @@ fromList = fromListWith (<>)
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with the given combination function.
+-- combined together with the given combination function in the order that they
+-- appear in the list.
 --
 fromListWith
     :: (Ord k, MonoidNull v)
@@ -519,7 +526,7 @@ fromListWith
     -- ^ Combination function with which to combine values for duplicate keys.
     -> [(k, v)]
     -> MonoidMap k v
-fromListWith f = fromMap . Map.fromListWith f
+fromListWith f = fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
@@ -564,7 +571,7 @@ singleton k v = set k v mempty
 -- @
 --
 toList :: MonoidMap k v -> [(k, v)]
-toList = Map.toList . unMonoidMap
+toList = Map.toAscList . unMonoidMap
 
 -- | Converts a 'MonoidMap' to an ordinary 'Map'.
 --
@@ -984,8 +991,10 @@ mapKeysWith
     -> (k1 -> k2)
     -> MonoidMap k1 v
     -> MonoidMap k2 v
-mapKeysWith combine fk (MonoidMap m) =
-    MonoidMap $ Map.filter (not . C.null) $ Map.mapKeysWith combine fk m
+mapKeysWith combine fk (MonoidMap m)
+    = MonoidMap
+    $ Map.filter (not . C.null)
+    $ Map.mapKeysWith (flip combine) fk m
 
 -- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
 --
