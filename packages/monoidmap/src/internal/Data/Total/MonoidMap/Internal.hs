@@ -497,9 +497,15 @@ empty = MonoidMap Map.empty
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '(<>)'.
+-- combined together with '(<>)' in the order that they appear in the list.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromList' kvs) '==' 'foldMap' 'snd' ('filter' (('==' k) . fst) kvs)
+-- @
+--
+-- Satisfies the following round-trip property:
 --
 -- @
 -- 'fromList' ('toList' m) '==' m
