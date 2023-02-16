@@ -56,7 +56,9 @@ import Test.QuickCheck
     , applyFun2
     , checkCoverage
     , choose
+    , coarbitraryIntegral
     , cover
+    , functionIntegral
     , listOf
     , oneof
     , scale
@@ -68,6 +70,7 @@ import Test.QuickCheck.Instances.Natural
 import Test.QuickCheck.Instances.Text
     ()
 
+import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -76,11 +79,11 @@ import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Type properties" $ do
-    specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
-    specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
-    specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
-    specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
-    specPropertiesFor (Proxy @Int) (Proxy @Text)
+    specPropertiesFor (Proxy @Key) (Proxy @(Set Key))
+    specPropertiesFor (Proxy @Key) (Proxy @(Set Natural))
+    specPropertiesFor (Proxy @Key) (Proxy @(Sum Key))
+    specPropertiesFor (Proxy @Key) (Proxy @(Sum Natural))
+    specPropertiesFor (Proxy @Key) (Proxy @Text)
 
 specPropertiesFor
     :: forall k v. () =>
@@ -117,6 +120,9 @@ specPropertiesFor keyType valueType = do
     describe description $ do
 
         describe "Conversion to and from lists" $ do
+            it "prop_fromList_get" $
+                prop_fromList_get
+                    @k @v & property
             it "prop_fromList_toMap" $
                 prop_fromList_toMap
                     @k @v & property
@@ -245,6 +251,9 @@ specPropertiesFor keyType valueType = do
             it "prop_mapKeys_asList" $
                 prop_mapKeys_asList
                     @k @v & property
+            it "prop_mapKeys_get" $
+                prop_mapKeys_get
+                    @k @v & property
             it "prop_mapKeysWith_asList" $
                 prop_mapKeysWith_asList
                     @k @v & property
@@ -255,6 +264,31 @@ specPropertiesFor keyType valueType = do
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
+
+prop_fromList_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => [(k, v)]
+    -> k
+    -> Property
+prop_fromList_get kvs k =
+    MonoidMap.get k (MonoidMap.fromList kvs)
+        ===
+        F.foldMap snd (filter ((== k) . fst) kvs)
+    & cover 2
+        (matchingKeyCount == 0)
+        "matchingKeyCount == 0"
+    & cover 2
+        (matchingKeyCount == 1)
+        "matchingKeyCount == 1"
+    & cover 2
+        (matchingKeyCount == 2)
+        "matchingKeyCount == 2"
+    & cover 2
+        (matchingKeyCount >= 3)
+        "matchingKeyCount >= 3"
+  where
+    matchingKeyCount =
+        length $ filter ((== k) . fst) kvs
 
 prop_fromList_toMap
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -270,7 +304,7 @@ prop_fromList_toMap kvs =
         "MonoidMap.nonNull m && nonNullCount m == Map.size o"
   where
     m = MonoidMap.fromList kvs
-    o = Map.fromListWith (<>) kvs
+    o = Map.fromListWith (flip (<>)) kvs
 
 prop_fromList_toList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -286,7 +320,7 @@ prop_fromList_toList kvs =
         "MonoidMap.nonNull m && nonNullCount m == Map.size o"
   where
     m = MonoidMap.fromList kvs
-    o = Map.fromListWith (<>) kvs
+    o = Map.fromListWith (flip (<>)) kvs
 
 prop_toList_fromList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -857,6 +891,25 @@ prop_mapKeys_asList (applyFun -> f) m =
   where
     n = MonoidMap.mapKeys f m
 
+prop_mapKeys_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun k k
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_mapKeys_get (applyFun -> f) k m =
+    MonoidMap.get k (MonoidMap.mapKeys f m)
+        ===
+        F.foldMap
+            (`MonoidMap.get` m)
+            (Set.filter ((==) k . f) (MonoidMap.nonNullKeys m))
+    & cover 2
+        (MonoidMap.nullKey k (MonoidMap.mapKeys f m))
+        "MonoidMap.nullKey k (MonoidMap.mapKeys f m)"
+    & cover 2
+        (MonoidMap.nonNullKey k (MonoidMap.mapKeys f m))
+        "MonoidMap.nonNullKey k (MonoidMap.mapKeys f m)"
+
 prop_mapKeysWith_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => Fun (v, v) v
@@ -1000,3 +1053,20 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+
+--------------------------------------------------------------------------------
+-- Test types
+--------------------------------------------------------------------------------
+
+newtype Key = Key Int
+    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
+
+instance Arbitrary Key where
+    arbitrary = Key <$> choose (0, 15)
+    shrink (Key k) = Key <$> shrink k
+
+instance CoArbitrary Key where
+    coarbitrary = coarbitraryIntegral
+
+instance Function Key where
+    function = functionIntegral
