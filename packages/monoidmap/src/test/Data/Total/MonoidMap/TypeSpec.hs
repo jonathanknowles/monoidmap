@@ -70,6 +70,7 @@ import Test.QuickCheck.Instances.Natural
 import Test.QuickCheck.Instances.Text
     ()
 
+import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -119,6 +120,9 @@ specPropertiesFor keyType valueType = do
     describe description $ do
 
         describe "Conversion to and from lists" $ do
+            it "prop_fromList_get" $
+                prop_fromList_get
+                    @k @v & property
             it "prop_fromList_toMap" $
                 prop_fromList_toMap
                     @k @v & property
@@ -257,6 +261,31 @@ specPropertiesFor keyType valueType = do
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
+
+prop_fromList_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => [(k, v)]
+    -> k
+    -> Property
+prop_fromList_get kvs k =
+    MonoidMap.get k (MonoidMap.fromList kvs)
+        ===
+        F.foldMap snd (filter ((== k) . fst) kvs)
+    & cover 2
+        (matchingKeyCount == 0)
+        "matchingKeyCount == 0"
+    & cover 2
+        (matchingKeyCount == 1)
+        "matchingKeyCount == 1"
+    & cover 2
+        (matchingKeyCount == 2)
+        "matchingKeyCount == 2"
+    & cover 2
+        (matchingKeyCount >= 3)
+        "matchingKeyCount >= 3"
+  where
+    matchingKeyCount =
+        length $ filter ((== k) . fst) kvs
 
 prop_fromList_toMap
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
