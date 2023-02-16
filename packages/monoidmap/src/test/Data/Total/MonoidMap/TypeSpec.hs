@@ -56,7 +56,9 @@ import Test.QuickCheck
     , applyFun2
     , checkCoverage
     , choose
+    , coarbitraryIntegral
     , cover
+    , functionIntegral
     , listOf
     , oneof
     , scale
@@ -76,11 +78,11 @@ import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Type properties" $ do
-    specPropertiesFor (Proxy @Int) (Proxy @(Set Int))
-    specPropertiesFor (Proxy @Int) (Proxy @(Set Natural))
-    specPropertiesFor (Proxy @Int) (Proxy @(Sum Int))
-    specPropertiesFor (Proxy @Int) (Proxy @(Sum Natural))
-    specPropertiesFor (Proxy @Int) (Proxy @Text)
+    specPropertiesFor (Proxy @Key) (Proxy @(Set Key))
+    specPropertiesFor (Proxy @Key) (Proxy @(Set Natural))
+    specPropertiesFor (Proxy @Key) (Proxy @(Sum Key))
+    specPropertiesFor (Proxy @Key) (Proxy @(Sum Natural))
+    specPropertiesFor (Proxy @Key) (Proxy @Text)
 
 specPropertiesFor
     :: forall k v. () =>
@@ -1000,3 +1002,20 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+
+--------------------------------------------------------------------------------
+-- Test types
+--------------------------------------------------------------------------------
+
+newtype Key = Key Int
+    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
+
+instance Arbitrary Key where
+    arbitrary = Key <$> choose (0, 15)
+    shrink (Key k) = Key <$> shrink k
+
+instance CoArbitrary Key where
+    coarbitrary = coarbitraryIntegral
+
+instance Function Key where
+    function = functionIntegral
