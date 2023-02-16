@@ -517,7 +517,8 @@ fromList = fromListWith (<>)
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with the given combination function.
+-- combined together with the given combination function in the order that they
+-- appear in the list.
 --
 fromListWith
     :: (Ord k, MonoidNull v)
