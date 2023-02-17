@@ -539,7 +539,7 @@ fromListWith f = fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
