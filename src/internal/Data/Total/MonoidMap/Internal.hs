@@ -574,7 +574,7 @@ singleton k v = set k v mempty
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
--- Satisfies the following property:
+-- Satisfies the following round-trip property:
 --
 -- @
 -- 'fromList' ('toList' m) '==' m
@@ -587,7 +587,7 @@ toList = Map.toAscList . unMonoidMap
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
--- Satisfies the following property:
+-- Satisfies the following round-trip property:
 --
 -- @
 -- 'fromMap' ('toMap' m) == m
