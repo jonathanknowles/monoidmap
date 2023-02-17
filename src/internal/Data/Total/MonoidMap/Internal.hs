@@ -511,6 +511,15 @@ empty = MonoidMap Map.empty
 -- 'fromList' ('toList' m) '==' m
 -- @
 --
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> 'fromList' [(1,"a"), (2,"x"), (1,"b"), (2,"y"), (1,"c"), (2,"z")]
+-- 'fromList' [(1,"abc"), (2,"xyz")]
+-- @
+--
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
