@@ -54,6 +54,11 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Examples" $ do
 
+    describe "Fundamental" $ do
+
+        exampleSpec_fromList_String
+        exampleSpec_toList_String
+
     describe "Semigroup" $ do
 
         exampleSpec_Semigroup_mappend_String
@@ -113,7 +118,43 @@ spec = describe "Examples" $ do
         exampleSpec_Monus_monus_Sum_Natural
 
 --------------------------------------------------------------------------------
--- Unit tests: Semigroup
+-- Fundamental
+--------------------------------------------------------------------------------
+
+exampleSpec_fromList_String :: Spec
+exampleSpec_fromList_String = unitTestSpec
+    "MonoidMap.fromList (String)"
+    "MonoidMap.fromList"
+    (MonoidMap.fromList)
+    (exampleData_fromList_String)
+
+exampleData_fromList_String :: UnitTestData1
+    [(Int, String)]
+    (MonoidMap Int String)
+exampleData_fromList_String = unitTestData1
+    [ ( [(1, "a"), (2, "x"), (1, "b"), (2, "y"), (1, "c"), (2, "z")]
+      , [(1, "abc"), (2, "xyz")]
+      )
+    ]
+
+exampleSpec_toList_String :: Spec
+exampleSpec_toList_String = unitTestSpec
+    "MonoidMap.toList (String)"
+    "MonoidMap.toList"
+    (MonoidMap.toList)
+    (exampleData_toList_String)
+
+exampleData_toList_String :: UnitTestData1
+    (MonoidMap Int String)
+    [(Int, String)]
+exampleData_toList_String = unitTestData1
+    [ ( [(3, "z"), (2, "y"), (1, "x")]
+      , [(1, "x"), (2, "y"), (3, "z")]
+      )
+    ]
+
+--------------------------------------------------------------------------------
+-- Semigroup
 --------------------------------------------------------------------------------
 
 exampleSpec_Semigroup_mappend_String :: Spec
@@ -157,7 +198,7 @@ exampleData_Semigroup_concat_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: Group
+-- Group
 --------------------------------------------------------------------------------
 
 exampleSpec_Group_invert_Product_Rational :: Spec
@@ -335,7 +376,7 @@ exampleData_Group_subtract_Sum_Integer = unitTestData2
     m = MonoidMap.fromList . zip [A ..] . fmap Sum
 
 --------------------------------------------------------------------------------
--- Unit tests: Reductive
+-- Reductive
 --------------------------------------------------------------------------------
 
 exampleSpec_Reductive_isPrefixOf_String :: Spec
@@ -554,7 +595,7 @@ exampleData_Reductive_stripSuffix_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: LeftGCDMonoid
+-- LeftGCDMonoid
 --------------------------------------------------------------------------------
 
 exampleSpec_LeftGCDMonoid_commonPrefix_String :: Spec
@@ -738,7 +779,7 @@ exampleData_LeftGCDMonoid_stripCommonPrefix_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: RightGCDMonoid
+-- RightGCDMonoid
 --------------------------------------------------------------------------------
 
 exampleSpec_RightGCDMonoid_commonSuffix_String :: Spec
@@ -932,7 +973,7 @@ exampleData_RightGCDMonoid_stripCommonSuffix_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: OverlappingGCDMonoid
+-- OverlappingGCDMonoid
 --------------------------------------------------------------------------------
 
 exampleSpec_OverlappingGCDMonoid_overlap_String :: Spec
@@ -1106,7 +1147,7 @@ exampleData_OverlappingGCDMonoid_stripSuffixOverlap_Sum_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
--- Unit tests: GCDMonoid
+-- GCDMonoid
 --------------------------------------------------------------------------------
 
 exampleSpec_GCDMonoid_gcd_Product_Natural :: Spec
@@ -1218,7 +1259,7 @@ exampleData_GCDMonoid_gcd_Set_Natural = unitTestData2
     m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
 
 --------------------------------------------------------------------------------
--- Unit tests: Monus
+-- Monus
 --------------------------------------------------------------------------------
 
 exampleSpec_Monus_monus_Set_Natural :: Spec

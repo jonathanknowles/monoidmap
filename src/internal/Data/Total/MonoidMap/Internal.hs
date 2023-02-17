@@ -482,7 +482,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 
 -- | The empty 'MonoidMap'.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k 'empty' == 'mempty'
@@ -497,7 +497,7 @@ empty = MonoidMap Map.empty
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '(<>)' in the order that they appear in the list.
+-- combined together with '(<>)', in the order that they appear in the list.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -511,14 +511,23 @@ empty = MonoidMap Map.empty
 -- 'fromList' ('toList' m) '==' m
 -- @
 --
+-- === __Examples__
+--
+-- With 'String' values:
+--
+-- @
+-- >>> 'fromList' [(1,"a"), (2,"x"), (1,"b"), (2,"y"), (1,"c"), (2,"z")]
+-- 'fromList' [(1,"abc"), (2,"xyz")]
+-- @
+--
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with the given combination function in the order that they
--- appear in the list.
+-- combined together with the given combination function, in the order that
+-- they appear in the list.
 --
 fromListWith
     :: (Ord k, MonoidNull v)
@@ -530,7 +539,7 @@ fromListWith f = fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
@@ -560,11 +569,12 @@ singleton k v = set k v mempty
 -- Deconstruction
 --------------------------------------------------------------------------------
 
--- | Converts a 'MonoidMap' to a list of key-value pairs.
+-- | Converts a 'MonoidMap' to a list of key-value pairs, where the keys are in
+--   ascending order.
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
--- Satisfies the following property:
+-- Satisfies the following round-trip property:
 --
 -- @
 -- 'fromList' ('toList' m) '==' m
@@ -577,7 +587,7 @@ toList = Map.toAscList . unMonoidMap
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
--- Satisfies the following property:
+-- Satisfies the following round-trip property:
 --
 -- @
 -- 'fromMap' ('toMap' m) == m
