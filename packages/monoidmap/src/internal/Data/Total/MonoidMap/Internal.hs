@@ -482,7 +482,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 
 -- | The empty 'MonoidMap'.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k 'empty' == 'mempty'
