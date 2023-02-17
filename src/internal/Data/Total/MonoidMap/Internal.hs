@@ -569,7 +569,8 @@ singleton k v = set k v mempty
 -- Deconstruction
 --------------------------------------------------------------------------------
 
--- | Converts a 'MonoidMap' to a list of key-value pairs.
+-- | Converts a 'MonoidMap' to a list of key-value pairs, where the keys are in
+--   ascending order.
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
