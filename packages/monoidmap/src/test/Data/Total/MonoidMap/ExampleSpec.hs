@@ -57,6 +57,7 @@ spec = describe "Examples" $ do
     describe "Fundamental" $ do
 
         exampleSpec_fromList_String
+        exampleSpec_toList_String
 
     describe "Semigroup" $ do
 
@@ -133,6 +134,22 @@ exampleData_fromList_String :: UnitTestData1
 exampleData_fromList_String = unitTestData1
     [ ( [(1, "a"), (2, "x"), (1, "b"), (2, "y"), (1, "c"), (2, "z")]
       , [(1, "abc"), (2, "xyz")]
+      )
+    ]
+
+exampleSpec_toList_String :: Spec
+exampleSpec_toList_String = unitTestSpec
+    "MonoidMap.toList (String)"
+    "MonoidMap.toList"
+    (MonoidMap.toList)
+    (exampleData_toList_String)
+
+exampleData_toList_String :: UnitTestData1
+    (MonoidMap Int String)
+    [(Int, String)]
+exampleData_toList_String = unitTestData1
+    [ ( [(3, "z"), (2, "y"), (1, "x")]
+      , [(1, "x"), (2, "y"), (3, "z")]
       )
     ]
 
