@@ -54,6 +54,10 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Examples" $ do
 
+    describe "Fundamental" $ do
+
+        exampleSpec_fromList_String
+
     describe "Semigroup" $ do
 
         exampleSpec_Semigroup_mappend_String
@@ -111,6 +115,26 @@ spec = describe "Examples" $ do
 
         exampleSpec_Monus_monus_Set_Natural
         exampleSpec_Monus_monus_Sum_Natural
+
+--------------------------------------------------------------------------------
+-- Fundamental
+--------------------------------------------------------------------------------
+
+exampleSpec_fromList_String :: Spec
+exampleSpec_fromList_String = unitTestSpec
+    "MonoidMap.fromList (String)"
+    "MonoidMap.fromList"
+    (MonoidMap.fromList)
+    (exampleData_fromList_String)
+
+exampleData_fromList_String :: UnitTestData1
+    [(Int, String)]
+    (MonoidMap Int String)
+exampleData_fromList_String = unitTestData1
+    [ ( [(1, "a"), (2, "x"), (1, "b"), (2, "y"), (1, "c"), (2, "z")]
+      , [(1, "abc"), (2, "xyz")]
+      )
+    ]
 
 --------------------------------------------------------------------------------
 -- Semigroup
