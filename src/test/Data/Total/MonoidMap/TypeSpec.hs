@@ -780,13 +780,13 @@ prop_partition_filter
     -> MonoidMap k v
     -> Property
 prop_partition_filter (applyFun -> f) m =
-    MonoidMap.partition f m === (x, y)
+    MonoidMap.partition f m === (m1, m2)
     & cover 1
-        (nonNullCount x /= 0 && nonNullCount y /= 0)
-        "nonNullCount x /= 0 && nonNullCount y /= 0"
+        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
+        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
   where
-    x = MonoidMap.filter f m
-    y = MonoidMap.filter (not . f) m
+    m1 = MonoidMap.filter f m
+    m2 = MonoidMap.filter (not . f) m
 
 prop_partition_append
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -822,13 +822,13 @@ prop_partitionKeys_filterKeys
     -> MonoidMap k v
     -> Property
 prop_partitionKeys_filterKeys (applyFun -> f) m =
-    MonoidMap.partitionKeys f m === (x, y)
+    MonoidMap.partitionKeys f m === (m1, m2)
     & cover 1
-        (nonNullCount x /= 0 && nonNullCount y /= 0)
-        "nonNullCount x /= 0 && nonNullCount y /= 0"
+        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
+        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
   where
-    x = MonoidMap.filterKeys f m
-    y = MonoidMap.filterKeys (not . f) m
+    m1 = MonoidMap.filterKeys f m
+    m2 = MonoidMap.filterKeys (not . f) m
 
 prop_partitionKeys_append
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -864,13 +864,13 @@ prop_partitionWithKey_filterWithKey
     -> MonoidMap k v
     -> Property
 prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
-    MonoidMap.partitionWithKey f m === (x, y)
+    MonoidMap.partitionWithKey f m === (m1, m2)
     & cover 1
-        (nonNullCount x /= 0 && nonNullCount y /= 0)
-        "nonNullCount x /= 0 && nonNullCount y /= 0"
+        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
+        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
   where
-    x = MonoidMap.filterWithKey f m
-    y = MonoidMap.filterWithKey ((fmap . fmap) not f) m
+    m1 = MonoidMap.filterWithKey f m
+    m2 = MonoidMap.filterWithKey ((fmap . fmap) not f) m
 
 prop_partitionWithKey_append
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
