@@ -238,6 +238,9 @@ specPropertiesFor keyType valueType = do
             it "prop_partitionKeys_append" $
                 prop_partitionKeys_append
                     @k @v & property
+            it "prop_partitionKeys_disjoint" $
+                prop_partitionKeys_disjoint
+                    @k @v & property
             it "prop_partitionWithKey_filterWithKey" $
                 prop_partitionWithKey_filterWithKey
                     @k @v & property
@@ -831,6 +834,21 @@ prop_partitionKeys_append
     -> Property
 prop_partitionKeys_append (applyFun -> f) m =
     m1 <> m2 === m
+    & cover 1
+        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
+        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+  where
+    (m1, m2) = MonoidMap.partitionKeys f m
+
+prop_partitionKeys_disjoint
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun k Bool
+    -> MonoidMap k v
+    -> Property
+prop_partitionKeys_disjoint (applyFun -> f) m =
+    Set.disjoint
+        (MonoidMap.nonNullKeys m1)
+        (MonoidMap.nonNullKeys m2)
     & cover 1
         (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
         "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
