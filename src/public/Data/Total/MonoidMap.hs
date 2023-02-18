@@ -52,9 +52,9 @@ module Data.Total.MonoidMap
     , partitionValues
 
     -- * Mapping
+    , map
     , mapKeys
     , mapKeysWith
-    , mapValues
 
     -- * Association
     , append

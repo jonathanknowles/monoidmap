@@ -58,9 +58,9 @@ module Data.Total.MonoidMap.Internal
     , partitionValues
 
     -- * Mapping
+    , map
     , mapKeys
     , mapKeysWith
-    , mapValues
 
     -- * Association
     , append
@@ -939,6 +939,29 @@ partitionValues f (MonoidMap m) =
 -- Mapping
 --------------------------------------------------------------------------------
 
+-- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
+--
+-- Satisfies the following properties for all functions __@f@__:
+--
+-- @
+-- ('get' k m '==' 'mempty') ==> ('get' k ('map' f m) '==' 'mempty'     )
+-- ('get' k m '/=' 'mempty') ==> ('get' k ('map' f m) '==' f ('get' k m))
+-- @
+--
+-- If function __@f@__ is a /monoid homomorphism/, then the mapping is /total/
+-- for all possible keys __@k@__:
+--
+-- @
+-- (f 'mempty' '==' 'mempty') ==> (∀ k. 'get' k ('map' f m) '==' f ('get' k m)))
+-- @
+--
+map
+    :: MonoidNull v2
+    => (v1 -> v2)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
+
 -- | Maps over the keys of a 'MonoidMap'.
 --
 -- Satisfies the following property:
@@ -972,30 +995,6 @@ mapKeysWith combine fk (MonoidMap m)
     = MonoidMap
     $ Map.filter (not . C.null)
     $ Map.mapKeysWith (flip combine) fk m
-
--- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
---
--- Satisfies the following properties for all functions __@f@__:
---
--- @
--- ('get' k m '==' 'mempty') ==> ('get' k ('mapValues' f m) '==' 'mempty'     )
--- ('get' k m '/=' 'mempty') ==> ('get' k ('mapValues' f m) '==' f ('get' k m))
--- @
---
--- If function __@f@__ is a /monoid homomorphism/, then the mapping is /total/
--- for all possible keys __@k@__:
---
--- @
--- (f 'mempty' '==' 'mempty') ==>
---     (∀ k. 'get' k ('mapValues' f m) '==' f ('get' k m)))
--- @
---
-mapValues
-    :: MonoidNull v2
-    => (v1 -> v2)
-    -> MonoidMap k v1
-    -> MonoidMap k v2
-mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 --------------------------------------------------------------------------------
 -- Association
@@ -2505,7 +2504,7 @@ invert
     :: (Ord k, MonoidNull v, Group v)
     => MonoidMap k v
     -> MonoidMap k v
-invert = mapValues C.invert
+invert = map C.invert
 
 --------------------------------------------------------------------------------
 -- Exponentiation
@@ -2553,7 +2552,7 @@ power
     => MonoidMap k v
     -> i
     -> MonoidMap k v
-power m i = mapValues (`C.pow` i) m
+power m i = map (`C.pow` i) m
 
 --------------------------------------------------------------------------------
 -- Intersection
