@@ -495,7 +495,7 @@ empty = MonoidMap Map.empty
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '(<>)', in the order that they appear in the list.
+-- combined together in the order that they appear with the '(<>)' operator.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -524,13 +524,13 @@ fromList = fromListWith (<>)
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with the given combination function, in the order that
--- they appear in the list.
+-- combined together in the order that they appear with the given combination
+-- function.
 --
 fromListWith
     :: (Ord k, MonoidNull v)
     => (v -> v -> v)
-    -- ^ Combination function with which to combine values for duplicate keys.
+    -- ^ Function with which to combine values for duplicate keys.
     -> [(k, v)]
     -> MonoidMap k v
 fromListWith f = fromMap . Map.fromListWith (flip f)
@@ -999,6 +999,7 @@ mapKeys = mapKeysWith (<>)
 mapKeysWith
     :: (Ord k2, MonoidNull v)
     => (v -> v -> v)
+    -- ^ Function with which to combine values for duplicate keys.
     -> (k1 -> k2)
     -> MonoidMap k1 v
     -> MonoidMap k2 v
