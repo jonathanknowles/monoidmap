@@ -220,8 +220,8 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Partitioning" $ do
-            it "prop_partition_filterWithKey" $
-                prop_partition_filterWithKey
+            it "prop_partitionWithKey_filterWithKey" $
+                prop_partitionWithKey_filterWithKey
                     @k @v & property
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
@@ -716,13 +716,13 @@ prop_filterValues_toList (applyFun -> f) m =
 -- Partitioning
 --------------------------------------------------------------------------------
 
-prop_partition_filterWithKey
+prop_partitionWithKey_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
     => Fun (k, v) Bool
     -> MonoidMap k v
     -> Property
-prop_partition_filterWithKey (applyFun2 -> f) m =
-    MonoidMap.partition f m === (x, y)
+prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
+    MonoidMap.partitionWithKey f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
