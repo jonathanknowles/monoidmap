@@ -984,7 +984,11 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
--- | Maps over the keys of a 'MonoidMap'.
+-- | Applies a function to all non-null keys of a 'MonoidMap'.
+--
+-- If the resultant map would contain more than one value for the same key,
+-- values are combined together in ascending key order with the given
+-- combination function.
 --
 -- Satisfies the following property:
 --
