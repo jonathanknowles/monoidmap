@@ -50,19 +50,17 @@ module Data.Total.MonoidMap.Internal
     -- * Filtering
     , filter
     , filterKeys
-    , filterValues
+    , filterWithKey
 
     -- * Partitioning
     , partition
     , partitionKeys
-    , partitionValues
+    , partitionWithKey
 
     -- * Mapping
     , map
-    , mapWith
     , mapKeys
     , mapKeysWith
-    , mapValues
 
     -- * Association
     , append
@@ -149,6 +147,7 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
+import qualified Data.List as L
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -497,12 +496,13 @@ empty = MonoidMap Map.empty
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with '(<>)', in the order that they appear in the list.
+-- combined together in the order that they appear with the '(<>)' operator.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('fromList' kvs) '==' 'foldMap' 'snd' ('filter' (('==' k) . fst) kvs)
+-- 'get' k ('fromList' kvs) '=='
+--     'foldMap' 'snd' ('L.filter' (('==' k) . fst) kvs)
 -- @
 --
 -- Satisfies the following round-trip property:
@@ -526,16 +526,19 @@ fromList = fromListWith (<>)
 -- | Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together with the given combination function, in the order that
--- they appear in the list.
+-- combined together in the order that they appear with the given combination
+-- function.
 --
 fromListWith
     :: (Ord k, MonoidNull v)
     => (v -> v -> v)
-    -- ^ Combination function with which to combine values for duplicate keys.
+    -- ^ Function with which to combine values for duplicate keys.
     -> [(k, v)]
     -> MonoidMap k v
-fromListWith f = fromMap . Map.fromListWith (flip f)
+fromListWith f =
+    -- The 'Map.fromListWith' function combines values for duplicate keys in
+    -- /reverse order/, so we must flip the provided combination function.
+    fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
@@ -792,112 +795,130 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters the non-'C.null' entries of a map according to a predicate on
---   /keys and values/.
+-- | Filters a map according to a predicate on /keys and values/.
 --
--- The result includes just the subset of non-'C.null' entries that /satisfy/
--- the predicate.
---
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'toList' ('filter' f m) '==' 'List.filter' ('uncurry' f) ('toList' m)
+-- 'get' k ('filterWithKey' f m) '=='
+--     if f k ('get' k m)
+--     then 'get' k m
+--     else 'mempty'
 -- @
 --
-filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
+-- The resulting map is identical to that obtained by constructing a map from a
+-- filtered list of key-value pairs:
+--
+-- @
+-- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
+-- @
+--
+filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
--- | Filters the non-'C.null' entries of a map according to a predicate on
---   /keys/.
+-- | Filters a map according to a predicate on /keys/.
 --
--- The result includes just the subset of non-'C.null' entries that /satisfy/
--- the predicate.
---
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'filterKeys' f m '==' 'filter' (\\k _ -> f k) m
+-- 'get' k ('filterKeys' f m) '=='
+--     if f k
+--     then 'get' k m
+--     else 'mempty'
+-- @
+--
+-- The resulting map is identical to that obtained by constructing a map from a
+-- filtered list of key-value pairs:
+--
+-- @
+-- 'filter' f m '==' 'fromList' ('L.filter' (f . 'fst') ('toList' m))
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters the non-'C.null' entries of a map according to a predicate on
---   /values/.
+-- | Filters a map according to a predicate on /values/.
 --
--- The result includes just the subset of non-'C.null' entries that /satisfy/
--- the predicate.
---
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'filterValues' f m '==' 'filter' (\\_ v -> f v) m
+-- 'get' k ('filter' f m) '=='
+--     if f ('get' k m)
+--     then 'get' k m
+--     else 'mempty'
 -- @
 --
-filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
+-- The resulting map is identical to that obtained by constructing a map from a
+-- filtered list of key-value pairs:
+--
+-- @
+-- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
+-- @
+--
+filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filter f (MonoidMap m) = MonoidMap $ Map.filter f m
 
 --------------------------------------------------------------------------------
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions the non-'C.null' entries of a map according to a predicate on
---   /keys and values/.
---
--- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
--- the predicate, and the /second/ map includes the subset of non-'C.null'
--- entries that /fail/ the predicate.
+-- | Partitions a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partition' f m '==' ('filter' f m, 'filter' (('fmap' . 'fmap') 'not' f) m)
+-- 'partitionWithKey' f m '=='
+--     ( 'filterWithKey'   \    \   \    \  \   \ f  m
+--     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
+--     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partition' f m '&'
---     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
+--     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partition' f m '&'
---     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
+--     'Set.disjoint'
+--         ('nonNullKeys' m1)
+--         ('nonNullKeys' m2)
 -- @
 --
-partition
+partitionWithKey
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partition f (MonoidMap m) =
+partitionWithKey f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
 
--- | Partitions the non-'C.null' entries of a map according to a predicate on
---   /keys/.
---
--- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
--- the predicate, and the /second/ map includes the subset of non-'C.null'
--- entries that /fail/ the predicate.
+-- | Partitions a map according to a predicate on /keys/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partitionKeys' f m '==' ('filterKeys' f m, 'filterKeys' ('not' . f) m)
+-- 'partitionKeys' f m '=='
+--     ( 'filterKeys'  \   \   f  m
+--     , 'filterKeys' ('not' . f) m
+--     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partitionKeys' f m '&'
---     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- 'partitionKeys' f m '&' \\(m1, m2) ->
+--     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partitionKeys' f m '&'
---     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
+-- 'partitionKeys' f m '&' \\(m1, m2) ->
+--     'Set.disjoint'
+--         ('nonNullKeys' m1)
+--         ('nonNullKeys' m2)
 -- @
 --
 partitionKeys
@@ -905,79 +926,77 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions the non-'C.null' entries of a map according to a predicate on
---   /values/.
---
--- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
--- the predicate, and the /second/ map includes the subset of non-'C.null'
--- entries that /fail/ the predicate.
+-- | Partitions a map according to a predicate on /values/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partitionValues' f m '==' ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- 'partition' f m '=='
+--     ( 'filter'  \   \   f  m
+--     , 'filter' ('not' . f) m
+--     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partitionValues' f m '&'
---     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- 'partition' f m '&' \\(m1, m2) ->
+--     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partitionValues' f m '&'
---     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
+-- 'partition' f m '&' \\(m1, m2) ->
+--     'Set.disjoint'
+--         ('nonNullKeys' m1)
+--         ('nonNullKeys' m2)
 -- @
 --
-partitionValues
-    :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partitionValues f (MonoidMap m) =
+partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partition f m
 
 --------------------------------------------------------------------------------
 -- Mapping
 --------------------------------------------------------------------------------
 
--- | Maps over the keys and values of a 'MonoidMap'.
+-- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
 --
--- Satisfies the following property:
+-- Satisfies the following properties for all functions __@f@__:
 --
 -- @
--- 'map' f g '==' 'fromList' . 'fmap' ('B.bimap' f g) . 'toList'
+-- ('get' k m '==' 'mempty') ==> ('get' k ('map' f m) '==' 'mempty'     )
+-- ('get' k m '/=' 'mempty') ==> ('get' k ('map' f m) '==' f ('get' k m))
 -- @
 --
-map :: (Ord k2, MonoidNull v2)
-    => (k1 -> k2)
-    -> (v1 -> v2)
-    -> MonoidMap k1 v1
-    -> MonoidMap k2 v2
-map = mapWith (<>)
+-- If function __@f@__ preserves 'C.null' values, then the mapping is /total/
+-- for all possible keys __@k@__:
+--
+-- @
+-- (f 'mempty' '==' 'mempty') ==> (∀ k. 'get' k ('map' f m) '==' f ('get' k m)))
+-- @
+--
+map
+    :: MonoidNull v2
+    => (v1 -> v2)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
--- | Maps over the keys and values of a 'MonoidMap'.
+-- | Applies a function to all non-null keys of a 'MonoidMap'.
+--
+-- If the resultant map would contain more than one value for the same key,
+-- values are combined together in ascending key order with the '(<>)'
+-- operator.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'mapWith' c f g '==' 'fromListWith' c . 'fmap' ('B.bimap' f g) . 'toList'
--- @
---
-mapWith :: (Ord k2, MonoidNull v2)
-    => (v2 -> v2 -> v2)
-    -> (k1 -> k2)
-    -> (v1 -> v2)
-    -> MonoidMap k1 v1
-    -> MonoidMap k2 v2
-mapWith combine fk fv = fromListWith combine . fmap (B.bimap fk fv) . toList
-
--- | Maps over the keys of a 'MonoidMap'.
---
--- Satisfies the following property:
---
--- @
--- 'mapKeys' f '==' 'fromList' . 'fmap' ('B.first' f) . 'toList'
+-- 'get' k ('mapKeys' f m) '=='
+--     'F.foldMap'
+--         ('`get`' m)
+--         ('Set.filter' (('==') k . f) ('nonNullKeys' m))
 -- @
 --
 mapKeys
@@ -987,7 +1006,11 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
--- | Maps over the keys of a 'MonoidMap'.
+-- | Applies a function to all non-null keys of a 'MonoidMap'.
+--
+-- If the resultant map would contain more than one value for the same key,
+-- values are combined together in ascending key order with the given
+-- combination function.
 --
 -- Satisfies the following property:
 --
@@ -998,37 +1021,16 @@ mapKeys = mapKeysWith (<>)
 mapKeysWith
     :: (Ord k2, MonoidNull v)
     => (v -> v -> v)
+    -- ^ Function with which to combine values for duplicate keys.
     -> (k1 -> k2)
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk (MonoidMap m)
+    -- The 'Map.mapKeysWith' function combines values for duplicate keys in
+    -- /descending order/, so we must flip the provided combination function.
     = MonoidMap
     $ Map.filter (not . C.null)
     $ Map.mapKeysWith (flip combine) fk m
-
--- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
---
--- Satisfies the following properties for all functions __@f@__:
---
--- @
--- ('get' k m '==' 'mempty') ==> ('get' k ('mapValues' f m) '==' 'mempty'     )
--- ('get' k m '/=' 'mempty') ==> ('get' k ('mapValues' f m) '==' f ('get' k m))
--- @
---
--- If function __@f@__ is a /monoid homomorphism/, then the mapping is /total/
--- for all possible keys __@k@__:
---
--- @
--- (f 'mempty' '==' 'mempty') ==>
---     (∀ k. 'get' k ('mapValues' f m) '==' f ('get' k m)))
--- @
---
-mapValues
-    :: MonoidNull v2
-    => (v1 -> v2)
-    -> MonoidMap k v1
-    -> MonoidMap k v2
-mapValues f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
 --------------------------------------------------------------------------------
 -- Association
@@ -1945,7 +1947,6 @@ stripPrefixOverlap = merge MergeStrategy
         -- overlap mempty b <> stripPrefixOverlap mempty b ≡ b
         --         mempty   <> stripPrefixOverlap mempty b ≡ b
         --                     stripPrefixOverlap mempty b ≡ b
-        --                     stripPrefixOverlap mempty b ≡ b
 
     , mergeNonNullWithNonNull =
         withBoth C.stripPrefixOverlap
@@ -2538,7 +2539,7 @@ invert
     :: (Ord k, MonoidNull v, Group v)
     => MonoidMap k v
     -> MonoidMap k v
-invert = mapValues C.invert
+invert = map C.invert
 
 --------------------------------------------------------------------------------
 -- Exponentiation
@@ -2586,7 +2587,7 @@ power
     => MonoidMap k v
     -> i
     -> MonoidMap k v
-power m i = mapValues (`C.pow` i) m
+power m i = map (`C.pow` i) m
 
 --------------------------------------------------------------------------------
 -- Intersection

@@ -44,19 +44,17 @@ module Data.Total.MonoidMap
     -- * Filtering
     , filter
     , filterKeys
-    , filterValues
+    , filterWithKey
 
     -- * Partitioning
     , partition
     , partitionKeys
-    , partitionValues
+    , partitionWithKey
 
     -- * Mapping
     , map
-    , mapWith
     , mapKeys
     , mapKeysWith
-    , mapValues
 
     -- * Association
     , append
