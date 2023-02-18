@@ -248,6 +248,9 @@ specPropertiesFor keyType valueType = do
             it "prop_map_get" $
                 prop_map_get
                     @k @v & property
+            it "prop_map_get_total" $
+                prop_map_get_total
+                    @k @v & property
             it "prop_mapKeys_asList" $
                 prop_mapKeys_asList
                     @k @v & property
@@ -875,6 +878,27 @@ prop_map_get (applyFun -> f) k m =
     & cover 2
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
+
+prop_map_get_total
+    :: forall k v. (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_map_get_total (applyFun -> g) k m =
+    MonoidMap.get k (MonoidMap.map f m) === f (MonoidMap.get k m)
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
+  where
+    -- A function that preserves null values:
+    f :: v -> v
+    f v
+        | v == mempty = mempty
+        | otherwise   = g v
 
 prop_mapKeys_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
