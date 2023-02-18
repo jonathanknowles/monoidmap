@@ -795,16 +795,22 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters the non-'C.null' entries of a map according to a predicate on
---   /keys and values/.
+-- | Filters a map according to a predicate on /keys and values/.
 --
--- The result includes just the subset of non-'C.null' entries that /satisfy/
--- the predicate.
---
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'toList' ('filterWithKey' f m) '==' 'L.filter' ('uncurry' f) ('toList' m)
+-- 'get' k ('filterWithKey' f m) '=='
+--     if f k ('get' k m)
+--     then 'get' k m
+--     else 'mempty'
+-- @
+--
+-- The resulting map is identical to that obtained by constructing a map from a
+-- filtered list of key-value pairs:
+--
+-- @
+-- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
 -- @
 --
 filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
