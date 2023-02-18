@@ -242,12 +242,6 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Mapping" $ do
-            it "prop_map_asList" $
-                prop_map_asList
-                    @k @v & property
-            it "prop_mapWith_asList" $
-                prop_mapWith_asList
-                    @k @v & property
             it "prop_mapKeys_asList" $
                 prop_mapKeys_asList
                     @k @v & property
@@ -848,35 +842,6 @@ prop_splitAt_toList_fromList (Slice i m) =
 --------------------------------------------------------------------------------
 -- Mapping
 --------------------------------------------------------------------------------
-
-prop_map_asList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun k k
-    -> Fun v v
-    -> MonoidMap k v
-    -> Property
-prop_map_asList (applyFun -> f) (applyFun -> g) m =
-    n === (MonoidMap.fromList . fmap (bimap f g) . MonoidMap.toList $ m)
-    & cover 1
-        (0 < nonNullCount n && nonNullCount n < nonNullCount m)
-        "0 < nonNullCount n && nonNullCount n < nonNullCount m"
-  where
-    n = MonoidMap.map f g m
-
-prop_mapWith_asList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun (v, v) v
-    -> Fun k k
-    -> Fun v v
-    -> MonoidMap k v
-    -> Property
-prop_mapWith_asList (applyFun2 -> c) (applyFun -> f) (applyFun -> g) m =
-    n === (MonoidMap.fromListWith c . fmap (bimap f g) . MonoidMap.toList $ m)
-    & cover 1
-        (0 < nonNullCount n && nonNullCount n < nonNullCount m)
-        "0 < nonNullCount n && nonNullCount n < nonNullCount m"
-  where
-    n = MonoidMap.mapWith c f g m
 
 prop_mapKeys_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)

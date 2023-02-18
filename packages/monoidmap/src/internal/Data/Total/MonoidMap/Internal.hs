@@ -58,8 +58,6 @@ module Data.Total.MonoidMap.Internal
     , partitionValues
 
     -- * Mapping
-    , map
-    , mapWith
     , mapKeys
     , mapKeysWith
     , mapValues
@@ -940,37 +938,6 @@ partitionValues f (MonoidMap m) =
 --------------------------------------------------------------------------------
 -- Mapping
 --------------------------------------------------------------------------------
-
--- | Maps over the keys and values of a 'MonoidMap'.
---
--- Satisfies the following property:
---
--- @
--- 'map' f g '==' 'fromList' . 'fmap' ('B.bimap' f g) . 'toList'
--- @
---
-map :: (Ord k2, MonoidNull v2)
-    => (k1 -> k2)
-    -> (v1 -> v2)
-    -> MonoidMap k1 v1
-    -> MonoidMap k2 v2
-map = mapWith (<>)
-
--- | Maps over the keys and values of a 'MonoidMap'.
---
--- Satisfies the following property:
---
--- @
--- 'mapWith' c f g '==' 'fromListWith' c . 'fmap' ('B.bimap' f g) . 'toList'
--- @
---
-mapWith :: (Ord k2, MonoidNull v2)
-    => (v2 -> v2 -> v2)
-    -> (k1 -> k2)
-    -> (v1 -> v2)
-    -> MonoidMap k1 v1
-    -> MonoidMap k2 v2
-mapWith combine fk fv = fromListWith combine . fmap (B.bimap fk fv) . toList
 
 -- | Maps over the keys of a 'MonoidMap'.
 --

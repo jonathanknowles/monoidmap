@@ -52,8 +52,6 @@ module Data.Total.MonoidMap
     , partitionValues
 
     -- * Mapping
-    , map
-    , mapWith
     , mapKeys
     , mapKeysWith
     , mapValues
