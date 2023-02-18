@@ -238,6 +238,9 @@ specPropertiesFor keyType valueType = do
             it "prop_partitionWithKey_filterWithKey" $
                 prop_partitionWithKey_filterWithKey
                     @k @v & property
+            it "prop_partitionWithKey_append" $
+                prop_partitionWithKey_append
+                    @k @v & property
 
         describe "Slicing" $ do
             it "prop_take_toList_fromList" $
@@ -829,6 +832,19 @@ prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
   where
     x = MonoidMap.filterWithKey f m
     y = MonoidMap.filterWithKey ((fmap . fmap) not f) m
+
+prop_partitionWithKey_append
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun (k, v) Bool
+    -> MonoidMap k v
+    -> Property
+prop_partitionWithKey_append (applyFun2 -> f) m =
+    m1 <> m2 === m
+    & cover 1
+        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
+        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+  where
+    (m1, m2) = MonoidMap.partitionWithKey f m
 
 --------------------------------------------------------------------------------
 -- Slicing
