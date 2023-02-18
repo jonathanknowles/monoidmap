@@ -825,16 +825,22 @@ filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters the non-'C.null' entries of a map according to a predicate on
---   /values/.
+-- | Filters a map according to a predicate on /values/.
 --
--- The result includes just the subset of non-'C.null' entries that /satisfy/
--- the predicate.
---
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'filter' f m '==' 'filterWithKey' (\\_ v -> f v) m
+-- 'get' k ('filter' f m) '=='
+--     if f ('get' k m)
+--     then 'get' k m
+--     else 'mempty'
+-- @
+--
+-- The resulting map is identical to that obtained by constructing a map from a
+-- filtered list of key-value pairs:
+--
+-- @
+-- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
 -- @
 --
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
