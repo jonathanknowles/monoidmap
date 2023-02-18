@@ -533,7 +533,10 @@ fromListWith
     -- ^ Function with which to combine values for duplicate keys.
     -> [(k, v)]
     -> MonoidMap k v
-fromListWith f = fromMap . Map.fromListWith (flip f)
+fromListWith f =
+    -- The 'Map.fromListWith' function combines values for duplicate keys in
+    -- /reverse order/, so we must flip the provided combination function.
+    fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
@@ -1004,6 +1007,8 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk (MonoidMap m)
+    -- The 'Map.mapKeysWith' function combines values for duplicate keys in
+    -- /descending order/, so we must flip the provided combination function.
     = MonoidMap
     $ Map.filter (not . C.null)
     $ Map.mapKeysWith (flip combine) fk m
