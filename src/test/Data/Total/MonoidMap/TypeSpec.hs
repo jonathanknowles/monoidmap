@@ -224,8 +224,8 @@ specPropertiesFor keyType valueType = do
             it "prop_filter_get" $
                 prop_filter_get
                     @k @v & property
-            it "prop_filter_toList" $
-                prop_filter_toList
+            it "prop_filter_asList" $
+                prop_filter_asList
                     @k @v & property
 
         describe "Partitioning" $ do
@@ -774,13 +774,13 @@ prop_filter_get (applyFun -> f) k m =
         (MonoidMap.nonNullKey k m && not (f (MonoidMap.get k m)))
         "MonoidMap.nonNullKey k m && not (f (MonoidMap.get k m))"
 
-prop_filter_toList
+prop_filter_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_filter_toList (applyFun -> f) m =
-    toList n === List.filter (f . snd) (toList m)
+prop_filter_asList (applyFun -> f) m =
+    n === fromList (List.filter (f . snd) (toList m))
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
