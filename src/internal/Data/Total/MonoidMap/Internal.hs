@@ -948,7 +948,7 @@ partitionValues f (MonoidMap m) =
 -- ('get' k m '/=' 'mempty') ==> ('get' k ('map' f m) '==' f ('get' k m))
 -- @
 --
--- If function __@f@__ is a /monoid homomorphism/, then the mapping is /total/
+-- If function __@f@__ preserves 'C.null' values, then the mapping is /total/
 -- for all possible keys __@k@__:
 --
 -- @
