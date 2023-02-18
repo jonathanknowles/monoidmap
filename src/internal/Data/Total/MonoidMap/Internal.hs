@@ -53,7 +53,7 @@ module Data.Total.MonoidMap.Internal
     , filterValues
 
     -- * Partitioning
-    , partition
+    , partitionWithKey
     , partitionKeys
     , partitionValues
 
@@ -854,7 +854,7 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- Satisfies the following property:
 --
 -- @
--- 'partition' f m '=='
+-- 'partitionWithKey' f m '=='
 --     ( 'filterWithKey'   \    \   \    \  \   \ f  m
 --     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
 --     )
@@ -863,20 +863,20 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partition' f m '&'
+-- 'partitionWithKey' f m '&'
 --     \\(m1, m2) -> m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partition' f m '&'
+-- 'partitionWithKey' f m '&'
 --     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
-partition
+partitionWithKey
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partition f (MonoidMap m) =
+partitionWithKey f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
 
 -- | Partitions the non-'C.null' entries of a map according to a predicate on

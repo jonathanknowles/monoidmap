@@ -47,7 +47,7 @@ module Data.Total.MonoidMap
     , filterValues
 
     -- * Partitioning
-    , partition
+    , partitionWithKey
     , partitionKeys
     , partitionValues
 
