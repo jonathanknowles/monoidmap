@@ -795,13 +795,13 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters a map according to a predicate on /keys and values/.
+-- | Filters a map according to a predicate on /values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('filterWithKey' f m) '=='
---     if f k ('get' k m)
+-- 'get' k ('filter' f m) '=='
+--     if f ('get' k m)
 --     then 'get' k m
 --     else 'mempty'
 -- @
@@ -810,11 +810,11 @@ splitAt i m = (take i m, drop i m)
 -- filtered list of key-value pairs:
 --
 -- @
--- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
+-- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
 -- @
 --
-filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
+filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filter f (MonoidMap m) = MonoidMap $ Map.filter f m
 
 -- | Filters a map according to a predicate on /keys/.
 --
@@ -837,13 +837,13 @@ filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters a map according to a predicate on /values/.
+-- | Filters a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('filter' f m) '=='
---     if f ('get' k m)
+-- 'get' k ('filterWithKey' f m) '=='
+--     if f k ('get' k m)
 --     then 'get' k m
 --     else 'mempty'
 -- @
@@ -852,47 +852,46 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- filtered list of key-value pairs:
 --
 -- @
--- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
+-- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
 -- @
 --
-filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filter f (MonoidMap m) = MonoidMap $ Map.filter f m
+filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
 --------------------------------------------------------------------------------
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions a map according to a predicate on /keys and values/.
+-- | Partitions a map according to a predicate on /values/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partitionWithKey' f m '=='
---     ( 'filterWithKey'   \    \   \    \  \   \ f  m
---     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
+-- 'partition' f m '=='
+--     ( 'filter'  \   \   f  m
+--     , 'filter' ('not' . f) m
 --     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partitionWithKey' f m '&' \\(m1, m2) ->
+-- 'partition' f m '&' \\(m1, m2) ->
 --     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partitionWithKey' f m '&' \\(m1, m2) ->
+-- 'partition' f m '&' \\(m1, m2) ->
 --     'Set.disjoint'
 --         ('nonNullKeys' m1)
 --         ('nonNullKeys' m2)
 -- @
 --
-partitionWithKey
-    :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partitionWithKey f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
+partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partition f (MonoidMap m) =
+    B.bimap MonoidMap MonoidMap $ Map.partition f m
 
 -- | Partitions a map according to a predicate on /keys/.
 --
@@ -926,36 +925,37 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions a map according to a predicate on /values/.
+-- | Partitions a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partition' f m '=='
---     ( 'filter'  \   \   f  m
---     , 'filter' ('not' . f) m
+-- 'partitionWithKey' f m '=='
+--     ( 'filterWithKey'   \    \   \    \  \   \ f  m
+--     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
 --     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partition' f m '&' \\(m1, m2) ->
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
 --     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partition' f m '&' \\(m1, m2) ->
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
 --     'Set.disjoint'
 --         ('nonNullKeys' m1)
 --         ('nonNullKeys' m2)
 -- @
 --
-partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partition f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partition f m
+partitionWithKey
+    :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partitionWithKey f (MonoidMap m) =
+    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
 
 --------------------------------------------------------------------------------
 -- Mapping
