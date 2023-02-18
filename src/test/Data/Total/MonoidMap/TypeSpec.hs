@@ -203,31 +203,40 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Filtering" $ do
-            it "prop_filter_toList" $
-                prop_filter_toList
+            it "prop_filterWithKey_get" $
+                prop_filterWithKey_get
                     @k @v & property
-            it "prop_filterKeys_filter" $
-                prop_filterKeys_filter
+            it "prop_filterWithKey_asList" $
+                prop_filterWithKey_asList
                     @k @v & property
-            it "prop_filterKeys_toList" $
-                prop_filterKeys_toList
+            it "prop_filterKeys_get" $
+                prop_filterKeys_get
                     @k @v & property
-            it "prop_filterValues_filter" $
-                prop_filterValues_filter
+            it "prop_filterKeys_filterWithKey" $
+                prop_filterKeys_filterWithKey
                     @k @v & property
-            it "prop_filterValues_toList" $
-                prop_filterValues_toList
+            it "prop_filterKeys_asList" $
+                prop_filterKeys_asList
+                    @k @v & property
+            it "prop_filter_filterWithKey" $
+                prop_filter_filterWithKey
+                    @k @v & property
+            it "prop_filter_get" $
+                prop_filter_get
+                    @k @v & property
+            it "prop_filter_asList" $
+                prop_filter_asList
                     @k @v & property
 
         describe "Partitioning" $ do
-            it "prop_partition_filter" $
-                prop_partition_filter
+            it "prop_partitionWithKey_filterWithKey" $
+                prop_partitionWithKey_filterWithKey
                     @k @v & property
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
                     @k @v & property
-            it "prop_partitionValues_filterValues" $
-                prop_partitionValues_filterValues
+            it "prop_partition_filter" $
+                prop_partition_filter
                     @k @v & property
 
         describe "Slicing" $ do
@@ -245,8 +254,11 @@ specPropertiesFor keyType valueType = do
             it "prop_map_asList" $
                 prop_map_asList
                     @k @v & property
-            it "prop_mapWith_asList" $
-                prop_mapWith_asList
+            it "prop_map_get" $
+                prop_map_get
+                    @k @v & property
+            it "prop_map_get_total" $
+                prop_map_get_total
                     @k @v & property
             it "prop_mapKeys_asList" $
                 prop_mapKeys_asList
@@ -256,9 +268,6 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
             it "prop_mapKeysWith_asList" $
                 prop_mapKeysWith_asList
-                    @k @v & property
-            it "prop_mapValues_asList" $
-                prop_mapValues_asList
                     @k @v & property
 
 --------------------------------------------------------------------------------
@@ -632,13 +641,107 @@ prop_nonNullKeys_get m =
 -- Filtering
 --------------------------------------------------------------------------------
 
-prop_filter_toList
+prop_filterWithKey_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun (k, v) Bool
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_filterWithKey_get (applyFun2 -> f) k m =
+    MonoidMap.get k (MonoidMap.filterWithKey f m)
+        ===
+        (MonoidMap.get k m & \v -> if f k v then v else mempty)
+    & cover 2
+        (MonoidMap.nullKey k m && f k (MonoidMap.get k m))
+        "MonoidMap.nullKey k m && f k (MonoidMap.get k m)"
+    & cover 2
+        (MonoidMap.nullKey k m && not (f k (MonoidMap.get k m)))
+        "MonoidMap.nullKey k m && not (f k (MonoidMap.get k m))"
+    & cover 2
+        (MonoidMap.nonNullKey k m && f k (MonoidMap.get k m))
+        "MonoidMap.nonNullKey k m && f k (MonoidMap.get k m)"
+    & cover 2
+        (MonoidMap.nonNullKey k m && not (f k (MonoidMap.get k m)))
+        "MonoidMap.nonNullKey k m && not (f k (MonoidMap.get k m))"
+
+prop_filterWithKey_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => Fun (k, v) Bool
     -> MonoidMap k v
     -> Property
-prop_filter_toList (applyFun2 -> f) m =
-    toList n === List.filter (uncurry f) (toList m)
+prop_filterWithKey_asList (applyFun2 -> f) m =
+    n === MonoidMap.fromList (List.filter (uncurry f) (toList m))
+    & cover 1
+        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
+        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
+    & cover 1
+        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
+        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
+  where
+    n = MonoidMap.filterWithKey f m
+
+prop_filterKeys_get
+    :: (Ord k, Show k, Eq v, Monoid v, Show v)
+    => Fun k Bool
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_filterKeys_get (applyFun -> f) k m =
+    MonoidMap.get k (MonoidMap.filterKeys f m)
+        ===
+        (if f k then MonoidMap.get k m else mempty)
+    & cover 2
+        (MonoidMap.nullKey k m && f k)
+        "MonoidMap.nullKey k m && f k"
+    & cover 2
+        (MonoidMap.nullKey k m && not (f k))
+        "MonoidMap.nullKey k m && not (f k)"
+    & cover 2
+        (MonoidMap.nonNullKey k m && f k)
+        "MonoidMap.nonNullKey k m && f k"
+    & cover 2
+        (MonoidMap.nonNullKey k m && not (f k))
+        "MonoidMap.nonNullKey k m && not (f k)"
+
+prop_filterKeys_filterWithKey
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun k Bool
+    -> MonoidMap k v
+    -> Property
+prop_filterKeys_filterWithKey (applyFun -> f) m =
+    n === MonoidMap.filterWithKey (\k _ -> f k) m
+    & cover 1
+        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
+        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
+    & cover 1
+        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
+        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
+  where
+    n = MonoidMap.filterKeys f m
+
+prop_filterKeys_asList
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun k Bool
+    -> MonoidMap k v
+    -> Property
+prop_filterKeys_asList (applyFun -> f) m =
+    n === MonoidMap.fromList (List.filter (f . fst) (toList m))
+    & cover 1
+        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
+        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
+    & cover 1
+        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
+        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
+  where
+    n = MonoidMap.filterKeys f m
+
+prop_filter_filterWithKey
+    :: (Ord k, Show k, Eq v, Show v)
+    => Fun v Bool
+    -> MonoidMap k v
+    -> Property
+prop_filter_filterWithKey (applyFun -> f) m =
+    n === MonoidMap.filterWithKey (\_ v -> f v) m
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
@@ -648,61 +751,36 @@ prop_filter_toList (applyFun2 -> f) m =
   where
     n = MonoidMap.filter f m
 
-prop_filterKeys_filter
-    :: (Ord k, Show k, Eq v, Show v)
-    => Fun k Bool
-    -> MonoidMap k v
-    -> Property
-prop_filterKeys_filter (applyFun -> f) m =
-    n === MonoidMap.filter (\k _ -> f k) m
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
-  where
-    n = MonoidMap.filterKeys f m
-
-prop_filterKeys_toList
+prop_filter_get
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun k Bool
-    -> MonoidMap k v
-    -> Property
-prop_filterKeys_toList (applyFun -> f) m =
-    toList n === List.filter (f . fst) (toList m)
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
-  where
-    n = MonoidMap.filterKeys f m
-
-prop_filterValues_filter
-    :: (Ord k, Show k, Eq v, Show v)
     => Fun v Bool
+    -> k
     -> MonoidMap k v
     -> Property
-prop_filterValues_filter (applyFun -> f) m =
-    n === MonoidMap.filter (\_ v -> f v) m
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
-  where
-    n = MonoidMap.filterValues f m
+prop_filter_get (applyFun -> f) k m =
+    MonoidMap.get k (MonoidMap.filter f m)
+        ===
+        (MonoidMap.get k m & \v -> if f v then v else mempty)
+    & cover 2
+        (MonoidMap.nullKey k m && f (MonoidMap.get k m))
+        "MonoidMap.nullKey k m && f (MonoidMap.get k m)"
+    & cover 2
+        (MonoidMap.nullKey k m && not (f (MonoidMap.get k m)))
+        "MonoidMap.nullKey k m && not (f (MonoidMap.get k m))"
+    & cover 2
+        (MonoidMap.nonNullKey k m && f (MonoidMap.get k m))
+        "MonoidMap.nonNullKey k m && f (MonoidMap.get k m)"
+    & cover 2
+        (MonoidMap.nonNullKey k m && not (f (MonoidMap.get k m)))
+        "MonoidMap.nonNullKey k m && not (f (MonoidMap.get k m))"
 
-prop_filterValues_toList
+prop_filter_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_filterValues_toList (applyFun -> f) m =
-    toList n === List.filter (f . snd) (toList m)
+prop_filter_asList (applyFun -> f) m =
+    n === fromList (List.filter (f . snd) (toList m))
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
@@ -710,25 +788,25 @@ prop_filterValues_toList (applyFun -> f) m =
         (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
   where
-    n = MonoidMap.filterValues f m
+    n = MonoidMap.filter f m
 
 --------------------------------------------------------------------------------
 -- Partitioning
 --------------------------------------------------------------------------------
 
-prop_partition_filter
+prop_partitionWithKey_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
     => Fun (k, v) Bool
     -> MonoidMap k v
     -> Property
-prop_partition_filter (applyFun2 -> f) m =
-    MonoidMap.partition f m === (x, y)
+prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
+    MonoidMap.partitionWithKey f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
   where
-    x = MonoidMap.filter f m
-    y = MonoidMap.filter ((fmap . fmap) not f) m
+    x = MonoidMap.filterWithKey f m
+    y = MonoidMap.filterWithKey ((fmap . fmap) not f) m
 
 prop_partitionKeys_filterKeys
     :: (Ord k, Show k, Eq v, Show v)
@@ -744,19 +822,19 @@ prop_partitionKeys_filterKeys (applyFun -> f) m =
     x = MonoidMap.filterKeys f m
     y = MonoidMap.filterKeys (not . f) m
 
-prop_partitionValues_filterValues
+prop_partition_filter
     :: (Ord k, Show k, Eq v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_partitionValues_filterValues (applyFun -> f) m =
-    MonoidMap.partitionValues f m === (x, y)
+prop_partition_filter (applyFun -> f) m =
+    MonoidMap.partition f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
   where
-    x = MonoidMap.filterValues f m
-    y = MonoidMap.filterValues (not . f) m
+    x = MonoidMap.filter f m
+    y = MonoidMap.filter (not . f) m
 
 --------------------------------------------------------------------------------
 -- Slicing
@@ -851,32 +929,54 @@ prop_splitAt_toList_fromList (Slice i m) =
 
 prop_map_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun k k
-    -> Fun v v
+    => Fun v v
     -> MonoidMap k v
     -> Property
-prop_map_asList (applyFun -> f) (applyFun -> g) m =
-    n === (MonoidMap.fromList . fmap (bimap f g) . MonoidMap.toList $ m)
+prop_map_asList (applyFun -> f) m =
+    n === (MonoidMap.fromList . fmap (second f) . MonoidMap.toList $ m)
     & cover 1
         (0 < nonNullCount n && nonNullCount n < nonNullCount m)
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
-    n = MonoidMap.map f g m
+    n = MonoidMap.map f m
 
-prop_mapWith_asList
+prop_map_get
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun (v, v) v
-    -> Fun k k
-    -> Fun v v
+    => Fun v v
+    -> k
     -> MonoidMap k v
     -> Property
-prop_mapWith_asList (applyFun2 -> c) (applyFun -> f) (applyFun -> g) m =
-    n === (MonoidMap.fromListWith c . fmap (bimap f g) . MonoidMap.toList $ m)
-    & cover 1
-        (0 < nonNullCount n && nonNullCount n < nonNullCount m)
-        "0 < nonNullCount n && nonNullCount n < nonNullCount m"
+prop_map_get (applyFun -> f) k m =
+    MonoidMap.get k (MonoidMap.map f m)
+    ===
+    (if MonoidMap.nullKey k m then mempty else f (MonoidMap.get k m))
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
+
+prop_map_get_total
+    :: forall k v. (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_map_get_total (applyFun -> g) k m =
+    MonoidMap.get k (MonoidMap.map f m) === f (MonoidMap.get k m)
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
   where
-    n = MonoidMap.mapWith c f g m
+    -- A function that preserves null values:
+    f :: v -> v
+    f v
+        | v == mempty = mempty
+        | otherwise   = g v
 
 prop_mapKeys_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
@@ -923,19 +1023,6 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.mapKeysWith c f m
-
-prop_mapValues_asList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun v v
-    -> MonoidMap k v
-    -> Property
-prop_mapValues_asList (applyFun -> f) m =
-    n === (MonoidMap.fromList . fmap (second f) . MonoidMap.toList $ m)
-    & cover 1
-        (0 < nonNullCount n && nonNullCount n < nonNullCount m)
-        "0 < nonNullCount n && nonNullCount n < nonNullCount m"
-  where
-    n = MonoidMap.mapValues f m
 
 --------------------------------------------------------------------------------
 -- Association
