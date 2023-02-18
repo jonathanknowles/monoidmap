@@ -782,8 +782,8 @@ prop_partition_filter
 prop_partition_filter (applyFun -> f) m =
     MonoidMap.partition f m === (m1, m2)
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     m1 = MonoidMap.filter f m
     m2 = MonoidMap.filter (not . f) m
@@ -796,8 +796,8 @@ prop_partition_append
 prop_partition_append (applyFun -> f) m =
     m1 <> m2 === m
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     (m1, m2) = MonoidMap.partition f m
 
@@ -811,8 +811,8 @@ prop_partition_disjoint (applyFun -> f) m =
         (MonoidMap.nonNullKeys m1)
         (MonoidMap.nonNullKeys m2)
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     (m1, m2) = MonoidMap.partition f m
 
@@ -824,8 +824,8 @@ prop_partitionKeys_filterKeys
 prop_partitionKeys_filterKeys (applyFun -> f) m =
     MonoidMap.partitionKeys f m === (m1, m2)
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     m1 = MonoidMap.filterKeys f m
     m2 = MonoidMap.filterKeys (not . f) m
@@ -838,8 +838,8 @@ prop_partitionKeys_append
 prop_partitionKeys_append (applyFun -> f) m =
     m1 <> m2 === m
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     (m1, m2) = MonoidMap.partitionKeys f m
 
@@ -853,8 +853,8 @@ prop_partitionKeys_disjoint (applyFun -> f) m =
         (MonoidMap.nonNullKeys m1)
         (MonoidMap.nonNullKeys m2)
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     (m1, m2) = MonoidMap.partitionKeys f m
 
@@ -866,8 +866,8 @@ prop_partitionWithKey_filterWithKey
 prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
     MonoidMap.partitionWithKey f m === (m1, m2)
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     m1 = MonoidMap.filterWithKey f m
     m2 = MonoidMap.filterWithKey ((fmap . fmap) not f) m
@@ -880,8 +880,8 @@ prop_partitionWithKey_append
 prop_partitionWithKey_append (applyFun2 -> f) m =
     m1 <> m2 === m
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     (m1, m2) = MonoidMap.partitionWithKey f m
 
@@ -895,8 +895,8 @@ prop_partitionWithKey_disjoint (applyFun2 -> f) m =
         (MonoidMap.nonNullKeys m1)
         (MonoidMap.nonNullKeys m2)
     & cover 1
-        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
-        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+        (MonoidMap.nonNull m1 && MonoidMap.nonNull m2)
+        "MonoidMap.nonNull m1 && MonoidMap.nonNull m2"
   where
     (m1, m2) = MonoidMap.partitionWithKey f m
 
