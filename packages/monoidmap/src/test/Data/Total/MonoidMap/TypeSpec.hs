@@ -223,14 +223,14 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Partitioning" $ do
-            it "prop_partitionWithKey_filterWithKey" $
-                prop_partitionWithKey_filterWithKey
+            it "prop_partition_filter" $
+                prop_partition_filter
                     @k @v & property
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
                     @k @v & property
-            it "prop_partition_filter" $
-                prop_partition_filter
+            it "prop_partitionWithKey_filterWithKey" $
+                prop_partitionWithKey_filterWithKey
                     @k @v & property
 
         describe "Slicing" $ do
@@ -756,19 +756,19 @@ prop_filterWithKey_asList (applyFun2 -> f) m =
 -- Partitioning
 --------------------------------------------------------------------------------
 
-prop_partitionWithKey_filterWithKey
+prop_partition_filter
     :: (Ord k, Show k, Eq v, Show v)
-    => Fun (k, v) Bool
+    => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
-    MonoidMap.partitionWithKey f m === (x, y)
+prop_partition_filter (applyFun -> f) m =
+    MonoidMap.partition f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
   where
-    x = MonoidMap.filterWithKey f m
-    y = MonoidMap.filterWithKey ((fmap . fmap) not f) m
+    x = MonoidMap.filter f m
+    y = MonoidMap.filter (not . f) m
 
 prop_partitionKeys_filterKeys
     :: (Ord k, Show k, Eq v, Show v)
@@ -784,19 +784,19 @@ prop_partitionKeys_filterKeys (applyFun -> f) m =
     x = MonoidMap.filterKeys f m
     y = MonoidMap.filterKeys (not . f) m
 
-prop_partition_filter
+prop_partitionWithKey_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
-    => Fun v Bool
+    => Fun (k, v) Bool
     -> MonoidMap k v
     -> Property
-prop_partition_filter (applyFun -> f) m =
-    MonoidMap.partition f m === (x, y)
+prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
+    MonoidMap.partitionWithKey f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
   where
-    x = MonoidMap.filter f m
-    y = MonoidMap.filter (not . f) m
+    x = MonoidMap.filterWithKey f m
+    y = MonoidMap.filterWithKey ((fmap . fmap) not f) m
 
 --------------------------------------------------------------------------------
 -- Slicing
