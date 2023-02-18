@@ -862,12 +862,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions the non-'C.null' entries of a map according to a predicate on
---   /keys and values/.
---
--- The /first/ map includes the subset of non-'C.null' entries that /satisfy/
--- the predicate, and the /second/ map includes the subset of non-'C.null'
--- entries that /fail/ the predicate.
+-- | Partitions a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property:
 --
@@ -881,15 +876,17 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partitionWithKey' f m '&'
---     \\(m1, m2) -> m1 '<>' m2 '==' m
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
+--     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partitionWithKey' f m '&'
---     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
+--     'Set.disjoint'
+--         ('nonNullKeys' m1)
+--         ('nonNullKeys' m2)
 -- @
 --
 partitionWithKey
