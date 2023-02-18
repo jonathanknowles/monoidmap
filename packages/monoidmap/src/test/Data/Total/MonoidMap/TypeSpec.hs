@@ -226,6 +226,9 @@ specPropertiesFor keyType valueType = do
             it "prop_partition_filter" $
                 prop_partition_filter
                     @k @v & property
+            it "prop_partition_append" $
+                prop_partition_append
+                    @k @v & property
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
                     @k @v & property
@@ -769,6 +772,19 @@ prop_partition_filter (applyFun -> f) m =
   where
     x = MonoidMap.filter f m
     y = MonoidMap.filter (not . f) m
+
+prop_partition_append
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v Bool
+    -> MonoidMap k v
+    -> Property
+prop_partition_append (applyFun -> f) m =
+    m1 <> m2 === m
+    & cover 1
+        (nonNullCount m1 /= 0 && nonNullCount m2 /= 0)
+        "nonNullCount m1 /= 0 && nonNullCount m2 /= 0"
+  where
+    (m1, m2) = MonoidMap.partition f m
 
 prop_partitionKeys_filterKeys
     :: (Ord k, Show k, Eq v, Show v)
