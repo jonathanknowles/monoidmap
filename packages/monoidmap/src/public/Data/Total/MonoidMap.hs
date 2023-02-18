@@ -42,14 +42,14 @@ module Data.Total.MonoidMap
     , splitAt
 
     -- * Filtering
-    , filterWithKey
-    , filterKeys
     , filter
+    , filterKeys
+    , filterWithKey
 
     -- * Partitioning
-    , partitionWithKey
-    , partitionKeys
     , partition
+    , partitionKeys
+    , partitionWithKey
 
     -- * Mapping
     , map
