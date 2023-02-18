@@ -795,13 +795,13 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters a map according to a predicate on /keys and values/.
+-- | Filters a map according to a predicate on /values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('filterWithKey' f m) '=='
---     if f k ('get' k m)
+-- 'get' k ('filter' f m) '=='
+--     if f ('get' k m)
 --     then 'get' k m
 --     else 'mempty'
 -- @
@@ -810,11 +810,11 @@ splitAt i m = (take i m, drop i m)
 -- filtered list of key-value pairs:
 --
 -- @
--- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
+-- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
 -- @
 --
-filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
+filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filter f (MonoidMap m) = MonoidMap $ Map.filter f m
 
 -- | Filters a map according to a predicate on /keys/.
 --
@@ -837,13 +837,13 @@ filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters a map according to a predicate on /values/.
+-- | Filters a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('filter' f m) '=='
---     if f ('get' k m)
+-- 'get' k ('filterWithKey' f m) '=='
+--     if f k ('get' k m)
 --     then 'get' k m
 --     else 'mempty'
 -- @
@@ -852,11 +852,11 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- filtered list of key-value pairs:
 --
 -- @
--- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
+-- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
 -- @
 --
-filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filter f (MonoidMap m) = MonoidMap $ Map.filter f m
+filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
 --------------------------------------------------------------------------------
 -- Partitioning
