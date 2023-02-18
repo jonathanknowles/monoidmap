@@ -226,8 +226,8 @@ specPropertiesFor keyType valueType = do
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
                     @k @v & property
-            it "prop_partitionValues_filter" $
-                prop_partitionValues_filter
+            it "prop_partition_filter" $
+                prop_partition_filter
                     @k @v & property
 
         describe "Slicing" $ do
@@ -744,13 +744,13 @@ prop_partitionKeys_filterKeys (applyFun -> f) m =
     x = MonoidMap.filterKeys f m
     y = MonoidMap.filterKeys (not . f) m
 
-prop_partitionValues_filter
+prop_partition_filter
     :: (Ord k, Show k, Eq v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_partitionValues_filter (applyFun -> f) m =
-    MonoidMap.partitionValues f m === (x, y)
+prop_partition_filter (applyFun -> f) m =
+    MonoidMap.partition f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"

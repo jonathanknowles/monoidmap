@@ -55,7 +55,7 @@ module Data.Total.MonoidMap.Internal
     -- * Partitioning
     , partitionWithKey
     , partitionKeys
-    , partitionValues
+    , partition
 
     -- * Mapping
     , map
@@ -921,26 +921,25 @@ partitionKeys f (MonoidMap m) =
 -- Satisfies the following property:
 --
 -- @
--- 'partitionValues' f m '==' ('filter' f m, 'filter' ('not' . f) m)
+-- 'partition' f m '==' ('filter' f m, 'filter' ('not' . f) m)
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partitionValues' f m '&'
+-- 'partition' f m '&'
 --     \\(m1, m2) -> m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partitionValues' f m '&'
+-- 'partition' f m '&'
 --     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
-partitionValues
-    :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partitionValues f (MonoidMap m) =
+partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partition f m
 
 --------------------------------------------------------------------------------

@@ -49,7 +49,7 @@ module Data.Total.MonoidMap
     -- * Partitioning
     , partitionWithKey
     , partitionKeys
-    , partitionValues
+    , partition
 
     -- * Mapping
     , map
