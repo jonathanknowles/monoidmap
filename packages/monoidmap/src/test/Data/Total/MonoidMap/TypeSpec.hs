@@ -245,6 +245,9 @@ specPropertiesFor keyType valueType = do
             it "prop_map_asList" $
                 prop_map_asList
                     @k @v & property
+            it "prop_map_get" $
+                prop_map_get
+                    @k @v & property
             it "prop_mapKeys_asList" $
                 prop_mapKeys_asList
                     @k @v & property
@@ -855,6 +858,23 @@ prop_map_asList (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.map f m
+
+prop_map_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_map_get (applyFun -> f) k m =
+    MonoidMap.get k (MonoidMap.map f m)
+    ===
+    (if MonoidMap.nullKey k m then mempty else f (MonoidMap.get k m))
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
 
 prop_mapKeys_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
