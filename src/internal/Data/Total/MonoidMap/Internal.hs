@@ -962,12 +962,19 @@ map
     -> MonoidMap k v2
 map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
--- | Maps over the keys of a 'MonoidMap'.
+-- | Applies a function to all non-null keys of a 'MonoidMap'.
+--
+-- If the resultant map would contain more than one value for the same key,
+-- values are combined together in ascending key order with the '(<>)'
+-- operator.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'mapKeys' f '==' 'fromList' . 'fmap' ('B.first' f) . 'toList'
+-- 'get' k ('mapKeys' f m) '=='
+--     'F.foldMap'
+--         ('`get`' m)
+--         ('Set.filter' (('==') k . f) ('nonNullKeys' m))
 -- @
 --
 mapKeys
