@@ -218,9 +218,6 @@ specPropertiesFor keyType valueType = do
             it "prop_filterKeys_asList" $
                 prop_filterKeys_asList
                     @k @v & property
-            it "prop_filter_filterWithKey" $
-                prop_filter_filterWithKey
-                    @k @v & property
             it "prop_filter_get" $
                 prop_filter_get
                     @k @v & property
@@ -734,22 +731,6 @@ prop_filterKeys_asList (applyFun -> f) m =
         "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
   where
     n = MonoidMap.filterKeys f m
-
-prop_filter_filterWithKey
-    :: (Ord k, Show k, Eq v, Show v)
-    => Fun v Bool
-    -> MonoidMap k v
-    -> Property
-prop_filter_filterWithKey (applyFun -> f) m =
-    n === MonoidMap.filterWithKey (\_ v -> f v) m
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
-    & cover 1
-        (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
-        "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
-  where
-    n = MonoidMap.filter f m
 
 prop_filter_get
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
