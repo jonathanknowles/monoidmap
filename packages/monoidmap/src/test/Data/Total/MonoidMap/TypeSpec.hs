@@ -212,11 +212,11 @@ specPropertiesFor keyType valueType = do
             it "prop_filterKeys_toList" $
                 prop_filterKeys_toList
                     @k @v & property
-            it "prop_filterValues_filterWithKey" $
-                prop_filterValues_filterWithKey
+            it "prop_filter_filterWithKey" $
+                prop_filter_filterWithKey
                     @k @v & property
-            it "prop_filterValues_toList" $
-                prop_filterValues_toList
+            it "prop_filter_toList" $
+                prop_filter_toList
                     @k @v & property
 
         describe "Partitioning" $ do
@@ -226,8 +226,8 @@ specPropertiesFor keyType valueType = do
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
                     @k @v & property
-            it "prop_partitionValues_filterValues" $
-                prop_partitionValues_filterValues
+            it "prop_partitionValues_filter" $
+                prop_partitionValues_filter
                     @k @v & property
 
         describe "Slicing" $ do
@@ -680,12 +680,12 @@ prop_filterKeys_toList (applyFun -> f) m =
   where
     n = MonoidMap.filterKeys f m
 
-prop_filterValues_filterWithKey
+prop_filter_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_filterValues_filterWithKey (applyFun -> f) m =
+prop_filter_filterWithKey (applyFun -> f) m =
     n === MonoidMap.filterWithKey (\_ v -> f v) m
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
@@ -694,14 +694,14 @@ prop_filterValues_filterWithKey (applyFun -> f) m =
         (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
   where
-    n = MonoidMap.filterValues f m
+    n = MonoidMap.filter f m
 
-prop_filterValues_toList
+prop_filter_toList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_filterValues_toList (applyFun -> f) m =
+prop_filter_toList (applyFun -> f) m =
     toList n === List.filter (f . snd) (toList m)
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
@@ -710,7 +710,7 @@ prop_filterValues_toList (applyFun -> f) m =
         (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
   where
-    n = MonoidMap.filterValues f m
+    n = MonoidMap.filter f m
 
 --------------------------------------------------------------------------------
 -- Partitioning
@@ -744,19 +744,19 @@ prop_partitionKeys_filterKeys (applyFun -> f) m =
     x = MonoidMap.filterKeys f m
     y = MonoidMap.filterKeys (not . f) m
 
-prop_partitionValues_filterValues
+prop_partitionValues_filter
     :: (Ord k, Show k, Eq v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_partitionValues_filterValues (applyFun -> f) m =
+prop_partitionValues_filter (applyFun -> f) m =
     MonoidMap.partitionValues f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
   where
-    x = MonoidMap.filterValues f m
-    y = MonoidMap.filterValues (not . f) m
+    x = MonoidMap.filter f m
+    y = MonoidMap.filter (not . f) m
 
 --------------------------------------------------------------------------------
 -- Slicing

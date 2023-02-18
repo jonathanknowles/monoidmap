@@ -50,7 +50,7 @@ module Data.Total.MonoidMap.Internal
     -- * Filtering
     , filterWithKey
     , filterKeys
-    , filterValues
+    , filter
 
     -- * Partitioning
     , partitionWithKey
@@ -834,11 +834,11 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- Satisfies the following property:
 --
 -- @
--- 'filterValues' f m '==' 'filterWithKey' (\\_ v -> f v) m
+-- 'filter' f m '==' 'filterWithKey' (\\_ v -> f v) m
 -- @
 --
-filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
+filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filter f (MonoidMap m) = MonoidMap $ Map.filter f m
 
 --------------------------------------------------------------------------------
 -- Partitioning
@@ -921,7 +921,7 @@ partitionKeys f (MonoidMap m) =
 -- Satisfies the following property:
 --
 -- @
--- 'partitionValues' f m '==' ('filterValues' f m, 'filterValues' ('not' . f) m)
+-- 'partitionValues' f m '==' ('filter' f m, 'filter' ('not' . f) m)
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
