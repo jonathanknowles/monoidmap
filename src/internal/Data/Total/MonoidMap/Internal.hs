@@ -48,7 +48,7 @@ module Data.Total.MonoidMap.Internal
     , splitAt
 
     -- * Filtering
-    , filter
+    , filterWithKey
     , filterKeys
     , filterValues
 
@@ -804,11 +804,11 @@ splitAt i m = (take i m, drop i m)
 -- Satisfies the following property:
 --
 -- @
--- 'toList' ('filter' f m) '==' 'L.filter' ('uncurry' f) ('toList' m)
+-- 'toList' ('filterWithKey' f m) '==' 'L.filter' ('uncurry' f) ('toList' m)
 -- @
 --
-filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
+filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
+filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
 -- | Filters the non-'C.null' entries of a map according to a predicate on
 --   /keys/.
@@ -819,7 +819,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 -- Satisfies the following property:
 --
 -- @
--- 'filterKeys' f m '==' 'filter' (\\k _ -> f k) m
+-- 'filterKeys' f m '==' 'filterWithKey' (\\k _ -> f k) m
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -834,7 +834,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- Satisfies the following property:
 --
 -- @
--- 'filterValues' f m '==' 'filter' (\\_ v -> f v) m
+-- 'filterValues' f m '==' 'filterWithKey' (\\_ v -> f v) m
 -- @
 --
 filterValues :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
@@ -854,7 +854,10 @@ filterValues f (MonoidMap m) = MonoidMap $ Map.filter f m
 -- Satisfies the following property:
 --
 -- @
--- 'partition' f m '==' ('filter' f m, 'filter' (('fmap' . 'fmap') 'not' f) m)
+-- 'partition' f m '=='
+--     ( 'filterWithKey'   \    \   \    \  \   \ f  m
+--     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
+--     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:

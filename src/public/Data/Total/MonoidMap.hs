@@ -42,7 +42,7 @@ module Data.Total.MonoidMap
     , splitAt
 
     -- * Filtering
-    , filter
+    , filterWithKey
     , filterKeys
     , filterValues
 
