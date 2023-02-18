@@ -1928,7 +1928,6 @@ stripPrefixOverlap = merge MergeStrategy
         -- overlap mempty b <> stripPrefixOverlap mempty b ≡ b
         --         mempty   <> stripPrefixOverlap mempty b ≡ b
         --                     stripPrefixOverlap mempty b ≡ b
-        --                     stripPrefixOverlap mempty b ≡ b
 
     , mergeNonNullWithNonNull =
         withBoth C.stripPrefixOverlap
