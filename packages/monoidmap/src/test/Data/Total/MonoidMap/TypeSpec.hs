@@ -203,25 +203,25 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Filtering" $ do
-            it "prop_filter_toList" $
-                prop_filter_toList
+            it "prop_filterWithKey_toList" $
+                prop_filterWithKey_toList
                     @k @v & property
-            it "prop_filterKeys_filter" $
-                prop_filterKeys_filter
+            it "prop_filterKeys_filterWithKey" $
+                prop_filterKeys_filterWithKey
                     @k @v & property
             it "prop_filterKeys_toList" $
                 prop_filterKeys_toList
                     @k @v & property
-            it "prop_filterValues_filter" $
-                prop_filterValues_filter
+            it "prop_filterValues_filterWithKey" $
+                prop_filterValues_filterWithKey
                     @k @v & property
             it "prop_filterValues_toList" $
                 prop_filterValues_toList
                     @k @v & property
 
         describe "Partitioning" $ do
-            it "prop_partition_filter" $
-                prop_partition_filter
+            it "prop_partition_filterWithKey" $
+                prop_partition_filterWithKey
                     @k @v & property
             it "prop_partitionKeys_filterKeys" $
                 prop_partitionKeys_filterKeys
@@ -632,12 +632,12 @@ prop_nonNullKeys_get m =
 -- Filtering
 --------------------------------------------------------------------------------
 
-prop_filter_toList
+prop_filterWithKey_toList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
     => Fun (k, v) Bool
     -> MonoidMap k v
     -> Property
-prop_filter_toList (applyFun2 -> f) m =
+prop_filterWithKey_toList (applyFun2 -> f) m =
     toList n === List.filter (uncurry f) (toList m)
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
@@ -646,15 +646,15 @@ prop_filter_toList (applyFun2 -> f) m =
         (MonoidMap.nonNull n && nonNullCount n /= nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n /= nonNullCount m"
   where
-    n = MonoidMap.filter f m
+    n = MonoidMap.filterWithKey f m
 
-prop_filterKeys_filter
+prop_filterKeys_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
     => Fun k Bool
     -> MonoidMap k v
     -> Property
-prop_filterKeys_filter (applyFun -> f) m =
-    n === MonoidMap.filter (\k _ -> f k) m
+prop_filterKeys_filterWithKey (applyFun -> f) m =
+    n === MonoidMap.filterWithKey (\k _ -> f k) m
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
@@ -680,13 +680,13 @@ prop_filterKeys_toList (applyFun -> f) m =
   where
     n = MonoidMap.filterKeys f m
 
-prop_filterValues_filter
+prop_filterValues_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
     => Fun v Bool
     -> MonoidMap k v
     -> Property
-prop_filterValues_filter (applyFun -> f) m =
-    n === MonoidMap.filter (\_ v -> f v) m
+prop_filterValues_filterWithKey (applyFun -> f) m =
+    n === MonoidMap.filterWithKey (\_ v -> f v) m
     & cover 1
         (MonoidMap.nonNull n && nonNullCount n == nonNullCount m)
         "MonoidMap.nonNull n && nonNullCount n == nonNullCount m"
@@ -716,19 +716,19 @@ prop_filterValues_toList (applyFun -> f) m =
 -- Partitioning
 --------------------------------------------------------------------------------
 
-prop_partition_filter
+prop_partition_filterWithKey
     :: (Ord k, Show k, Eq v, Show v)
     => Fun (k, v) Bool
     -> MonoidMap k v
     -> Property
-prop_partition_filter (applyFun2 -> f) m =
+prop_partition_filterWithKey (applyFun2 -> f) m =
     MonoidMap.partition f m === (x, y)
     & cover 1
         (nonNullCount x /= 0 && nonNullCount y /= 0)
         "nonNullCount x /= 0 && nonNullCount y /= 0"
   where
-    x = MonoidMap.filter f m
-    y = MonoidMap.filter ((fmap . fmap) not f) m
+    x = MonoidMap.filterWithKey f m
+    y = MonoidMap.filterWithKey ((fmap . fmap) not f) m
 
 prop_partitionKeys_filterKeys
     :: (Ord k, Show k, Eq v, Show v)
