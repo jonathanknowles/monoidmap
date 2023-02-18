@@ -810,16 +810,22 @@ splitAt i m = (take i m, drop i m)
 filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 
--- | Filters the non-'C.null' entries of a map according to a predicate on
---   /keys/.
+-- | Filters a map according to a predicate on /keys/.
 --
--- The result includes just the subset of non-'C.null' entries that /satisfy/
--- the predicate.
---
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'filterKeys' f m '==' 'filterWithKey' (\\k _ -> f k) m
+-- 'get' k ('filterKeys' f m) '=='
+--     if f k
+--     then 'get' k m
+--     else 'mempty'
+-- @
+--
+-- The resulting map is identical to that obtained by constructing a map from a
+-- filtered list of key-value pairs:
+--
+-- @
+-- 'filter' f m '==' 'fromList' ('L.filter' (f . 'fst') ('toList' m))
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
