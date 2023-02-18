@@ -147,6 +147,7 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
+import qualified Data.List as L
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -500,7 +501,8 @@ empty = MonoidMap Map.empty
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('fromList' kvs) '==' 'foldMap' 'snd' ('filter' (('==' k) . fst) kvs)
+-- 'get' k ('fromList' kvs) '=='
+--     'foldMap' 'snd' ('L.filter' (('==' k) . fst) kvs)
 -- @
 --
 -- Satisfies the following round-trip property:
@@ -802,7 +804,7 @@ splitAt i m = (take i m, drop i m)
 -- Satisfies the following property:
 --
 -- @
--- 'toList' ('filter' f m) '==' 'List.filter' ('uncurry' f) ('toList' m)
+-- 'toList' ('filter' f m) '==' 'L.filter' ('uncurry' f) ('toList' m)
 -- @
 --
 filter :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
