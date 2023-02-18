@@ -862,37 +862,36 @@ filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions a map according to a predicate on /keys and values/.
+-- | Partitions a map according to a predicate on /values/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partitionWithKey' f m '=='
---     ( 'filterWithKey'   \    \   \    \  \   \ f  m
---     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
+-- 'partition' f m '=='
+--     ( 'filter'  \   \   f  m
+--     , 'filter' ('not' . f) m
 --     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partitionWithKey' f m '&' \\(m1, m2) ->
+-- 'partition' f m '&' \\(m1, m2) ->
 --     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partitionWithKey' f m '&' \\(m1, m2) ->
+-- 'partition' f m '&' \\(m1, m2) ->
 --     'Set.disjoint'
 --         ('nonNullKeys' m1)
 --         ('nonNullKeys' m2)
 -- @
 --
-partitionWithKey
-    :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partitionWithKey f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
+partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partition f (MonoidMap m) =
+    B.bimap MonoidMap MonoidMap $ Map.partition f m
 
 -- | Partitions a map according to a predicate on /keys/.
 --
@@ -926,36 +925,37 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions a map according to a predicate on /values/.
+-- | Partitions a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'partition' f m '=='
---     ( 'filter'  \   \   f  m
---     , 'filter' ('not' . f) m
+-- 'partitionWithKey' f m '=='
+--     ( 'filterWithKey'   \    \   \    \  \   \ f  m
+--     , 'filterWithKey' (('fmap' . 'fmap') 'not' f) m
 --     )
 -- @
 --
 -- The resulting maps can be combined to reproduce the original map:
 --
 -- @
--- 'partition' f m '&' \\(m1, m2) ->
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
 --     m1 '<>' m2 '==' m
 -- @
 --
 -- The resulting maps have disjoint sets of non-'C.null' entries:
 --
 -- @
--- 'partition' f m '&' \\(m1, m2) ->
+-- 'partitionWithKey' f m '&' \\(m1, m2) ->
 --     'Set.disjoint'
 --         ('nonNullKeys' m1)
 --         ('nonNullKeys' m2)
 -- @
 --
-partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
-partition f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partition f m
+partitionWithKey
+    :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
+partitionWithKey f (MonoidMap m) =
+    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
 
 --------------------------------------------------------------------------------
 -- Mapping
