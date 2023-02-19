@@ -147,7 +147,9 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
+import qualified Data.Foldable as F
 import qualified Data.List as L
+import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -523,11 +525,20 @@ empty = MonoidMap Map.empty
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
--- | Constructs a 'MonoidMap' from a list of key-value pairs.
+-- | Constructs a 'MonoidMap' from a list of key-value pairs, with a combining
+--   function for values.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together in the order that they appear with the given combination
+-- combined together in the order that they appear with the given combining
 -- function.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromListWith' f kvs) '=='
+--     'maybe' 'mempty' ('F.foldl1' f)
+--         ('NE.nonEmpty' ('snd' '<$>' 'L.filter' (('==' k) . fst) kvs))
+-- @
 --
 fromListWith
     :: (Ord k, MonoidNull v)
@@ -537,7 +548,7 @@ fromListWith
     -> MonoidMap k v
 fromListWith f =
     -- The 'Map.fromListWith' function combines values for duplicate keys in
-    -- /reverse order/, so we must flip the provided combination function.
+    -- /reverse order/, so we must flip the provided combining function.
     fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a 'MonoidMap' from an ordinary 'Map'.
