@@ -559,6 +559,12 @@ fromListWith f =
 -- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
 -- @
 --
+-- This function performs canonicalisation of 'C.null' values, and has a time
+-- complexity that is linear in the length of the list.
+--
+-- For a version of this function that runs in constant time and does not
+-- perform canonicalisation, see 'Data.Total.MonoidMap.Unsafe.unsafeFromMap'.
+--
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.filter (not . C.null)
 
