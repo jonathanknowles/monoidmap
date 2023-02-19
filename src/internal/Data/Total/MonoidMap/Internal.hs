@@ -173,7 +173,8 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'get' :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> v
 -- @
 --
--- By default, every key in an 'empty' map corresponds to a value of 'mempty':
+-- By default, every key in an 'empty' map is associated with a value of
+-- 'mempty':
 --
 -- @
 -- ∀ k. 'get' k 'empty' '==' 'mempty'
@@ -628,10 +629,11 @@ toMap = unMonoidMap
 
 -- | Gets the value associated with the given key.
 --
--- Satisfies the following property:
+-- By default, every key in an 'empty' map is associated with a value of
+-- 'mempty':
 --
 -- @
--- 'get' k ('set' k v m) '==' v
+-- ∀ k. 'get' k 'empty' '==' 'mempty'
 -- @
 --
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
