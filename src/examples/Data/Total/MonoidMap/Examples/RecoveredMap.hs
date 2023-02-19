@@ -1,6 +1,13 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
+-- |
+-- Copyright: © 2022–2023 Jonathan Knowles
+-- License: Apache-2.0
+--
+-- An ordinary left-biased map similar to 'Map', implemented in terms of
+-- 'MonoidMap'.
+--
 module Data.Total.MonoidMap.Examples.RecoveredMap where
 
 import Prelude
