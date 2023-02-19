@@ -282,6 +282,11 @@ specPropertiesFor keyType valueType = do
                 prop_mapKeysWith_asList
                     @k @v & property
 
+        describe "Association" $ do
+            it "prop_append_get" $
+                prop_append_get
+                    @k @v & property
+
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
 --------------------------------------------------------------------------------
@@ -1092,13 +1097,13 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
 -- Association
 --------------------------------------------------------------------------------
 
-prop_mappend_get
+prop_append_get
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_mappend_get m1 m2 k =
+prop_append_get m1 m2 k =
     MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
 
 --------------------------------------------------------------------------------
