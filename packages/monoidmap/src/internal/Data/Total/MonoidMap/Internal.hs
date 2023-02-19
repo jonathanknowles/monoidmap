@@ -481,7 +481,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 -- Construction
 --------------------------------------------------------------------------------
 
--- | The empty 'MonoidMap'.
+-- | \(O(1)\). The empty 'MonoidMap'.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -495,7 +495,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
 
--- | Constructs a 'MonoidMap' from a list of key-value pairs.
+-- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
 -- combined together in the order that they appear with the '(<>)' operator.
@@ -525,8 +525,8 @@ empty = MonoidMap Map.empty
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
--- | Constructs a 'MonoidMap' from a list of key-value pairs, with a combining
---   function for values.
+-- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs,
+--   with a combining function for values.
 --
 -- If the list contains more than one value for the same key, values are
 -- combined together in the order that they appear with the given combining
@@ -551,7 +551,7 @@ fromListWith f =
     -- /reverse order/, so we must flip the provided combining function.
     fromMap . Map.fromListWith (flip f)
 
--- | Constructs a 'MonoidMap' from an ordinary 'Map'.
+-- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -562,7 +562,7 @@ fromListWith f =
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.filter (not . C.null)
 
--- | Constructs a 'MonoidMap' from a single key-value pair.
+-- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
 -- Satisfies the following property:
 --

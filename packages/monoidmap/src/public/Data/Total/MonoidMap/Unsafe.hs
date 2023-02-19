@@ -28,7 +28,7 @@ import qualified Data.Total.MonoidMap.Internal as Internal
 -- Unsafe construction
 --------------------------------------------------------------------------------
 
--- | /Unsafely/ constructs a 'MonoidMap' from an ordinary 'Map'.
+-- | \(O(1)\). /Unsafely/ constructs a 'MonoidMap' from an ordinary 'Map'.
 --
 -- Constructs a 'MonoidMap' in /constant time/, without imposing the burden
 -- of a canonicalisation step to remove 'null' values.
