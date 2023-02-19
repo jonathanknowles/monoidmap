@@ -1007,7 +1007,8 @@ map
     -> MonoidMap k v2
 map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
--- | Applies a function to all non-null keys of a 'MonoidMap'.
+-- | Applies a function to all the keys of a 'MonoidMap' that are associated
+--   with non-'C.null' values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the '(<>)'
@@ -1029,7 +1030,8 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
--- | Applies a function to all non-null keys of a 'MonoidMap'.
+-- | Applies a function to all the keys of a 'MonoidMap' that are associated
+--   with non-'C.null' values, with a combining function for values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the given
