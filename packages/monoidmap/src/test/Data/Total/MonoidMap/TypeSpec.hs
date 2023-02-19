@@ -133,6 +133,9 @@ specPropertiesFor keyType valueType = do
             it "prop_toList_fromList" $
                 prop_toList_fromList
                     @k @v & property
+            it "prop_toList_sort" $
+                prop_toList_sort
+                    @k @v & property
             it "prop_fromListWith_get" $
                 prop_fromListWith_get
                     @k @v & property
@@ -358,6 +361,16 @@ prop_toList_fromList
     -> Property
 prop_toList_fromList m =
     MonoidMap.fromList (MonoidMap.toList m) === m
+    & cover 2
+        (MonoidMap.nonNull m)
+        "MonoidMap.nonNull m"
+
+prop_toList_sort
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => MonoidMap k v
+    -> Property
+prop_toList_sort m =
+    List.sortOn fst (MonoidMap.toList m) === MonoidMap.toList m
     & cover 2
         (MonoidMap.nonNull m)
         "MonoidMap.nonNull m"
