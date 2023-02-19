@@ -1021,7 +1021,7 @@ mapKeys = mapKeysWith (<>)
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the given
--- combination function.
+-- combining function.
 --
 -- Satisfies the following property:
 --
@@ -1038,7 +1038,7 @@ mapKeysWith
     -> MonoidMap k2 v
 mapKeysWith combine fk (MonoidMap m)
     -- The 'Map.mapKeysWith' function combines values for duplicate keys in
-    -- /descending order/, so we must flip the provided combination function.
+    -- /descending order/, so we must flip the provided combining function.
     = MonoidMap
     $ Map.filter (not . C.null)
     $ Map.mapKeysWith (flip combine) fk m
