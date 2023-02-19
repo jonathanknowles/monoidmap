@@ -264,7 +264,7 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- The 'Monoid' instance satisfies the following property for all keys:
+-- The 'Monoid' instance satisfies the following property for all possible keys:
 --
 -- @
 -- 'get' k 'mempty' == 'mempty'
@@ -1013,7 +1013,7 @@ map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 -- values are combined together in ascending key order with the '(<>)'
 -- operator.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('mapKeys' f m) '=='
@@ -1064,7 +1064,7 @@ mapKeysWith combine fk (MonoidMap m)
 -- Uses the 'Semigroup' operator '(<>)' to append each value in the first map
 -- to its matching value in the second map.
 --
--- Satisfies the following property for all keys __@k@__:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
@@ -1535,7 +1535,7 @@ stripSuffix = mergeA MergeStrategy
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('commonPrefix' m1 m2)
@@ -1593,7 +1593,7 @@ commonPrefix = merge MergeStrategy
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('commonSuffix' m1 m2)
@@ -2112,7 +2112,7 @@ stripOverlap m1 m2 =
 
 -- | Finds the /greatest common divisor/ of two maps.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
@@ -2206,7 +2206,7 @@ gcd = merge MergeStrategy
 -- Uses the 'Group' subtraction operator '(C.~~)' to subtract each value in the
 -- second map from its matching value in the first map.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
@@ -2412,7 +2412,7 @@ minusMaybe = mergeA MergeStrategy
 -- Uses the 'Monus' subtraction operator '(<\>)' to subtract each value in
 -- the second map from its matching value in the first map.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
@@ -2535,7 +2535,7 @@ monus = merge MergeStrategy
 --
 -- Applies the 'Group' method 'C.invert' to every value in a map.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('invert' m) '==' 'C.invert' ('get' k m)
@@ -2573,7 +2573,7 @@ invert = map C.invert
 -- Uses the 'Group' exponentiation method 'C.pow' to raise every value in a map
 -- to the power of the given exponent.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k (m '`power`' i) '==' 'get' k m '`C.pow`' i
