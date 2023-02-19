@@ -594,6 +594,12 @@ singleton k v = set k v mempty
 -- 'fromList' ('toList' m) '==' m
 -- @
 --
+-- The resulting list is sorted in ascending key order:
+--
+-- @
+-- 'L.sortOn' 'fst' ('toList' m) '==' 'toList' m
+-- @
+--
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toAscList . unMonoidMap
 
