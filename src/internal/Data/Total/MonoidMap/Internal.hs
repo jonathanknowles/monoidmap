@@ -164,7 +164,7 @@ import qualified Data.Semigroup.Cancellative as C
 -- Type
 --------------------------------------------------------------------------------
 
--- | Models a /total/ relation from unique keys to /monoidal/ values.
+-- | Models a relation from unique keys to /monoidal/ values.
 --
 -- The mapping from keys to values is __total__: every possible key of type
 -- __@k@__ is associated with a corresponding value of type __@v@__:
