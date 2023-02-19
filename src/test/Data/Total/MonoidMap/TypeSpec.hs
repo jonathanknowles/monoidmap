@@ -72,6 +72,7 @@ import Test.QuickCheck.Instances.Text
 
 import qualified Data.Foldable as F
 import qualified Data.List as List
+import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Total.MonoidMap as MonoidMap
@@ -131,6 +132,9 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
             it "prop_toList_fromList" $
                 prop_toList_fromList
+                    @k @v & property
+            it "prop_fromListWith_get" $
+                prop_fromListWith_get
                     @k @v & property
 
         describe "Conversion to and from ordinary maps" $ do
@@ -357,6 +361,34 @@ prop_toList_fromList m =
     & cover 2
         (MonoidMap.nonNull m)
         "MonoidMap.nonNull m"
+
+prop_fromListWith_get
+    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun (v, v) v
+    -> [(k, v)]
+    -> k
+    -> Property
+prop_fromListWith_get (applyFun2 -> f) kvs k =
+    MonoidMap.get k (MonoidMap.fromListWith f kvs)
+        ===
+        maybe mempty
+            (F.foldl1 f)
+            (NE.nonEmpty (snd <$> filter ((== k) . fst) kvs))
+    & cover 2
+        (matchingKeyCount == 0)
+        "matchingKeyCount == 0"
+    & cover 2
+        (matchingKeyCount == 1)
+        "matchingKeyCount == 1"
+    & cover 2
+        (matchingKeyCount == 2)
+        "matchingKeyCount == 2"
+    & cover 2
+        (matchingKeyCount >= 3)
+        "matchingKeyCount >= 3"
+  where
+    matchingKeyCount =
+        length $ filter ((== k) . fst) kvs
 
 --------------------------------------------------------------------------------
 -- Conversion to and from ordinary maps
