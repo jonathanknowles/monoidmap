@@ -40,6 +40,8 @@ import qualified Data.Total.MonoidMap.Internal as Internal
 -- 'F.all' ('not' . 'Null.null') m
 -- @
 --
+-- Not satisfying this pre-condition will result in undefined behaviour.
+--
 -- See 'fromMap' for a safe version of this function.
 --
 unsafeFromMap :: Map k v -> MonoidMap k v
