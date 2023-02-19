@@ -28,7 +28,7 @@ import qualified Data.Total.MonoidMap.Internal as Internal
 -- Unsafe construction
 --------------------------------------------------------------------------------
 
--- | /Unsafely/ constructs a 'MonoidMap' from an ordinary 'Map'.
+-- | \(O(1)\). /Unsafely/ constructs a 'MonoidMap' from an ordinary 'Map'.
 --
 -- Constructs a 'MonoidMap' in /constant time/, without imposing the burden
 -- of a canonicalisation step to remove 'null' values.
@@ -39,6 +39,8 @@ import qualified Data.Total.MonoidMap.Internal as Internal
 -- @
 -- 'F.all' ('not' . 'Null.null') m
 -- @
+--
+-- Not satisfying this pre-condition will result in undefined behaviour.
 --
 -- See 'fromMap' for a safe version of this function.
 --

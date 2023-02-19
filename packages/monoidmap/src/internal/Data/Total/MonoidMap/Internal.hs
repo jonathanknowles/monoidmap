@@ -147,7 +147,9 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Bifunctor as B
+import qualified Data.Foldable as F
 import qualified Data.List as L
+import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -162,7 +164,7 @@ import qualified Data.Semigroup.Cancellative as C
 -- Type
 --------------------------------------------------------------------------------
 
--- | Models a /total/ relation from unique keys to /monoidal/ values.
+-- | Models a relation from unique keys to /monoidal/ values.
 --
 -- The mapping from keys to values is __total__: every possible key of type
 -- __@k@__ is associated with a corresponding value of type __@v@__:
@@ -171,7 +173,8 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'get' :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> v
 -- @
 --
--- By default, every key in an 'empty' map corresponds to a value of 'mempty':
+-- By default, every key in an 'empty' map is associated with a value of
+-- 'mempty':
 --
 -- @
 -- ∀ k. 'get' k 'empty' '==' 'mempty'
@@ -262,7 +265,7 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- The 'Monoid' instance satisfies the following property for all keys:
+-- The 'Monoid' instance satisfies the following property for all possible keys:
 --
 -- @
 -- 'get' k 'mempty' == 'mempty'
@@ -479,7 +482,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 -- Construction
 --------------------------------------------------------------------------------
 
--- | The empty 'MonoidMap'.
+-- | \(O(1)\). The empty 'MonoidMap'.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -493,7 +496,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
 
--- | Constructs a 'MonoidMap' from a list of key-value pairs.
+-- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs.
 --
 -- If the list contains more than one value for the same key, values are
 -- combined together in the order that they appear with the '(<>)' operator.
@@ -523,11 +526,20 @@ empty = MonoidMap Map.empty
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
--- | Constructs a 'MonoidMap' from a list of key-value pairs.
+-- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs,
+--   with a combining function for values.
 --
 -- If the list contains more than one value for the same key, values are
--- combined together in the order that they appear with the given combination
+-- combined together in the order that they appear with the given combining
 -- function.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromListWith' f kvs) '=='
+--     'maybe' 'mempty' ('F.foldl1' f)
+--         ('NE.nonEmpty' ('snd' '<$>' 'L.filter' (('==' k) . fst) kvs))
+-- @
 --
 fromListWith
     :: (Ord k, MonoidNull v)
@@ -537,10 +549,10 @@ fromListWith
     -> MonoidMap k v
 fromListWith f =
     -- The 'Map.fromListWith' function combines values for duplicate keys in
-    -- /reverse order/, so we must flip the provided combination function.
+    -- /reverse order/, so we must flip the provided combining function.
     fromMap . Map.fromListWith (flip f)
 
--- | Constructs a 'MonoidMap' from an ordinary 'Map'.
+-- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -548,10 +560,16 @@ fromListWith f =
 -- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
 -- @
 --
+-- This function performs canonicalisation of 'C.null' values, and has a time
+-- complexity that is linear in the length of the list.
+--
+-- For a version of this function that runs in constant time and does not
+-- perform canonicalisation, see 'Data.Total.MonoidMap.Unsafe.unsafeFromMap'.
+--
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.filter (not . C.null)
 
--- | Constructs a 'MonoidMap' from a single key-value pair.
+-- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
 -- Satisfies the following property:
 --
@@ -583,6 +601,12 @@ singleton k v = set k v mempty
 -- 'fromList' ('toList' m) '==' m
 -- @
 --
+-- The resulting list is sorted in ascending key order:
+--
+-- @
+-- 'L.sortOn' 'fst' ('toList' m) '==' 'toList' m
+-- @
+--
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toAscList . unMonoidMap
 
@@ -605,10 +629,11 @@ toMap = unMonoidMap
 
 -- | Gets the value associated with the given key.
 --
--- Satisfies the following property:
+-- By default, every key in an 'empty' map is associated with a value of
+-- 'mempty':
 --
 -- @
--- 'get' k ('set' k v m) '==' v
+-- ∀ k. 'get' k 'empty' '==' 'mempty'
 -- @
 --
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
@@ -984,13 +1009,14 @@ map
     -> MonoidMap k v2
 map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
 
--- | Applies a function to all non-null keys of a 'MonoidMap'.
+-- | Applies a function to all the keys of a 'MonoidMap' that are associated
+--   with non-'C.null' values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the '(<>)'
 -- operator.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('mapKeys' f m) '=='
@@ -1006,11 +1032,12 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
--- | Applies a function to all non-null keys of a 'MonoidMap'.
+-- | Applies a function to all the keys of a 'MonoidMap' that are associated
+--   with non-'C.null' values, with a combining function for values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the given
--- combination function.
+-- combining function.
 --
 -- Satisfies the following property:
 --
@@ -1027,7 +1054,7 @@ mapKeysWith
     -> MonoidMap k2 v
 mapKeysWith combine fk (MonoidMap m)
     -- The 'Map.mapKeysWith' function combines values for duplicate keys in
-    -- /descending order/, so we must flip the provided combination function.
+    -- /descending order/, so we must flip the provided combining function.
     = MonoidMap
     $ Map.filter (not . C.null)
     $ Map.mapKeysWith (flip combine) fk m
@@ -1041,7 +1068,7 @@ mapKeysWith combine fk (MonoidMap m)
 -- Uses the 'Semigroup' operator '(<>)' to append each value in the first map
 -- to its matching value in the second map.
 --
--- Satisfies the following property for all keys __@k@__:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('append' m1 m2) '==' 'get' k m1 '<>' 'get' k m2
@@ -1512,7 +1539,7 @@ stripSuffix = mergeA MergeStrategy
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('commonPrefix' m1 m2)
@@ -1570,7 +1597,7 @@ commonPrefix = merge MergeStrategy
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('commonSuffix' m1 m2)
@@ -2089,7 +2116,7 @@ stripOverlap m1 m2 =
 
 -- | Finds the /greatest common divisor/ of two maps.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
@@ -2183,7 +2210,7 @@ gcd = merge MergeStrategy
 -- Uses the 'Group' subtraction operator '(C.~~)' to subtract each value in the
 -- second map from its matching value in the first map.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k (m1 '`minus`' m2) '==' 'get' k m1 'C.~~' 'get' k m2
@@ -2389,7 +2416,7 @@ minusMaybe = mergeA MergeStrategy
 -- Uses the 'Monus' subtraction operator '(<\>)' to subtract each value in
 -- the second map from its matching value in the first map.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k (m1 '`monus`' m2) '==' 'get' k m1 '<\>' 'get' k m2
@@ -2512,7 +2539,7 @@ monus = merge MergeStrategy
 --
 -- Applies the 'Group' method 'C.invert' to every value in a map.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('invert' m) '==' 'C.invert' ('get' k m)
@@ -2550,7 +2577,7 @@ invert = map C.invert
 -- Uses the 'Group' exponentiation method 'C.pow' to raise every value in a map
 -- to the power of the given exponent.
 --
--- Satisfies the following property:
+-- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
 -- 'get' k (m '`power`' i) '==' 'get' k m '`C.pow`' i
