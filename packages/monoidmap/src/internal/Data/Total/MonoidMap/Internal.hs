@@ -100,8 +100,8 @@ module Data.Total.MonoidMap.Internal
     -- * Combination
     , intersection
     , intersectionA
-    , unionWith
-    , unionWithA
+    , union
+    , unionA
     )
     where
 
@@ -2654,13 +2654,13 @@ intersectionA f = mergeA MergeStrategy
 -- Union
 --------------------------------------------------------------------------------
 
-unionWith
+union
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-unionWith f = merge MergeStrategy
+union f = merge MergeStrategy
     { mergeNullWithNonNull =
         withNonNull (\v -> f mempty v)
     , mergeNonNullWithNull =
@@ -2669,13 +2669,13 @@ unionWith f = merge MergeStrategy
         withBoth f
     }
 
-unionWithA
+unionA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithA f = mergeA MergeStrategy
+unionA f = mergeA MergeStrategy
     { mergeNullWithNonNull =
         withNonNullA (\v -> f mempty v)
     , mergeNonNullWithNull =
