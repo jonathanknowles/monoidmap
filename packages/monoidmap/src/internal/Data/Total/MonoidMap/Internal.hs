@@ -2686,9 +2686,12 @@ intersection f = merge MergeStrategy
         withBoth f
     }
 
+-- | An /applicative/ version of 'intersection'.
+--
 intersectionA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
