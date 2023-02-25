@@ -289,6 +289,11 @@ specPropertiesFor keyType valueType = do
                 prop_mapKeysWith_asList
                     @k @v & property
 
+        describe "Intersection" $ do
+            it "prop_intersection_get" $
+                prop_intersection_get
+                    @k @v & property
+
         describe "Association" $ do
             it "prop_append_get" $
                 prop_append_get
@@ -1137,6 +1142,49 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.mapKeysWith c f m
+
+--------------------------------------------------------------------------------
+-- Intersection
+--------------------------------------------------------------------------------
+
+prop_intersection_get
+    :: (Ord k, Eq v, Show v, MonoidNull v)
+    => Fun (v, v) v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_intersection_get (applyFun2 -> f) m1 m2 k =
+    (MonoidMap.get k result
+        ===
+        if keyWithinIntersection
+        then f (MonoidMap.get k m1) (MonoidMap.get k m2)
+        else mempty)
+    & cover 2
+        (keyWithinIntersection)
+        "keyWithinIntersection"
+    & cover 2
+        (not keyWithinIntersection)
+        "not keyWithinIntersection"
+    & cover 2
+        (MonoidMap.null result)
+        "MonoidMap.null result"
+    & cover 2
+        (MonoidMap.nonNull result)
+        "MonoidMap.nonNull result"
+    & cover 2
+        (MonoidMap.nullKey k result)
+        "MonoidMap.nullKey k result"
+    & cover 2
+        (MonoidMap.nonNullKey k result)
+        "MonoidMap.nonNullKey k result"
+  where
+    keyWithinIntersection =
+        k `Set.member` Set.intersection
+            (MonoidMap.nonNullKeys m1)
+            (MonoidMap.nonNullKeys m2)
+    result =
+        MonoidMap.intersection f m1 m2
 
 --------------------------------------------------------------------------------
 -- Association
