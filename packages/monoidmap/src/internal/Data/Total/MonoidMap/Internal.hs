@@ -98,8 +98,8 @@ module Data.Total.MonoidMap.Internal
     , gcd
 
     -- * Combination
-    , intersectionWith
-    , intersectionWithA
+    , intersection
+    , intersectionA
     , unionWith
     , unionWithA
     )
@@ -2620,13 +2620,13 @@ power m i = map (`C.pow` i) m
 -- Intersection
 --------------------------------------------------------------------------------
 
-intersectionWith
+intersection
     :: (Ord k, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith f = merge MergeStrategy
+intersection f = merge MergeStrategy
     { mergeNullWithNonNull =
         keepNull
     , mergeNonNullWithNull =
@@ -2635,13 +2635,13 @@ intersectionWith f = merge MergeStrategy
         withBoth f
     }
 
-intersectionWithA
+intersectionA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithA f = mergeA MergeStrategy
+intersectionA f = mergeA MergeStrategy
     { mergeNullWithNonNull =
         keepNull
     , mergeNonNullWithNull =
