@@ -2708,9 +2708,55 @@ intersectionA f = mergeA MergeStrategy
 -- Union
 --------------------------------------------------------------------------------
 
+-- | Computes the /union/ of a pair of maps using the given function to combine
+--   values for matching keys.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('union' f m1 m2) '=='
+--     if k '`Set.member`'
+--         'Set.union'
+--             ('nonNullKeys' m1)
+--             ('nonNullKeys' m2)
+--     then f ('get' k m1) ('get' k m2)
+--     else 'mempty'
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given combining function __@f@__ /always/ produces 'mempty' when
+-- /both/ of its arguments are 'mempty':
+--
+-- @
+-- f 'mempty' 'mempty' '==' 'mempty'
+-- @
+--
+-- /Then/ the following property holds for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('union' f m1 m2) '==' f ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With the 'Prelude.max' function applied to 'Data.Monoid.Sum'
+-- 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1)          ]
+-- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
+-- >>> m3 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 3), ("e", 4)]
+-- @
+-- @
+-- >>> 'union' 'Prelude.max' m1 m2 '==' m3
+-- 'True'
+-- @
+--
 union
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
