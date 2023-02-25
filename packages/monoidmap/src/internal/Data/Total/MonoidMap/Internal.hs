@@ -62,6 +62,14 @@ module Data.Total.MonoidMap.Internal
     , mapKeys
     , mapKeysWith
 
+    -- * Intersection
+    , intersection
+    , intersectionA
+
+    -- * Union
+    , union
+    , unionA
+
     -- * Association
     , append
 
@@ -96,12 +104,6 @@ module Data.Total.MonoidMap.Internal
 
     -- * GCD
     , gcd
-
-    -- * Combination
-    , intersection
-    , intersectionA
-    , union
-    , unionA
     )
     where
 
