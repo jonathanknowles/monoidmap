@@ -2624,9 +2624,56 @@ power m i = map (`C.pow` i) m
 -- Intersection
 --------------------------------------------------------------------------------
 
+-- | Computes the /intersection/ of a pair of maps using the given function
+--   to combine values for matching keys.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('intersection' f m1 m2) '=='
+--     if k '`Set.member`'
+--         'Set.intersection'
+--             ('nonNullKeys' m1)
+--             ('nonNullKeys' m2)
+--     then f ('get' k m1) ('get' k m2)
+--     else 'mempty'
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given combining function __@f@__ /always/ produces 'mempty' when
+-- /either/ or /both/ of its arguments are 'mempty':
+--
+-- @
+-- (f v      'mempty' '==' 'mempty') '&&'
+-- (f 'mempty' v      '==' 'mempty')
+-- @
+--
+-- /Then/ the following property holds for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('intersection' f m1 m2) '==' f ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With the 'Prelude.min' function applied to 'Data.Monoid.Sum'
+-- 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1)          ]
+-- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
+-- >>> m3 = 'fromList' [          ("b", 1), ("c", 2), ("d", 1)          ]
+-- @
+-- @
+-- >>> 'intersection' 'Prelude.min' m1 m2 '==' m3
+-- 'True'
+-- @
+--
 intersection
     :: (Ord k, MonoidNull v3)
     => (v1 -> v2 -> v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
