@@ -2769,9 +2769,12 @@ union f = merge MergeStrategy
         withBoth f
     }
 
+-- | An /applicative/ version of 'union'.
+--
 unionA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
