@@ -997,6 +997,8 @@ partitionWithKey f (MonoidMap m) =
 -- ('get' k m '/=' 'mempty') ==> ('get' k ('map' f m) '==' f ('get' k m))
 -- @
 --
+-- === Conditional totality
+--
 -- If function __@f@__ preserves 'C.null' values, then the mapping is /total/
 -- for all possible keys __@k@__:
 --
