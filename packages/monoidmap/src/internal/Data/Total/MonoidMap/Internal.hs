@@ -119,7 +119,7 @@ import Data.Function
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Functor.Identity
-    ( Identity )
+    ( Identity (..) )
 import Data.Group
     ( Abelian, Group )
 import Data.Map.Strict
@@ -2688,6 +2688,13 @@ intersection f = merge MergeStrategy
 
 -- | An /applicative/ version of 'intersection'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'runIdentity' ('intersectionA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
+--          '==' ('intersection'    \    \   \    \  \        \ f  m1 m2)
+-- @
+--
 intersectionA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
@@ -2770,6 +2777,13 @@ union f = merge MergeStrategy
     }
 
 -- | An /applicative/ version of 'union'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'runIdentity' ('unionA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
+--          '==' ('union'    \    \   \    \  \        \ f  m1 m2)
+-- @
 --
 unionA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
