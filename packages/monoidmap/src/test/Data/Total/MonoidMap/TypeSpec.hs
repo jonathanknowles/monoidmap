@@ -1287,9 +1287,8 @@ prop_intersection_intersectionA
     -> MonoidMap k v
     -> Property
 prop_intersection_intersectionA (applyFun2 -> f) m1 m2 =
-    MonoidMap.intersection f m1 m2
-    ===
     runIdentity (MonoidMap.intersectionA ((fmap . fmap) Identity f) m1 m2)
+    ===         (MonoidMap.intersection                          f  m1 m2)
 
 --------------------------------------------------------------------------------
 -- Union
