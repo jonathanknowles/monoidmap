@@ -307,6 +307,11 @@ specPropertiesFor keyType valueType = do
                 prop_intersection_intersectionA
                     @k @v & property
 
+        describe "Union" $ do
+            it "prop_union_get" $
+                prop_union_get
+                    @k @v & property
+
         describe "Association" $ do
             it "prop_append_get" $
                 prop_append_get
@@ -1263,6 +1268,49 @@ prop_intersection_intersectionA (applyFun2 -> f) m1 m2 =
     MonoidMap.intersection f m1 m2
     ===
     runIdentity (MonoidMap.intersectionA ((fmap . fmap) Identity f) m1 m2)
+
+--------------------------------------------------------------------------------
+-- Union
+--------------------------------------------------------------------------------
+
+prop_union_get
+    :: (Ord k, Eq v, Show v, MonoidNull v)
+    => Fun (v, v) v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_union_get (applyFun2 -> f) m1 m2 k =
+    (MonoidMap.get k result
+        ===
+        if keyWithinUnion
+        then f (MonoidMap.get k m1) (MonoidMap.get k m2)
+        else mempty)
+    & cover 2
+        (keyWithinUnion)
+        "keyWithinUnion"
+    & cover 2
+        (not keyWithinUnion)
+        "not keyWithinUnion"
+    & cover 2
+        (MonoidMap.null result)
+        "MonoidMap.null result"
+    & cover 2
+        (MonoidMap.nonNull result)
+        "MonoidMap.nonNull result)"
+    & cover 2
+        (MonoidMap.nullKey k result)
+        "MonoidMap.nullKey k result"
+    & cover 2
+        (MonoidMap.nonNullKey k result)
+        "MonoidMap.nonNullKey k result"
+  where
+    keyWithinUnion =
+        k `Set.member` Set.union
+            (MonoidMap.nonNullKeys m1)
+            (MonoidMap.nonNullKeys m2)
+    result =
+        MonoidMap.union f m1 m2
 
 --------------------------------------------------------------------------------
 -- Association
