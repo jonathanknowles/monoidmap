@@ -317,6 +317,9 @@ specPropertiesFor keyType valueType = do
             it "prop_union_get_total_failure" $
                 prop_union_get_total_failure
                     @k @v & property
+            it "prop_union_unionA" $
+                prop_union_unionA
+                    @k @v & property
 
         describe "Association" $ do
             it "prop_append_get" $
@@ -1370,6 +1373,17 @@ prop_union_get_total_failure (applyFun2 -> f) m1 m2 k =
     MonoidMap.get k (MonoidMap.union f m1 m2)
         ===
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
+
+prop_union_unionA
+    :: (Ord k, Show k, Eq v, Show v, MonoidNull v)
+    => Fun (v, v) v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_union_unionA (applyFun2 -> f) m1 m2 =
+    MonoidMap.union f m1 m2
+    ===
+    runIdentity (MonoidMap.unionA ((fmap . fmap) Identity f) m1 m2)
 
 --------------------------------------------------------------------------------
 -- Association
