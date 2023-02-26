@@ -16,6 +16,8 @@ import Data.Bifunctor
     ( bimap, first, second )
 import Data.Function
     ( (&) )
+import Data.Functor.Identity
+    ( Identity (..) )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -300,6 +302,9 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
             it "prop_intersection_get_total_failure" $
                 prop_intersection_get_total_failure
+                    @k @v & property
+            it "prop_intersection_intersectionA" $
+                prop_intersection_intersectionA
                     @k @v & property
 
         describe "Association" $ do
@@ -1247,6 +1252,17 @@ prop_intersection_get_total_failure (applyFun2 -> f) m1 m2 k =
     MonoidMap.get k (MonoidMap.intersection f m1 m2)
         ===
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
+
+prop_intersection_intersectionA
+    :: (Ord k, Show k, Eq v, Show v, MonoidNull v)
+    => Fun (v, v) v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_intersection_intersectionA (applyFun2 -> f) m1 m2 =
+    MonoidMap.intersection f m1 m2
+    ===
+    runIdentity (MonoidMap.intersectionA ((fmap . fmap) Identity f) m1 m2)
 
 --------------------------------------------------------------------------------
 -- Association
