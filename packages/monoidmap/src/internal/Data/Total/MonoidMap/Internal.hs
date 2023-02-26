@@ -62,6 +62,14 @@ module Data.Total.MonoidMap.Internal
     , mapKeys
     , mapKeysWith
 
+    -- * Intersection
+    , intersection
+    , intersectionA
+
+    -- * Union
+    , union
+    , unionA
+
     -- * Association
     , append
 
@@ -96,12 +104,6 @@ module Data.Total.MonoidMap.Internal
 
     -- * GCD
     , gcd
-
-    -- * Combination
-    , intersectionWith
-    , intersectionWithA
-    , unionWith
-    , unionWithA
     )
     where
 
@@ -994,6 +996,8 @@ partitionWithKey f (MonoidMap m) =
 -- ('get' k m '==' 'mempty') ==> ('get' k ('map' f m) '==' 'mempty'     )
 -- ('get' k m '/=' 'mempty') ==> ('get' k ('map' f m) '==' f ('get' k m))
 -- @
+--
+-- === Conditional totality
 --
 -- If function __@f@__ preserves 'C.null' values, then the mapping is /total/
 -- for all possible keys __@k@__:
@@ -2620,13 +2624,60 @@ power m i = map (`C.pow` i) m
 -- Intersection
 --------------------------------------------------------------------------------
 
-intersectionWith
+-- | Computes the /intersection/ of a pair of maps using the given function
+--   to combine values for matching keys.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('intersection' f m1 m2) '=='
+--     if k '`Set.member`'
+--         'Set.intersection'
+--             ('nonNullKeys' m1)
+--             ('nonNullKeys' m2)
+--     then f ('get' k m1) ('get' k m2)
+--     else 'mempty'
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given combining function __@f@__ /always/ produces 'mempty' when
+-- /either/ or /both/ of its arguments are 'mempty':
+--
+-- @
+-- (f v      'mempty' '==' 'mempty') '&&'
+-- (f 'mempty' v      '==' 'mempty')
+-- @
+--
+-- /Then/ the following property holds for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('intersection' f m1 m2) '==' f ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With the 'Prelude.min' function applied to 'Data.Monoid.Sum'
+-- 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1)          ]
+-- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
+-- >>> m3 = 'fromList' [          ("b", 1), ("c", 2), ("d", 1)          ]
+-- @
+-- @
+-- >>> 'intersection' 'Prelude.min' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+intersection
     :: (Ord k, MonoidNull v3)
     => (v1 -> v2 -> v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith f = merge MergeStrategy
+intersection f = merge MergeStrategy
     { mergeNullWithNonNull =
         keepNull
     , mergeNonNullWithNull =
@@ -2635,13 +2686,16 @@ intersectionWith f = merge MergeStrategy
         withBoth f
     }
 
-intersectionWithA
+-- | An /applicative/ version of 'intersection'.
+--
+intersectionA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithA f = mergeA MergeStrategy
+intersectionA f = mergeA MergeStrategy
     { mergeNullWithNonNull =
         keepNull
     , mergeNonNullWithNull =
@@ -2654,13 +2708,59 @@ intersectionWithA f = mergeA MergeStrategy
 -- Union
 --------------------------------------------------------------------------------
 
-unionWith
+-- | Computes the /union/ of a pair of maps using the given function to combine
+--   values for matching keys.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('union' f m1 m2) '=='
+--     if k '`Set.member`'
+--         'Set.union'
+--             ('nonNullKeys' m1)
+--             ('nonNullKeys' m2)
+--     then f ('get' k m1) ('get' k m2)
+--     else 'mempty'
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given combining function __@f@__ /always/ produces 'mempty' when
+-- /both/ of its arguments are 'mempty':
+--
+-- @
+-- f 'mempty' 'mempty' '==' 'mempty'
+-- @
+--
+-- /Then/ the following property holds for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('union' f m1 m2) '==' f ('get' k m1) ('get' k m2)
+-- @
+--
+-- === __Examples__
+--
+-- With the 'Prelude.max' function applied to 'Data.Monoid.Sum'
+-- 'Numeric.Natural.Natural' values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1)          ]
+-- >>> m2 = 'fromList' [          ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
+-- >>> m3 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 3), ("e", 4)]
+-- @
+-- @
+-- >>> 'union' 'Prelude.max' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+union
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-unionWith f = merge MergeStrategy
+union f = merge MergeStrategy
     { mergeNullWithNonNull =
         withNonNull (\v -> f mempty v)
     , mergeNonNullWithNull =
@@ -2669,13 +2769,16 @@ unionWith f = merge MergeStrategy
         withBoth f
     }
 
-unionWithA
+-- | An /applicative/ version of 'union'.
+--
+unionA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
+    -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithA f = mergeA MergeStrategy
+unionA f = mergeA MergeStrategy
     { mergeNullWithNonNull =
         withNonNullA (\v -> f mempty v)
     , mergeNonNullWithNull =
