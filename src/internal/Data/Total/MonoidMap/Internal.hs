@@ -2778,6 +2778,13 @@ union f = merge MergeStrategy
 
 -- | An /applicative/ version of 'union'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'runIdentity' ('unionA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
+--          '==' ('union'    \    \   \    \  \        \ f  m1 m2)
+-- @
+--
 unionA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> f v3)
