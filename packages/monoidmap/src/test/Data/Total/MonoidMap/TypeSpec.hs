@@ -1393,9 +1393,8 @@ prop_union_unionA
     -> MonoidMap k v
     -> Property
 prop_union_unionA (applyFun2 -> f) m1 m2 =
-    MonoidMap.union f m1 m2
-    ===
     runIdentity (MonoidMap.unionA ((fmap . fmap) Identity f) m1 m2)
+    ===         (MonoidMap.union                          f  m1 m2)
 
 --------------------------------------------------------------------------------
 -- Association
