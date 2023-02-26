@@ -283,6 +283,9 @@ specPropertiesFor keyType valueType = do
             it "prop_map_get_total" $
                 prop_map_get_total
                     @k @v & property
+            it "prop_map_get_total_failure" $
+                prop_map_get_total_failure
+                    @k @v & property
             it "prop_mapKeys_asList" $
                 prop_mapKeys_asList
                     @k @v & property
@@ -1123,6 +1126,16 @@ prop_map_get_total (applyFun -> g) k m =
     f v
         | v == mempty = mempty
         | otherwise   = g v
+
+prop_map_get_total_failure
+    :: forall k v. (Ord k, Show k, Eq v, MonoidNull v, Show v)
+    => Fun v v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_map_get_total_failure (applyFun -> f) k m =
+    expectFailure $
+    MonoidMap.get k (MonoidMap.map f m) === f (MonoidMap.get k m)
 
 prop_mapKeys_asList
     :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
