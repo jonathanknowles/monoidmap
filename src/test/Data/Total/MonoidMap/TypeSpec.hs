@@ -74,6 +74,7 @@ import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
+import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
 import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
@@ -292,6 +293,9 @@ specPropertiesFor keyType valueType = do
         describe "Intersection" $ do
             it "prop_intersection_get" $
                 prop_intersection_get
+                    @k @v & property
+            it "prop_intersection_get_total" $
+                prop_intersection_get_total
                     @k @v & property
 
         describe "Association" $ do
@@ -1185,6 +1189,47 @@ prop_intersection_get (applyFun2 -> f) m1 m2 k =
             (MonoidMap.nonNullKeys m2)
     result =
         MonoidMap.intersection f m1 m2
+
+prop_intersection_get_total
+    :: (Ord k, Eq v, Show v, MonoidNull v)
+    => Fun (v, v) v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_intersection_get_total (applyFun2 -> f0) m1 m2 k =
+    (MonoidMap.get k result
+        ===
+        f (MonoidMap.get k m1) (MonoidMap.get k m2))
+    & cover 2
+        (keyWithinIntersection)
+        "keyWithinIntersection"
+    & cover 2
+        (not keyWithinIntersection)
+        "not keyWithinIntersection"
+    & cover 2
+        (MonoidMap.null result)
+        "MonoidMap.null result"
+    & cover 2
+        (MonoidMap.nonNull result)
+        "MonoidMap.nonNull result"
+    & cover 2
+        (MonoidMap.nullKey k result)
+        "MonoidMap.nullKey k result"
+    & cover 2
+        (MonoidMap.nonNullKey k result)
+        "MonoidMap.nonNullKey k result"
+  where
+    result =
+        MonoidMap.intersection f m1 m2
+    keyWithinIntersection =
+        k `Set.member` Set.intersection
+            (MonoidMap.nonNullKeys m1)
+            (MonoidMap.nonNullKeys m2)
+    f v1 v2
+        | Null.null v1 = mempty
+        | Null.null v2 = mempty
+        | otherwise = f0 v1 v2
 
 --------------------------------------------------------------------------------
 -- Association
