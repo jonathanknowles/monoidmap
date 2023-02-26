@@ -31,7 +31,7 @@ import Data.List
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
-    ( GCDMonoid (gcd), LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
 import Data.Monoid.Null
@@ -122,10 +122,12 @@ isSubsetOf :: Ord a => MultiSet a -> MultiSet a -> Bool
 isSubsetOf = isPrefixOf
 
 union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-union = (<>)
+union (MultiSet m1) (MultiSet m2) =
+    MultiSet (MonoidMap.union max m1 m2)
 
 intersection :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-intersection = gcd
+intersection (MultiSet m1) (MultiSet m2) =
+    MultiSet (MonoidMap.intersection min m1 m2)
 
 difference :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 difference m1 m2 = (m1 <\> m2) <> (m2 <\> m1)
