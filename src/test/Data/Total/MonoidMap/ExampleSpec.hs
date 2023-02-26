@@ -54,7 +54,7 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Examples" $ do
 
-    describe "Fundamental" $ do
+    describe "Conversion" $ do
 
         exampleSpec_fromList_String
         exampleSpec_toList_String
@@ -118,7 +118,7 @@ spec = describe "Examples" $ do
         exampleSpec_Monus_monus_Sum_Natural
 
 --------------------------------------------------------------------------------
--- Fundamental
+-- Conversion
 --------------------------------------------------------------------------------
 
 exampleSpec_fromList_String :: Spec
