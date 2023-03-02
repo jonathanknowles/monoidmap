@@ -104,6 +104,9 @@ module Data.Total.MonoidMap.Internal
 
     -- * GCD
     , gcd
+
+    -- * LCM
+    , lcm
     )
     where
 
