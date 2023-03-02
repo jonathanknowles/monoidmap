@@ -44,6 +44,8 @@ import Test.QuickCheck.Classes.Monoid.GCD
     , overlappingGCDMonoidLaws
     , rightGCDMonoidLaws
     )
+import Test.QuickCheck.Classes.Monoid.LCM
+    ( lcmMonoidLaws )
 import Test.QuickCheck.Classes.Monoid.Monus
     ( monusLaws )
 import Test.QuickCheck.Classes.Monoid.Null
@@ -101,6 +103,7 @@ spec = describe "Class laws" $ do
         [ commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftGCDMonoidLaws
         , leftReductiveLaws
@@ -150,6 +153,7 @@ spec = describe "Class laws" $ do
         , commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftCancellativeLaws
         , leftGCDMonoidLaws
@@ -171,6 +175,7 @@ spec = describe "Class laws" $ do
         [ commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftGCDMonoidLaws
         , leftReductiveLaws
@@ -192,6 +197,7 @@ spec = describe "Class laws" $ do
         , commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftCancellativeLaws
         , leftGCDMonoidLaws
