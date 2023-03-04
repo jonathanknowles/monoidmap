@@ -2567,7 +2567,7 @@ monus = merge MergeStrategy
 -- @
 --
 invert
-    :: (Ord k, MonoidNull v, Group v)
+    :: (MonoidNull v, Group v)
     => MonoidMap k v
     -> MonoidMap k v
 invert = map C.invert
