@@ -2131,7 +2131,28 @@ stripOverlap m1 m2 =
 
 -- | Finds the /greatest common divisor/ of two maps.
 --
--- Satisfies the following property for all possible keys __@k@__:
+-- The greatest common divisor of maps __@m1@__ and __@m2@__ is the greatest
+-- single map __@m@__ that can be stripped from /either/ __@m1@__ /or/ __@m2@__
+-- with the '(</>)' operation:
+--
+-- @
+-- 'isJust' (m1 '</>' 'gcd' m1 m2)
+-- 'isJust' (m2 '</>' 'gcd' m1 m2)
+-- @
+--
+-- The greatest common divisor is /unique/:
+--
+-- @
+-- 'all' 'isJust'
+--     [ m1 '</>' m3
+--     , m2 '</>' m3
+--     , m3 '</>' 'gcd' m1 m2
+--     ]
+-- ==>
+--     (m3 '==' 'gcd' m1 m2)
+-- @
+--
+-- The following property holds for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
@@ -2215,7 +2236,28 @@ gcd = merge MergeStrategy
 
 -- | Finds the /least common multiple/ of two maps.
 --
--- Satisfies the following property for all possible keys __@k@__:
+-- The least common multiple of maps __@m1@__ and __@m2@__ is the smallest
+-- single map __@m@__ from which /either/ __@m1@__ /or/ __@m2@__ can be
+-- stripped with the '(</>)' operation:
+--
+-- @
+-- 'isJust' ('lcm' m1 m2 '</>' m1)
+-- 'isJust' ('lcm' m1 m2 '</>' m2)
+-- @
+--
+-- The least common multiple is /unique/:
+--
+-- @
+-- 'all' 'isJust'
+--     [ \   \    m3 '</>' m1
+--     , \   \    m3 '</>' m2
+--     , 'lcm' m1 m2 '</>' m3
+--     ]
+-- ==>
+--     (m3 '==' 'lcm' m1 m2)
+-- @
+--
+-- The following property holds for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('lcm' m1 m2) '==' 'C.lcm' ('get' k m1) ('get' k m2)
