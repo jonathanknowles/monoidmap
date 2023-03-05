@@ -120,11 +120,13 @@ spec = describe "Examples" $ do
     describe "GCDMonoid" $ do
 
         exampleSpec_GCDMonoid_gcd_Product_Natural
+        exampleSpec_GCDMonoid_gcd_Sum_Natural
         exampleSpec_GCDMonoid_gcd_Set_Natural
 
     describe "LCMMonoid" $ do
 
         exampleSpec_LCMMonoid_lcm_Product_Natural
+        exampleSpec_LCMMonoid_lcm_Sum_Natural
         exampleSpec_LCMMonoid_lcm_Set_Natural
 
     describe "Monus" $ do
@@ -1269,6 +1271,30 @@ exampleData_GCDMonoid_gcd_Product_Natural = unitTestData2
   where
     m = MonoidMap.fromList . zip [A ..]
 
+exampleSpec_GCDMonoid_gcd_Sum_Natural :: Spec
+exampleSpec_GCDMonoid_gcd_Sum_Natural = unitTestSpec
+    "GCDMonoid.gcd (Sum Natural)"
+    "gcd"
+    (gcd)
+    (exampleData_GCDMonoid_gcd_Sum_Natural)
+
+exampleData_GCDMonoid_gcd_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+exampleData_GCDMonoid_gcd_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 4, 3, 2, 1, 0]
+      )
+    , ( m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [0, 1, 2, 3, 4, 4, 3, 2, 1, 0]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
 exampleSpec_GCDMonoid_gcd_Set_Natural :: Spec
 exampleSpec_GCDMonoid_gcd_Set_Natural = unitTestSpec
     "GCDMonoid.gcd (Set Natural)"
@@ -1376,6 +1402,30 @@ exampleData_LCMMonoid_lcm_Product_Natural = unitTestData2
     , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
       , m [ 9,  9,  9,  9,  9,  9,  9,  9,  9,  9]
       , m [ 0,  9, 18,  9, 36, 45, 18, 63, 72,  9]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+exampleSpec_LCMMonoid_lcm_Sum_Natural :: Spec
+exampleSpec_LCMMonoid_lcm_Sum_Natural = unitTestSpec
+    "LCMMonoid.lcm (Sum Natural)"
+    "lcm"
+    (lcm)
+    (exampleData_LCMMonoid_lcm_Sum_Natural)
+
+exampleData_LCMMonoid_lcm_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+exampleData_LCMMonoid_lcm_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [9, 8, 7, 6, 5, 5, 6, 7, 8, 9]
+      )
+    , ( m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 5, 6, 7, 8, 9]
       )
     ]
   where
