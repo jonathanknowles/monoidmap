@@ -98,6 +98,9 @@ module Data.Total.MonoidMap
 
     -- * GCD
     , gcd
+
+    -- * LCM
+    , lcm
     )
     where
 
