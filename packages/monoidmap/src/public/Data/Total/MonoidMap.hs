@@ -56,18 +56,16 @@ module Data.Total.MonoidMap
     , mapKeys
     , mapKeysWith
 
-    -- * Intersection
+    -- * Merging
     , intersection
     , intersectionA
-
-    -- * Union
     , union
     , unionA
 
     -- * Association
     , append
 
-    -- * Subtraction
+    -- * Reduction
     , minus
     , minusMaybe
     , monus
@@ -77,6 +75,10 @@ module Data.Total.MonoidMap
 
     -- * Exponentiation
     , power
+
+    -- * Bounds
+    , gcd
+    , lcm
 
     -- * Prefixes
     , isPrefixOf
@@ -95,12 +97,6 @@ module Data.Total.MonoidMap
     , stripPrefixOverlap
     , stripSuffixOverlap
     , stripOverlap
-
-    -- * GCD
-    , gcd
-
-    -- * LCM
-    , lcm
     )
     where
 
