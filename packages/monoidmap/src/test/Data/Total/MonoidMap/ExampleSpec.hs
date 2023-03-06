@@ -12,7 +12,7 @@ module Data.Total.MonoidMap.ExampleSpec
     where
 
 import Prelude hiding
-    ( gcd )
+    ( gcd, lcm )
 
 import Data.Function
     ( (&) )
@@ -22,6 +22,8 @@ import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.GCD
     ( GCDMonoid (..), LeftGCDMonoid (..), RightGCDMonoid (..) )
+import Data.Monoid.LCM
+    ( LCMMonoid (..) )
 import Data.Monoid.Monus
     ( OverlappingGCDMonoid (..), (<\>) )
 import Data.Ratio
@@ -118,7 +120,14 @@ spec = describe "Examples" $ do
     describe "GCDMonoid" $ do
 
         exampleSpec_GCDMonoid_gcd_Product_Natural
+        exampleSpec_GCDMonoid_gcd_Sum_Natural
         exampleSpec_GCDMonoid_gcd_Set_Natural
+
+    describe "LCMMonoid" $ do
+
+        exampleSpec_LCMMonoid_lcm_Product_Natural
+        exampleSpec_LCMMonoid_lcm_Sum_Natural
+        exampleSpec_LCMMonoid_lcm_Set_Natural
 
     describe "Monus" $ do
 
@@ -1262,6 +1271,30 @@ exampleData_GCDMonoid_gcd_Product_Natural = unitTestData2
   where
     m = MonoidMap.fromList . zip [A ..]
 
+exampleSpec_GCDMonoid_gcd_Sum_Natural :: Spec
+exampleSpec_GCDMonoid_gcd_Sum_Natural = unitTestSpec
+    "GCDMonoid.gcd (Sum Natural)"
+    "gcd"
+    (gcd)
+    (exampleData_GCDMonoid_gcd_Sum_Natural)
+
+exampleData_GCDMonoid_gcd_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+exampleData_GCDMonoid_gcd_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 4, 3, 2, 1, 0]
+      )
+    , ( m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [0, 1, 2, 3, 4, 4, 3, 2, 1, 0]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
 exampleSpec_GCDMonoid_gcd_Set_Natural :: Spec
 exampleSpec_GCDMonoid_gcd_Set_Natural = unitTestSpec
     "GCDMonoid.gcd (Set Natural)"
@@ -1309,6 +1342,142 @@ exampleData_GCDMonoid_gcd_Set_Natural = unitTestData2
     , ( m [[      2, 3], [      6, 7]]
       , m [[0, 1      ], [4, 5      ]]
       , m [[          ], [          ]]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
+
+--------------------------------------------------------------------------------
+-- LCMMonoid
+--------------------------------------------------------------------------------
+
+exampleSpec_LCMMonoid_lcm_Product_Natural :: Spec
+exampleSpec_LCMMonoid_lcm_Product_Natural = unitTestSpec
+    "LCMMonoid.lcm (Product Natural)"
+    "lcm"
+    (lcm)
+    (exampleData_LCMMonoid_lcm_Product_Natural)
+
+exampleData_LCMMonoid_lcm_Product_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Product Natural))
+    (MonoidMap LatinChar (Product Natural))
+    (MonoidMap LatinChar (Product Natural))
+exampleData_LCMMonoid_lcm_Product_Natural = unitTestData2
+    [ ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+      , m [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 1,  1,  1,  1,  1,  1,  1,  1,  1,  1]
+      , m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 2,  2,  2,  2,  2,  2,  2,  2,  2,  2]
+      , m [ 0,  2,  2,  6,  4, 10,  6, 14,  8, 18]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 3,  3,  3,  3,  3,  3,  3,  3,  3,  3]
+      , m [ 0,  3,  6,  3, 12, 15,  6, 21, 24,  9]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 4,  4,  4,  4,  4,  4,  4,  4,  4,  4]
+      , m [ 0,  4,  4, 12,  4, 20, 12, 28,  8, 36]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 5,  5,  5,  5,  5,  5,  5,  5,  5,  5]
+      , m [ 0,  5, 10, 15, 20,  5, 30, 35, 40, 45]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 6,  6,  6,  6,  6,  6,  6,  6,  6,  6]
+      , m [ 0,  6,  6,  6, 12, 30,  6, 42, 24, 18]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 7,  7,  7,  7,  7,  7,  7,  7,  7,  7]
+      , m [ 0,  7, 14, 21, 28, 35, 42,  7, 56, 63]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 8,  8,  8,  8,  8,  8,  8,  8,  8,  8]
+      , m [ 0,  8,  8, 24,  8, 40, 24, 56,  8, 72]
+      )
+    , ( m [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9]
+      , m [ 9,  9,  9,  9,  9,  9,  9,  9,  9,  9]
+      , m [ 0,  9, 18,  9, 36, 45, 18, 63, 72,  9]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+exampleSpec_LCMMonoid_lcm_Sum_Natural :: Spec
+exampleSpec_LCMMonoid_lcm_Sum_Natural = unitTestSpec
+    "LCMMonoid.lcm (Sum Natural)"
+    "lcm"
+    (lcm)
+    (exampleData_LCMMonoid_lcm_Sum_Natural)
+
+exampleData_LCMMonoid_lcm_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+exampleData_LCMMonoid_lcm_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [9, 8, 7, 6, 5, 5, 6, 7, 8, 9]
+      )
+    , ( m [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+      , m [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      , m [9, 8, 7, 6, 5, 5, 6, 7, 8, 9]
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+exampleSpec_LCMMonoid_lcm_Set_Natural :: Spec
+exampleSpec_LCMMonoid_lcm_Set_Natural = unitTestSpec
+    "LCMMonoid.lcm (Set Natural)"
+    "lcm"
+    (lcm)
+    (exampleData_LCMMonoid_lcm_Set_Natural)
+
+exampleData_LCMMonoid_lcm_Set_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+exampleData_LCMMonoid_lcm_Set_Natural = unitTestData2
+    [ ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[          ], [          ]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[          ], [          ]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[0, 1, 2   ], [4, 5, 6   ]]
+      , m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[   1, 2, 3], [   5, 6, 7]]
+      , m [[0, 1, 2   ], [4, 5, 6   ]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[0, 1      ], [4, 5      ]]
+      , m [[      2, 3], [      6, 7]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
+      )
+    , ( m [[      2, 3], [      6, 7]]
+      , m [[0, 1      ], [4, 5      ]]
+      , m [[0, 1, 2, 3], [4, 5, 6, 7]]
       )
     ]
   where

@@ -24,7 +24,7 @@ module Data.Total.MonoidMap.Examples.MultiSet
     where
 
 import Prelude hiding
-    ( gcd, null, subtract )
+    ( gcd, lcm, null, subtract )
 
 import Data.List
     ( genericReplicate )
@@ -32,6 +32,8 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+import Data.Monoid.LCM
+    ( LCMMonoid )
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
 import Data.Monoid.Null
@@ -55,6 +57,8 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Foldable as F
+import qualified Data.Monoid.GCD as GCDMonoid
+import qualified Data.Monoid.LCM as LCMMonoid
 import qualified Data.Total.MonoidMap as MonoidMap
 
 newtype MultiSet a = MultiSet
@@ -75,6 +79,7 @@ newtype MultiSet a = MultiSet
         , LeftGCDMonoid
         , RightGCDMonoid
         , GCDMonoid
+        , LCMMonoid
         , OverlappingGCDMonoid
         , PositiveMonoid
         )
@@ -121,13 +126,11 @@ height s
 isSubsetOf :: Ord a => MultiSet a -> MultiSet a -> Bool
 isSubsetOf = isPrefixOf
 
-union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-union (MultiSet m1) (MultiSet m2) =
-    MultiSet (MonoidMap.union max m1 m2)
-
 intersection :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-intersection (MultiSet m1) (MultiSet m2) =
-    MultiSet (MonoidMap.intersection min m1 m2)
+intersection = GCDMonoid.gcd
+
+union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
+union = LCMMonoid.lcm
 
 difference :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 difference m1 m2 = (m1 <\> m2) <> (m2 <\> m1)

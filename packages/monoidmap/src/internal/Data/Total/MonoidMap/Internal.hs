@@ -104,11 +104,14 @@ module Data.Total.MonoidMap.Internal
 
     -- * GCD
     , gcd
+
+    -- * LCM
+    , lcm
     )
     where
 
 import Prelude hiding
-    ( drop, filter, gcd, lookup, map, null, splitAt, subtract, take )
+    ( drop, filter, gcd, lcm, lookup, map, null, splitAt, subtract, take )
 
 import Control.DeepSeq
     ( NFData )
@@ -128,6 +131,8 @@ import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+import Data.Monoid.LCM
+    ( LCMMonoid )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -159,6 +164,7 @@ import qualified GHC.Exts as GHC
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
+import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
 import qualified Data.Semigroup.Cancellative as C
 
@@ -460,6 +466,11 @@ instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = gcd
+
+instance (Ord k, MonoidNull v, LCMMonoid v) =>
+    LCMMonoid (MonoidMap k v)
+  where
+    lcm = lcm
 
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
@@ -2120,7 +2131,28 @@ stripOverlap m1 m2 =
 
 -- | Finds the /greatest common divisor/ of two maps.
 --
--- Satisfies the following property for all possible keys __@k@__:
+-- The greatest common divisor of maps __@m1@__ and __@m2@__ is the greatest
+-- single map __@m@__ that can be stripped from /either/ __@m1@__ /or/ __@m2@__
+-- with the '(</>)' operation:
+--
+-- @
+-- 'isJust' (m1 '</>' 'gcd' m1 m2)
+-- 'isJust' (m2 '</>' 'gcd' m1 m2)
+-- @
+--
+-- The greatest common divisor is /unique/:
+--
+-- @
+-- 'all' 'isJust'
+--     [ m1 '</>' m3
+--     , m2 '</>' m3
+--     , m3 '</>' 'gcd' m1 m2
+--     ]
+-- ==>
+--     (m3 '==' 'gcd' m1 m2)
+-- @
+--
+-- The following property holds for all possible keys __@k@__:
 --
 -- @
 -- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
@@ -2135,19 +2167,22 @@ stripOverlap m1 m2 =
 -- computes the /greatest common divisor/ of each pair of matching values:
 --
 -- @
--- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
--- >>> m2 = 'fromList' [("a", 0), ("b", 0), ("c", 0), ("d", 0)]
--- >>> m3 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m1 = 'fromList' [("a", 2), ("b",  6), ("c", 15), ("d", 35)]
+-- >>> m2 = 'fromList' [("a", 6), ("b", 15), ("c", 35), ("d", 77)]
+-- >>> m3 = 'fromList' [("a", 2), ("b",  3), ("c",  5), ("d",  7)]
 -- @
 -- @
 -- >>> 'gcd' m1 m2 '==' m3
 -- 'True'
 -- @
 --
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
+-- computes the /minimum/ of each pair of matching values:
+--
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
--- >>> m2 = 'fromList' [("a", 2), ("b", 2), ("c", 2), ("d", 2)]
--- >>> m3 = 'fromList' [("a", 2), ("b", 1), ("c", 2), ("d", 1)]
+-- >>> m2 = 'fromList' [("a", 3), ("b", 2), ("c", 1), ("d", 0)]
+-- >>> m3 = 'fromList' [("a", 0), ("b", 1), ("c", 1), ("d", 0)]
 -- @
 -- @
 -- >>> 'gcd' m1 m2 '==' m3
@@ -2162,19 +2197,9 @@ stripOverlap m1 m2 =
 -- @
 --
 -- @
--- >>> m1 = f [("a", [0,1,2]), ("b", [3,4,5]), ("c", [6,7,8])]
--- >>> m2 = f [("a", [0    ]), ("b", [  4  ]), ("c", [    8])]
--- >>> m3 = f [("a", [0    ]), ("b", [  4  ]), ("c", [    8])]
--- @
--- @
--- >>> 'gcd' m1 m2 '==' m3
--- 'True'
--- @
---
--- @
--- >>> m1 = f [("a", [0,1  ]), ("b", [3,4  ]), ("c", [6,7  ])]
--- >>> m2 = f [("a", [  1,2]), ("b", [  4,5]), ("c", [  7,8])]
--- >>> m3 = f [("a", [  1  ]), ("b", [  4  ]), ("c", [  7  ])]
+-- >>> m1 = f [("a", [0,1,2]), ("b", [0,1,2  ]), ("c", [0,1,2    ])]
+-- >>> m2 = f [("a", [0,1,2]), ("b", [  1,2,3]), ("c", [    2,3,4])]
+-- >>> m3 = f [("a", [0,1,2]), ("b", [  1,2  ]), ("c", [    2    ])]
 -- @
 -- @
 -- >>> 'gcd' m1 m2 '==' m3
@@ -2203,6 +2228,107 @@ gcd = merge MergeStrategy
 
     , mergeNonNullWithNonNull =
         withBoth C.gcd
+    }
+
+--------------------------------------------------------------------------------
+-- LCM
+--------------------------------------------------------------------------------
+
+-- | Finds the /least common multiple/ of two maps.
+--
+-- The least common multiple of maps __@m1@__ and __@m2@__ is the smallest
+-- single map __@m@__ from which /either/ __@m1@__ /or/ __@m2@__ can be
+-- stripped with the '(</>)' operation:
+--
+-- @
+-- 'isJust' ('lcm' m1 m2 '</>' m1)
+-- 'isJust' ('lcm' m1 m2 '</>' m2)
+-- @
+--
+-- The least common multiple is /unique/:
+--
+-- @
+-- 'all' 'isJust'
+--     [ \   \    m3 '</>' m1
+--     , \   \    m3 '</>' m2
+--     , 'lcm' m1 m2 '</>' m3
+--     ]
+-- ==>
+--     (m3 '==' 'lcm' m1 m2)
+-- @
+--
+-- The following property holds for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('lcm' m1 m2) '==' 'C.lcm' ('get' k m1) ('get' k m2)
+-- @
+--
+-- This function provides the definition of 'C.lcm' for the 'MonoidMap'
+-- instance of 'LCMMonoid'.
+--
+-- === __Examples__
+--
+-- With 'Data.Monoid.Product' 'Numeric.Natural.Natural' values, this function
+-- computes the /least common multiple/ of each pair of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 2), ("b",  6), ("c",  15), ("d",  35)]
+-- >>> m2 = 'fromList' [("a", 6), ("b", 15), ("c",  35), ("d",  77)]
+-- >>> m3 = 'fromList' [("a", 6), ("b", 30), ("c", 105), ("d", 385)]
+-- @
+-- @
+-- >>> 'lcm' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
+-- computes the /maximum/ of each pair of matching values:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
+-- >>> m2 = 'fromList' [("a", 3), ("b", 2), ("c", 1), ("d", 0)]
+-- >>> m3 = 'fromList' [("a", 3), ("b", 2), ("c", 2), ("d", 3)]
+-- @
+-- @
+-- >>> 'lcm' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+-- With 'Set' 'Numeric.Natural.Natural' values, this function computes the
+-- /set/ /union/ of each pair of matching values:
+--
+-- @
+-- f xs = 'fromList' ('Set.fromList' '<$>' xs)
+-- @
+--
+-- @
+-- >>> m1 = f [("a", [0,1,2]), ("b", [0,1,2  ]), ("c", [0,1,2    ])]
+-- >>> m2 = f [("a", [0,1,2]), ("b", [  1,2,3]), ("c", [    2,3,4])]
+-- >>> m3 = f [("a", [0,1,2]), ("b", [0,1,2,3]), ("c", [0,1,2,3,4])]
+-- @
+-- @
+-- >>> 'lcm' m1 m2 '==' m3
+-- 'True'
+-- @
+--
+lcm
+    :: (Ord k, MonoidNull v, LCMMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+lcm = merge MergeStrategy
+    { mergeNonNullWithNull =
+        keepNonNull
+        -- Justification:
+        -- lcm a mempty ≡ a
+
+    , mergeNullWithNonNull =
+        keepNonNull
+        -- Justification:
+        -- lcm mempty a ≡ a
+
+    , mergeNonNullWithNonNull =
+        withBoth C.lcm
     }
 
 --------------------------------------------------------------------------------

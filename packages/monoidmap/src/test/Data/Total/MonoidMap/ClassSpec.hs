@@ -44,6 +44,8 @@ import Test.QuickCheck.Classes.Monoid.GCD
     , overlappingGCDMonoidLaws
     , rightGCDMonoidLaws
     )
+import Test.QuickCheck.Classes.Monoid.LCM
+    ( lcmMonoidLaws )
 import Test.QuickCheck.Classes.Monoid.Monus
     ( monusLaws )
 import Test.QuickCheck.Classes.Monoid.Null
@@ -66,6 +68,213 @@ import qualified Data.Total.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Class laws" $ do
+
+    testLawsMany @(MonoidMap Bool String)
+        [ eqLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Product Integer))
+        [ commutativeLaws
+        , eqLaws
+        , isListLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , reductiveLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Product Natural))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Product Rational))
+        [ commutativeLaws
+        , eqLaws
+        , groupLaws
+        , isListLaws
+        , monoidLaws
+        , monoidNullLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Sum Integer))
+        [ cancellativeLaws
+        , commutativeLaws
+        , eqLaws
+        , groupLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Sum Natural))
+        [ cancellativeGCDMonoidLaws
+        , cancellativeLaws
+        , commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Set ()))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Set Bool))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Set Ordering))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (Set Int))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Bool (MonoidMap Bool (Sum Natural)))
+        [ cancellativeGCDMonoidLaws
+        , cancellativeLaws
+        , commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftCancellativeLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightCancellativeLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
 
     testLawsMany @(MonoidMap Int String)
         [ eqLaws
@@ -101,6 +310,7 @@ spec = describe "Class laws" $ do
         [ commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftGCDMonoidLaws
         , leftReductiveLaws
@@ -150,6 +360,7 @@ spec = describe "Class laws" $ do
         , commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftCancellativeLaws
         , leftGCDMonoidLaws
@@ -167,10 +378,71 @@ spec = describe "Class laws" $ do
         , semigroupMonoidLaws
         , showReadLaws
         ]
+    testLawsMany @(MonoidMap Int (Set ()))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Set Bool))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
+    testLawsMany @(MonoidMap Int (Set Ordering))
+        [ commutativeLaws
+        , eqLaws
+        , gcdMonoidLaws
+        , lcmMonoidLaws
+        , isListLaws
+        , leftGCDMonoidLaws
+        , leftReductiveLaws
+        , monoidLaws
+        , monoidNullLaws
+        , monusLaws
+        , overlappingGCDMonoidLaws
+        , positiveMonoidLaws
+        , reductiveLaws
+        , rightGCDMonoidLaws
+        , rightReductiveLaws
+        , semigroupLaws
+        , semigroupMonoidLaws
+        , showReadLaws
+        ]
     testLawsMany @(MonoidMap Int (Set Int))
         [ commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftGCDMonoidLaws
         , leftReductiveLaws
@@ -192,6 +464,7 @@ spec = describe "Class laws" $ do
         , commutativeLaws
         , eqLaws
         , gcdMonoidLaws
+        , lcmMonoidLaws
         , isListLaws
         , leftCancellativeLaws
         , leftGCDMonoidLaws
