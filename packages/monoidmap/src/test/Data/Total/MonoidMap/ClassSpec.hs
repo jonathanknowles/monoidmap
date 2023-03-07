@@ -13,10 +13,14 @@ import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.Null
     ( MonoidNull )
+import Data.Proxy
+    ( Proxy (..) )
 import Data.Set
     ( Set )
 import Data.Total.MonoidMap
     ( MonoidMap )
+import Data.Typeable
+    ( Typeable, typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
@@ -67,421 +71,230 @@ import Test.QuickCheck.Instances.Text
 import qualified Data.Total.MonoidMap as MonoidMap
 
 spec :: Spec
-spec = describe "Class laws" $ do
+spec = do
+    describe "Class laws" $ do
+        specLawsFor (Proxy @Bool)
+        specLawsFor (Proxy @Int)
 
-    testLawsMany @(MonoidMap Bool String)
-        [ eqLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , rightCancellativeLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Product Integer))
-        [ commutativeLaws
-        , eqLaws
-        , isListLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , reductiveLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Product Natural))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Product Rational))
-        [ commutativeLaws
-        , eqLaws
-        , groupLaws
-        , isListLaws
-        , monoidLaws
-        , monoidNullLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Sum Integer))
-        [ cancellativeLaws
-        , commutativeLaws
-        , eqLaws
-        , groupLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , reductiveLaws
-        , rightCancellativeLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Sum Natural))
-        [ cancellativeGCDMonoidLaws
-        , cancellativeLaws
-        , commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightCancellativeLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Set ()))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Set Bool))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Set Ordering))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (Set Int))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Bool (MonoidMap Bool (Sum Natural)))
-        [ cancellativeGCDMonoidLaws
-        , cancellativeLaws
-        , commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightCancellativeLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-
-    testLawsMany @(MonoidMap Int String)
-        [ eqLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , rightCancellativeLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Product Integer))
-        [ commutativeLaws
-        , eqLaws
-        , isListLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , reductiveLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Product Natural))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Product Rational))
-        [ commutativeLaws
-        , eqLaws
-        , groupLaws
-        , isListLaws
-        , monoidLaws
-        , monoidNullLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Sum Integer))
-        [ cancellativeLaws
-        , commutativeLaws
-        , eqLaws
-        , groupLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , reductiveLaws
-        , rightCancellativeLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Sum Natural))
-        [ cancellativeGCDMonoidLaws
-        , cancellativeLaws
-        , commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightCancellativeLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Set ()))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Set Bool))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Set Ordering))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (Set Int))
-        [ commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
-    testLawsMany @(MonoidMap Int (MonoidMap Int (Sum Natural)))
-        [ cancellativeGCDMonoidLaws
-        , cancellativeLaws
-        , commutativeLaws
-        , eqLaws
-        , gcdMonoidLaws
-        , lcmMonoidLaws
-        , isListLaws
-        , leftCancellativeLaws
-        , leftGCDMonoidLaws
-        , leftReductiveLaws
-        , monoidLaws
-        , monoidNullLaws
-        , monusLaws
-        , overlappingGCDMonoidLaws
-        , positiveMonoidLaws
-        , reductiveLaws
-        , rightCancellativeLaws
-        , rightGCDMonoidLaws
-        , rightReductiveLaws
-        , semigroupLaws
-        , semigroupMonoidLaws
-        , showReadLaws
-        ]
+specLawsFor
+    :: forall k. () =>
+        ( Arbitrary k
+        , Ord k
+        , Read k
+        , Show k
+        , Typeable k
+        )
+    => Proxy k
+    -> Spec
+specLawsFor keyType = do
+    let description = "Class laws for key type " <> show (typeRep keyType)
+    describe description $ do
+        testLawsMany @(MonoidMap k String)
+            [ eqLaws
+            , isListLaws
+            , leftCancellativeLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , rightCancellativeLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Product Integer))
+            [ commutativeLaws
+            , eqLaws
+            , isListLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , reductiveLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Product Natural))
+            [ commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Product Rational))
+            [ commutativeLaws
+            , eqLaws
+            , groupLaws
+            , isListLaws
+            , monoidLaws
+            , monoidNullLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Sum Integer))
+            [ cancellativeLaws
+            , commutativeLaws
+            , eqLaws
+            , groupLaws
+            , isListLaws
+            , leftCancellativeLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , reductiveLaws
+            , rightCancellativeLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Sum Natural))
+            [ cancellativeGCDMonoidLaws
+            , cancellativeLaws
+            , commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftCancellativeLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightCancellativeLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Set ()))
+            [ commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Set k))
+            [ commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Set Ordering))
+            [ commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (Set Int))
+            [ commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
+        testLawsMany @(MonoidMap k (MonoidMap k (Sum Natural)))
+            [ cancellativeGCDMonoidLaws
+            , cancellativeLaws
+            , commutativeLaws
+            , eqLaws
+            , gcdMonoidLaws
+            , lcmMonoidLaws
+            , isListLaws
+            , leftCancellativeLaws
+            , leftGCDMonoidLaws
+            , leftReductiveLaws
+            , monoidLaws
+            , monoidNullLaws
+            , monusLaws
+            , overlappingGCDMonoidLaws
+            , positiveMonoidLaws
+            , reductiveLaws
+            , rightCancellativeLaws
+            , rightGCDMonoidLaws
+            , rightReductiveLaws
+            , semigroupLaws
+            , semigroupMonoidLaws
+            , showReadLaws
+            ]
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
