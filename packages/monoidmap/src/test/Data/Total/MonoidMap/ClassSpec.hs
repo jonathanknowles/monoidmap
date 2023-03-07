@@ -73,8 +73,12 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = do
     describe "Class laws" $ do
+        -- Test against a variety of key types, in ascending order of
+        -- cardinality:
         specLawsFor (Proxy @Bool)
+        specLawsFor (Proxy @Ordering)
         specLawsFor (Proxy @Int)
+        specLawsFor (Proxy @Integer)
 
 specLawsFor
     :: forall k. () =>
