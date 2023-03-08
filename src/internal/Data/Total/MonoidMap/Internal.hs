@@ -149,6 +149,8 @@ import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (Item) )
+import NoThunks.Class
+    ( NoThunks )
 import Text.Read
     ( Read (..) )
 
@@ -369,7 +371,7 @@ import qualified Data.Semigroup.Cancellative as C
 --
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k (NonNull v) }
-    deriving (Eq, NFData, Show)
+    deriving (Eq, NFData, Show, NoThunks)
         via Map k v
     deriving (Eq1, Foldable, Show1)
         via Map k
