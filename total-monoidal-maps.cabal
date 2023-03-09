@@ -49,6 +49,7 @@ common dependency-text
 common extensions
     default-extensions:
         DerivingStrategies
+        DerivingVia
         FlexibleContexts
         FlexibleInstances
         GeneralizedNewtypeDeriving
