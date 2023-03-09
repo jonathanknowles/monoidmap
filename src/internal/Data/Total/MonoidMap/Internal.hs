@@ -12,8 +12,9 @@
 --
 module Data.Total.MonoidMap.Internal
     (
-    -- * Type
+    -- * Types
       MonoidMap (..)
+    , NonNull (..)
 
     -- * Construction
     , empty
@@ -113,6 +114,8 @@ import Control.DeepSeq
     ( NFData )
 import Data.Bifoldable
     ( Bifoldable )
+import Data.Coerce
+    ( coerce )
 import Data.Function
     ( (&) )
 import Data.Functor.Classes
@@ -365,9 +368,33 @@ import qualified Data.Semigroup.Cancellative as C
 -- 'MonoidMap' to be usable with a greater range of monoidal value types.
 --
 newtype MonoidMap k v = MonoidMap
-    { unMonoidMap :: Map k v }
-    deriving newtype
-        (Eq, Eq1, Eq2, Foldable, Bifoldable, NFData, Show, Show1, Show2)
+    { unMonoidMap :: Map k (NonNull v) }
+    deriving (Eq, NFData, Show)
+        via Map k v
+    deriving (Eq1, Foldable, Show1)
+        via Map k
+    deriving (Eq2, Bifoldable, Show2)
+        via Map
+
+--------------------------------------------------------------------------------
+-- Non-null values
+--------------------------------------------------------------------------------
+
+newtype NonNull v = UnsafeNonNull {getNonNull :: v}
+
+maybeNonNull :: MonoidNull v => v -> Maybe (NonNull v)
+maybeNonNull v
+    | C.null v  = Nothing
+    | otherwise = Just (UnsafeNonNull v)
+{-# INLINE maybeNonNull #-}
+
+applyNonNull :: (v -> a) -> (NonNull v -> a)
+applyNonNull = coerce
+{-# INLINE applyNonNull #-}
+
+applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
+applyNonNull2 = coerce
+{-# INLINE applyNonNull2 #-}
 
 --------------------------------------------------------------------------------
 -- Instances
@@ -576,7 +603,7 @@ fromListWith f =
 -- perform canonicalisation, see 'Data.Total.MonoidMap.Unsafe.unsafeFromMap'.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = MonoidMap . Map.filter (not . C.null)
+fromMap = MonoidMap . Map.mapMaybe maybeNonNull
 
 -- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
@@ -617,7 +644,7 @@ singleton k v = set k v mempty
 -- @
 --
 toList :: MonoidMap k v -> [(k, v)]
-toList = Map.toAscList . unMonoidMap
+toList = Map.toAscList . toMap
 
 -- | Converts a 'MonoidMap' to an ordinary 'Map'.
 --
@@ -629,8 +656,8 @@ toList = Map.toAscList . unMonoidMap
 -- 'fromMap' ('toMap' m) == m
 -- @
 --
-toMap :: MonoidMap k v -> Map k v
-toMap = unMonoidMap
+toMap :: forall k v. MonoidMap k v -> Map k v
+toMap = coerce
 
 --------------------------------------------------------------------------------
 -- Basic operations
@@ -657,9 +684,7 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 -- @
 --
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
-set k v m
-    | C.null v  = MonoidMap $ Map.delete k   $ unMonoidMap m
-    | otherwise = MonoidMap $ Map.insert k v $ unMonoidMap m
+set k v = MonoidMap . Map.alter (const (maybeNonNull v)) k . unMonoidMap
 
 -- | Adjusts the value associated with the given key.
 --
@@ -848,7 +873,7 @@ splitAt i m = (take i m, drop i m)
 -- @
 --
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filter f (MonoidMap m) = MonoidMap $ Map.filter f m
+filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 
 -- | Filters a map according to a predicate on /keys/.
 --
@@ -890,7 +915,8 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- @
 --
 filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
+filterWithKey f (MonoidMap m) =
+    MonoidMap $ Map.filterWithKey (applyNonNull . f) m
 
 --------------------------------------------------------------------------------
 -- Partitioning
@@ -925,7 +951,7 @@ filterWithKey f (MonoidMap m) = MonoidMap $ Map.filterWithKey f m
 --
 partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partition f m
+    B.bimap MonoidMap MonoidMap $ Map.partition (applyNonNull f) m
 
 -- | Partitions a map according to a predicate on /keys/.
 --
@@ -989,7 +1015,7 @@ partitionKeys f (MonoidMap m) =
 partitionWithKey
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partitionWithKey f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey f m
+    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (applyNonNull . f) m
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -1018,7 +1044,8 @@ map
     => (v1 -> v2)
     -> MonoidMap k v1
     -> MonoidMap k v2
-map f (MonoidMap m) = MonoidMap $ Map.mapMaybe (guardNotNull . f) m
+map f (MonoidMap m) =
+    MonoidMap $ Map.mapMaybe (maybeNonNull . applyNonNull f) m
 
 -- | Applies a function to all the keys of a 'MonoidMap' that are associated
 --   with non-'C.null' values.
@@ -1063,12 +1090,7 @@ mapKeysWith
     -> (k1 -> k2)
     -> MonoidMap k1 v
     -> MonoidMap k2 v
-mapKeysWith combine fk (MonoidMap m)
-    -- The 'Map.mapKeysWith' function combines values for duplicate keys in
-    -- /descending order/, so we must flip the provided combining function.
-    = MonoidMap
-    $ Map.filter (not . C.null)
-    $ Map.mapKeysWith (flip combine) fk m
+mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 
 --------------------------------------------------------------------------------
 -- Association
@@ -2927,8 +2949,10 @@ unionA f = mergeA MergeStrategy
 -- Merging
 --------------------------------------------------------------------------------
 
-type WhenOneSideNull f k v     v3 = Map.WhenMissing f k v     v3
-type WhenBothNonNull f k v1 v2 v3 = Map.WhenMatched f k v1 v2 v3
+type WhenOneSideNull f k          vx                        vr
+   = Map.WhenMissing f k (NonNull vx)              (NonNull vr)
+type WhenBothNonNull f k          v1           v2           vr
+   = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
 
 data MergeStrategy f k v1 v2 v3 = MergeStrategy
     { mergeNonNullWithNull    :: WhenOneSideNull f k v1    v3
@@ -2980,32 +3004,30 @@ withNonNull
     :: (Applicative f, MonoidNull v2)
     => (v1 -> v2)
     -> WhenOneSideNull f k v1 v2
-withNonNull f = Map.mapMaybeMissing $ \_k v -> guardNotNull $ f v
+withNonNull f
+    = Map.mapMaybeMissing
+    $ \_k v -> maybeNonNull $ applyNonNull f v
 
 withNonNullA
     :: (Applicative f, MonoidNull v2)
     => (v1 -> f v2)
     -> WhenOneSideNull f k v1 v2
-withNonNullA f = Map.traverseMaybeMissing $ \_k v -> guardNotNull <$> f v
+withNonNullA f
+    = Map.traverseMaybeMissing
+    $ \_k v -> maybeNonNull <$> applyNonNull f v
 
 withBoth
     :: (Applicative f, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -> WhenBothNonNull f k v1 v2 v3
-withBoth f = Map.zipWithMaybeMatched $ \_k v1 v2 -> guardNotNull $ f v1 v2
+withBoth f
+    = Map.zipWithMaybeMatched
+    $ \_k v1 v2 -> maybeNonNull $ applyNonNull2 f v1 v2
 
 withBothA
     :: (Applicative f, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -> WhenBothNonNull f k v1 v2 v3
-withBothA f = Map.zipWithMaybeAMatched $ \_k v1 v2 -> guardNotNull <$> f v1 v2
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-guardNotNull :: MonoidNull v => v -> Maybe v
-guardNotNull v
-    | C.null v = Nothing
-    | otherwise = Just v
-{-# INLINE guardNotNull #-}
+withBothA f
+    = Map.zipWithMaybeAMatched
+    $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
