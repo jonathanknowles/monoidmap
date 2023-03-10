@@ -15,38 +15,40 @@
 </span><span id="line-15"></span><span>
 </span><span id="line-16"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span>
 </span><span id="line-17"></span><span>
-</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span>
-</span><span id="line-19"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.Total.MonoidMap.html"><span class="hs-identifier">Data.Total.MonoidMap</span></a></span><span>
-</span><span id="line-21"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidMap</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromMap</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-22"></span><span>
-</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Foldable</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">F</span></span><span>
-</span><span id="line-24"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Null</span></span><span>
-</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Total.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Internal</span></span><span>
-</span><span id="line-26"></span><span>
-</span><span id="line-27"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-28"></span><span class="hs-comment">-- Unsafe construction</span><span>
+</span><span id="line-18"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Coerce</span></span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">coerce</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Total.MonoidMap.Internal</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidMap</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">NonNull</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromMap</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Foldable</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">F</span></span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Null</span></span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Total.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Internal</span></span><span>
+</span><span id="line-28"></span><span>
 </span><span id="line-29"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-30"></span><span>
-</span><span id="line-31"></span><span class="hs-comment">-- | \(O(1)\). /Unsafely/ constructs a 'MonoidMap' from an ordinary 'Map'.</span><span>
-</span><span id="line-32"></span><span class="hs-comment">--</span><span>
-</span><span id="line-33"></span><span class="hs-comment">-- Constructs a 'MonoidMap' in /constant time/, without imposing the burden</span><span>
-</span><span id="line-34"></span><span class="hs-comment">-- of a canonicalisation step to remove 'null' values.</span><span>
-</span><span id="line-35"></span><span class="hs-comment">--</span><span>
-</span><span id="line-36"></span><span class="hs-comment">-- When applied to a given 'Map' @m@, this function /expects/ but does /not/</span><span>
-</span><span id="line-37"></span><span class="hs-comment">-- check the following pre-condition:</span><span>
-</span><span id="line-38"></span><span class="hs-comment">--</span><span>
-</span><span id="line-39"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-40"></span><span class="hs-comment">-- 'F.all' ('not' . 'Null.null') m</span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- Unsafe construction</span><span>
+</span><span id="line-31"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-32"></span><span>
+</span><span id="line-33"></span><span class="hs-comment">-- | \(O(1)\). /Unsafely/ constructs a 'MonoidMap' from an ordinary 'Map'.</span><span>
+</span><span id="line-34"></span><span class="hs-comment">--</span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- Constructs a 'MonoidMap' in /constant time/, without imposing the burden</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- of a canonicalisation step to remove 'null' values.</span><span>
+</span><span id="line-37"></span><span class="hs-comment">--</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- When applied to a given 'Map' @m@, this function /expects/ but does /not/</span><span>
+</span><span id="line-39"></span><span class="hs-comment">-- check the following pre-condition:</span><span>
+</span><span id="line-40"></span><span class="hs-comment">--</span><span>
 </span><span id="line-41"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-42"></span><span class="hs-comment">--</span><span>
-</span><span id="line-43"></span><span class="hs-comment">-- Not satisfying this pre-condition will result in undefined behaviour.</span><span>
+</span><span id="line-42"></span><span class="hs-comment">-- 'F.all' ('not' . 'Null.null') m</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-44"></span><span class="hs-comment">--</span><span>
-</span><span id="line-45"></span><span class="hs-comment">-- See 'fromMap' for a safe version of this function.</span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- Not satisfying this pre-condition will result in undefined behaviour.</span><span>
 </span><span id="line-46"></span><span class="hs-comment">--</span><span>
-</span><span id="line-47"></span><span id="local-6989586621679046897"><span id="local-6989586621679046898"><span class="annot"><a href="Data.Total.MonoidMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679046897"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679046898"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidMap</span></span><span> </span><span class="annot"><a href="#local-6989586621679046897"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679046898"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
-</span><span id="line-48"></span><span id="unsafeFromMap"><span class="annot"><span class="annottext">unsafeFromMap :: forall k v. Map k v -&gt; MonoidMap k v
+</span><span id="line-47"></span><span class="hs-comment">-- See 'fromMap' for a safe version of this function.</span><span>
+</span><span id="line-48"></span><span class="hs-comment">--</span><span>
+</span><span id="line-49"></span><span id="local-6989586621679046934"><span id="local-6989586621679046935"><span class="annot"><a href="Data.Total.MonoidMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679046934"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679046935"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidMap</span></span><span> </span><span class="annot"><a href="#local-6989586621679046934"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679046935"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-50"></span><span id="unsafeFromMap"><span class="annot"><span class="annottext">unsafeFromMap :: forall k v. Map k v -&gt; MonoidMap k v
 </span><a href="Data.Total.MonoidMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-var hs-var">unsafeFromMap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k v -&gt; MonoidMap k v
-forall k v. Map k v -&gt; MonoidMap k v
-</span><span class="hs-identifier hs-var">Internal.MonoidMap</span></span><span>
-</span><span id="line-49"></span></pre></body></html>
+forall a b. Coercible a b =&gt; a -&gt; b
+</span><span class="hs-identifier hs-var">coerce</span></span><span>
+</span><span id="line-51"></span></pre></body></html>
