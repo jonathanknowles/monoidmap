@@ -662,7 +662,7 @@ toMap :: forall k v. MonoidMap k v -> Map k v
 toMap = coerce
 
 --------------------------------------------------------------------------------
--- Basic operations
+-- Lookup
 --------------------------------------------------------------------------------
 
 -- | Gets the value associated with the given key.
@@ -676,6 +676,10 @@ toMap = coerce
 --
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k m = fromMaybe mempty $ Map.lookup k $ toMap m
+
+--------------------------------------------------------------------------------
+-- Modification
+--------------------------------------------------------------------------------
 
 -- | Sets the value associated with the given key.
 --
