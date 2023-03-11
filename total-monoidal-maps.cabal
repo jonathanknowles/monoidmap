@@ -50,6 +50,7 @@ common dependency-text
 
 common extensions
     default-extensions:
+        BangPatterns
         DerivingStrategies
         DerivingVia
         FlexibleContexts
