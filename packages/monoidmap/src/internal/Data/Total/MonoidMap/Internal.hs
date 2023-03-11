@@ -385,8 +385,8 @@ newtype MonoidMap k v = MonoidMap
 newtype NonNull v = UnsafeNonNull {getNonNull :: v}
 
 maybeNonNull :: MonoidNull v => v -> Maybe (NonNull v)
-maybeNonNull v
-    | C.null v  = Nothing
+maybeNonNull !v
+    | C.null  v = Nothing
     | otherwise = Just (UnsafeNonNull v)
 {-# INLINE maybeNonNull #-}
 
