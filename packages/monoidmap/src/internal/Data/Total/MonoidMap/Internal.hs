@@ -932,7 +932,7 @@ filterWithKey f (MonoidMap m) =
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions a map according to a predicate on /values/.
+-- | \(O(n)\). Partitions a map according to a predicate on /values/.
 --
 -- Satisfies the following property:
 --
@@ -963,7 +963,7 @@ partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partition (applyNonNull f) m
 
--- | Partitions a map according to a predicate on /keys/.
+-- | \(O(n)\). Partitions a map according to a predicate on /keys/.
 --
 -- Satisfies the following property:
 --
@@ -995,7 +995,7 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions a map according to a predicate on /keys and values/.
+-- | \(O(n)\). Partitions a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property:
 --
