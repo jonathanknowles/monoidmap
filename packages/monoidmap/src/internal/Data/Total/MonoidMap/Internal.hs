@@ -628,8 +628,8 @@ singleton k v = set k v mempty
 -- Deconstruction
 --------------------------------------------------------------------------------
 
--- | Converts a 'MonoidMap' to a list of key-value pairs, where the keys are in
---   ascending order.
+-- | \(O(n)\). Converts a 'MonoidMap' to a list of key-value pairs, where the
+--   keys are in ascending order.
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
@@ -648,7 +648,7 @@ singleton k v = set k v mempty
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toAscList . toMap
 
--- | Converts a 'MonoidMap' to an ordinary 'Map'.
+-- | \(O(1)\). Converts a 'MonoidMap' to an ordinary 'Map'.
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
