@@ -628,8 +628,8 @@ singleton k v = set k v mempty
 -- Deconstruction
 --------------------------------------------------------------------------------
 
--- | Converts a 'MonoidMap' to a list of key-value pairs, where the keys are in
---   ascending order.
+-- | \(O(n)\). Converts a 'MonoidMap' to a list of key-value pairs, where the
+--   keys are in ascending order.
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
@@ -648,7 +648,7 @@ singleton k v = set k v mempty
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toAscList . toMap
 
--- | Converts a 'MonoidMap' to an ordinary 'Map'.
+-- | \(O(1)\). Converts a 'MonoidMap' to an ordinary 'Map'.
 --
 -- The result only includes entries with values that are not 'C.null'.
 --
@@ -662,10 +662,10 @@ toMap :: forall k v. MonoidMap k v -> Map k v
 toMap = coerce
 
 --------------------------------------------------------------------------------
--- Basic operations
+-- Lookup
 --------------------------------------------------------------------------------
 
--- | Gets the value associated with the given key.
+-- | \(O(\log n)\). Gets the value associated with the given key.
 --
 -- By default, every key in an 'empty' map is associated with a value of
 -- 'mempty':
@@ -677,7 +677,11 @@ toMap = coerce
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
--- | Sets the value associated with the given key.
+--------------------------------------------------------------------------------
+-- Modification
+--------------------------------------------------------------------------------
+
+-- | \(O(\log n)\). Sets the value associated with the given key.
 --
 -- Satisfies the following property:
 --
@@ -690,7 +694,7 @@ set k v (MonoidMap m) = MonoidMap $ case maybeNonNull v of
     Just v0 -> Map.insert k v0 m
     Nothing -> Map.delete k    m
 
--- | Adjusts the value associated with the given key.
+-- | \(O(\log n)\). Adjusts the value associated with the given key.
 --
 -- Satisfies the following property:
 --
@@ -706,7 +710,7 @@ adjust
     -> MonoidMap k v
 adjust f k m = set k (f (get k m)) m
 
--- | Sets the value associated with the given key to 'mempty'.
+-- | \(O(\log n)\). Sets the value associated with the given key to 'mempty'.
 --
 -- Satisfies the following property:
 --
@@ -721,7 +725,8 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 -- Membership
 --------------------------------------------------------------------------------
 
--- | Returns 'True' if (and only if) all values in the map are 'C.null'.
+-- | \(O(1)\). Returns 'True' if (and only if) all values in the map are
+--   'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -735,8 +740,8 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'C.null'.
+-- | \(O(\log n)\). Returns 'True' if (and only if) the given key is associated
+--   with a value that is 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -747,8 +752,8 @@ null = Map.null . toMap
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
--- | Returns 'True' if (and only if) the map contains at least one value that
---   is not 'C.null'.
+-- | \(O(1)\). Returns 'True' if (and only if) the map contains at least one
+--   value that is not 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -759,7 +764,7 @@ nullKey k = Map.notMember k . toMap
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
--- | Returns a count of all values in the map that are not 'C.null'.
+-- | \(O(1)\). Returns a count of all values in the map that are not 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -770,8 +775,8 @@ nonNull = not . null
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
 
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'C.null'.
+-- | \(O(\log n)\). Returns 'True' if (and only if) the given key is associated
+--   with a value that is not 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -782,7 +787,8 @@ nonNullCount = Map.size . toMap
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
--- | Returns the set of keys associated with values that are not 'C.null'.
+-- | \(O(n)\). Returns the set of keys associated with values that are not
+--   'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -797,7 +803,7 @@ nonNullKeys = Map.keysSet . toMap
 -- Slicing
 --------------------------------------------------------------------------------
 
--- | /Takes/ a slice from a map.
+-- | \(O(\log n)\). /Takes/ a slice from a map.
 --
 -- This function takes a given number of non-'C.null' entries from a map,
 -- producing a new map from the entries that were /taken/.
@@ -813,7 +819,7 @@ nonNullKeys = Map.keysSet . toMap
 take :: Int -> MonoidMap k v -> MonoidMap k v
 take i (MonoidMap m) = MonoidMap (Map.take i m)
 
--- | /Drops/ a slice from a map.
+-- | \(O(\log n)\). /Drops/ a slice from a map.
 --
 -- This function drops a given number of non-'C.null' entries from a map,
 -- producing a new map from the entries that /remain/.
@@ -829,7 +835,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 drop :: Int -> MonoidMap k v -> MonoidMap k v
 drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 
--- | /Splits/ a map into /two/ slices.
+-- | \(O(\log n)\). /Splits/ a map into /two/ slices.
 --
 -- This function is equivalent to a combination of 'take' and 'drop':
 --
@@ -858,7 +864,7 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters a map according to a predicate on /values/.
+-- | \(O(n)\). Filters a map according to a predicate on /values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -879,7 +885,7 @@ splitAt i m = (take i m, drop i m)
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 
--- | Filters a map according to a predicate on /keys/.
+-- | \(O(n)\). Filters a map according to a predicate on /keys/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -900,7 +906,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters a map according to a predicate on /keys and values/.
+-- | \(O(n)\). Filters a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -926,7 +932,7 @@ filterWithKey f (MonoidMap m) =
 -- Partitioning
 --------------------------------------------------------------------------------
 
--- | Partitions a map according to a predicate on /values/.
+-- | \(O(n)\). Partitions a map according to a predicate on /values/.
 --
 -- Satisfies the following property:
 --
@@ -957,7 +963,7 @@ partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partition (applyNonNull f) m
 
--- | Partitions a map according to a predicate on /keys/.
+-- | \(O(n)\). Partitions a map according to a predicate on /keys/.
 --
 -- Satisfies the following property:
 --
@@ -989,7 +995,7 @@ partitionKeys
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
 
--- | Partitions a map according to a predicate on /keys and values/.
+-- | \(O(n)\). Partitions a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property:
 --
@@ -1025,7 +1031,7 @@ partitionWithKey f (MonoidMap m) =
 -- Mapping
 --------------------------------------------------------------------------------
 
--- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
+-- | \(O(n)\). Applies a function to all non-'C.null' values of a 'MonoidMap'.
 --
 -- Satisfies the following properties for all functions __@f@__:
 --
@@ -1051,8 +1057,8 @@ map
 map f (MonoidMap m) =
     MonoidMap $ Map.mapMaybe (maybeNonNull . applyNonNull f) m
 
--- | Applies a function to all the keys of a 'MonoidMap' that are associated
---   with non-'C.null' values.
+-- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
+--   are associated with non-'C.null' values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the '(<>)'
@@ -1074,8 +1080,9 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
--- | Applies a function to all the keys of a 'MonoidMap' that are associated
---   with non-'C.null' values, with a combining function for values.
+-- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
+--   are associated with non-'C.null' values, with a combining function for
+--   values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the given
