@@ -864,7 +864,7 @@ splitAt i m = (take i m, drop i m)
 -- Filtering
 --------------------------------------------------------------------------------
 
--- | Filters a map according to a predicate on /values/.
+-- | \(O(n)\). Filters a map according to a predicate on /values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -885,7 +885,7 @@ splitAt i m = (take i m, drop i m)
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 
--- | Filters a map according to a predicate on /keys/.
+-- | \(O(n)\). Filters a map according to a predicate on /keys/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
@@ -906,7 +906,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
--- | Filters a map according to a predicate on /keys and values/.
+-- | \(O(n)\). Filters a map according to a predicate on /keys and values/.
 --
 -- Satisfies the following property for all possible keys __@k@__:
 --
