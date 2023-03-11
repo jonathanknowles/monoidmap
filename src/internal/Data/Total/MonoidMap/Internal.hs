@@ -803,7 +803,7 @@ nonNullKeys = Map.keysSet . toMap
 -- Slicing
 --------------------------------------------------------------------------------
 
--- | /Takes/ a slice from a map.
+-- | \(O(\log n)\). /Takes/ a slice from a map.
 --
 -- This function takes a given number of non-'C.null' entries from a map,
 -- producing a new map from the entries that were /taken/.
@@ -819,7 +819,7 @@ nonNullKeys = Map.keysSet . toMap
 take :: Int -> MonoidMap k v -> MonoidMap k v
 take i (MonoidMap m) = MonoidMap (Map.take i m)
 
--- | /Drops/ a slice from a map.
+-- | \(O(\log n)\). /Drops/ a slice from a map.
 --
 -- This function drops a given number of non-'C.null' entries from a map,
 -- producing a new map from the entries that /remain/.
@@ -835,7 +835,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 drop :: Int -> MonoidMap k v -> MonoidMap k v
 drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 
--- | /Splits/ a map into /two/ slices.
+-- | \(O(\log n)\). /Splits/ a map into /two/ slices.
 --
 -- This function is equivalent to a combination of 'take' and 'drop':
 --
