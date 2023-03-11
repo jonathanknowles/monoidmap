@@ -665,7 +665,7 @@ toMap = coerce
 -- Lookup
 --------------------------------------------------------------------------------
 
--- | Gets the value associated with the given key.
+-- | \(O(\log n)\). Gets the value associated with the given key.
 --
 -- By default, every key in an 'empty' map is associated with a value of
 -- 'mempty':
