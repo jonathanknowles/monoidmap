@@ -1031,7 +1031,7 @@ partitionWithKey f (MonoidMap m) =
 -- Mapping
 --------------------------------------------------------------------------------
 
--- | Applies a function to all non-'C.null' values of a 'MonoidMap'.
+-- | \(O(n)\). Applies a function to all non-'C.null' values of a 'MonoidMap'.
 --
 -- Satisfies the following properties for all functions __@f@__:
 --
@@ -1057,8 +1057,8 @@ map
 map f (MonoidMap m) =
     MonoidMap $ Map.mapMaybe (maybeNonNull . applyNonNull f) m
 
--- | Applies a function to all the keys of a 'MonoidMap' that are associated
---   with non-'C.null' values.
+-- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
+--   are associated with non-'C.null' values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the '(<>)'
@@ -1080,8 +1080,9 @@ mapKeys
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
 
--- | Applies a function to all the keys of a 'MonoidMap' that are associated
---   with non-'C.null' values, with a combining function for values.
+-- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
+--   are associated with non-'C.null' values, with a combining function for
+--   values.
 --
 -- If the resultant map would contain more than one value for the same key,
 -- values are combined together in ascending key order with the given
