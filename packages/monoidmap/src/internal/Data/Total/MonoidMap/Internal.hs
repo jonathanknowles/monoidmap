@@ -725,7 +725,8 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 -- Membership
 --------------------------------------------------------------------------------
 
--- | Returns 'True' if (and only if) all values in the map are 'C.null'.
+-- | \(O(1)\). Returns 'True' if (and only if) all values in the map are
+--   'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -739,8 +740,8 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is 'C.null'.
+-- | \(O(\log n)\). Returns 'True' if (and only if) the given key is associated
+--   with a value that is 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -751,8 +752,8 @@ null = Map.null . toMap
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
 
--- | Returns 'True' if (and only if) the map contains at least one value that
---   is not 'C.null'.
+-- | \(O(1)\). Returns 'True' if (and only if) the map contains at least one
+--   value that is not 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -763,7 +764,7 @@ nullKey k = Map.notMember k . toMap
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
--- | Returns a count of all values in the map that are not 'C.null'.
+-- | \(O(1)\). Returns a count of all values in the map that are not 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -774,8 +775,8 @@ nonNull = not . null
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
 
--- | Returns 'True' if (and only if) the given key is associated with a value
---   that is not 'C.null'.
+-- | \(O(\log n)\). Returns 'True' if (and only if) the given key is associated
+--   with a value that is not 'C.null'.
 --
 -- Satisfies the following property:
 --
@@ -786,7 +787,8 @@ nonNullCount = Map.size . toMap
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
--- | Returns the set of keys associated with values that are not 'C.null'.
+-- | \(O(n)\). Returns the set of keys associated with values that are not
+--   'C.null'.
 --
 -- Satisfies the following property:
 --
