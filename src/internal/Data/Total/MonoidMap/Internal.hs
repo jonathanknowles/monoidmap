@@ -681,7 +681,7 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 -- Modification
 --------------------------------------------------------------------------------
 
--- | Sets the value associated with the given key.
+-- | \(O(\log n)\). Sets the value associated with the given key.
 --
 -- Satisfies the following property:
 --
@@ -694,7 +694,7 @@ set k v (MonoidMap m) = MonoidMap $ case maybeNonNull v of
     Just v0 -> Map.insert k v0 m
     Nothing -> Map.delete k    m
 
--- | Adjusts the value associated with the given key.
+-- | \(O(\log n)\). Adjusts the value associated with the given key.
 --
 -- Satisfies the following property:
 --
@@ -710,7 +710,7 @@ adjust
     -> MonoidMap k v
 adjust f k m = set k (f (get k m)) m
 
--- | Sets the value associated with the given key to 'mempty'.
+-- | \(O(\log n)\). Sets the value associated with the given key to 'mempty'.
 --
 -- Satisfies the following property:
 --
