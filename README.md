@@ -11,9 +11,12 @@ This library provides the [`MonoidMap`](http://jonathanknowles.net/total-monoida
 - Provides instances of type classes defined in the [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses) library.
 - Provides instances of type classes defined in the [`groups`](https://hackage.haskell.org/package/groups/docs/Data-Group.html) library.
 
-See the following sections for comparisons of the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type with other types:
+For comparisons of the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type with other types, see:
 -  [Comparison with standard map types](#comparison-with-standard-map-types)
 -  [Comparison with other map types](#comparison-with-other-map-types)
+
+For potential applications of this data type, see:
+- [Applications of this data type](#applications-of-this-data-type)
 
 ## Totality
 
@@ -187,6 +190,138 @@ singleton "k" "z" /= mempty
 Therefore, for this example, the functor composition law is not satisfied.
 
 </details>
+
+## Applications of this data type
+
+The [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type is useful for building other types that:
+
+  - model a total relation from keys to monoidal values; and
+  - require canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) monoidal values.
+
+### Example
+
+Consider the following type and operations:
+```hs
+newtype Index k v = Index {getIndex :: Map k (Set v)}
+    deriving newtype Eq
+
+-- | Retrieves the set of values associated with a key.
+indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
+
+-- | Updates the set of values associated with a key.
+indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
+
+-- | Computes the intersection of two indices.
+indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
+```
+
+The above type derives [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) from [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map), which provides a fast lower bound on the time complexity of equality checks. But for the [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance to be correct, operations on `Index` must preserve an **_invariant_**: the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) must **_never_** include keys that map to [`Set.empty`](https://hackage.haskell.org/package/containers-0.6.7/docs/Data-Set.html#v:empty).
+
+There are two obvious solutions for enforcing this invariant:
+
+#### Solution 1: Manually enforce the invariant
+
+The author might choose to define the above operations with code similar to:
+
+```hs
+indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
+indexLookup k (Index i) = Map.findWithDefault Set.empty k i
+
+indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
+indexUpdate k vs (Index i)
+    | Set.null vs = Index (Map.delete k    i)
+    | otherwise   = Index (Map.insert k vs i)
+
+indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
+indexIntersection (Index i1) (Index i2) = Index $
+    Map.merge
+        Map.dropMissing
+        Map.dropMissing
+        (Map.zipWithMaybeMatched (const setIntersectionMaybe))
+        i1
+        i2
+  where
+    -- Return 'Nothing' if the resultant set is empty:
+    setIntersectionMaybe :: Ord v => Set v -> Set v -> Maybe (Set v)
+    setIntersectionMaybe s1 s2
+        | Set.null s3 = Nothing
+        | otherwise   = Just s3
+      where
+        s3 = Set.intersection s1 s2
+```
+
+While there's nothing inherently wrong with this solution, it does require some discipline on the part of the author, in order to avoid accidentally introducing [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) into the internal map. To reduce the chance of this happening, a careful author might choose to write a suite of property tests to check the invariant is never violated. However, if other people (less careful than the original author) amend the code (perhaps to introduce a new operation), it's very easy to accidentally violate this invariant.
+
+#### Solution 2: Redefine `Index` in terms of a non-empty set type
+
+Let's assume there's a `NonEmptySet` type available, with the following operations:
+```hs
+-- | Constructs a non-empty set from an ordinary set. 
+fromSet :: Set a -> Maybe (NonEmptySet a)
+
+-- | Converts a non-empty set to an ordinary set.
+toSet :: NonEmptySet a -> Set a
+
+-- | Computes the intersection of two non-empty sets.
+intersection :: Ord a => NonEmptySet a -> NonEmptySet a -> Maybe (NonEmptySet a)
+```
+
+Then the author could re-define `Index` in terms of the `NonEmptySet` type:
+ 
+```hs
+newtype Index k v = Index {getIndex :: Map k (NonEmptySet v)}
+   deriving newtype Eq
+
+indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
+indexLookup k (Index i) =
+    maybe mempty NonEmptySet.toSet $ Map.lookup k i
+
+indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
+indexUpdate k vs (Index i) = case NonEmptySet.fromSet vs of
+    Nothing -> Index (Map.delete k    i)
+    Just zs -> Index (Map.insert k zs i)
+
+indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
+indexIntersection (Index i1) (Index i2) = Index $
+    Map.merge
+        Map.dropMissing
+        Map.dropMissing
+        (Map.zipWithMaybeMatched (const NonEmptySet.intersection))
+        i1
+        i2
+```
+
+This solution is a little shorter, and certainly makes it harder to introduce bugs, but it depends on the existence of a `NonEmptySet` type. If the monoidal value type of choice does not have a `NonEmpty` variant available, then the author might have to write one themselves.
+
+This brings us to the last solution:
+
+#### Solution 3: Redefine `Index` in terms of `MonoidMap`
+
+By redefining the above type in terms of [`MonoidMap`]([`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap)), we can greatly simplify the implementation to:
+```hs
+newtype Index k v = Index {getIndex :: MonoidMap k (Set v)}
+    deriving newtype Eq
+
+indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
+indexLookup k (Index i) = MonoidMap.get k i
+
+indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
+indexUpdate k vs (Index i) = Index $ MonoidMap.set k vs i
+
+indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
+indexIntersection (Index i1) (Index i2) = Index $
+    MonoidMap.intersection Set.intersection i1 i2
+```
+
+With this implementation, the empty set is automatically excluded from the internal data structure, so there's no longer any risk of violating the invariant.
+
+We can also make a further simplification:
+```hs
+indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
+indexIntersection (Index i1) (Index i2) = Index $ MonoidMap.gcd i1 i2
+```
+
+This takes advantage of the [`MonoidMap.gcd`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:gcd) operation, which in the case of the [`Set`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set) type, computes the intersection of sets for matching pairs of keys.
 
 ## Comparison with other map types
 
