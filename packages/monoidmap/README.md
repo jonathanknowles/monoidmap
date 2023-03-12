@@ -194,13 +194,191 @@ Therefore, for this example, the functor composition law is not satisfied.
 
 Here's a comparison between the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type provided by this library and types provided by other libraries:
 
-| Type<br><br><br> | Total<br>key‑value<br>relation<br> | Canonical<br>default<br>values<br> | [`Eq`<br>class](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq)<br>instance<br> | [`Monoid`<br>subclass](https://hackage.haskell.org/package/monoid-subclasses)<br>instances<br> | [`Group`<br>class](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group)<br>instance<br> | [`Functor` <br>class](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor)<br>instance<br> | [`Applicative` <br>class](https://hackage.haskell.org/package/base/docs/Control-Applicative.html#t:Applicative)<br>instance<br> |
-|:--|:--|:--|:--|:--|:--|:--|:--|
-| [_`total‑monoidal‑maps`_](https://github.com/jonathanknowles/total-monoidal-maps)<br>[**`MonoidMap`**](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) (this library) | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: |
-| [_`monoid‑map`_](https://hackage.haskell.org/package/monoid-map)<br>[**`MonoidMap`**](https://hackage.haskell.org/package/monoid-map/docs/Data-MonoidMap.html) | :x: | :heavy_check_mark: | :heavy_check_mark: | :x: | :heavy_check_mark: | :heavy_check_mark: | :x: |
-| [_`monoidal‑containers`_](https://hackage.haskell.org/package/monoidal-containers)<br>[**`MonoidalMap`**](https://hackage.haskell.org/package/monoidal-containers/docs/Data-Map-Monoidal.html#t:MonoidalMap) | :x: | :x: | :heavy_check_mark: | :x: | :x: | :heavy_check_mark: | :x: |
-| [_`total‑map`_](https://hackage.haskell.org/package/total-map)<br>[**`TMap`**](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) | :heavy_check_mark: | :x: | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: |
-| [_`total‑maps`_](https://hackage.haskell.org/package/total-maps)<br>[**`TotalSparseMap`**](https://hackage.haskell.org/package/total-maps/docs/Data-Total-Map-Sparse.html#t:TotalSparseMap) | :heavy_check_mark: | :x: | :heavy_check_mark: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: |
-| [_`defaultable‑map`_](https://hackage.haskell.org/package/defaultable-map)<br>[**`Defaultable`**](https://hackage.haskell.org/package/defaultable-map-1.0.2/docs/Defaultable-Map.html#t:Defaultable) | :x: | :x: | :heavy_check_mark: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: |
-| [_`chatter`_](https://hackage.haskell.org/package/chatter)<br>[**`DefaultMap`**](https://hackage.haskell.org/package/chatter-0.9.1.0/docs/Data-DefaultMap.html#t:DefaultMap) | :heavy_check_mark: | :x: | :heavy_check_mark: | :x: | :x: | :heavy_check_mark: | :x: |
-| [_`stack`_](https://hackage.haskell.org/package/stack)<br>[**`MonoidMap`**](https://hackage.haskell.org/package/stack/docs/Data-Monoid-Map.html#t:MonoidMap) | :x: | :x: | :heavy_check_mark: | :x: | :heavy_check_mark: | :heavy_check_mark: | :x: |
+<table>
+<thead>
+  <tr valign="top" align="left">
+    <th rowspan="2">Type<br><br><br></th>
+    <th colspan="2">Features</th>
+    <th colspan="5">Class Instances</th>
+  </tr>
+  <tr valign="top" align="left">
+    <th>
+      Total<br/>key‑value<br/>relation
+    </th>
+    <th>
+      Canonical<br/>default<br/>values
+    </th>
+    <th>
+      <a href="https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq">
+        <code>Eq</code>
+      </a>
+    </th>
+    <th>
+      <a href="https://hackage.haskell.org/package/monoid-subclasses">
+        <code>Monoid</code><br/><em>subclasses</em>
+      </a>
+    </th>
+    <th>
+      <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group">
+        <code>Group</code>
+      </a>
+    </th>
+    <th>
+      <a href="https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor">
+        <code>Functor</code>
+      </a>
+    </th>
+    <th>
+      <a href="https://hackage.haskell.org/package/base/docs/Control-Applicative.html#t:Applicative">
+        <code>Applicative</code>
+      </a>
+    </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>
+      <a href="https://github.com/jonathanknowles/total-monoidal-maps">
+        <code><em>total‑monoidal‑maps</em></code>
+      </a>
+      <br/>
+      <a href="http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap">
+        <code>MonoidMap</code>
+      </a>
+    </td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/monoid-map">
+        <code><em>monoid‑map</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/monoid-map/docs/Data-MonoidMap.html">
+        <code>MonoidMap</code>
+      </a>
+    </td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/monoidal-containers">
+        <code><em>monoidal‑containers</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/monoidal-containers/docs/Data-Map-Monoidal.html#t:MonoidalMap">
+        <code>MonoidalMap</code>
+      </a>
+    </td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/total-map">
+        <code><em>total‑map</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap">
+        <code>TMap</code>
+      </a>
+    </td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/total-maps">
+        <code><em>total‑maps</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/total-maps/docs/Data-Total-Map-Sparse.html#t:TotalSparseMap">
+        <code>TotalSparseMap</code>
+      </a>
+    </td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/defaultable-map">
+        <code><em>defaultable‑map</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/defaultable-map/docs/Defaultable-Map.html#t:Defaultable">
+        <code>DefaultableMap</code>
+      </a>
+    </td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/chatter">
+        <code><em>chatter</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/chatter/docs/Data-DefaultMap.html#t:DefaultMap">
+        <code>DefaultMap</code>
+      </a>
+    </td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://hackage.haskell.org/package/stack">
+        <code><em>stack</em></code>
+      </a>
+      <br/>
+      <a href="https://hackage.haskell.org/package/stack/docs/Data-Monoid-Map.html#t:MonoidMap">
+        <code>MonoidMap</code>
+      </a>
+    </td>
+    <td>:x:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:heavy_check_mark:</td>
+    <td>:x:</td>
+  </tr>
+</tbody>
+</table>
