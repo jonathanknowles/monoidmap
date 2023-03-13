@@ -4,7 +4,7 @@
 --
 -- A multiset type, implemented in terms of 'MonoidMap'.
 --
-module Data.Total.MonoidMap.Examples.MultiSet
+module Examples.MultiSet
     ( fromList
     , toList
     , null
