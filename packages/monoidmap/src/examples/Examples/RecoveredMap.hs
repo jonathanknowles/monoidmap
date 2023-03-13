@@ -8,7 +8,7 @@
 -- An ordinary left-biased map similar to 'Map', implemented in terms of
 -- 'MonoidMap'.
 --
-module Data.Total.MonoidMap.Examples.RecoveredMap where
+module Examples.RecoveredMap where
 
 import Prelude
 
