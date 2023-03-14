@@ -8,10 +8,16 @@
 module Examples.Index.Index4 where
 
 import Prelude hiding
-    ( lookup )
+    ( gcd, lcm, lookup )
 
 import Data.Set
     ( Set )
+import Data.Monoid.GCD
+    ( GCDMonoid (gcd) )
+import Data.Monoid.LCM
+    ( LCMMonoid (lcm) )
+import Data.Monoid.Monus
+    ( Monus ((<\>)) )
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Examples.Index
@@ -43,12 +49,12 @@ instance (Ord k, Ord v) => Index Index4 k v where
 
     update k vs (Index m) = Index (MonoidMap.set k vs m)
 
-    add k vs (Index m) = Index (MonoidMap.adjust (`Set.union` vs) k m)
+    add k vs (Index m) = Index (MonoidMap.adjust (<> vs) k m)
 
-    remove k vs (Index m) = Index (MonoidMap.adjust (`Set.difference` vs) k m)
+    remove k vs (Index m) = Index (MonoidMap.adjust (<\> vs) k m)
 
-    union (Index m1) (Index m2) = Index (MonoidMap.lcm m1 m2)
+    union (Index m1) (Index m2) = Index (lcm m1 m2)
 
-    intersection (Index m1) (Index m2) = Index (MonoidMap.gcd m1 m2)
+    intersection (Index m1) (Index m2) = Index (gcd m1 m2)
 
     isSubIndexOf (Index m1) (Index m2) = m1 `MonoidMap.isPrefixOf` m2
