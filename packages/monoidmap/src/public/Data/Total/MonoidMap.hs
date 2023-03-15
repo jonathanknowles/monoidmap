@@ -59,8 +59,8 @@ module Data.Total.MonoidMap
     -- * Merging
     , intersection
     , intersectionA
-    , union
-    , unionA
+    , unionWith
+    , unionWithA
 
     -- * Association
     , append

@@ -67,7 +67,7 @@ spec = describe "Examples" $ do
 
     describe "Union" $ do
 
-        exampleSpec_union_max_Sum_Natural
+        exampleSpec_unionWith_max_Sum_Natural
 
     describe "Semigroup" $ do
 
@@ -198,18 +198,18 @@ exampleData_intersection_min_Sum_Natural = unitTestData2
 -- Union
 --------------------------------------------------------------------------------
 
-exampleSpec_union_max_Sum_Natural :: Spec
-exampleSpec_union_max_Sum_Natural = unitTestSpec
-    "MonoidMap.union (Sum Natural)"
-    "MonoidMap.union"
-    (MonoidMap.union max)
-    (exampleData_union_max_Sum_Natural)
+exampleSpec_unionWith_max_Sum_Natural :: Spec
+exampleSpec_unionWith_max_Sum_Natural = unitTestSpec
+    "MonoidMap.unionWith (Sum Natural)"
+    "MonoidMap.unionWith"
+    (MonoidMap.unionWith max)
+    (exampleData_unionWith_max_Sum_Natural)
 
-exampleData_union_max_Sum_Natural :: UnitTestData2
+exampleData_unionWith_max_Sum_Natural :: UnitTestData2
     (MonoidMap LatinChar (Sum Natural))
     (MonoidMap LatinChar (Sum Natural))
     (MonoidMap LatinChar (Sum Natural))
-exampleData_union_max_Sum_Natural = unitTestData2
+exampleData_unionWith_max_Sum_Natural = unitTestData2
     [ ( m [0, 1, 2, 3, 4, 5, 6, 7]
       , m [7, 6, 5, 4, 3, 2, 1, 0]
       , m [7, 6, 5, 4, 4, 5, 6, 7]
