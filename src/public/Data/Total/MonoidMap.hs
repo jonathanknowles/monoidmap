@@ -57,8 +57,8 @@ module Data.Total.MonoidMap
     , mapKeysWith
 
     -- * Merging
-    , intersection
-    , intersectionA
+    , intersectionWith
+    , intersectionWithA
     , unionWith
     , unionWithA
 

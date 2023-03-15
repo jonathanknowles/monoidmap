@@ -64,8 +64,8 @@ module Data.Total.MonoidMap.Internal
     , mapKeysWith
 
     -- * Merging
-    , intersection
-    , intersectionA
+    , intersectionWith
+    , intersectionWithA
     , unionWith
     , unionWithA
 
@@ -2820,7 +2820,7 @@ power m i = map (`C.pow` i) m
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('intersection' f m1 m2) '=='
+-- 'get' k ('intersectionWith' f m1 m2) '=='
 --     if k '`Set.member`'
 --         'Set.intersection'
 --             ('nonNullKeys' m1)
@@ -2842,7 +2842,7 @@ power m i = map (`C.pow` i) m
 -- /Then/ the following property holds for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('intersection' f m1 m2) '==' f ('get' k m1) ('get' k m2)
+-- 'get' k ('intersectionWith' f m1 m2) '==' f ('get' k m1) ('get' k m2)
 -- @
 --
 -- === __Examples__
@@ -2856,18 +2856,18 @@ power m i = map (`C.pow` i) m
 -- >>> m3 = 'fromList' [          ("b", 1), ("c", 2), ("d", 1)          ]
 -- @
 -- @
--- >>> 'intersection' 'Prelude.min' m1 m2 '==' m3
+-- >>> 'intersectionWith' 'Prelude.min' m1 m2 '==' m3
 -- 'True'
 -- @
 --
-intersection
+intersectionWith
     :: (Ord k, MonoidNull v3)
     => (v1 -> v2 -> v3)
     -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersection f = merge MergeStrategy
+intersectionWith f = merge MergeStrategy
     { withNonNullL =
         keepNull
     , withNonNullR =
@@ -2875,25 +2875,25 @@ intersection f = merge MergeStrategy
     , withNonNullP =
         withBoth f
     }
-{-# INLINE intersection #-}
+{-# INLINE intersectionWith #-}
 
--- | An /applicative/ version of 'intersection'.
+-- | An /applicative/ version of 'intersectionWith'.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'runIdentity' ('intersectionA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
---          '==' ('intersection'    \    \   \    \  \        \ f  m1 m2)
+-- 'runIdentity' ('intersectionWithA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
+--          '==' ('intersectionWith'    \    \   \    \  \        \ f  m1 m2)
 -- @
 --
-intersectionA
+intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
     => (v1 -> v2 -> f v3)
     -- ^ Function with which to combine values for matching keys.
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionA f = mergeA MergeStrategy
+intersectionWithA f = mergeA MergeStrategy
     { withNonNullL =
         keepNull
     , withNonNullR =
@@ -2901,7 +2901,7 @@ intersectionA f = mergeA MergeStrategy
     , withNonNullP =
         withBothA f
     }
-{-# INLINE intersectionA #-}
+{-# INLINE intersectionWithA #-}
 
 --------------------------------------------------------------------------------
 -- Union
