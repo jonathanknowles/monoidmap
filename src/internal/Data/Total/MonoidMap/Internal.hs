@@ -2985,6 +2985,7 @@ merge strategy m1 m2 =
             (strategy & mergeNonNullWithNonNull)
             (unMonoidMap m1)
             (unMonoidMap m2)
+{-# INLINE merge #-}
 
 mergeA
     :: (Applicative f, Ord k)
@@ -3000,16 +3001,19 @@ mergeA strategy m1 m2 =
             (strategy & mergeNonNullWithNonNull)
             (unMonoidMap m1)
             (unMonoidMap m2)
+{-# INLINE mergeA #-}
 
 keepNull
     :: Applicative f
     => WhenOneSideNull f k v1 v2
 keepNull = Map.dropMissing
+{-# INLINE keepNull #-}
 
 keepNonNull
     :: Applicative f
     => WhenOneSideNull f k v v
 keepNonNull = Map.preserveMissing
+{-# INLINE keepNonNull #-}
 
 withNonNull
     :: (Applicative f, MonoidNull v2)
@@ -3018,6 +3022,7 @@ withNonNull
 withNonNull f
     = Map.mapMaybeMissing
     $ \_k v -> maybeNonNull $ applyNonNull f v
+{-# INLINE withNonNull #-}
 
 withNonNullA
     :: (Applicative f, MonoidNull v2)
@@ -3026,6 +3031,7 @@ withNonNullA
 withNonNullA f
     = Map.traverseMaybeMissing
     $ \_k v -> maybeNonNull <$> applyNonNull f v
+{-# INLINE withNonNullA #-}
 
 withBoth
     :: (Applicative f, MonoidNull v3)
@@ -3034,6 +3040,7 @@ withBoth
 withBoth f
     = Map.zipWithMaybeMatched
     $ \_k v1 v2 -> maybeNonNull $ applyNonNull2 f v1 v2
+{-# INLINE withBoth #-}
 
 withBothA
     :: (Applicative f, MonoidNull v3)
@@ -3042,3 +3049,4 @@ withBothA
 withBothA f
     = Map.zipWithMaybeAMatched
     $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
+{-# INLINE withBothA #-}
