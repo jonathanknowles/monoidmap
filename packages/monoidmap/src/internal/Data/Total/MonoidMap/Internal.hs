@@ -1156,11 +1156,13 @@ append = merge MergeStrategy
     { withNonNullL =
         keepNonNull
         -- Justification:
+        --
         -- v <> mempty ≡ v
 
     , withNonNullR =
         keepNonNull
         -- Justification:
+        --
         -- mempty <> v ≡ v
 
     , withNonNullP =
@@ -1487,6 +1489,7 @@ stripPrefix = mergeA MergeStrategy
     , withNonNullR =
         keepNonNull
         -- Justification:
+        --
         -- stripPrefix mempty a ≡ a
 
     , withNonNullP =
@@ -1576,6 +1579,7 @@ stripSuffix = mergeA MergeStrategy
     , withNonNullR =
         keepNonNull
         -- Justification:
+        --
         -- stripSuffix mempty a ≡ a
 
     , withNonNullP =
@@ -1629,11 +1633,13 @@ commonPrefix = merge MergeStrategy
     { withNonNullL =
         keepNull
         -- Justification:
+        --
         -- commonPrefix a mempty ≡ mempty
 
     , withNonNullR =
         keepNull
         -- Justification:
+        --
         -- commonPrefix mempty a ≡ mempty
 
     , withNonNullP =
@@ -1687,11 +1693,13 @@ commonSuffix = merge MergeStrategy
     { withNonNullL =
         keepNull
         -- Justification:
+        --
         -- commonSuffix a mempty ≡ mempty
 
     , withNonNullR =
         keepNull
         -- Justification:
+        --
         -- commonSuffix mempty a ≡ mempty
 
     , withNonNullP =
@@ -1934,11 +1942,13 @@ overlap = merge MergeStrategy
     { withNonNullL =
         keepNull
         -- Justification:
+        --
         -- overlap a mempty ≡ mempty
 
     , withNonNullR =
         keepNull
         -- Justification:
+        --
         -- overlap mempty a ≡ mempty
 
     , withNonNullP =
@@ -2245,6 +2255,7 @@ gcd = merge MergeStrategy
     { withNonNullL =
         keepNull
         -- Justification:
+        --
         -- gcd a b      ≡ commonPrefix a b      ≡ commonSuffix a b
         -- gcd a mempty ≡ commonPrefix a mempty ≡ commonSuffix a mempty
         -- gcd a mempty ≡                mempty ≡                mempty
@@ -2252,6 +2263,7 @@ gcd = merge MergeStrategy
     , withNonNullR =
         keepNull
         -- Justification:
+        --
         -- gcd a      b ≡ commonPrefix a      b ≡ commonSuffix a      b
         -- gcd mempty b ≡ commonPrefix mempty b ≡ commonSuffix mempty b
         -- gcd mempty b ≡              mempty   ≡              mempty
@@ -2350,11 +2362,13 @@ lcm = merge MergeStrategy
     { withNonNullL =
         keepNonNull
         -- Justification:
+        --
         -- lcm a mempty ≡ a
 
     , withNonNullR =
         keepNonNull
         -- Justification:
+        --
         -- lcm mempty a ≡ a
 
     , withNonNullP =
@@ -2413,11 +2427,13 @@ minus = merge MergeStrategy
     { withNonNullL =
         keepNonNull
         -- Justification:
+        --
         -- a ~~ mempty ≡ a
 
     , withNonNullR =
         withNonNull C.invert
         -- Justification:
+        --
         -- a      ~~ b ≡ a      <> invert b
         -- mempty ~~ b ≡ mempty <> invert b
         -- mempty ~~ b ≡           invert b
@@ -2563,7 +2579,7 @@ minusMaybe = mergeA MergeStrategy
         --
         -- Therefore:
         -- a </> mempty ≡ Just a
-        --
+
     , withNonNullR =
         withNonNullA (\v -> mempty </> v)
 
@@ -2676,6 +2692,7 @@ monus = merge MergeStrategy
     { withNonNullL =
         keepNonNull
         -- Justification:
+        --
         -- a      <> (b <\> a     ) ≡ b <> (a      <\> b)
         -- mempty <> (b <\> mempty) ≡ b <> (mempty <\> a)
         --            b <\> mempty  ≡ b <> (mempty <\> a)
@@ -2685,6 +2702,7 @@ monus = merge MergeStrategy
     , withNonNullR =
         keepNull
         -- Justification:
+        --
         -- mempty <\> a ≡ mempty
 
     , withNonNullP =
