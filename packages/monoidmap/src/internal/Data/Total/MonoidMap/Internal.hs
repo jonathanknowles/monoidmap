@@ -2967,9 +2967,9 @@ type WhenBothNonNull f k          v1           v2           vr
    = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
 
 data MergeStrategy f k v1 v2 v3 = MergeStrategy
-    { withNonNullL :: WhenOneSideNull f k v1    v3
-    , withNonNullR :: WhenOneSideNull f k    v2 v3
-    , withNonNullP :: WhenBothNonNull f k v1 v2 v3
+    { withNonNullL :: !(WhenOneSideNull f k v1    v3)
+    , withNonNullR :: !(WhenOneSideNull f k    v2 v3)
+    , withNonNullP :: !(WhenBothNonNull f k v1 v2 v3)
     }
 
 merge
