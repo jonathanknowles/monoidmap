@@ -1289,6 +1289,7 @@ isPrefixOf m1 m2 =
     all
         (\k -> get k m1 `C.isPrefixOf` get k m2)
         (nonNullKeys m1)
+{-# INLINE isPrefixOf #-}
 
 -- | Indicates whether or not the first map is a /suffix/ of the second.
 --
@@ -1405,6 +1406,7 @@ isSuffixOf m1 m2 =
     all
         (\k -> get k m1 `C.isSuffixOf` get k m2)
         (nonNullKeys m1)
+{-# INLINE isSuffixOf #-}
 
 -- | Strips a /prefix/ from a 'MonoidMap'.
 --
@@ -1495,6 +1497,7 @@ stripPrefix = mergeA MergeStrategy
     , withNonNullP =
         withBothA C.stripPrefix
     }
+{-# INLINE stripPrefix #-}
 
 -- | Strips a /suffix/ from a 'MonoidMap'.
 --
@@ -1585,6 +1588,7 @@ stripSuffix = mergeA MergeStrategy
     , withNonNullP =
         withBothA C.stripSuffix
     }
+{-# INLINE stripSuffix #-}
 
 -- | Finds the /greatest common prefix/ of two maps.
 --
@@ -1645,6 +1649,7 @@ commonPrefix = merge MergeStrategy
     , withNonNullP =
         withBoth C.commonPrefix
     }
+{-# INLINE commonPrefix #-}
 
 -- | Finds the /greatest common suffix/ of two maps.
 --
@@ -1705,6 +1710,7 @@ commonSuffix = merge MergeStrategy
     , withNonNullP =
         withBoth C.commonSuffix
     }
+{-# INLINE commonSuffix #-}
 
 -- | Strips the /greatest common prefix/ from a pair of maps.
 --
@@ -1954,6 +1960,7 @@ overlap = merge MergeStrategy
     , withNonNullP =
         withBoth C.overlap
     }
+{-# INLINE overlap #-}
 
 -- | /Strips/ from the second map its /greatest prefix overlap/ with suffixes
 --   of the first map.
@@ -2033,6 +2040,7 @@ stripPrefixOverlap = merge MergeStrategy
     , withNonNullP =
         withBoth C.stripPrefixOverlap
     }
+{-# INLINE stripPrefixOverlap #-}
 
 -- | /Strips/ from the second map its /greatest suffix overlap/ with prefixes
 --   of the first map.
@@ -2112,6 +2120,7 @@ stripSuffixOverlap = merge MergeStrategy
     , withNonNullP =
         withBoth C.stripSuffixOverlap
     }
+{-# INLINE stripSuffixOverlap #-}
 
 -- | Finds the /greatest overlap/ of two maps and /strips/ it from both maps.
 --
@@ -2271,6 +2280,7 @@ gcd = merge MergeStrategy
     , withNonNullP =
         withBoth C.gcd
     }
+{-# INLINE gcd #-}
 
 --------------------------------------------------------------------------------
 -- LCM
@@ -2374,6 +2384,7 @@ lcm = merge MergeStrategy
     , withNonNullP =
         withBoth C.lcm
     }
+{-# INLINE lcm #-}
 
 --------------------------------------------------------------------------------
 -- Subtraction
@@ -2441,6 +2452,7 @@ minus = merge MergeStrategy
     , withNonNullP =
         withBoth (C.~~)
     }
+{-# INLINE minus #-}
 
 -- | Performs /reductive subtraction/ of the second map from the first.
 --
@@ -2586,6 +2598,7 @@ minusMaybe = mergeA MergeStrategy
     , withNonNullP =
         withBothA (</>)
     }
+{-# INLINE minusMaybe #-}
 
 -- | Performs /monus subtraction/ of the second map from the first.
 --
@@ -2708,6 +2721,7 @@ monus = merge MergeStrategy
     , withNonNullP =
         withBoth (<\>)
     }
+{-# INLINE monus #-}
 
 --------------------------------------------------------------------------------
 -- Inversion
@@ -2745,6 +2759,7 @@ invert
     => MonoidMap k v
     -> MonoidMap k v
 invert = map C.invert
+{-# INLINE invert #-}
 
 --------------------------------------------------------------------------------
 -- Exponentiation
@@ -2793,6 +2808,7 @@ power
     -> i
     -> MonoidMap k v
 power m i = map (`C.pow` i) m
+{-# INLINE power #-}
 
 --------------------------------------------------------------------------------
 -- Intersection
@@ -2859,6 +2875,7 @@ intersection f = merge MergeStrategy
     , withNonNullP =
         withBoth f
     }
+{-# INLINE intersection #-}
 
 -- | An /applicative/ version of 'intersection'.
 --
@@ -2884,6 +2901,7 @@ intersectionA f = mergeA MergeStrategy
     , withNonNullP =
         withBothA f
     }
+{-# INLINE intersectionA #-}
 
 --------------------------------------------------------------------------------
 -- Union
@@ -2949,6 +2967,7 @@ union f = merge MergeStrategy
     , withNonNullP =
         withBoth f
     }
+{-# INLINE union #-}
 
 -- | An /applicative/ version of 'union'.
 --
@@ -2974,6 +2993,7 @@ unionA f = mergeA MergeStrategy
     , withNonNullP =
         withBothA f
     }
+{-# INLINE unionA #-}
 
 --------------------------------------------------------------------------------
 -- Merging
