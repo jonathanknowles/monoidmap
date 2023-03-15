@@ -1153,15 +1153,15 @@ append
     -> MonoidMap k v
     -> MonoidMap k v
 append = merge MergeStrategy
-    { withNonNullR =
-        keepNonNull
-        -- Justification:
-        -- mempty <> v ≡ v
-
-    , withNonNullL =
+    { withNonNullL =
         keepNonNull
         -- Justification:
         -- v <> mempty ≡ v
+
+    , withNonNullR =
+        keepNonNull
+        -- Justification:
+        -- mempty <> v ≡ v
 
     , withNonNullP =
         withBoth (<>)
@@ -2673,12 +2673,7 @@ monus
     -> MonoidMap k v
     -> MonoidMap k v
 monus = merge MergeStrategy
-    { withNonNullR =
-        keepNull
-        -- Justification:
-        -- mempty <\> a ≡ mempty
-
-    , withNonNullL =
+    { withNonNullL =
         keepNonNull
         -- Justification:
         -- a      <> (b <\> a     ) ≡ b <> (a      <\> b)
@@ -2686,6 +2681,11 @@ monus = merge MergeStrategy
         --            b <\> mempty  ≡ b <> (mempty <\> a)
         --            b <\> mempty  ≡ b <>  mempty
         --            b <\> mempty  ≡ b
+
+    , withNonNullR =
+        keepNull
+        -- Justification:
+        -- mempty <\> a ≡ mempty
 
     , withNonNullP =
         withBoth (<\>)
@@ -2834,9 +2834,9 @@ intersection
     -> MonoidMap k v2
     -> MonoidMap k v3
 intersection f = merge MergeStrategy
-    { withNonNullR =
+    { withNonNullL =
         keepNull
-    , withNonNullL =
+    , withNonNullR =
         keepNull
     , withNonNullP =
         withBoth f
@@ -2859,9 +2859,9 @@ intersectionA
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
 intersectionA f = mergeA MergeStrategy
-    { withNonNullR =
+    { withNonNullL =
         keepNull
-    , withNonNullL =
+    , withNonNullR =
         keepNull
     , withNonNullP =
         withBothA f
@@ -2924,10 +2924,10 @@ union
     -> MonoidMap k v2
     -> MonoidMap k v3
 union f = merge MergeStrategy
-    { withNonNullR =
-        withNonNull (\v -> f mempty v)
-    , withNonNullL =
+    { withNonNullL =
         withNonNull (\v -> f v mempty)
+    , withNonNullR =
+        withNonNull (\v -> f mempty v)
     , withNonNullP =
         withBoth f
     }
@@ -2949,10 +2949,10 @@ unionA
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
 unionA f = mergeA MergeStrategy
-    { withNonNullR =
-        withNonNullA (\v -> f mempty v)
-    , withNonNullL =
+    { withNonNullL =
         withNonNullA (\v -> f v mempty)
+    , withNonNullR =
+        withNonNullA (\v -> f mempty v)
     , withNonNullP =
         withBothA f
     }
