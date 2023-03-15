@@ -1166,6 +1166,7 @@ append = merge MergeStrategy
     , mergeNonNullWithNonNull =
         withBoth (<>)
     }
+{-# INLINE append #-}
 
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
