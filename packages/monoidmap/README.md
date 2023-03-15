@@ -66,7 +66,7 @@ In constrast, the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/D
 | `Just v \| v /= mempty` | ⟼ | `v`                    |
 
 ## Automatic canonicalisation
- 
+
 Internally, the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type uses a sparse [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) data structure to store its key-value mappings, and _only_ stores mappings for values that are not [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null), where [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) is an indicator function on monoidal values that satisfies the following property:
 
 ```hs
@@ -256,7 +256,7 @@ While there's nothing inherently wrong with this solution, it does require some 
 
 Let's assume there's a `NonEmptySet` type available, with the following operations:
 ```hs
--- | Constructs a non-empty set from an ordinary set. 
+-- | Constructs a non-empty set from an ordinary set.
 fromSet :: Set a -> Maybe (NonEmptySet a)
 
 -- | Converts a non-empty set to an ordinary set.
@@ -267,7 +267,7 @@ intersection :: Ord a => NonEmptySet a -> NonEmptySet a -> Maybe (NonEmptySet a)
 ```
 
 Then the author could re-define `Index` in terms of the `NonEmptySet` type:
- 
+
 ```hs
 newtype Index k v = Index {getIndex :: Map k (NonEmptySet v)}
    deriving newtype Eq
