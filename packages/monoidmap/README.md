@@ -310,7 +310,7 @@ indexUpdate k vs (Index i) = Index $ MonoidMap.set k vs i
 
 indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
 indexIntersection (Index i1) (Index i2) = Index $
-    MonoidMap.intersection Set.intersection i1 i2
+    MonoidMap.intersectionWith Set.intersection i1 i2
 ```
 
 With this implementation, the empty set is automatically excluded from the internal data structure, so there's no longer any risk of violating the invariant.
