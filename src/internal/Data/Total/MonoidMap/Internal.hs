@@ -1153,17 +1153,17 @@ append
     -> MonoidMap k v
     -> MonoidMap k v
 append = merge MergeStrategy
-    { mergeNullWithNonNull =
+    { withNonNullR =
         keepNonNull
         -- Justification:
         -- mempty <> v ≡ v
 
-    , mergeNonNullWithNull =
+    , withNonNullL =
         keepNonNull
         -- Justification:
         -- v <> mempty ≡ v
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth (<>)
     }
 {-# INLINE append #-}
@@ -1481,15 +1481,15 @@ stripPrefix
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
 stripPrefix = mergeA MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         withNonNullA (\v -> C.stripPrefix v mempty)
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNonNull
         -- Justification:
         -- stripPrefix mempty a ≡ a
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBothA C.stripPrefix
     }
 
@@ -1570,15 +1570,15 @@ stripSuffix
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
 stripSuffix = mergeA MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         withNonNullA (\v -> C.stripSuffix v mempty)
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNonNull
         -- Justification:
         -- stripSuffix mempty a ≡ a
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBothA C.stripSuffix
     }
 
@@ -1626,17 +1626,17 @@ commonPrefix
     -> MonoidMap k v
     -> MonoidMap k v
 commonPrefix = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNull
         -- Justification:
         -- commonPrefix a mempty ≡ mempty
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNull
         -- Justification:
         -- commonPrefix mempty a ≡ mempty
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.commonPrefix
     }
 
@@ -1684,17 +1684,17 @@ commonSuffix
     -> MonoidMap k v
     -> MonoidMap k v
 commonSuffix = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNull
         -- Justification:
         -- commonSuffix a mempty ≡ mempty
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNull
         -- Justification:
         -- commonSuffix mempty a ≡ mempty
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.commonSuffix
     }
 
@@ -1931,17 +1931,17 @@ overlap
     -> MonoidMap k v
     -> MonoidMap k v
 overlap = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNull
         -- Justification:
         -- overlap a mempty ≡ mempty
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNull
         -- Justification:
         -- overlap mempty a ≡ mempty
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.overlap
     }
 
@@ -2002,7 +2002,7 @@ stripPrefixOverlap
     -> MonoidMap k v
     -> MonoidMap k v
 stripPrefixOverlap = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNull
         -- Justification:
         --
@@ -2011,7 +2011,7 @@ stripPrefixOverlap = merge MergeStrategy
         --           mempty <> stripPrefixOverlap a mempty ≡ mempty
         --                     stripPrefixOverlap a mempty ≡ mempty
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNonNull
         -- Justification:
         --
@@ -2020,7 +2020,7 @@ stripPrefixOverlap = merge MergeStrategy
         --         mempty   <> stripPrefixOverlap mempty b ≡ b
         --                     stripPrefixOverlap mempty b ≡ b
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.stripPrefixOverlap
     }
 
@@ -2081,7 +2081,7 @@ stripSuffixOverlap
     -> MonoidMap k v
     -> MonoidMap k v
 stripSuffixOverlap = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNull
         -- Justification:
         --
@@ -2090,7 +2090,7 @@ stripSuffixOverlap = merge MergeStrategy
         -- stripSuffixOverlap b mempty <>         mempty   ≡ mempty
         -- stripSuffixOverlap b mempty                     ≡ mempty
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNonNull
         -- Justification:
         --
@@ -2099,7 +2099,7 @@ stripSuffixOverlap = merge MergeStrategy
         -- stripSuffixOverlap mempty a <>           mempty ≡ a
         -- stripSuffixOverlap mempty a                     ≡ a
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.stripSuffixOverlap
     }
 
@@ -2242,21 +2242,21 @@ gcd
     -> MonoidMap k v
     -> MonoidMap k v
 gcd = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNull
         -- Justification:
         -- gcd a b      ≡ commonPrefix a b      ≡ commonSuffix a b
         -- gcd a mempty ≡ commonPrefix a mempty ≡ commonSuffix a mempty
         -- gcd a mempty ≡                mempty ≡                mempty
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNull
         -- Justification:
         -- gcd a      b ≡ commonPrefix a      b ≡ commonSuffix a      b
         -- gcd mempty b ≡ commonPrefix mempty b ≡ commonSuffix mempty b
         -- gcd mempty b ≡              mempty   ≡              mempty
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.gcd
     }
 
@@ -2347,17 +2347,17 @@ lcm
     -> MonoidMap k v
     -> MonoidMap k v
 lcm = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNonNull
         -- Justification:
         -- lcm a mempty ≡ a
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         keepNonNull
         -- Justification:
         -- lcm mempty a ≡ a
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth C.lcm
     }
 
@@ -2410,19 +2410,19 @@ minus
     -> MonoidMap k v
     -> MonoidMap k v
 minus = merge MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNonNull
         -- Justification:
         -- a ~~ mempty ≡ a
 
-    , mergeNullWithNonNull =
+    , withNonNullR =
         withNonNull C.invert
         -- Justification:
         -- a      ~~ b ≡ a      <> invert b
         -- mempty ~~ b ≡ mempty <> invert b
         -- mempty ~~ b ≡           invert b
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth (C.~~)
     }
 
@@ -2542,7 +2542,7 @@ minusMaybe
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
 minusMaybe = mergeA MergeStrategy
-    { mergeNonNullWithNull =
+    { withNonNullL =
         keepNonNull
         -- Justification:
         --
@@ -2564,10 +2564,10 @@ minusMaybe = mergeA MergeStrategy
         -- Therefore:
         -- a </> mempty ≡ Just a
         --
-    , mergeNullWithNonNull =
+    , withNonNullR =
         withNonNullA (\v -> mempty </> v)
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBothA (</>)
     }
 
@@ -2673,12 +2673,12 @@ monus
     -> MonoidMap k v
     -> MonoidMap k v
 monus = merge MergeStrategy
-    { mergeNullWithNonNull =
+    { withNonNullR =
         keepNull
         -- Justification:
         -- mempty <\> a ≡ mempty
 
-    , mergeNonNullWithNull =
+    , withNonNullL =
         keepNonNull
         -- Justification:
         -- a      <> (b <\> a     ) ≡ b <> (a      <\> b)
@@ -2687,7 +2687,7 @@ monus = merge MergeStrategy
         --            b <\> mempty  ≡ b <>  mempty
         --            b <\> mempty  ≡ b
 
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth (<\>)
     }
 
@@ -2834,11 +2834,11 @@ intersection
     -> MonoidMap k v2
     -> MonoidMap k v3
 intersection f = merge MergeStrategy
-    { mergeNullWithNonNull =
+    { withNonNullR =
         keepNull
-    , mergeNonNullWithNull =
+    , withNonNullL =
         keepNull
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth f
     }
 
@@ -2859,11 +2859,11 @@ intersectionA
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
 intersectionA f = mergeA MergeStrategy
-    { mergeNullWithNonNull =
+    { withNonNullR =
         keepNull
-    , mergeNonNullWithNull =
+    , withNonNullL =
         keepNull
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBothA f
     }
 
@@ -2924,11 +2924,11 @@ union
     -> MonoidMap k v2
     -> MonoidMap k v3
 union f = merge MergeStrategy
-    { mergeNullWithNonNull =
+    { withNonNullR =
         withNonNull (\v -> f mempty v)
-    , mergeNonNullWithNull =
+    , withNonNullL =
         withNonNull (\v -> f v mempty)
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBoth f
     }
 
@@ -2949,11 +2949,11 @@ unionA
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
 unionA f = mergeA MergeStrategy
-    { mergeNullWithNonNull =
+    { withNonNullR =
         withNonNullA (\v -> f mempty v)
-    , mergeNonNullWithNull =
+    , withNonNullL =
         withNonNullA (\v -> f v mempty)
-    , mergeNonNullWithNonNull =
+    , withNonNullP =
         withBothA f
     }
 
@@ -2967,9 +2967,9 @@ type WhenBothNonNull f k          v1           v2           vr
    = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
 
 data MergeStrategy f k v1 v2 v3 = MergeStrategy
-    { mergeNonNullWithNull    :: WhenOneSideNull f k v1    v3
-    , mergeNullWithNonNull    :: WhenOneSideNull f k    v2 v3
-    , mergeNonNullWithNonNull :: WhenBothNonNull f k v1 v2 v3
+    { withNonNullL :: WhenOneSideNull f k v1    v3
+    , withNonNullR :: WhenOneSideNull f k    v2 v3
+    , withNonNullP :: WhenBothNonNull f k v1 v2 v3
     }
 
 merge
@@ -2981,9 +2981,9 @@ merge
 merge strategy m1 m2 =
     MonoidMap $
         Map.merge
-            (strategy & mergeNonNullWithNull)
-            (strategy & mergeNullWithNonNull)
-            (strategy & mergeNonNullWithNonNull)
+            (strategy & withNonNullL)
+            (strategy & withNonNullR)
+            (strategy & withNonNullP)
             (unMonoidMap m1)
             (unMonoidMap m2)
 {-# INLINE merge #-}
@@ -2997,9 +2997,9 @@ mergeA
 mergeA strategy m1 m2 =
     MonoidMap <$>
         Map.mergeA
-            (strategy & mergeNonNullWithNull)
-            (strategy & mergeNullWithNonNull)
-            (strategy & mergeNonNullWithNonNull)
+            (strategy & withNonNullL)
+            (strategy & withNonNullR)
+            (strategy & withNonNullP)
             (unMonoidMap m1)
             (unMonoidMap m2)
 {-# INLINE mergeA #-}
