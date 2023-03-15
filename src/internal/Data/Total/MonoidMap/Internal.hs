@@ -2978,14 +2978,8 @@ merge
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-merge strategy m1 m2 =
-    MonoidMap $
-        Map.merge
-            (strategy & withNonNullL)
-            (strategy & withNonNullR)
-            (strategy & withNonNullP)
-            (unMonoidMap m1)
-            (unMonoidMap m2)
+merge (MergeStrategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
+    MonoidMap $ Map.merge nnl nnr nnp m1 m2
 {-# INLINE merge #-}
 
 mergeA
@@ -2994,14 +2988,8 @@ mergeA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-mergeA strategy m1 m2 =
-    MonoidMap <$>
-        Map.mergeA
-            (strategy & withNonNullL)
-            (strategy & withNonNullR)
-            (strategy & withNonNullP)
-            (unMonoidMap m1)
-            (unMonoidMap m2)
+mergeA (MergeStrategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
+    MonoidMap <$> Map.mergeA nnl nnr nnp m1 m2
 {-# INLINE mergeA #-}
 
 keepNull
