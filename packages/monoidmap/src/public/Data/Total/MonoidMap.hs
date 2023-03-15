@@ -57,10 +57,10 @@ module Data.Total.MonoidMap
     , mapKeysWith
 
     -- * Merging
-    , intersection
-    , intersectionA
-    , union
-    , unionA
+    , intersectionWith
+    , intersectionWithA
+    , unionWith
+    , unionWithA
 
     -- * Association
     , append

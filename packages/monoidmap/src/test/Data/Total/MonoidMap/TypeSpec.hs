@@ -297,31 +297,31 @@ specPropertiesFor keyType valueType = do
                     @k @v & property
 
         describe "Intersection" $ do
-            it "prop_intersection_get" $
-                prop_intersection_get
+            it "prop_intersectionWith_get" $
+                prop_intersectionWith_get
                     @k @v & property
-            it "prop_intersection_get_total" $
-                prop_intersection_get_total
+            it "prop_intersectionWith_get_total" $
+                prop_intersectionWith_get_total
                     @k @v & property
-            it "prop_intersection_get_total_failure" $
-                prop_intersection_get_total_failure
+            it "prop_intersectionWith_get_total_failure" $
+                prop_intersectionWith_get_total_failure
                     @k @v & property
-            it "prop_intersection_intersectionA" $
-                prop_intersection_intersectionA
+            it "prop_intersectionWith_intersectionWithA" $
+                prop_intersectionWith_intersectionWithA
                     @k @v & property
 
         describe "Union" $ do
-            it "prop_union_get" $
-                prop_union_get
+            it "prop_unionWith_get" $
+                prop_unionWith_get
                     @k @v & property
-            it "prop_union_get_total" $
-                prop_union_get_total
+            it "prop_unionWith_get_total" $
+                prop_unionWith_get_total
                     @k @v & property
-            it "prop_union_get_total_failure" $
-                prop_union_get_total_failure
+            it "prop_unionWith_get_total_failure" $
+                prop_unionWith_get_total_failure
                     @k @v & property
-            it "prop_union_unionA" $
-                prop_union_unionA
+            it "prop_unionWith_unionWithA" $
+                prop_unionWith_unionWithA
                     @k @v & property
 
         describe "Association" $ do
@@ -1187,14 +1187,14 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
 -- Intersection
 --------------------------------------------------------------------------------
 
-prop_intersection_get
+prop_intersectionWith_get
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_intersection_get (applyFun2 -> f) m1 m2 k =
+prop_intersectionWith_get (applyFun2 -> f) m1 m2 k =
     (MonoidMap.get k result
         ===
         if keyWithinIntersection
@@ -1224,16 +1224,16 @@ prop_intersection_get (applyFun2 -> f) m1 m2 k =
             (MonoidMap.nonNullKeys m1)
             (MonoidMap.nonNullKeys m2)
     result =
-        MonoidMap.intersection f m1 m2
+        MonoidMap.intersectionWith f m1 m2
 
-prop_intersection_get_total
+prop_intersectionWith_get_total
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_intersection_get_total (applyFun2 -> f0) m1 m2 k =
+prop_intersectionWith_get_total (applyFun2 -> f0) m1 m2 k =
     (MonoidMap.get k result
         ===
         f (MonoidMap.get k m1) (MonoidMap.get k m2))
@@ -1257,7 +1257,7 @@ prop_intersection_get_total (applyFun2 -> f0) m1 m2 k =
         "MonoidMap.nonNullKey k result"
   where
     result =
-        MonoidMap.intersection f m1 m2
+        MonoidMap.intersectionWith f m1 m2
     keyWithinIntersection =
         k `Set.member` Set.intersection
             (MonoidMap.nonNullKeys m1)
@@ -1267,41 +1267,41 @@ prop_intersection_get_total (applyFun2 -> f0) m1 m2 k =
         | Null.null v2 = mempty
         | otherwise = f0 v1 v2
 
-prop_intersection_get_total_failure
+prop_intersectionWith_get_total_failure
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_intersection_get_total_failure (applyFun2 -> f) m1 m2 k =
+prop_intersectionWith_get_total_failure (applyFun2 -> f) m1 m2 k =
     expectFailure $
-    MonoidMap.get k (MonoidMap.intersection f m1 m2)
+    MonoidMap.get k (MonoidMap.intersectionWith f m1 m2)
         ===
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
 
-prop_intersection_intersectionA
+prop_intersectionWith_intersectionWithA
     :: (Ord k, Show k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> Property
-prop_intersection_intersectionA (applyFun2 -> f) m1 m2 =
-    runIdentity (MonoidMap.intersectionA ((fmap . fmap) Identity f) m1 m2)
-    ===         (MonoidMap.intersection                          f  m1 m2)
+prop_intersectionWith_intersectionWithA (applyFun2 -> f) m1 m2 =
+    runIdentity (MonoidMap.intersectionWithA ((fmap . fmap) Identity f) m1 m2)
+    ===         (MonoidMap.intersectionWith                          f  m1 m2)
 
 --------------------------------------------------------------------------------
 -- Union
 --------------------------------------------------------------------------------
 
-prop_union_get
+prop_unionWith_get
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_union_get (applyFun2 -> f) m1 m2 k =
+prop_unionWith_get (applyFun2 -> f) m1 m2 k =
     (MonoidMap.get k result
         ===
         if keyWithinUnion
@@ -1331,16 +1331,16 @@ prop_union_get (applyFun2 -> f) m1 m2 k =
             (MonoidMap.nonNullKeys m1)
             (MonoidMap.nonNullKeys m2)
     result =
-        MonoidMap.union f m1 m2
+        MonoidMap.unionWith f m1 m2
 
-prop_union_get_total
+prop_unionWith_get_total
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_union_get_total (applyFun2 -> f0) m1 m2 k =
+prop_unionWith_get_total (applyFun2 -> f0) m1 m2 k =
     (MonoidMap.get k result
         ===
         f (MonoidMap.get k m1) (MonoidMap.get k m2))
@@ -1368,33 +1368,33 @@ prop_union_get_total (applyFun2 -> f0) m1 m2 k =
             (MonoidMap.nonNullKeys m1)
             (MonoidMap.nonNullKeys m2)
     result =
-        MonoidMap.union f m1 m2
+        MonoidMap.unionWith f m1 m2
     f v1 v2
         | Null.null v1 && Null.null v2 = mempty
         | otherwise = f0 v1 v2
 
-prop_union_get_total_failure
+prop_unionWith_get_total_failure
     :: (Ord k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> k
     -> Property
-prop_union_get_total_failure (applyFun2 -> f) m1 m2 k =
+prop_unionWith_get_total_failure (applyFun2 -> f) m1 m2 k =
     expectFailure $
-    MonoidMap.get k (MonoidMap.union f m1 m2)
+    MonoidMap.get k (MonoidMap.unionWith f m1 m2)
         ===
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
 
-prop_union_unionA
+prop_unionWith_unionWithA
     :: (Ord k, Show k, Eq v, Show v, MonoidNull v)
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
     -> Property
-prop_union_unionA (applyFun2 -> f) m1 m2 =
-    runIdentity (MonoidMap.unionA ((fmap . fmap) Identity f) m1 m2)
-    ===         (MonoidMap.union                          f  m1 m2)
+prop_unionWith_unionWithA (applyFun2 -> f) m1 m2 =
+    runIdentity (MonoidMap.unionWithA ((fmap . fmap) Identity f) m1 m2)
+    ===         (MonoidMap.unionWith                          f  m1 m2)
 
 --------------------------------------------------------------------------------
 -- Association
