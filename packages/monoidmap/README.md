@@ -6,8 +6,8 @@
 
 This library provides the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type, with the following features:
 
-- Models a [total relation](#totality) from unique keys to monoidal values.
-- Performs [automatic canonicalisation](#automatic-canonicalisation) of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html) values.
+- Models a [total relation](#introduction) from unique keys to monoidal values.
+- Performs [automatic canonicalisation](#automatic-canonicalisation) of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html) values (values that are equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty)).
 - Provides instances of type classes defined in the [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses) library.
 - Provides instances of type classes defined in the [`groups`](https://hackage.haskell.org/package/groups/docs/Data-Group.html) library.
 
@@ -15,10 +15,7 @@ For comparisons of the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-m
 -  [Comparison with standard map types](#comparison-with-standard-map-types)
 -  [Comparison with other map types](#comparison-with-other-map-types)
 
-For potential applications of this data type, see:
-- [Applications of this data type](#applications-of-this-data-type)
-
-## Totality
+## Introduction
 
 Conceptually, the [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type models a **total relation** from keys to monoidal values.
 
@@ -74,66 +71,83 @@ null :: (Eq v, MonoidNull v) => v -> Bool
 null v == (v == mempty)
 ```
 
-Every function that produces a [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) performs automatic canonicalisation, so that [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values are never included in the result. Consequently, the internal data structure is always in canonical form.
+All [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, so that [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values are never included within the internal data structure.
 
-### Advantages of automatic canonicalisation
+## Advantages of automatic canonicalisation
+
+### Consistency
+
+Automatic canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values can help to ensure consistency when encoding to or decoding from other formats such as JSON, CBOR, or YAML.
+
+For example, you may wish to ensure that:
+
+- When _encoding_ a map, no [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values appear in the encoded result.
+- When _decoding_ a map, no [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values appear in the decoded result.
+
+### Correctness
+
+Automatic canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values can help to ensure correctness of operations that compare or combine maps. With the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type, it's often necessary to consider cases such as:
+
+- when key `k` is _present_ in map `m1`, but _absent_ from map `m2`.
+- when key `k` is _present_ in map `m2`, but _absent_ from map `m1`.
+
+Mishandling cases such as these can give rise to subtle bugs that manifest in unexpected places. For maps with value types that are more complex (such as maps that nest other maps), the number of cases requiring consideration can easily multiply, making it even easier to introduce bugs.
+
+Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, it's possible to write functions that compare or combine maps without having to consider `Nothing` and `Just mempty` as separate cases.
+
+### Simplicity
+
+Some total map data types adopt the approach of only performing canonicalisation when explicitly demanded to. For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide an [`fmap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:fmap) operation that satisfies the functor composition law. However, there are also some disadvantages:
+
+- It's easy to _forget_ to call `trim`.
+- It's not always obvious _when_ to call `trim`.
+- Calling `trim` can result in extra code complexity at call sites.
+- Calling `trim` when it _isn't_ necessary can adversely affect performance.
+- It's easy to introduce a regression by removing a call to `trim` that was actually necessary.
+
+Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, and take care to only perform canonicalisation _when necessary_, it's easier to reason about the behaviour of client code.
+
+### Compactness
+
+Automatic canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) ensures that space usage is minimised, as the internal data structure guarantees to only store key-value mappings for values that are not [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null). This can be important for long-lived data structures that are subject to repeated updates over time.
+
+### Performance
 
 Automatic canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values makes it possible to perform certain operations in _constant time_, rather than in linear time, as it is never necessary to traverse the entire map in order to determine which values may or may not be [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null):
 
 <table>
 <thead>
   <tr>
-    <th rowspan="2">Operation</th>
-    <th colspan="2">With<br>Canonicalisation</th>
-    <th colspan="2">Without<br>Canonicalisation</th>
-  </tr>
-  <tr>
-    <th>Lower<br>Bound</th>
-    <th>Upper<br>Bound</th>
-    <th>Lower<br>Bound</th>
-    <th>Upper<br>Bound<br></th>
+    <th>Operation</th>
+    <th>With<br>Canonicalisation</th>
+    <th>Without<br>Canonicalisation</th>
   </tr>
 </thead>
 <tbody>
   <tr>
     <td><a href="http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
-    <td>$\Omega(1)$</td>
     <td>$O(1)$</td>
-    <td>$\Omega(n)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
     <td><a href="http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
-    <td>$\Omega(1)$</td>
     <td>$O(1)$</td>
-    <td>$\Omega(n)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
     <td><a href="http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
-    <td>$\Omega(1)$</td>
     <td>$O(1)$</td>
-    <td>$\Omega(n)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
     <td><a href="http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
-    <td>$\Omega(1)$</td>
     <td>$O(1)$</td>
-    <td>$\Omega(n)$</td>
-    <td>$O(n)$</td>
-  </tr>
-  <tr>
-    <td><a href="https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq" rel="nofollow"><code>(==)</code></a></td>
-    <td>$\Omega(1)$</td>
-    <td>$O(n)$</td>
-    <td>$\Omega(n)$</td>
     <td>$O(n)$</td>
   </tr>
 </tbody>
 </table>
 
-### Limitations of automatic canonicalisation
+## Limitations of automatic canonicalisation
 
 The [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type (currently) has no [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance, as the requirement to perform canonicalisation of  [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values means that [`map`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:map) must remove [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values from its result. Therefore, the [`map`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:map) operation does _not_ unconditionally satisfy the functor composition law:
 
@@ -151,7 +165,7 @@ However, the composition law _can_ be satisfied _conditionally_, provided that f
 
 But if function `f` maps non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the source [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) to [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the target [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid), this can give rise to a violation of the functor composition law, as [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values are never included in the result of applying `map f`.
 
-<details><summary><strong>Example violation</strong></summary>
+<details><summary><strong>Example violation of functor composition law</strong></summary>
 <br/>
 
 Consider the following [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) `m`:
@@ -190,138 +204,6 @@ singleton "k" "z" /= mempty
 Therefore, for this example, the functor composition law is not satisfied.
 
 </details>
-
-## Applications of this data type
-
-The [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type is useful for building other types that:
-
-  - model a total relation from keys to monoidal values; and
-  - require canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) monoidal values.
-
-### Example
-
-Consider the following type and operations:
-```hs
-newtype Index k v = Index {getIndex :: Map k (Set v)}
-    deriving newtype Eq
-
--- | Retrieves the set of values associated with a key.
-indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
-
--- | Updates the set of values associated with a key.
-indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
-
--- | Computes the intersection of two indices.
-indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
-```
-
-The above type derives [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) from [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map), which provides a fast lower bound on the time complexity of equality checks. But for the [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance to be correct, operations on `Index` must preserve an **_invariant_**: the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) must **_never_** include keys that map to [`Set.empty`](https://hackage.haskell.org/package/containers-0.6.7/docs/Data-Set.html#v:empty).
-
-There are two obvious solutions for enforcing this invariant:
-
-#### Solution 1: Manually enforce the invariant
-
-The author might choose to define the above operations with code similar to:
-
-```hs
-indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
-indexLookup k (Index i) = Map.findWithDefault Set.empty k i
-
-indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
-indexUpdate k vs (Index i)
-    | Set.null vs = Index (Map.delete k    i)
-    | otherwise   = Index (Map.insert k vs i)
-
-indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
-indexIntersection (Index i1) (Index i2) = Index $
-    Map.merge
-        Map.dropMissing
-        Map.dropMissing
-        (Map.zipWithMaybeMatched (const setIntersectionMaybe))
-        i1
-        i2
-  where
-    -- Return 'Nothing' if the resultant set is empty:
-    setIntersectionMaybe :: Ord v => Set v -> Set v -> Maybe (Set v)
-    setIntersectionMaybe s1 s2
-        | Set.null s3 = Nothing
-        | otherwise   = Just s3
-      where
-        s3 = Set.intersection s1 s2
-```
-
-While there's nothing inherently wrong with this solution, it does require some discipline on the part of the author, in order to avoid accidentally introducing [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) into the internal map. To reduce the chance of this happening, a careful author might choose to write a suite of property tests to check the invariant is never violated. However, if other people (less careful than the original author) amend the code (perhaps to introduce a new operation), it's very easy to accidentally violate this invariant.
-
-#### Solution 2: Redefine `Index` in terms of a non-empty set type
-
-Let's assume there's a `NonEmptySet` type available, with the following operations:
-```hs
--- | Constructs a non-empty set from an ordinary set.
-fromSet :: Set a -> Maybe (NonEmptySet a)
-
--- | Converts a non-empty set to an ordinary set.
-toSet :: NonEmptySet a -> Set a
-
--- | Computes the intersection of two non-empty sets.
-intersection :: Ord a => NonEmptySet a -> NonEmptySet a -> Maybe (NonEmptySet a)
-```
-
-Then the author could re-define `Index` in terms of the `NonEmptySet` type:
-
-```hs
-newtype Index k v = Index {getIndex :: Map k (NonEmptySet v)}
-   deriving newtype Eq
-
-indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
-indexLookup k (Index i) =
-    maybe mempty NonEmptySet.toSet $ Map.lookup k i
-
-indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
-indexUpdate k vs (Index i) = case NonEmptySet.fromSet vs of
-    Nothing -> Index (Map.delete k    i)
-    Just zs -> Index (Map.insert k zs i)
-
-indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
-indexIntersection (Index i1) (Index i2) = Index $
-    Map.merge
-        Map.dropMissing
-        Map.dropMissing
-        (Map.zipWithMaybeMatched (const NonEmptySet.intersection))
-        i1
-        i2
-```
-
-This solution is a little shorter, and certainly makes it harder to introduce bugs, but it depends on the existence of a `NonEmptySet` type. If the monoidal value type of choice does not have a `NonEmpty` variant available, then the author might have to write one themselves.
-
-This brings us to the last solution:
-
-#### Solution 3: Redefine `Index` in terms of `MonoidMap`
-
-By redefining the above type in terms of [`MonoidMap`]([`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap)), we can greatly simplify the implementation to:
-```hs
-newtype Index k v = Index {getIndex :: MonoidMap k (Set v)}
-    deriving newtype Eq
-
-indexLookup :: (Ord k, Ord v) => k -> Index k v -> Set v
-indexLookup k (Index i) = MonoidMap.get k i
-
-indexUpdate :: (Ord k, Ord v) => k -> Set v -> Index k v -> Index k v
-indexUpdate k vs (Index i) = Index $ MonoidMap.set k vs i
-
-indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
-indexIntersection (Index i1) (Index i2) = Index $
-    MonoidMap.intersectionWith Set.intersection i1 i2
-```
-
-With this implementation, the empty set is automatically excluded from the internal data structure, so there's no longer any risk of violating the invariant.
-
-We can also make a further simplification:
-```hs
-indexIntersection :: (Ord k, Ord v) => Index k v -> Index k v -> Index k v
-indexIntersection (Index i1) (Index i2) = Index $ MonoidMap.gcd i1 i2
-```
-
-This takes advantage of the [`MonoidMap.gcd`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#v:gcd) operation, which in the case of the [`Set`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set) type, computes the intersection of sets for matching pairs of keys.
 
 ## Comparison with other map types
 
