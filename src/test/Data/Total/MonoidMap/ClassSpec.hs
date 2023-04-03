@@ -51,7 +51,7 @@ import Test.QuickCheck.Classes.Monoid.GCD
     , rightGCDMonoidLaws
     )
 import Test.QuickCheck.Classes.Monoid.LCM
-    ( lcmMonoidLaws )
+    ( distributiveLCMMonoidLaws, lcmMonoidLaws )
 import Test.QuickCheck.Classes.Monoid.Monus
     ( monusLaws )
 import Test.QuickCheck.Classes.Monoid.Null
@@ -130,6 +130,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Product Natural))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -182,6 +183,7 @@ specLawsFor keyType = do
             [ cancellativeLaws
             , commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -207,6 +209,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Set ()))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -230,6 +233,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Set k))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -253,6 +257,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Set Ordering))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -276,6 +281,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Set Int))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -300,6 +306,7 @@ specLawsFor keyType = do
             [ cancellativeLaws
             , commutativeLaws
             , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
