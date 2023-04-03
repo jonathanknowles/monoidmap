@@ -133,6 +133,7 @@ import Data.Monoid.GCD
     , LeftDistributiveGCDMonoid
     , LeftGCDMonoid
     , OverlappingGCDMonoid
+    , RightDistributiveGCDMonoid
     , RightGCDMonoid
     )
 import Data.Monoid.LCM
@@ -486,6 +487,9 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
+
+instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
+    RightDistributiveGCDMonoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
