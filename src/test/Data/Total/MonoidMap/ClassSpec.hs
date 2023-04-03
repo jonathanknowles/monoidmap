@@ -42,8 +42,7 @@ import Test.QuickCheck.Classes.Group
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Classes.Monoid.GCD
-    ( cancellativeGCDMonoidLaws
-    , gcdMonoidLaws
+    ( gcdMonoidLaws
     , leftGCDMonoidLaws
     , overlappingGCDMonoidLaws
     , rightGCDMonoidLaws
@@ -172,8 +171,7 @@ specLawsFor keyType = do
             , showReadLaws
             ]
         testLawsMany @(MonoidMap k (Sum Natural))
-            [ cancellativeGCDMonoidLaws
-            , cancellativeLaws
+            [ cancellativeLaws
             , commutativeLaws
             , eqLaws
             , gcdMonoidLaws
@@ -276,8 +274,7 @@ specLawsFor keyType = do
             , showReadLaws
             ]
         testLawsMany @(MonoidMap k (MonoidMap k (Sum Natural)))
-            [ cancellativeGCDMonoidLaws
-            , cancellativeLaws
+            [ cancellativeLaws
             , commutativeLaws
             , eqLaws
             , gcdMonoidLaws
