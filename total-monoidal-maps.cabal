@@ -96,9 +96,9 @@ library examples
     hs-source-dirs:
         src/examples
     exposed-modules:
-        Data.Total.MonoidMap.Examples.MultiSet
-        Data.Total.MonoidMap.Examples.NestedMonoidMap
-        Data.Total.MonoidMap.Examples.RecoveredMap
+        Examples.MultiSet
+        Examples.NestedMonoidMap
+        Examples.RecoveredMap
     default-language:
         Haskell2010
     build-depends:

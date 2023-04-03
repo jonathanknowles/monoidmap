@@ -48,7 +48,7 @@ import Test.QuickCheck.Instances.Text
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.Set as Set
-import qualified Data.Total.MonoidMap.Examples.RecoveredMap as RMap
+import qualified Examples.RecoveredMap as RMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
