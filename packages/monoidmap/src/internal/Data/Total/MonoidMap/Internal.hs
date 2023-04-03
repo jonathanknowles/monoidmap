@@ -129,7 +129,8 @@ import Data.Map.Strict
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
-    ( GCDMonoid
+    ( DistributiveGCDMonoid
+    , GCDMonoid
     , LeftDistributiveGCDMonoid
     , LeftGCDMonoid
     , OverlappingGCDMonoid
@@ -503,6 +504,9 @@ instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = gcd
+
+instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
+    DistributiveGCDMonoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)

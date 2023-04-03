@@ -42,7 +42,8 @@ import Test.QuickCheck.Classes.Group
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Classes.Monoid.GCD
-    ( gcdMonoidLaws
+    ( distributiveGCDMonoidLaws
+    , gcdMonoidLaws
     , leftDistributiveGCDMonoidLaws
     , leftGCDMonoidLaws
     , overlappingGCDMonoidLaws
@@ -128,6 +129,7 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Product Natural))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -179,6 +181,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Sum Natural))
             [ cancellativeLaws
             , commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -203,6 +206,7 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set ()))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -225,6 +229,7 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set k))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -247,6 +252,7 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set Ordering))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -269,6 +275,7 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set Int))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
@@ -292,6 +299,7 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (MonoidMap k (Sum Natural)))
             [ cancellativeLaws
             , commutativeLaws
+            , distributiveGCDMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
