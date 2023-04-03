@@ -129,9 +129,16 @@ import Data.Map.Strict
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
-    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+    ( DistributiveGCDMonoid
+    , GCDMonoid
+    , LeftDistributiveGCDMonoid
+    , LeftGCDMonoid
+    , OverlappingGCDMonoid
+    , RightDistributiveGCDMonoid
+    , RightGCDMonoid
+    )
 import Data.Monoid.LCM
-    ( LCMMonoid )
+    ( DistributiveLCMMonoid, LCMMonoid )
 import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
@@ -474,10 +481,16 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
   where
     commonPrefix = commonPrefix
 
+instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
+    LeftDistributiveGCDMonoid (MonoidMap k v)
+
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
+
+instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
+    RightDistributiveGCDMonoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
@@ -492,10 +505,16 @@ instance (Ord k, MonoidNull v, GCDMonoid v) =>
   where
     gcd = gcd
 
+instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
+    DistributiveGCDMonoid (MonoidMap k v)
+
 instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)
   where
     lcm = lcm
+
+instance (Ord k, MonoidNull v, DistributiveLCMMonoid v) =>
+    DistributiveLCMMonoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
