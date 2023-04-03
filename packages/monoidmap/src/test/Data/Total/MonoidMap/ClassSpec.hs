@@ -42,13 +42,16 @@ import Test.QuickCheck.Classes.Group
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Classes.Monoid.GCD
-    ( gcdMonoidLaws
+    ( distributiveGCDMonoidLaws
+    , gcdMonoidLaws
+    , leftDistributiveGCDMonoidLaws
     , leftGCDMonoidLaws
     , overlappingGCDMonoidLaws
+    , rightDistributiveGCDMonoidLaws
     , rightGCDMonoidLaws
     )
 import Test.QuickCheck.Classes.Monoid.LCM
-    ( lcmMonoidLaws )
+    ( distributiveLCMMonoidLaws, lcmMonoidLaws )
 import Test.QuickCheck.Classes.Monoid.Monus
     ( monusLaws )
 import Test.QuickCheck.Classes.Monoid.Null
@@ -96,6 +99,7 @@ specLawsFor keyType = do
             [ eqLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -103,6 +107,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , rightCancellativeLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -124,10 +129,13 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Product Natural))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -136,6 +144,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -173,11 +182,14 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (Sum Natural))
             [ cancellativeLaws
             , commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -187,6 +199,7 @@ specLawsFor keyType = do
             , positiveMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -195,10 +208,13 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set ()))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -207,6 +223,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -215,10 +232,13 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set k))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -227,6 +247,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -235,10 +256,13 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set Ordering))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -247,6 +271,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -255,10 +280,13 @@ specLawsFor keyType = do
             ]
         testLawsMany @(MonoidMap k (Set Int))
             [ commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -267,6 +295,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -276,11 +305,14 @@ specLawsFor keyType = do
         testLawsMany @(MonoidMap k (MonoidMap k (Sum Natural)))
             [ cancellativeLaws
             , commutativeLaws
+            , distributiveGCDMonoidLaws
+            , distributiveLCMMonoidLaws
             , eqLaws
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -290,6 +322,7 @@ specLawsFor keyType = do
             , positiveMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
