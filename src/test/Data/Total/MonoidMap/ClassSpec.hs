@@ -46,6 +46,7 @@ import Test.QuickCheck.Classes.Monoid.GCD
     , leftDistributiveGCDMonoidLaws
     , leftGCDMonoidLaws
     , overlappingGCDMonoidLaws
+    , rightDistributiveGCDMonoidLaws
     , rightGCDMonoidLaws
     )
 import Test.QuickCheck.Classes.Monoid.LCM
@@ -105,6 +106,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , rightCancellativeLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -139,6 +141,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -191,6 +194,7 @@ specLawsFor keyType = do
             , positiveMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -212,6 +216,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -233,6 +238,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -254,6 +260,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -275,6 +282,7 @@ specLawsFor keyType = do
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -299,6 +307,7 @@ specLawsFor keyType = do
             , positiveMonoidLaws
             , reductiveLaws
             , rightCancellativeLaws
+            , rightDistributiveGCDMonoidLaws
             , rightGCDMonoidLaws
             , rightReductiveLaws
             , semigroupLaws
