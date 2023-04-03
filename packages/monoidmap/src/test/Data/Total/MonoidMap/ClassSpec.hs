@@ -43,6 +43,7 @@ import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Classes.Monoid.GCD
     ( gcdMonoidLaws
+    , leftDistributiveGCDMonoidLaws
     , leftGCDMonoidLaws
     , overlappingGCDMonoidLaws
     , rightGCDMonoidLaws
@@ -96,6 +97,7 @@ specLawsFor keyType = do
             [ eqLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -128,6 +130,7 @@ specLawsFor keyType = do
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -178,6 +181,7 @@ specLawsFor keyType = do
             , lcmMonoidLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -199,6 +203,7 @@ specLawsFor keyType = do
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -219,6 +224,7 @@ specLawsFor keyType = do
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -239,6 +245,7 @@ specLawsFor keyType = do
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -259,6 +266,7 @@ specLawsFor keyType = do
             , gcdMonoidLaws
             , lcmMonoidLaws
             , isListLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws
@@ -281,6 +289,7 @@ specLawsFor keyType = do
             , lcmMonoidLaws
             , isListLaws
             , leftCancellativeLaws
+            , leftDistributiveGCDMonoidLaws
             , leftGCDMonoidLaws
             , leftReductiveLaws
             , monoidLaws

@@ -129,7 +129,12 @@ import Data.Map.Strict
 import Data.Maybe
     ( fromMaybe, isJust )
 import Data.Monoid.GCD
-    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+    ( GCDMonoid
+    , LeftDistributiveGCDMonoid
+    , LeftGCDMonoid
+    , OverlappingGCDMonoid
+    , RightGCDMonoid
+    )
 import Data.Monoid.LCM
     ( LCMMonoid )
 import Data.Monoid.Monus
@@ -473,6 +478,9 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
+
+instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
+    LeftDistributiveGCDMonoid (MonoidMap k v)
 
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
