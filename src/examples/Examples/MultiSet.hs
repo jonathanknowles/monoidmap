@@ -107,10 +107,7 @@ fromList = MultiSet . MonoidMap.fromList . fmap (, Sum 1)
 
 toList :: MultiSet a -> [a]
 toList (MultiSet m) =
-    [ a
-    | (k, Sum v) <- MonoidMap.toList m
-    , a <- genericReplicate v k
-    ]
+    [a | (k, Sum v) <- MonoidMap.toList m, a <- genericReplicate v k]
 
 null :: MultiSet a -> Bool
 null = MonoidMap.null . unMultiSet
