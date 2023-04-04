@@ -62,8 +62,8 @@ spec = do
     -- Uncomment the following lines to see property test failures for an
     -- unlawful implementation of 'Index':
     --
-    specFor (Proxy @(Index1 Int Int))
-    specFor (Proxy @(Index1 Integer Integer))
+    -- specFor (Proxy @(Index1 Int Int))
+    -- specFor (Proxy @(Index1 Integer Integer))
 
     specFor (Proxy @(Index2 Int Int))
     specFor (Proxy @(Index2 Integer Integer))
