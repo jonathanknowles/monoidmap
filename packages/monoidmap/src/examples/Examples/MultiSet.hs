@@ -15,8 +15,8 @@ module Examples.MultiSet
     , dimension
     , height
     , isSubsetOf
-    , union
     , intersection
+    , union
     , difference
     , subtract
     , subtractMaybe
@@ -24,7 +24,7 @@ module Examples.MultiSet
     where
 
 import Prelude hiding
-    ( gcd, lcm, null, subtract )
+    ( null, subtract )
 
 import Data.List
     ( genericReplicate )
