@@ -124,11 +124,9 @@ In principle, it seems easy to meet these requirements with a data structure lik
   TMap 'v' (fromList [])
   ```
 
-Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, and take care to only perform canonicalisation _when necessary_, it's simpler to reason about the behaviour of client code.
+Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, it's simpler to reason about the behaviour of client code.
 
-### Compactness
-
-Automatic canonicalisation of [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) ensures that space usage is minimised, as the internal data structure guarantees to only store key-value mappings for values that are not [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null). This can be important for long-lived data structures that are subject to repeated updates over time.
+Moreover, automatic canonicalisation ensures that space usage is automatically minimised, as the internal data structure guarantees to only store key-value mappings for values that are not [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null).
 
 ### Performance
 
