@@ -31,6 +31,7 @@ module Examples.NestedMonoidMap
 
     -- * Membership
     , nonNullCount
+    , nonNullKey
     , nonNullKeys
     )
     where
@@ -197,6 +198,15 @@ nullify k1 k2 = set k1 k2 mempty
 nonNullCount :: NestedMonoidMap k1 k2 v -> Int
 nonNullCount (NestedMonoidMap m) =
     getSum $ F.foldMap (Sum . MonoidMap.nonNullCount) m
+
+nonNullKey
+    :: (Ord k1, Ord k2, MonoidNull v)
+    => k1
+    -> k2
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+nonNullKey k1 k2 (NestedMonoidMap m) =
+    MonoidMap.nonNullKey k2 (MonoidMap.get k1 m)
 
 nonNullKeys
     :: (Ord k1, Ord k2, MonoidNull v)
