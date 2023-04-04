@@ -27,8 +27,6 @@ module Examples.MultiSet
 import Prelude hiding
     ( null, subtract )
 
-import Data.List
-    ( genericReplicate )
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
@@ -103,12 +101,11 @@ instance (Ord a, Read a) => Read (MultiSet a) where
 instance Show a => Show (MultiSet a) where
     show = show . toList
 
-fromList :: Ord a => [a] -> MultiSet a
-fromList = MultiSet . MonoidMap.fromList . fmap (, Sum 1)
+fromList :: Ord a => [(a, Natural)] -> MultiSet a
+fromList = MultiSet . MonoidMap.fromList . fmap (fmap Sum)
 
-toList :: MultiSet a -> [a]
-toList (MultiSet m) =
-    [a | (k, Sum v) <- MonoidMap.toList m, a <- genericReplicate v k]
+toList :: MultiSet a -> [(a, Natural)]
+toList = fmap (fmap getSum) . MonoidMap.toList . unMultiSet
 
 null :: MultiSet a -> Bool
 null = MonoidMap.null . unMultiSet
