@@ -88,10 +88,7 @@ type TestConstraints i k v =
         , Typeable v
         )
 
-specFor
-    :: forall i k v. TestConstraints i k v
-    => Proxy (i k v)
-    -> Spec
+specFor :: forall i k v. TestConstraints i k v => Proxy (i k v) -> Spec
 specFor indexType = do
 
     let description = show (typeRep indexType)
@@ -166,8 +163,8 @@ prop_toList_all_nonNull
 prop_toList_all_nonNull i = QC.property $
     all (\(_, v) -> v /= Set.empty) (I.toList i)
 
-prop_empty_lookup
-    :: forall i k v. TestConstraints i k v => k -> Property
+prop_empty_lookup :: forall i k v. ()
+    => TestConstraints i k v => k -> Property
 prop_empty_lookup k =
     I.lookup k (I.empty @i @k @v) === Set.empty
 
