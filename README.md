@@ -97,13 +97,32 @@ Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Tota
 
 ### Simplicity
 
-Some total map data types adopt the approach of only performing canonicalisation when explicitly demanded to. For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide an [`fmap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:fmap) operation that satisfies the functor composition law. However, there are also some disadvantages:
+Some total map data types adopt the approach of only performing canonicalisation when _explicitly demanded to_. For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance.
 
-- It's easy to _forget_ to call `trim`.
-- It's not always obvious _when_ to call `trim`.
-- Calling `trim` can result in extra code complexity at call sites.
-- Calling `trim` when it _isn't_ necessary can adversely affect performance.
-- It's easy to introduce a regression by removing a call to `trim` that was actually necessary.
+However, suppose that:
+- Your application has a large, long-lived map data structure.
+- You want your map data structure to have a minimal memory footprint.
+- You want to avoid accumulating map entries with duplicate default values.
+
+In principle, it seems easy to meet these requirements with a data structure like `TMap`. We can ensure there are no default values in the map simply by calling `trim` at certain points. However:
+
+- Calling `trim` when it _isn't_ necessary might adversely affect performance, since `trim` must traverse the entire data structure.
+- It might not be obvious _when_ it's necessary to call `trim`. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
+- It's rather easy to introduce a regression by removing an "unnecessary" call to `trim` that was actually necessary. (The compiler will not help here, as trimmed and untrimmed maps share the same type.)
+- Although `trim` is marked as a semantic no-op, default values are _still_ made visible by operations that transform `TMap` values to values of other types.
+  
+  For example, you _might_ expect the following property to hold:
+  ```hs
+  show m == show (TMap.trim m)
+  ```
+  However, this property does not hold in general. Here's a counterexample:
+  ```hs
+  >>> m = TMap.singleton 'k' 'v' 'v'
+  >>> show m
+  TMap 'v' (fromList [('k', 'v')]) 
+  >>> show (TMap.trim m)
+  TMap 'v' (fromList [])
+  ```
 
 Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, and take care to only perform canonicalisation _when necessary_, it's easier to reason about the behaviour of client code.
 
