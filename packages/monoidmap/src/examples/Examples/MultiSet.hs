@@ -4,6 +4,8 @@
 --
 -- A multiset type, implemented in terms of 'MonoidMap'.
 --
+-- See: https://en.wikipedia.org/wiki/Multiset
+--
 module Examples.MultiSet
     ( fromList
     , toList
@@ -15,25 +17,31 @@ module Examples.MultiSet
     , dimension
     , height
     , isSubsetOf
-    , union
     , intersection
-    , difference
+    , union
+    , disjointUnion
+    , add
     , subtract
     , subtractMaybe
     )
     where
 
 import Prelude hiding
-    ( gcd, lcm, null, subtract )
+    ( null, subtract )
 
-import Data.List
-    ( genericReplicate )
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
-    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+    ( DistributiveGCDMonoid
+    , GCDMonoid
+    , LeftDistributiveGCDMonoid
+    , LeftGCDMonoid
+    , OverlappingGCDMonoid
+    , RightDistributiveGCDMonoid
+    , RightGCDMonoid
+    )
 import Data.Monoid.LCM
-    ( LCMMonoid )
+    ( DistributiveLCMMonoid, LCMMonoid )
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
 import Data.Monoid.Null
@@ -62,26 +70,31 @@ import qualified Data.Monoid.LCM as LCMMonoid
 import qualified Data.Total.MonoidMap as MonoidMap
 
 newtype MultiSet a = MultiSet
-    {unMultiSet :: MonoidMap a (Sum Natural)}
+    { unMultiSet :: MonoidMap a (Sum Natural)
+    }
     deriving newtype
         ( Eq
         , Semigroup
         , Commutative
-        , LeftReductive
-        , LeftCancellative
-        , RightReductive
-        , RightCancellative
-        , Reductive
-        , Cancellative
         , Monoid
         , MonoidNull
-        , Monus
+        , PositiveMonoid
+        , LeftReductive
+        , LeftCancellative
         , LeftGCDMonoid
+        , LeftDistributiveGCDMonoid
+        , RightReductive
+        , RightCancellative
         , RightGCDMonoid
+        , RightDistributiveGCDMonoid
+        , Reductive
+        , Cancellative
         , GCDMonoid
         , LCMMonoid
+        , DistributiveGCDMonoid
+        , DistributiveLCMMonoid
         , OverlappingGCDMonoid
-        , PositiveMonoid
+        , Monus
         )
 
 instance (Ord a, Read a) => Read (MultiSet a) where
@@ -90,15 +103,11 @@ instance (Ord a, Read a) => Read (MultiSet a) where
 instance Show a => Show (MultiSet a) where
     show = show . toList
 
-fromList :: Ord a => [a] -> MultiSet a
-fromList = MultiSet . MonoidMap.fromList . fmap (, Sum 1)
+fromList :: Ord a => [(a, Natural)] -> MultiSet a
+fromList = MultiSet . MonoidMap.fromList . fmap (fmap Sum)
 
-toList :: MultiSet a -> [a]
-toList (MultiSet m) =
-    [ a
-    | (k, Sum v) <- MonoidMap.toList m
-    , a <- genericReplicate v k
-    ]
+toList :: MultiSet a -> [(a, Natural)]
+toList = fmap (fmap getSum) . MonoidMap.toList . unMultiSet
 
 null :: MultiSet a -> Bool
 null = MonoidMap.null . unMultiSet
@@ -132,8 +141,11 @@ intersection = GCDMonoid.gcd
 union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 union = LCMMonoid.lcm
 
-difference :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-difference m1 m2 = (m1 <\> m2) <> (m2 <\> m1)
+disjointUnion :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
+disjointUnion m1 m2 = (m1 <\> m2) <> (m2 <\> m1)
+
+add :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
+add = (<>)
 
 subtract :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 subtract = (<\>)
