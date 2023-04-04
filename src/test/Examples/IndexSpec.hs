@@ -1,4 +1,5 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
@@ -74,8 +75,7 @@ spec = do
     specFor (Proxy @(Index4 Int Int))
     specFor (Proxy @(Index4 Integer Integer))
 
-specFor
-    :: forall i k v. () =>
+type TestConstraints i k v =
         ( Arbitrary (i k v)
         , Arbitrary k
         , Arbitrary v
@@ -87,6 +87,9 @@ specFor
         , Typeable k
         , Typeable v
         )
+
+specFor
+    :: forall i k v. TestConstraints i k v
     => Proxy (i k v)
     -> Spec
 specFor indexType = do
@@ -159,106 +162,68 @@ specFor indexType = do
                 @i @k @v & property
 
 prop_toList_all_nonNull
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> Property
+    :: TestConstraints i k v => i k v -> Property
 prop_toList_all_nonNull i = QC.property $
     all (\(_, v) -> v /= Set.empty) (I.toList i)
 
 prop_empty_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> Property
+    :: forall i k v. TestConstraints i k v => k -> Property
 prop_empty_lookup k =
     I.lookup k (I.empty @i @k @v) === Set.empty
 
 prop_update_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> Set v
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> Set v -> i k v -> Property
 prop_update_lookup k vs i =
     I.lookup k (I.update k vs i) === vs
 
 prop_update_nonNullKeys_lookup_all_notNull
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> Set v
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> Set v -> i k v -> Property
 prop_update_nonNullKeys_lookup_all_notNull k vs i =
     prop_nonNullKeys_lookup_all_notNull (I.update k vs i)
 
 prop_nonNullKey_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> i k v -> Property
 prop_nonNullKey_lookup k i =
     I.nonNullKey k i === (I.lookup k i /= Set.empty)
 
 prop_nonNullKeys_lookup_all_notNull
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> Property
+    :: TestConstraints i k v => i k v -> Property
 prop_nonNullKeys_lookup_all_notNull i = QC.property $
     all (\k -> I.lookup k i /= Set.empty) (I.nonNullKeys i)
 
 prop_nonNullKeys_nonNullKeyCount
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> Property
+    :: TestConstraints i k v => i k v -> Property
 prop_nonNullKeys_nonNullKeyCount i =
     I.nonNullKeyCount i === Set.size (I.nonNullKeys i)
 
 prop_null_nullKey
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> i k v -> Property
 prop_null_nullKey k i =
     I.null i ==> not (I.nonNullKey k i)
 
 prop_add_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> Set v
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> Set v -> i k v -> Property
 prop_add_lookup k vs i =
     I.lookup k (I.add k vs i)
     ===
     I.lookup k i `Set.union` vs
 
 prop_remove_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> Set v
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> Set v -> i k v -> Property
 prop_remove_lookup k vs i =
     I.lookup k (I.remove k vs i)
     ===
     I.lookup k i `Set.difference` vs
 
 prop_union_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> i k v
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> i k v -> i k v -> Property
 prop_union_lookup k i1 i2 =
     I.lookup k (i1 `I.union` i2)
     ===
     I.lookup k i1 `Set.union` I.lookup k i2
 
 prop_isSubIndexOf_lookup
-    :: forall i k v. (Index i k v, Show v)
-    => k
-    -> i k v
-    -> i k v
-    -> Property
+    :: TestConstraints i k v => k -> i k v -> i k v -> Property
 prop_isSubIndexOf_lookup k i1 i2 =
     (i1 `I.isSubIndexOf` i2
         ==>
@@ -268,27 +233,27 @@ prop_isSubIndexOf_lookup k i1 i2 =
         "i1 `I.isSubIndexOf` i2"
 
 prop_intersection_nonNullKeys_lookup_all_notNull
-    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_intersection_nonNullKeys_lookup_all_notNull i1 i2 =
     prop_nonNullKeys_lookup_all_notNull (i1 `I.intersection` i2)
 
 prop_intersection_toList_all_nonNull
-    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_intersection_toList_all_nonNull i1 i2 =
     prop_toList_all_nonNull (i1 `I.intersection` i2)
 
 prop_union_nonNullKeys_lookup_all_nonNull
-    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_nonNullKeys_lookup_all_nonNull i1 i2 =
     prop_nonNullKeys_lookup_all_notNull (i1 `I.union` i2)
 
 prop_union_toList_all_nonNull
-    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_toList_all_nonNull i1 i2 =
     prop_toList_all_nonNull (i1 `I.union` i2)
 
 prop_intersection_isSubIndexOf_1
-    :: (Index i k v, Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_intersection_isSubIndexOf_1 i1 i2 =
     (i1 `I.intersection` i2) `I.isSubIndexOf` i1
     & cover 1
@@ -296,7 +261,7 @@ prop_intersection_isSubIndexOf_1 i1 i2 =
         "not (I.null (i1 `I.intersection` i2))"
 
 prop_intersection_isSubIndexOf_2
-    :: (Index i k v, Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_intersection_isSubIndexOf_2 i1 i2 =
     (i1 `I.intersection` i2) `I.isSubIndexOf` i2
     & cover 1
@@ -304,12 +269,12 @@ prop_intersection_isSubIndexOf_2 i1 i2 =
         "not (I.null (i1 `I.intersection` i2))"
 
 prop_union_isSubIndexOf_1
-    :: (Index i k v, Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_isSubIndexOf_1 i1 i2 =
     i1 `I.isSubIndexOf` (i1 `I.union` i2) === True
 
 prop_union_isSubIndexOf_2
-    :: (Index i k v, Show v) => i k v -> i k v -> Property
+    :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_isSubIndexOf_2 i1 i2 =
     i2 `I.isSubIndexOf` (i1 `I.union` i2) === True
 
