@@ -31,9 +31,16 @@ import Data.List
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
-    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+    ( DistributiveGCDMonoid
+    , GCDMonoid
+    , LeftDistributiveGCDMonoid
+    , LeftGCDMonoid
+    , OverlappingGCDMonoid
+    , RightDistributiveGCDMonoid
+    , RightGCDMonoid
+    )
 import Data.Monoid.LCM
-    ( LCMMonoid )
+    ( DistributiveLCMMonoid, LCMMonoid )
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
 import Data.Monoid.Null
@@ -62,26 +69,31 @@ import qualified Data.Monoid.LCM as LCMMonoid
 import qualified Data.Total.MonoidMap as MonoidMap
 
 newtype MultiSet a = MultiSet
-    {unMultiSet :: MonoidMap a (Sum Natural)}
+    { unMultiSet :: MonoidMap a (Sum Natural)
+    }
     deriving newtype
         ( Eq
         , Semigroup
         , Commutative
-        , LeftReductive
-        , LeftCancellative
-        , RightReductive
-        , RightCancellative
-        , Reductive
-        , Cancellative
         , Monoid
         , MonoidNull
-        , Monus
+        , PositiveMonoid
+        , LeftReductive
+        , LeftCancellative
         , LeftGCDMonoid
+        , LeftDistributiveGCDMonoid
+        , RightReductive
+        , RightCancellative
         , RightGCDMonoid
+        , RightDistributiveGCDMonoid
+        , Reductive
+        , Cancellative
         , GCDMonoid
         , LCMMonoid
+        , DistributiveGCDMonoid
+        , DistributiveLCMMonoid
         , OverlappingGCDMonoid
-        , PositiveMonoid
+        , Monus
         )
 
 instance (Ord a, Read a) => Read (MultiSet a) where
