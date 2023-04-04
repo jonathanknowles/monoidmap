@@ -10,14 +10,14 @@ module Examples.Index.Index4 where
 import Prelude hiding
     ( gcd, lcm, lookup )
 
-import Data.Set
-    ( Set )
 import Data.Monoid.GCD
     ( GCDMonoid (gcd) )
 import Data.Monoid.LCM
     ( LCMMonoid (lcm) )
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
+import Data.Set
+    ( Set )
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Examples.Index

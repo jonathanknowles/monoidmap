@@ -62,8 +62,8 @@ spec = do
     -- Uncomment the following lines to see property test failures for an
     -- unlawful implementation of 'Index':
     --
-    -- specFor (Proxy @(Index1 Int Int))
-    -- specFor (Proxy @(Index1 Integer Integer))
+    specFor (Proxy @(Index1 Int Int))
+    specFor (Proxy @(Index1 Integer Integer))
 
     specFor (Proxy @(Index2 Int Int))
     specFor (Proxy @(Index2 Integer Integer))
@@ -104,11 +104,14 @@ specFor indexType = do
         it "prop_update_lookup" $
             prop_update_lookup
                 @i @k @v & property
+        it "prop_update_nonNullKeys_lookup_all_notNull" $
+            prop_update_nonNullKeys_lookup_all_notNull
+                @i @k @v & property
         it "prop_nonNullKey_lookup" $
             prop_nonNullKey_lookup
                 @i @k @v & property
-        it "prop_nonNullKeys_lookup" $
-            prop_nonNullKeys_lookup
+        it "prop_nonNullKeys_lookup_all_notNull" $
+            prop_nonNullKeys_lookup_all_notNull
                 @i @k @v & property
         it "prop_nonNullKeys_nonNullKeyCount" $
             prop_nonNullKeys_nonNullKeyCount
@@ -129,8 +132,8 @@ specFor indexType = do
             prop_isSubIndexOf_lookup
                 @i @k @v & property
 
-        it "prop_intersection_nonNullKeys_all_nonNull" $
-            prop_intersection_nonNullKeys_all_nonNull
+        it "prop_intersection_nonNullKeys_lookup_all_notNull" $
+            prop_intersection_nonNullKeys_lookup_all_notNull
                 @i @k @v & property
         it "prop_intersection_toList_all_nonNull" $
             prop_intersection_toList_all_nonNull
@@ -142,8 +145,8 @@ specFor indexType = do
             prop_intersection_isSubIndexOf_2
                 @i @k @v & property
 
-        it "prop_union_nonNullKeys_all_nonNull" $
-            prop_union_nonNullKeys_all_nonNull
+        it "prop_union_nonNullKeys_lookup_all_nonNull" $
+            prop_union_nonNullKeys_lookup_all_nonNull
                 @i @k @v & property
         it "prop_union_toList_all_nonNull" $
             prop_union_toList_all_nonNull
@@ -154,6 +157,13 @@ specFor indexType = do
         it "prop_union_isSubIndexOf_2" $
             prop_union_isSubIndexOf_2
                 @i @k @v & property
+
+prop_toList_all_nonNull
+    :: forall i k v. (Index i k v, Show v)
+    => i k v
+    -> Property
+prop_toList_all_nonNull i = QC.property $
+    all (\(_, v) -> v /= Set.empty) (I.toList i)
 
 prop_empty_lookup
     :: forall i k v. (Index i k v, Show v)
@@ -171,6 +181,15 @@ prop_update_lookup
 prop_update_lookup k vs i =
     I.lookup k (I.update k vs i) === vs
 
+prop_update_nonNullKeys_lookup_all_notNull
+    :: forall i k v. (Index i k v, Show v)
+    => k
+    -> Set v
+    -> i k v
+    -> Property
+prop_update_nonNullKeys_lookup_all_notNull k vs i =
+    prop_nonNullKeys_lookup_all_notNull (I.update k vs i)
+
 prop_nonNullKey_lookup
     :: forall i k v. (Index i k v, Show v)
     => k
@@ -179,14 +198,12 @@ prop_nonNullKey_lookup
 prop_nonNullKey_lookup k i =
     I.nonNullKey k i === (I.lookup k i /= Set.empty)
 
-prop_nonNullKeys_lookup
+prop_nonNullKeys_lookup_all_notNull
     :: forall i k v. (Index i k v, Show v)
     => i k v
     -> Property
-prop_nonNullKeys_lookup i =
+prop_nonNullKeys_lookup_all_notNull i = QC.property $
     all (\k -> I.lookup k i /= Set.empty) (I.nonNullKeys i)
-    ===
-    True
 
 prop_nonNullKeys_nonNullKeyCount
     :: forall i k v. (Index i k v, Show v)
@@ -250,63 +267,28 @@ prop_isSubIndexOf_lookup k i1 i2 =
         (i1 `I.isSubIndexOf` i2)
         "i1 `I.isSubIndexOf` i2"
 
-prop_intersection_nonNullKeys_all_nonNull
-    :: forall i k v. (Index i k v, Show (i k v), Show v)
-    => i k v
-    -> i k v
-    -> Property
-prop_intersection_nonNullKeys_all_nonNull i1 i2 =
-    i1 `I.intersection` i2
-    & I.nonNullKeys
-    & all (\k -> I.lookup k (i1 `I.intersection` i2) /= Set.empty)
-    & report
-        "i1 `I.intersection` i2"
-        (i1 `I.intersection` i2)
+prop_intersection_nonNullKeys_lookup_all_notNull
+    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
+prop_intersection_nonNullKeys_lookup_all_notNull i1 i2 =
+    prop_nonNullKeys_lookup_all_notNull (i1 `I.intersection` i2)
 
 prop_intersection_toList_all_nonNull
-    :: forall i k v. (Index i k v, Show (i k v), Show v)
-    => i k v
-    -> i k v
-    -> Property
+    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
 prop_intersection_toList_all_nonNull i1 i2 =
-    i1 `I.intersection` i2
-    & I.toList
-    & all (\(_, vs) -> vs /= Set.empty)
-    & report
-        "i1 `I.intersection` i2"
-        (i1 `I.intersection` i2)
+    prop_toList_all_nonNull (i1 `I.intersection` i2)
 
-prop_union_nonNullKeys_all_nonNull
-    :: forall i k v. (Index i k v, Show (i k v), Show v)
-    => i k v
-    -> i k v
-    -> Property
-prop_union_nonNullKeys_all_nonNull i1 i2 =
-    i1 `I.union` i2
-    & I.nonNullKeys
-    & all (\k -> I.lookup k (i1 `I.union` i2) /= Set.empty)
-    & report
-        "i1 `I.union` i2"
-        (i1 `I.union` i2)
+prop_union_nonNullKeys_lookup_all_nonNull
+    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
+prop_union_nonNullKeys_lookup_all_nonNull i1 i2 =
+    prop_nonNullKeys_lookup_all_notNull (i1 `I.union` i2)
 
 prop_union_toList_all_nonNull
-    :: forall i k v. (Index i k v, Show (i k v), Show v)
-    => i k v
-    -> i k v
-    -> Property
+    :: (Index i k v, Show (i k v), Show v) => i k v -> i k v -> Property
 prop_union_toList_all_nonNull i1 i2 =
-    i1 `I.union` i2
-    & I.toList
-    & all (\(_, vs) -> vs /= Set.empty)
-    & report
-        "i1 `I.union` i2"
-        (i1 `I.union` i2)
+    prop_toList_all_nonNull (i1 `I.union` i2)
 
 prop_intersection_isSubIndexOf_1
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> i k v
-    -> Property
+    :: (Index i k v, Show v) => i k v -> i k v -> Property
 prop_intersection_isSubIndexOf_1 i1 i2 =
     (i1 `I.intersection` i2) `I.isSubIndexOf` i1
     & cover 1
@@ -314,10 +296,7 @@ prop_intersection_isSubIndexOf_1 i1 i2 =
         "not (I.null (i1 `I.intersection` i2))"
 
 prop_intersection_isSubIndexOf_2
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> i k v
-    -> Property
+    :: (Index i k v, Show v) => i k v -> i k v -> Property
 prop_intersection_isSubIndexOf_2 i1 i2 =
     (i1 `I.intersection` i2) `I.isSubIndexOf` i2
     & cover 1
@@ -325,18 +304,12 @@ prop_intersection_isSubIndexOf_2 i1 i2 =
         "not (I.null (i1 `I.intersection` i2))"
 
 prop_union_isSubIndexOf_1
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> i k v
-    -> Property
+    :: (Index i k v, Show v) => i k v -> i k v -> Property
 prop_union_isSubIndexOf_1 i1 i2 =
     i1 `I.isSubIndexOf` (i1 `I.union` i2) === True
 
 prop_union_isSubIndexOf_2
-    :: forall i k v. (Index i k v, Show v)
-    => i k v
-    -> i k v
-    -> Property
+    :: (Index i k v, Show v) => i k v -> i k v -> Property
 prop_union_isSubIndexOf_2 i1 i2 =
     i2 `I.isSubIndexOf` (i1 `I.union` i2) === True
 

@@ -65,13 +65,11 @@ instance (Ord k, Ord v) => Index Index3 k v where
         Map.merge
             Map.dropMissing
             Map.dropMissing
-            (Map.zipWithMaybeMatched (const setIntersectionMaybe))
+            (Map.zipWithMaybeMatched mergeValues)
             m1
             m2
       where
-        setIntersectionMaybe :: Ord v => NESet v -> NESet v -> Maybe (NESet v)
-        setIntersectionMaybe s1 s2 =
-            NESet.nonEmptySet (NESet.intersection s1 s2)
+        mergeValues :: Ord v => k -> NESet v -> NESet v -> Maybe (NESet v)
+        mergeValues _k s1 s2 = NESet.nonEmptySet (NESet.intersection s1 s2)
 
-    isSubIndexOf (Index m1) (Index m2) =
-        Map.isSubmapOfBy NESet.isSubsetOf m1 m2
+    isSubIndexOf (Index m1) (Index m2) = Map.isSubmapOfBy NESet.isSubsetOf m1 m2

@@ -57,5 +57,4 @@ instance (Ord k, Ord v) => Index Index1 k v where
     intersection (Index m1) (Index m2) = Index $
         Map.intersectionWith Set.intersection m1 m2
 
-    isSubIndexOf (Index m1) (Index m2) =
-        Map.isSubmapOfBy Set.isSubsetOf m1 m2
+    isSubIndexOf (Index m1) (Index m2) = Map.isSubmapOfBy Set.isSubsetOf m1 m2

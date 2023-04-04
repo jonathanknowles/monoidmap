@@ -18,20 +18,32 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
 
     -- | Constructs an empty index.
     --
+    -- @
+    -- ∀ k. lookup k empty == Set.empty
+    -- @
+    --
     empty :: i k v
 
     -- | Constructs an index from a list.
     --
+    -- @
+    -- fromList (toList i) == i
+    -- @
+    --
     fromList :: [(k, v)] -> i k v
 
     -- | Converts an index to a list.
+    --
+    -- @
+    -- fromList (toList i) == i
+    -- @
     --
     toList :: i k v -> [(k, Set v)]
 
     -- | Returns the set of values associated with a given key.
     --
     -- @
-    -- lookup k empty == Set.empty
+    -- lookup k (fromList [(k, vs)]) == vs
     -- @
     --
     lookup :: k -> i k v -> Set v
@@ -47,12 +59,12 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
     -- | Returns 'True' iff. the given key is not associated with the empty set.
     --
     -- @
-    -- nonNullKey k i == (lookup k i /= Set.empty)
+    -- nonNullKey k i ==> (lookup k i /= Set.empty)
     -- @
     --
     nonNullKey :: k -> i k v -> Bool
 
-    -- | Returns the set of keys not associated with the empty set.
+    -- | Returns the set of keys that are not associated with empty sets.
     --
     -- @
     -- all (\k -> lookup k i /= Set.empty) (nonNullKeys i)
@@ -60,7 +72,7 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
     --
     nonNullKeys :: i k v -> Set k
 
-    -- | Indicates how many keys are associated with non-empty sets of values.
+    -- | Indicates how many keys are associated with non-empty sets.
     --
     -- @
     -- nonNullKeyCount i == Set.size (nonNullKeys i)
@@ -71,7 +83,7 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
     -- | Indicates whether or not an index is empty.
     --
     -- @
-    -- null i ==> not (nonNullKey k i)
+    -- null i ==> (∀ k. lookup k i == Set.empty)
     -- @
     --
     null :: i k v -> Bool

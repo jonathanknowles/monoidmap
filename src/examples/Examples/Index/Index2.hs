@@ -64,14 +64,14 @@ instance (Ord k, Ord v) => Index Index2 k v where
         Map.merge
             Map.dropMissing
             Map.dropMissing
-            (Map.zipWithMaybeMatched (const setIntersectionMaybe))
+            (Map.zipWithMaybeMatched mergeValues)
             m1
             m2
       where
-        setIntersectionMaybe :: Ord v => Set v -> Set v -> Maybe (Set v)
-        setIntersectionMaybe s1 s2
+        mergeValues :: k -> Set v -> Set v -> Maybe (Set v)
+        mergeValues _k s1 s2
             | Set.null s3 = Nothing
-            | otherwise   = Just s3
+            | otherwise    = Just s3
           where
             s3 = Set.intersection s1 s2
 
