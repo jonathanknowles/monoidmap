@@ -19,8 +19,8 @@ module Examples.MultiSet
     , isSubsetOf
     , intersection
     , union
+    , disjointUnion
     , add
-    , difference
     , subtract
     , subtractMaybe
     )
@@ -141,11 +141,11 @@ intersection = GCDMonoid.gcd
 union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 union = LCMMonoid.lcm
 
+disjointUnion :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
+disjointUnion m1 m2 = (m1 <\> m2) <> (m2 <\> m1)
+
 add :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 add = (<>)
-
-difference :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-difference m1 m2 = (m1 <\> m2) <> (m2 <\> m1)
 
 subtract :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 subtract = (<\>)
