@@ -4,6 +4,8 @@
 --
 -- A multiset type, implemented in terms of 'MonoidMap'.
 --
+-- See: https://en.wikipedia.org/wiki/Multiset
+--
 module Examples.MultiSet
     ( fromList
     , toList
