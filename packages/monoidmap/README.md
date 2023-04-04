@@ -124,7 +124,7 @@ In principle, it seems easy to meet these requirements with a data structure lik
   TMap 'v' (fromList [])
   ```
 
-Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, and take care to only perform canonicalisation _when necessary_, it's easier to reason about the behaviour of client code.
+Since all [`MonoidMap`](http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic canonicalisation, and take care to only perform canonicalisation _when necessary_, it's simpler to reason about the behaviour of client code.
 
 ### Compactness
 
@@ -281,6 +281,8 @@ Here's a comparison between the [`MonoidMap`](http://jonathanknowles.net/total-m
       <a href="http://jonathanknowles.net/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap">
         <code>MonoidMap</code>
       </a>
+      <br/>
+      (this library)
     </td>
     <td>:heavy_check_mark:</td>
     <td>:heavy_check_mark:</td>
