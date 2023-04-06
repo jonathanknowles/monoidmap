@@ -49,7 +49,7 @@ instance (Ord k, Ord v) => Index Index4 k v where
 
     update k vs (Index m) = Index (MonoidMap.set k vs m)
 
-    add k vs (Index m) = Index (MonoidMap.adjust (<> vs) k m)
+    insert k vs (Index m) = Index (MonoidMap.adjust (<> vs) k m)
 
     remove k vs (Index m) = Index (MonoidMap.adjust (<\> vs) k m)
 

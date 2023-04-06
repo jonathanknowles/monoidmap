@@ -45,7 +45,7 @@ instance (Ord k, Ord v) => Index Index2 k v where
         | Set.null vs = Index (Map.delete k    m)
         | otherwise   = Index (Map.insert k vs m)
 
-    add k vs i@(Index m)
+    insert k vs i@(Index m)
         | Set.null zs = Index (Map.delete k    m)
         | otherwise   = Index (Map.insert k zs m)
       where

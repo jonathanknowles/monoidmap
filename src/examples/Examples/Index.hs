@@ -14,6 +14,8 @@ import Data.Set
 
 -- | Specifies an index from unique keys to sets of values.
 --
+-- Talk about what an index is here.
+--
 class (Eq (i k v), Ord k, Ord v) => Index i k v where
 
     -- | Constructs an empty index.
@@ -88,13 +90,13 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
     --
     null :: i k v -> Bool
 
-    -- | Adds values to the set of values associated with a given key.
+    -- | Inserts values into the set of values associated with a given key.
     --
     -- @
-    -- lookup k (add k vs i) == lookup k i `Set.union` vs
+    -- lookup k (insert k vs i) == lookup k i `Set.union` vs
     -- @
     --
-    add :: k -> Set v -> i k v -> i k v
+    insert :: k -> Set v -> i k v -> i k v
 
     -- | Removes values from the set of values associated with a given key.
     --

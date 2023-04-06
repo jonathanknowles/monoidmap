@@ -45,7 +45,7 @@ instance (Ord k, Ord v) => Index Index1 k v where
 
     update k vs (Index m) = Index (Map.insert k vs m)
 
-    add k vs i@(Index m) = Index $
+    insert k vs i@(Index m) = Index $
         Map.insert k (lookup k i `Set.union` vs) m
 
     remove k vs i@(Index m) = Index $

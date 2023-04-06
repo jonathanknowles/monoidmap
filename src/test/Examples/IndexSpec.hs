@@ -63,17 +63,10 @@ spec = do
     -- Uncomment the following lines to see property test failures for an
     -- unlawful implementation of 'Index':
     --
-    -- specFor (Proxy @(Index1 Int Int))
-    -- specFor (Proxy @(Index1 Integer Integer))
-
+    specFor (Proxy @(Index1 Int Int))
     specFor (Proxy @(Index2 Int Int))
-    specFor (Proxy @(Index2 Integer Integer))
-
     specFor (Proxy @(Index3 Int Int))
-    specFor (Proxy @(Index3 Integer Integer))
-
     specFor (Proxy @(Index4 Int Int))
-    specFor (Proxy @(Index4 Integer Integer))
 
 type TestConstraints i k v =
         ( Arbitrary (i k v)
@@ -119,8 +112,8 @@ specFor indexType = do
         it "prop_null_nullKey" $
             prop_null_nullKey
                 @i @k @v & property
-        it "prop_add_lookup" $
-            prop_add_lookup
+        it "prop_insert_lookup" $
+            prop_insert_lookup
                 @i @k @v & property
         it "prop_remove_lookup" $
             prop_remove_lookup
@@ -156,6 +149,10 @@ specFor indexType = do
                 @i @k @v & property
         it "prop_union_isSubIndexOf_2" $
             prop_union_isSubIndexOf_2
+                @i @k @v & property
+
+        it "prop_union_intersection_distributive" $
+            prop_union_intersection_distributive
                 @i @k @v & property
 
 prop_toList_all_nonNull
@@ -198,10 +195,10 @@ prop_null_nullKey
 prop_null_nullKey k i =
     I.null i ==> not (I.nonNullKey k i)
 
-prop_add_lookup
+prop_insert_lookup
     :: TestConstraints i k v => k -> Set v -> i k v -> Property
-prop_add_lookup k vs i =
-    I.lookup k (I.add k vs i)
+prop_insert_lookup k vs i =
+    I.lookup k (I.insert k vs i)
     ===
     I.lookup k i `Set.union` vs
 
@@ -274,6 +271,12 @@ prop_union_isSubIndexOf_2
     :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_isSubIndexOf_2 i1 i2 =
     i2 `I.isSubIndexOf` (i1 `I.union` i2) === True
+
+prop_union_intersection_distributive
+    :: TestConstraints i k v => i k v -> i k v -> i k v -> Property
+prop_union_intersection_distributive i1 i2 i3 =
+    (i1 `I.intersection` (i2 `I.union` i3)) ===
+    ((i1 `I.intersection` i2) `I.union` (i1 `I.intersection` i3))
 
 infixr 0 ==>
 (==>) :: Bool -> Bool -> Property
