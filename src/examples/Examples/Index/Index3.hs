@@ -48,7 +48,7 @@ instance (Ord k, Ord v) => Index Index3 k v where
             Nothing -> Index (Map.delete k    m)
             Just zs -> Index (Map.insert k zs m)
 
-    add k vs i@(Index m) =
+    insert k vs i@(Index m) =
         case NESet.nonEmptySet (lookup k i `Set.union` vs) of
             Nothing -> Index (Map.delete k    m)
             Just zs -> Index (Map.insert k zs m)
