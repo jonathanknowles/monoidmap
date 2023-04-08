@@ -213,12 +213,17 @@ prop_valid_toList i = QC.property $
 --------------------------------------------------------------------------------
 
 prop_empty_valid
-    :: forall i k v. TestConstraints i k v => Property
-prop_empty_valid = prop_valid (I.empty @i @k @v)
+    :: forall i k v. TestConstraints i k v
+    => Property
+prop_empty_valid =
+    prop_valid @i @k @v I.empty
 
 prop_fromList_valid
-    :: forall i k v. TestConstraints i k v => [(k, Set v)] -> Property
-prop_fromList_valid kvs = prop_valid (I.fromList @i @k @v kvs)
+    :: forall i k v. TestConstraints i k v
+    => [(k, Set v)]
+    -> Property
+prop_fromList_valid kvs =
+    prop_valid @i @k @v (I.fromList kvs)
 
 prop_update_valid
     :: forall i k v. TestConstraints i k v
