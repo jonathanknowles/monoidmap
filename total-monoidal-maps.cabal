@@ -99,11 +99,11 @@ library examples
     hs-source-dirs:
         src/examples
     exposed-modules:
-        Examples.Index
-        Examples.Index.Index1
-        Examples.Index.Index2
-        Examples.Index.Index3
-        Examples.Index.Index4
+        Examples.MultiMap
+        Examples.MultiMap.MultiMap1
+        Examples.MultiMap.MultiMap2
+        Examples.MultiMap.MultiMap3
+        Examples.MultiMap.MultiMap4
         Examples.MultiSet
         Examples.NestedMonoidMap
         Examples.RecoveredMap
@@ -155,7 +155,7 @@ test-suite test
         Data.Total.MonoidMap.ExampleSpec
         Data.Total.MonoidMap.RecoveredMapSpec
         Data.Total.MonoidMap.TypeSpec
-        Examples.IndexSpec
+        Examples.MultiMapSpec
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
     type:
