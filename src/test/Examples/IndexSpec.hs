@@ -69,8 +69,7 @@ spec = do
     specFor (Proxy @(Index4 Int Int))
 
 type TestConstraints i k v =
-        ( Arbitrary (i k v)
-        , Arbitrary k
+        ( Arbitrary k
         , Arbitrary v
         , Index i k v
         , Show (i k v)
@@ -386,36 +385,6 @@ prop_union_intersection_distributive i1 i2 i3 =
 infixr 0 ==>
 (==>) :: Bool -> Bool -> Property
 a ==> b = not a .||. b
-
---------------------------------------------------------------------------------
--- Arbitrary instances
---------------------------------------------------------------------------------
-
-genIndex :: (Arbitrary k, Arbitrary v, Index i k v) => Gen (i k v)
-genIndex = I.fromList <$> arbitrary
-
-shrinkIndex :: (Arbitrary k, Arbitrary v, Index i k v) => i k v -> [i k v]
-shrinkIndex = shrinkMap I.fromList I.toList
-
-instance (Arbitrary k, Arbitrary v, Ord k, Ord v) => Arbitrary (Index1 k v)
-  where
-    arbitrary = genIndex
-    shrink = shrinkIndex
-
-instance (Arbitrary k, Arbitrary v, Ord k, Ord v) => Arbitrary (Index2 k v)
-  where
-    arbitrary = genIndex
-    shrink = shrinkIndex
-
-instance (Arbitrary k, Arbitrary v, Ord k, Ord v) => Arbitrary (Index3 k v)
-  where
-    arbitrary = genIndex
-    shrink = shrinkIndex
-
-instance (Arbitrary k, Arbitrary v, Ord k, Ord v) => Arbitrary (Index4 k v)
-  where
-    arbitrary = genIndex
-    shrink = shrinkIndex
 
 --------------------------------------------------------------------------------
 -- Utilities
