@@ -71,7 +71,7 @@ instance (Ord k, Ord v) => Index Index2 k v where
         mergeValues :: k -> Set v -> Set v -> Maybe (Set v)
         mergeValues _k s1 s2
             | Set.null s3 = Nothing
-            | otherwise    = Just s3
+            | otherwise   = Just s3
           where
             s3 = Set.intersection s1 s2
 
