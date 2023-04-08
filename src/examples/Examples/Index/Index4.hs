@@ -23,7 +23,6 @@ import Data.Total.MonoidMap
 import Examples.Index
     ( Index (..) )
 
-import qualified Data.Set as Set
 import qualified Data.Total.MonoidMap as MonoidMap
 
 newtype Index4 k v = Index (MonoidMap k (Set v))
@@ -33,7 +32,7 @@ instance (Ord k, Ord v) => Index Index4 k v where
 
     empty = Index MonoidMap.empty
 
-    fromList = Index . MonoidMap.fromListWith (<>) . fmap (fmap Set.singleton)
+    fromList = Index . MonoidMap.fromListWith (<>)
 
     toList (Index m) = MonoidMap.toList m
 
@@ -43,7 +42,7 @@ instance (Ord k, Ord v) => Index Index4 k v where
 
     nonNullKeys (Index m) = MonoidMap.nonNullKeys m
 
-    nonNullKeyCount (Index m) = MonoidMap.nonNullCount m
+    nonNullCount (Index m) = MonoidMap.nonNullCount m
 
     lookup k (Index m) = MonoidMap.get k m
 

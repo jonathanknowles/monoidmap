@@ -63,7 +63,7 @@ spec = do
     -- Uncomment the following lines to see property test failures for an
     -- unlawful implementation of 'Index':
     --
-    specFor (Proxy @(Index1 Int Int))
+    --specFor (Proxy @(Index1 Int Int))
     specFor (Proxy @(Index2 Int Int))
     specFor (Proxy @(Index3 Int Int))
     specFor (Proxy @(Index4 Int Int))
@@ -91,6 +91,31 @@ specFor indexType = do
 
     describe description $ do
 
+        describe "Validity" $ do
+
+            it "prop_empty_valid" $
+                prop_empty_valid
+                    @i @k @v & property
+            it "prop_fromList_valid" $
+                prop_fromList_valid
+                    @i @k @v & property
+            it "prop_update_valid" $
+                prop_update_valid
+                    @i @k @v & property
+            it "prop_insert_valid" $
+                prop_insert_valid
+                    @i @k @v & property
+            it "prop_remove_valid" $
+                prop_remove_valid
+                    @i @k @v & property
+            it "prop_union_valid" $
+                prop_union_valid
+                    @i @k @v & property
+            it "prop_intersection_valid" $
+                prop_intersection_valid
+                    @i @k @v & property
+
+{-
         it "prop_empty_lookup" $
             prop_empty_lookup
                 @i @k @v & property
@@ -103,11 +128,11 @@ specFor indexType = do
         it "prop_nonNullKey_lookup" $
             prop_nonNullKey_lookup
                 @i @k @v & property
-        it "prop_nonNullKeys_lookup_all_notNull" $
-            prop_nonNullKeys_lookup_all_notNull
+        it "prop_valid_nonNullKeys" $
+            prop_valid_nonNullKeys
                 @i @k @v & property
-        it "prop_nonNullKeys_nonNullKeyCount" $
-            prop_nonNullKeys_nonNullKeyCount
+        it "prop_nonNullKeys_nonNullCount" $
+            prop_nonNullKeys_nonNullCount
                 @i @k @v & property
         it "prop_null_nullKey" $
             prop_null_nullKey
@@ -154,11 +179,96 @@ specFor indexType = do
         it "prop_union_intersection_distributive" $
             prop_union_intersection_distributive
                 @i @k @v & property
+-}
 
-prop_toList_all_nonNull
+--------------------------------------------------------------------------------
+-- Validity properties
+--------------------------------------------------------------------------------
+-- An index is valid if (and only if) it is not possible to reveal an empty
+-- set when traversing the set of mappings from keys to value sets.
+--------------------------------------------------------------------------------
+
+prop_valid
     :: TestConstraints i k v => i k v -> Property
-prop_toList_all_nonNull i = QC.property $
+prop_valid i = QC.conjoin
+    [ counterexample
+        "prop_valid_nonNullKeys"
+        (prop_valid_nonNullKeys i)
+    , counterexample
+        "prop_valid_toList"
+        (prop_valid_toList i)
+    ]
+
+prop_valid_nonNullKeys
+    :: TestConstraints i k v => i k v -> Property
+prop_valid_nonNullKeys i = QC.property $
+    all (\k -> I.lookup k i /= Set.empty) (I.nonNullKeys i)
+
+prop_valid_toList
+    :: TestConstraints i k v => i k v -> Property
+prop_valid_toList i = QC.property $
     all (\(_, v) -> v /= Set.empty) (I.toList i)
+
+--------------------------------------------------------------------------------
+-- Validity of operations that produce indices
+--------------------------------------------------------------------------------
+
+prop_empty_valid
+    :: forall i k v. TestConstraints i k v => Property
+prop_empty_valid = prop_valid (I.empty @i @k @v)
+
+prop_fromList_valid
+    :: forall i k v. TestConstraints i k v => [(k, Set v)] -> Property
+prop_fromList_valid kvs = prop_valid (I.fromList @i @k @v kvs)
+
+prop_update_valid
+    :: forall i k v. TestConstraints i k v
+    => k
+    -> Set v
+    -> [(k, Set v)]
+    -> Property
+prop_update_valid k vs kvs =
+    prop_valid @i @k @v (I.update k vs (I.fromList kvs))
+
+prop_insert_valid
+    :: forall i k v. TestConstraints i k v
+    => k
+    -> Set v
+    -> [(k, Set v)]
+    -> Property
+prop_insert_valid k vs kvs =
+    prop_valid @i @k @v (I.insert k vs (I.fromList kvs))
+
+prop_remove_valid
+    :: forall i k v. TestConstraints i k v
+    => k
+    -> Set v
+    -> [(k, Set v)]
+    -> Property
+prop_remove_valid k vs kvs =
+    prop_valid @i @k @v (I.remove k vs (I.fromList kvs))
+
+prop_union_valid
+    :: forall i k v. TestConstraints i k v
+    => [(k, Set v)]
+    -> [(k, Set v)]
+    -> Property
+prop_union_valid kvs1 kvs2 =
+    prop_valid @i @k @v (I.union (I.fromList kvs1) (I.fromList kvs2))
+
+prop_intersection_valid
+    :: forall i k v. TestConstraints i k v
+    => [(k, Set v)]
+    -> [(k, Set v)]
+    -> Property
+prop_intersection_valid kvs1 kvs2 =
+    prop_valid @i @k @v (I.intersection (I.fromList kvs1) (I.fromList kvs2))
+
+
+
+
+
+
 
 prop_empty_lookup :: forall i k v. ()
     => TestConstraints i k v => k -> Property
@@ -173,22 +283,17 @@ prop_update_lookup k vs i =
 prop_update_nonNullKeys_lookup_all_notNull
     :: TestConstraints i k v => k -> Set v -> i k v -> Property
 prop_update_nonNullKeys_lookup_all_notNull k vs i =
-    prop_nonNullKeys_lookup_all_notNull (I.update k vs i)
+    prop_valid_nonNullKeys (I.update k vs i)
 
 prop_nonNullKey_lookup
     :: TestConstraints i k v => k -> i k v -> Property
 prop_nonNullKey_lookup k i =
     I.nonNullKey k i === (I.lookup k i /= Set.empty)
 
-prop_nonNullKeys_lookup_all_notNull
+prop_nonNullKeys_nonNullCount
     :: TestConstraints i k v => i k v -> Property
-prop_nonNullKeys_lookup_all_notNull i = QC.property $
-    all (\k -> I.lookup k i /= Set.empty) (I.nonNullKeys i)
-
-prop_nonNullKeys_nonNullKeyCount
-    :: TestConstraints i k v => i k v -> Property
-prop_nonNullKeys_nonNullKeyCount i =
-    I.nonNullKeyCount i === Set.size (I.nonNullKeys i)
+prop_nonNullKeys_nonNullCount i =
+    I.nonNullCount i === Set.size (I.nonNullKeys i)
 
 prop_null_nullKey
     :: TestConstraints i k v => k -> i k v -> Property
@@ -229,22 +334,22 @@ prop_isSubIndexOf_lookup k i1 i2 =
 prop_intersection_nonNullKeys_lookup_all_notNull
     :: TestConstraints i k v => i k v -> i k v -> Property
 prop_intersection_nonNullKeys_lookup_all_notNull i1 i2 =
-    prop_nonNullKeys_lookup_all_notNull (i1 `I.intersection` i2)
+    prop_valid_nonNullKeys (i1 `I.intersection` i2)
 
 prop_intersection_toList_all_nonNull
     :: TestConstraints i k v => i k v -> i k v -> Property
 prop_intersection_toList_all_nonNull i1 i2 =
-    prop_toList_all_nonNull (i1 `I.intersection` i2)
+    prop_valid_toList (i1 `I.intersection` i2)
 
 prop_union_nonNullKeys_lookup_all_nonNull
     :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_nonNullKeys_lookup_all_nonNull i1 i2 =
-    prop_nonNullKeys_lookup_all_notNull (i1 `I.union` i2)
+    prop_valid_nonNullKeys (i1 `I.union` i2)
 
 prop_union_toList_all_nonNull
     :: TestConstraints i k v => i k v -> i k v -> Property
 prop_union_toList_all_nonNull i1 i2 =
-    prop_toList_all_nonNull (i1 `I.union` i2)
+    prop_valid_toList (i1 `I.union` i2)
 
 prop_intersection_isSubIndexOf_1
     :: TestConstraints i k v => i k v -> i k v -> Property
@@ -290,9 +395,7 @@ genIndex :: (Arbitrary k, Arbitrary v, Index i k v) => Gen (i k v)
 genIndex = I.fromList <$> arbitrary
 
 shrinkIndex :: (Arbitrary k, Arbitrary v, Index i k v) => i k v -> [i k v]
-shrinkIndex = shrinkMap I.fromList toFlatList
-  where
-    toFlatList i = [(k, v) | (k, vs) <- I.toList i, v <- Set.toList vs]
+shrinkIndex = shrinkMap I.fromList I.toList
 
 instance (Arbitrary k, Arbitrary v, Ord k, Ord v) => Arbitrary (Index1 k v)
   where

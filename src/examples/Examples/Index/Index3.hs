@@ -12,6 +12,8 @@ import Prelude hiding
 
 import Data.Map.Strict
     ( Map )
+import Data.Maybe
+    ( mapMaybe )
 import Data.Set.NonEmpty
     ( NESet )
 import Examples.Index
@@ -29,7 +31,8 @@ instance (Ord k, Ord v) => Index Index3 k v where
 
     empty = Index Map.empty
 
-    fromList = Index . Map.fromListWith (<>) . fmap (fmap NESet.singleton)
+    fromList =
+        Index . Map.fromListWith (<>) . mapMaybe (traverse NESet.nonEmptySet)
 
     toList (Index m) = fmap NESet.toSet <$> Map.toList m
 
@@ -39,7 +42,7 @@ instance (Ord k, Ord v) => Index Index3 k v where
 
     nonNullKeys (Index m) = Map.keysSet m
 
-    nonNullKeyCount (Index m) = Map.size m
+    nonNullCount (Index m) = Map.size m
 
     lookup k (Index m) = maybe Set.empty NESet.toSet (Map.lookup k m)
 

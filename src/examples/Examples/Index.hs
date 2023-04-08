@@ -32,7 +32,7 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
     -- fromList (toList i) == i
     -- @
     --
-    fromList :: [(k, v)] -> i k v
+    fromList :: [(k, Set v)] -> i k v
 
     -- | Converts an index to a list.
     --
@@ -77,10 +77,10 @@ class (Eq (i k v), Ord k, Ord v) => Index i k v where
     -- | Indicates how many keys are associated with non-empty sets.
     --
     -- @
-    -- nonNullKeyCount i == Set.size (nonNullKeys i)
+    -- nonNullCount i == Set.size (nonNullKeys i)
     -- @
     --
-    nonNullKeyCount :: i k v -> Int
+    nonNullCount :: i k v -> Int
 
     -- | Indicates whether or not an index is empty.
     --

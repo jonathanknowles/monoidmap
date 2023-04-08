@@ -27,7 +27,7 @@ instance (Ord k, Ord v) => Index Index2 k v where
 
     empty = Index Map.empty
 
-    fromList = Index . Map.fromListWith (<>) . fmap (fmap Set.singleton)
+    fromList = Index . Map.fromListWith (<>) . filter ((/= mempty) . snd)
 
     toList (Index m) = Map.toList m
 
@@ -37,7 +37,7 @@ instance (Ord k, Ord v) => Index Index2 k v where
 
     nonNullKeys (Index m) = Map.keysSet m
 
-    nonNullKeyCount (Index m) = Map.size m
+    nonNullCount (Index m) = Map.size m
 
     lookup k (Index m) = Map.findWithDefault Set.empty k m
 
