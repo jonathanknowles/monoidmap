@@ -8,12 +8,8 @@
 module Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude hiding
-    ( gcd, lcm, lookup )
+    ( lookup )
 
-import Data.Monoid.GCD
-    ( GCDMonoid (gcd) )
-import Data.Monoid.LCM
-    ( LCMMonoid (lcm) )
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
 import Data.Set
@@ -55,6 +51,8 @@ instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
 
     remove k vs (MultiMap m) = MultiMap (MonoidMap.adjust (<\> vs) k m)
 
-    union (MultiMap m1) (MultiMap m2) = MultiMap (lcm m1 m2)
+    union (MultiMap m1) (MultiMap m2) =
+        MultiMap (MonoidMap.union m1 m2)
 
-    intersection (MultiMap m1) (MultiMap m2) = MultiMap (gcd m1 m2)
+    intersection (MultiMap m1) (MultiMap m2) =
+        MultiMap (MonoidMap.intersection m1 m2)
