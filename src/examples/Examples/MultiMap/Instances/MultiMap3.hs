@@ -56,17 +56,21 @@ instance (Ord k, Ord v) => MultiMap MultiMap3 k v where
     update k vs (MultiMap m) =
         case NESet.nonEmptySet vs of
             Nothing -> MultiMap (Map.delete k    m)
-            Just zs -> MultiMap (Map.insert k zs m)
+            Just ys -> MultiMap (Map.insert k ys m)
 
     insert k vs (MultiMap m) =
-        case NESet.nonEmptySet (lookup k (MultiMap m) `Set.union` vs) of
+        case NESet.nonEmptySet xs of
             Nothing -> MultiMap (Map.delete k    m)
-            Just zs -> MultiMap (Map.insert k zs m)
+            Just ys -> MultiMap (Map.insert k ys m)
+      where
+        xs = maybe Set.empty NESet.toSet (Map.lookup k m) `Set.union` vs
 
     remove k vs (MultiMap m) =
-        case NESet.nonEmptySet (lookup k (MultiMap m) `Set.difference` vs) of
+        case NESet.nonEmptySet xs of
             Nothing -> MultiMap (Map.delete k    m)
-            Just zs -> MultiMap (Map.insert k zs m)
+            Just ys -> MultiMap (Map.insert k ys m)
+      where
+        xs = maybe Set.empty NESet.toSet (Map.lookup k m) `Set.difference` vs
 
     union (MultiMap m1) (MultiMap m2) = MultiMap $
         Map.unionWith NESet.union m1 m2
