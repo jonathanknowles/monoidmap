@@ -2363,24 +2363,23 @@ intersection = merge MergeStrategy
 -- | Finds the /union/ of two maps.
 --
 -- The union of maps __@m1@__ and __@m2@__ is the smallest single map __@m@__
--- from which /either/ __@m1@__ /or/ __@m2@__ can be stripped with the '(</>)'
--- operation:
+-- that includes both __@m1@__ /and/ __@m2@__ as /submaps/:
 --
 -- @
--- 'isJust' ('union' m1 m2 '</>' m1)
--- 'isJust' ('union' m1 m2 '</>' m2)
+-- m1 '`isSubmapOf`' 'union' m1 m2
+-- m2 '`isSubmapOf`' 'union' m1 m2
 -- @
 --
 -- The union is /unique/:
 --
 -- @
--- 'all' 'isJust'
---     [ \   \      m3 '</>' m1
---     , \   \      m3 '</>' m2
---     , 'union' m1 m2 '</>' m3
+-- 'and'
+--     [ m1 '`isSubmapOf`' m
+--     , m2 '`isSubmapOf`' m
+--     ,    \            \ m '`isSubmapOf`' 'union' m1 m2
 --     ]
 -- ==>
---     (m3 '==' 'union' m1 m2)
+--     (m '==' 'union' m1 m2)
 -- @
 --
 -- The following property holds for all possible keys __@k@__:
