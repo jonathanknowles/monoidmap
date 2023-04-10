@@ -1296,7 +1296,7 @@ isPrefixOf
     => MonoidMap k v
     -> MonoidMap k v
     -> Bool
-isPrefixOf m1 m2 =
+isPrefixOf = isSubmapOfBy C.isPrefixOf
     -- Note that in practice, it's sufficient to check the following property:
     --
     -- @
@@ -1342,9 +1342,6 @@ isPrefixOf m1 m2 =
     -- (k '`Data.Set.member`' 'nonNullKeys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
     --
-    all
-        (\k -> get k m1 `C.isPrefixOf` get k m2)
-        (nonNullKeys m1)
 {-# INLINE isPrefixOf #-}
 
 -- | Indicates whether or not the first map is a /suffix/ of the second.
