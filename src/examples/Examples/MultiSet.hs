@@ -67,8 +67,6 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Foldable as F
-import qualified Data.Monoid.GCD as GCDMonoid
-import qualified Data.Monoid.LCM as LCMMonoid
 import qualified Data.Total.MonoidMap as MonoidMap
 
 newtype MultiSet a = MultiSet
@@ -138,10 +136,12 @@ isSubsetOf :: Ord a => MultiSet a -> MultiSet a -> Bool
 isSubsetOf = MonoidMap.isSubmapOf `on` unMultiSet
 
 intersection :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-intersection = GCDMonoid.gcd
+intersection (MultiSet s1) (MultiSet s2) =
+    MultiSet (MonoidMap.intersection s1 s2)
 
 union :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
-union = LCMMonoid.lcm
+union (MultiSet s1) (MultiSet s2) =
+    MultiSet (MonoidMap.union s1 s2)
 
 disjointUnion :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 disjointUnion m1 m2 = (m1 <\> m2) <> (m2 <\> m1)
