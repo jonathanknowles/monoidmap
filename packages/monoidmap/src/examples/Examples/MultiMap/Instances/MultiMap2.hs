@@ -5,7 +5,7 @@
 -- A lawful implementation of 'MultiMap', implemented in terms of 'Map' and
 -- 'Set'.
 --
-module Examples.MultiMap.MultiMap2 where
+module Examples.MultiMap.Instances.MultiMap2 where
 
 import Prelude hiding
     ( lookup )
@@ -14,17 +14,16 @@ import Data.Map.Strict
     ( Map )
 import Data.Set
     ( Set )
-import Examples.MultiMap
-    ( MultiMap (..) )
 
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import qualified Examples.MultiMap.Class as Class
 
-newtype MultiMap2 k v = MultiMap (Map k (Set v))
+newtype MultiMap k v = MultiMap (Map k (Set v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => MultiMap MultiMap2 k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
 
     fromList = MultiMap . Map.fromListWith (<>) . filter ((/= mempty) . snd)
 
@@ -52,16 +51,16 @@ instance (Ord k, Ord v) => MultiMap MultiMap2 k v where
         | otherwise   = MultiMap (Map.insert k vs m)
 
     insert k vs (MultiMap m)
-        | Set.null zs = MultiMap (Map.delete k    m)
-        | otherwise   = MultiMap (Map.insert k zs m)
+        | Set.null xs = MultiMap (Map.delete k    m)
+        | otherwise   = MultiMap (Map.insert k xs m)
       where
-        zs = lookup k (MultiMap m) `Set.union` vs
+        xs = Map.findWithDefault Set.empty k m `Set.union` vs
 
     remove k vs (MultiMap m)
-        | Set.null zs = MultiMap (Map.delete k    m)
-        | otherwise   = MultiMap (Map.insert k zs m)
+        | Set.null xs = MultiMap (Map.delete k    m)
+        | otherwise   = MultiMap (Map.insert k xs m)
       where
-        zs = lookup k (MultiMap m) `Set.difference` vs
+        xs = Map.findWithDefault Set.empty k m `Set.difference` vs
 
     union (MultiMap m1) (MultiMap m2) = MultiMap $
         Map.unionWith Set.union m1 m2

@@ -5,7 +5,7 @@
 -- A lawful implementation of 'MultiMap', implemented in terms of 'MonoidMap'
 -- and 'Set'.
 --
-module Examples.MultiMap.MultiMap4 where
+module Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude hiding
     ( gcd, lcm, lookup )
@@ -20,15 +20,14 @@ import Data.Set
     ( Set )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Examples.MultiMap
-    ( MultiMap (..) )
 
 import qualified Data.Total.MonoidMap as MonoidMap
+import qualified Examples.MultiMap.Class as Class
 
-newtype MultiMap4 k v = MultiMap (MonoidMap k (Set v))
+newtype MultiMap k v = MultiMap (MonoidMap k (Set v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => MultiMap MultiMap4 k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
 
     fromList = MultiMap . MonoidMap.fromListWith (<>)
 

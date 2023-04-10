@@ -7,7 +7,7 @@
 --
 -- This implementation has several subtle bugs.
 --
-module Examples.MultiMap.MultiMap1 where
+module Examples.MultiMap.Instances.MultiMap1 where
 
 import Prelude hiding
     ( lookup )
@@ -16,16 +16,15 @@ import Data.Map.Strict
     ( Map )
 import Data.Set
     ( Set )
-import Examples.MultiMap
-    ( MultiMap (..) )
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import qualified Examples.MultiMap.Class as Class
 
-newtype MultiMap1 k v = MultiMap (Map k (Set v))
+newtype MultiMap k v = MultiMap (Map k (Set v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => MultiMap MultiMap1 k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
 
     fromList = MultiMap . Map.fromList
 
@@ -51,10 +50,10 @@ instance (Ord k, Ord v) => MultiMap MultiMap1 k v where
     update k vs (MultiMap m) = MultiMap (Map.insert k vs m)
 
     insert k vs (MultiMap m) = MultiMap $
-        Map.insert k (lookup k (MultiMap m) `Set.union` vs) m
+        Map.insert k (Map.findWithDefault Set.empty k m `Set.union` vs) m
 
     remove k vs (MultiMap m) = MultiMap $
-        Map.insert k (lookup k (MultiMap m) `Set.difference` vs) m
+        Map.insert k (Map.findWithDefault Set.empty k m `Set.difference` vs) m
 
     union (MultiMap m1) (MultiMap m2) = MultiMap $
         Map.unionWith Set.union m1 m2
