@@ -71,6 +71,7 @@ module Data.Total.MonoidMap.Internal
     , intersection
     , intersectionWith
     , intersectionWithA
+    , union
     , unionWith
     , unionWithA
 
@@ -87,9 +88,6 @@ module Data.Total.MonoidMap.Internal
 
     -- * Exponentiation
     , power
-
-    -- * Bounds
-    , lcm
 
     -- * Prefixes
     , isPrefixOf
@@ -112,7 +110,7 @@ module Data.Total.MonoidMap.Internal
     where
 
 import Prelude hiding
-    ( drop, filter, lcm, lookup, map, null, splitAt, subtract, take )
+    ( drop, filter, lookup, map, null, splitAt, subtract, take )
 
 import Control.DeepSeq
     ( NFData )
@@ -515,7 +513,7 @@ instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
 instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)
   where
-    lcm = lcm
+    lcm = union
 
 instance (Ord k, MonoidNull v, DistributiveLCMMonoid v) =>
     DistributiveLCMMonoid (MonoidMap k v)
@@ -2360,36 +2358,36 @@ intersection = merge MergeStrategy
 {-# INLINE intersection #-}
 
 --------------------------------------------------------------------------------
--- LCM
+-- Union
 --------------------------------------------------------------------------------
 
--- | Finds the /least common multiple/ of two maps.
+-- | Finds the /union/ of two maps.
 --
--- The least common multiple of maps __@m1@__ and __@m2@__ is the smallest
--- single map __@m@__ from which /either/ __@m1@__ /or/ __@m2@__ can be
--- stripped with the '(</>)' operation:
+-- The union of maps __@m1@__ and __@m2@__ is the smallest single map __@m@__
+-- from which /either/ __@m1@__ /or/ __@m2@__ can be stripped with the '(</>)'
+-- operation:
 --
 -- @
--- 'isJust' ('lcm' m1 m2 '</>' m1)
--- 'isJust' ('lcm' m1 m2 '</>' m2)
+-- 'isJust' ('union' m1 m2 '</>' m1)
+-- 'isJust' ('union' m1 m2 '</>' m2)
 -- @
 --
--- The least common multiple is /unique/:
+-- The union is /unique/:
 --
 -- @
 -- 'all' 'isJust'
---     [ \   \    m3 '</>' m1
---     , \   \    m3 '</>' m2
---     , 'lcm' m1 m2 '</>' m3
+--     [ \   \      m3 '</>' m1
+--     , \   \      m3 '</>' m2
+--     , 'union' m1 m2 '</>' m3
 --     ]
 -- ==>
---     (m3 '==' 'lcm' m1 m2)
+--     (m3 '==' 'union' m1 m2)
 -- @
 --
 -- The following property holds for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('lcm' m1 m2) '==' 'C.lcm' ('get' k m1) ('get' k m2)
+-- 'get' k ('union' m1 m2) '==' 'C.lcm' ('get' k m1) ('get' k m2)
 -- @
 --
 -- This function provides the definition of 'C.lcm' for the 'MonoidMap'
@@ -2406,7 +2404,7 @@ intersection = merge MergeStrategy
 -- >>> m3 = 'fromList' [("a", 6), ("b", 30), ("c", 105), ("d", 385)]
 -- @
 -- @
--- >>> 'lcm' m1 m2 '==' m3
+-- >>> 'union' m1 m2 '==' m3
 -- 'True'
 -- @
 --
@@ -2419,7 +2417,7 @@ intersection = merge MergeStrategy
 -- >>> m3 = 'fromList' [("a", 3), ("b", 2), ("c", 2), ("d", 3)]
 -- @
 -- @
--- >>> 'lcm' m1 m2 '==' m3
+-- >>> 'union' m1 m2 '==' m3
 -- 'True'
 -- @
 --
@@ -2436,16 +2434,16 @@ intersection = merge MergeStrategy
 -- >>> m3 = f [("a", [0,1,2]), ("b", [0,1,2,3]), ("c", [0,1,2,3,4])]
 -- @
 -- @
--- >>> 'lcm' m1 m2 '==' m3
+-- >>> 'union' m1 m2 '==' m3
 -- 'True'
 -- @
 --
-lcm
+union
     :: (Ord k, MonoidNull v, LCMMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-lcm = merge MergeStrategy
+union = merge MergeStrategy
     { withNonNullL =
         keepNonNull
         -- Justification:
@@ -2461,7 +2459,7 @@ lcm = merge MergeStrategy
     , withNonNullP =
         withBoth C.lcm
     }
-{-# INLINE lcm #-}
+{-# INLINE union #-}
 
 --------------------------------------------------------------------------------
 -- Subtraction

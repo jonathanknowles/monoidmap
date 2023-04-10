@@ -64,6 +64,7 @@ module Data.Total.MonoidMap
     , intersection
     , intersectionWith
     , intersectionWithA
+    , union
     , unionWith
     , unionWithA
 
@@ -80,9 +81,6 @@ module Data.Total.MonoidMap
 
     -- * Exponentiation
     , power
-
-    -- * Bounds
-    , lcm
 
     -- * Prefixes
     , isPrefixOf
