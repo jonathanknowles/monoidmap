@@ -61,6 +61,10 @@ spec = describe "Examples" $ do
         exampleSpec_fromList_String
         exampleSpec_toList_String
 
+    describe "Comparison" $ do
+
+        exampleSpec_isSubmapOf_Sum_Natural
+
     describe "Intersection" $ do
 
         exampleSpec_intersectionWith_min_Sum_Natural
@@ -169,6 +173,62 @@ exampleData_toList_String = unitTestData1
       , [(1, "x"), (2, "y"), (3, "z")]
       )
     ]
+
+--------------------------------------------------------------------------------
+-- Comparison
+--------------------------------------------------------------------------------
+
+exampleSpec_isSubmapOf_Sum_Natural :: Spec
+exampleSpec_isSubmapOf_Sum_Natural = unitTestSpec
+    "MonoidMap.isSubmapOf (Sum Natural)"
+    "MonoidMap.isSubmapOf"
+    (MonoidMap.isSubmapOf)
+    (exampleData_isSubmapOf_Sum_Natural)
+
+exampleData_isSubmapOf_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (Bool)
+exampleData_isSubmapOf_Sum_Natural = unitTestData2
+    [ ( m [0, 1, 2, 3]
+      , m [4, 4, 4, 4]
+      , True
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 4, 4, 4]
+      , True
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 1, 4, 4]
+      , True
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 1, 2, 4]
+      , True
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 1, 2, 3]
+      , True
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 0, 2, 3]
+      , False
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 1, 1, 3]
+      , False
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 1, 2, 2]
+      , False
+      )
+    , ( m [0, 1, 2, 3]
+      , m [0, 0, 0, 0]
+      , False
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
 
 --------------------------------------------------------------------------------
 -- Intersection

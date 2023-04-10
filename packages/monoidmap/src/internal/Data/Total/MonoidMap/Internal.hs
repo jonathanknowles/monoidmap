@@ -63,6 +63,10 @@ module Data.Total.MonoidMap.Internal
     , mapKeys
     , mapKeysWith
 
+    -- * Comparison
+    , isSubmapOf
+    , isSubmapOfBy
+
     -- * Merging
     , intersectionWith
     , intersectionWithA
@@ -1123,6 +1127,66 @@ mapKeysWith
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 
 --------------------------------------------------------------------------------
+-- Comparison
+--------------------------------------------------------------------------------
+
+-- | Indicates whether or not the first map is a /submap/ of the second.
+--
+-- 'MonoidMap' __@m1@__ is a /submap/ of 'MonoidMap' __@m2@__ if (and only if)
+-- for all possible keys __@k@__, the value for __@k@__ in __@m2@__ can be
+-- /reduced/ by the value for __@k@__ in __@m1@__ with the '(</>)' operator:
+--
+-- @
+-- m1 '`isSubmapOf`' m2 '==' (∀ k. 'isJust' ('get' k m2 '</>' 'get' k m1))
+-- @
+--
+isSubmapOf
+    :: (Ord k, Monoid v, Reductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Bool
+isSubmapOf = isSubmapOfBy $ \v1 v2 -> isJust (v2 </> v1)
+{-# INLINE isSubmapOf #-}
+
+-- | Indicates whether or not the first map is a /submap/ of the second, using
+--   the given function to compare values for matching keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'isSubmapOfBy' f m1 m2 '=='
+--     'all' (\\k -> f ('get' k m1) ('get' k m2)) ('nonNullKeys' m1)
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given comparison function __@f@__ /always/ evaluates to 'True'
+-- when its first argument is 'mempty':
+--
+-- @
+-- ∀ v. f 'mempty' v
+-- @
+--
+-- /Then/ the following property holds:
+--
+-- @
+-- 'isSubmapOfBy' f m1 m2 '==' (∀ k. f ('get' k m1) ('get' k m2))
+-- @
+--
+isSubmapOfBy
+    :: (Ord k, Monoid v1, Monoid v2)
+    => (v1 -> v2 -> Bool)
+    -- ^ Function with which to compare values for matching keys.
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> Bool
+isSubmapOfBy leq m1 m2 =
+    all
+        (\k -> get k m1 `leq` get k m2)
+        (nonNullKeys m1)
+{-# INLINE isSubmapOfBy #-}
+
+--------------------------------------------------------------------------------
 -- Association
 --------------------------------------------------------------------------------
 
@@ -1259,7 +1323,7 @@ isPrefixOf
     => MonoidMap k v
     -> MonoidMap k v
     -> Bool
-isPrefixOf m1 m2 =
+isPrefixOf = isSubmapOfBy C.isPrefixOf
     -- Note that in practice, it's sufficient to check the following property:
     --
     -- @
@@ -1305,9 +1369,6 @@ isPrefixOf m1 m2 =
     -- (k '`Data.Set.member`' 'nonNullKeys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
     --
-    all
-        (\k -> get k m1 `C.isPrefixOf` get k m2)
-        (nonNullKeys m1)
 {-# INLINE isPrefixOf #-}
 
 -- | Indicates whether or not the first map is a /suffix/ of the second.
@@ -1376,7 +1437,7 @@ isSuffixOf
     => MonoidMap k v
     -> MonoidMap k v
     -> Bool
-isSuffixOf m1 m2 =
+isSuffixOf = isSubmapOfBy C.isSuffixOf
     -- Note that in practice, it's sufficient to check the following property:
     --
     -- @
@@ -1422,9 +1483,6 @@ isSuffixOf m1 m2 =
     -- (k '`Data.Set.member`' 'nonNullKeys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
     --
-    all
-        (\k -> get k m1 `C.isSuffixOf` get k m2)
-        (nonNullKeys m1)
 {-# INLINE isSuffixOf #-}
 
 -- | Strips a /prefix/ from a 'MonoidMap'.
