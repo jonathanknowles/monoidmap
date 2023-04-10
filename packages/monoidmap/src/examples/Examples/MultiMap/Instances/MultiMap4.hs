@@ -47,7 +47,7 @@ instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
 
     nonNullCount (MultiMap m) = MonoidMap.nonNullCount m
 
-    isSubmapOf (MultiMap m1) (MultiMap m2) = m1 `MonoidMap.isPrefixOf` m2
+    isSubmapOf (MultiMap m1) (MultiMap m2) = m1 `MonoidMap.isSubmapOf` m2
 
     update k vs (MultiMap m) = MultiMap (MonoidMap.set k vs m)
 
