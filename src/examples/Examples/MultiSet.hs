@@ -29,6 +29,8 @@ module Examples.MultiSet
 import Prelude hiding
     ( null, subtract )
 
+import Data.Function
+    ( on )
 import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
@@ -50,7 +52,7 @@ import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
     , LeftCancellative
-    , LeftReductive (isPrefixOf)
+    , LeftReductive
     , Reductive ((</>))
     , RightCancellative
     , RightReductive
@@ -133,7 +135,7 @@ height s
     | otherwise = getSum $ F.maximum $ unMultiSet s
 
 isSubsetOf :: Ord a => MultiSet a -> MultiSet a -> Bool
-isSubsetOf = isPrefixOf
+isSubsetOf = MonoidMap.isSubmapOf `on` unMultiSet
 
 intersection :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 intersection = GCDMonoid.gcd
