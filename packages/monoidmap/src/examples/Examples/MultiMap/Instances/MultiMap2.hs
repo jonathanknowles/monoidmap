@@ -7,8 +7,7 @@
 --
 module Examples.MultiMap.Instances.MultiMap2 where
 
-import Prelude hiding
-    ( lookup )
+import Prelude
 
 import Data.Map.Strict
     ( Map )
