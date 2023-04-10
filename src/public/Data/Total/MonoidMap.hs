@@ -56,6 +56,9 @@ module Data.Total.MonoidMap
     , mapKeys
     , mapKeysWith
 
+    -- * Comparison
+    , isSubmapOfBy
+
     -- * Merging
     , intersectionWith
     , intersectionWithA

@@ -63,6 +63,9 @@ module Data.Total.MonoidMap.Internal
     , mapKeys
     , mapKeysWith
 
+    -- * Comparison
+    , isSubmapOfBy
+
     -- * Merging
     , intersectionWith
     , intersectionWithA
@@ -1121,6 +1124,27 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
+
+--------------------------------------------------------------------------------
+-- Comparison
+--------------------------------------------------------------------------------
+
+-- | Indicates whether or not the first map is a /submap/ of the second.
+--
+-- Uses the given function to compare values for matching keys.
+--
+isSubmapOfBy
+    :: (Ord k, Monoid v1, Monoid v2)
+    => (v1 -> v2 -> Bool)
+    -- ^ Function with which to compare values for matching keys.
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> Bool
+isSubmapOfBy leq m1 m2 =
+    all
+        (\k -> get k m1 `leq` get k m2)
+        (nonNullKeys m1)
+{-# INLINE isSubmapOfBy #-}
 
 --------------------------------------------------------------------------------
 -- Association
