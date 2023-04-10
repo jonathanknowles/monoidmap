@@ -1148,9 +1148,30 @@ isSubmapOf
 isSubmapOf = isSubmapOfBy $ \v1 v2 -> isJust (v2 </> v1)
 {-# INLINE isSubmapOf #-}
 
--- | Indicates whether or not the first map is a /submap/ of the second.
+-- | Indicates whether or not the first map is a /submap/ of the second, using
+--   the given function to compare values for matching keys.
 --
--- Uses the given function to compare values for matching keys.
+-- Satisfies the following property:
+--
+-- @
+-- 'isSubmapOfBy' f m1 m2 '=='
+--     'all' (\\k -> f ('get' k m1) ('get' k m2)) ('nonNullKeys' m1)
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given comparison function __@f@__ /always/ evaluates to 'True'
+-- when its first argument is 'mempty':
+--
+-- @
+-- ∀ v. f 'mempty' v
+-- @
+--
+-- /Then/ the following property holds:
+--
+-- @
+-- 'isSubmapOfBy' f m1 m2 '==' (∀ k. f ('get' k m1) ('get' k m2))
+-- @
 --
 isSubmapOfBy
     :: (Ord k, Monoid v1, Monoid v2)
