@@ -25,13 +25,13 @@ import Data.Typeable
     ( Typeable, typeRep )
 import Examples.MultiMap.Class
     ( MultiMap )
-import Examples.MultiMap.MultiMap1
+import Examples.MultiMap.Instances.MultiMap1
     ( MultiMap1 )
-import Examples.MultiMap.MultiMap2
+import Examples.MultiMap.Instances.MultiMap2
     ( MultiMap2 )
-import Examples.MultiMap.MultiMap3
+import Examples.MultiMap.Instances.MultiMap3
     ( MultiMap3 )
-import Examples.MultiMap.MultiMap4
+import Examples.MultiMap.Instances.MultiMap4
     ( MultiMap4 )
 import Test.Hspec
     ( Spec, describe, it )

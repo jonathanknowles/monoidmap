@@ -5,7 +5,7 @@
 -- A lawful implementation of 'MultiMap', implemented in terms of 'Map' and
 -- 'NESet'.
 --
-module Examples.MultiMap.MultiMap3 where
+module Examples.MultiMap.Instances.MultiMap3 where
 
 import Prelude hiding
     ( lookup )

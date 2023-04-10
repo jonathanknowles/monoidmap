@@ -100,10 +100,10 @@ library examples
         src/examples
     exposed-modules:
         Examples.MultiMap.Class
-        Examples.MultiMap.MultiMap1
-        Examples.MultiMap.MultiMap2
-        Examples.MultiMap.MultiMap3
-        Examples.MultiMap.MultiMap4
+        Examples.MultiMap.Instances.MultiMap1
+        Examples.MultiMap.Instances.MultiMap2
+        Examples.MultiMap.Instances.MultiMap3
+        Examples.MultiMap.Instances.MultiMap4
         Examples.MultiSet
         Examples.NestedMonoidMap
         Examples.RecoveredMap
