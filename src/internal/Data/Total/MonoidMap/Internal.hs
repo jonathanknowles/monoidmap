@@ -2256,24 +2256,23 @@ stripOverlap m1 m2 =
 -- | Finds the /intersection/ of two maps.
 --
 -- The intersection of maps __@m1@__ and __@m2@__ is the greatest single map
--- __@m@__ that can be stripped from /either/ __@m1@__ /or/ __@m2@__ with the
--- '(</>)' operation:
+-- __@m@__ that is a /submap/ of both __@m1@__ /and/ __@m2@__:
 --
 -- @
--- 'isJust' (m1 '</>' 'intersection' m1 m2)
--- 'isJust' (m2 '</>' 'intersection' m1 m2)
+-- 'intersection' m1 m2 '`isSubmapOf`' m1
+-- 'intersection' m1 m2 '`isSubmapOf`' m2
 -- @
 --
 -- The intersection is /unique/:
 --
 -- @
--- 'all' 'isJust'
---     [ m1 '</>' m3
---     , m2 '</>' m3
---     , m3 '</>' 'intersection' m1 m2
+-- 'and'
+--     [ 'intersection' m1 m2 '`isSubmapOf`' m
+--     , \            \       \            \ m '`isSubmapOf`' m1
+--     , \            \       \            \ m '`isSubmapOf`' m2
 --     ]
 -- ==>
---     (m3 '==' 'intersection' m1 m2)
+--     (m '==' 'intersection' m1 m2)
 -- @
 --
 -- The following property holds for all possible keys __@k@__:
