@@ -68,6 +68,7 @@ module Data.Total.MonoidMap.Internal
     , isSubmapOfBy
 
     -- * Merging
+    , intersection
     , intersectionWith
     , intersectionWithA
     , unionWith
@@ -88,7 +89,6 @@ module Data.Total.MonoidMap.Internal
     , power
 
     -- * Bounds
-    , gcd
     , lcm
 
     -- * Prefixes
@@ -112,7 +112,7 @@ module Data.Total.MonoidMap.Internal
     where
 
 import Prelude hiding
-    ( drop, filter, gcd, lcm, lookup, map, null, splitAt, subtract, take )
+    ( drop, filter, lcm, lookup, map, null, splitAt, subtract, take )
 
 import Control.DeepSeq
     ( NFData )
@@ -507,7 +507,7 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
-    gcd = gcd
+    gcd = intersection
 
 instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
     DistributiveGCDMonoid (MonoidMap k v)
@@ -2252,36 +2252,36 @@ stripOverlap m1 m2 =
     )
 
 --------------------------------------------------------------------------------
--- GCD
+-- Intersection
 --------------------------------------------------------------------------------
 
--- | Finds the /greatest common divisor/ of two maps.
+-- | Finds the /intersection/ of two maps.
 --
--- The greatest common divisor of maps __@m1@__ and __@m2@__ is the greatest
--- single map __@m@__ that can be stripped from /either/ __@m1@__ /or/ __@m2@__
--- with the '(</>)' operation:
+-- The intersection of maps __@m1@__ and __@m2@__ is the greatest single map
+-- __@m@__ that can be stripped from /either/ __@m1@__ /or/ __@m2@__ with the
+-- '(</>)' operation:
 --
 -- @
--- 'isJust' (m1 '</>' 'gcd' m1 m2)
--- 'isJust' (m2 '</>' 'gcd' m1 m2)
+-- 'isJust' (m1 '</>' 'intersection' m1 m2)
+-- 'isJust' (m2 '</>' 'intersection' m1 m2)
 -- @
 --
--- The greatest common divisor is /unique/:
+-- The intersection is /unique/:
 --
 -- @
 -- 'all' 'isJust'
 --     [ m1 '</>' m3
 --     , m2 '</>' m3
---     , m3 '</>' 'gcd' m1 m2
+--     , m3 '</>' 'intersection' m1 m2
 --     ]
 -- ==>
---     (m3 '==' 'gcd' m1 m2)
+--     (m3 '==' 'intersection' m1 m2)
 -- @
 --
 -- The following property holds for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('gcd' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
+-- 'get' k ('intersection' m1 m2) '==' 'C.gcd' ('get' k m1) ('get' k m2)
 -- @
 --
 -- This function provides the definition of 'C.gcd' for the 'MonoidMap'
@@ -2298,7 +2298,7 @@ stripOverlap m1 m2 =
 -- >>> m3 = 'fromList' [("a", 2), ("b",  3), ("c",  5), ("d",  7)]
 -- @
 -- @
--- >>> 'gcd' m1 m2 '==' m3
+-- >>> 'intersection' m1 m2 '==' m3
 -- 'True'
 -- @
 --
@@ -2311,7 +2311,7 @@ stripOverlap m1 m2 =
 -- >>> m3 = 'fromList' [("a", 0), ("b", 1), ("c", 1), ("d", 0)]
 -- @
 -- @
--- >>> 'gcd' m1 m2 '==' m3
+-- >>> 'intersection' m1 m2 '==' m3
 -- 'True'
 -- @
 --
@@ -2328,16 +2328,16 @@ stripOverlap m1 m2 =
 -- >>> m3 = f [("a", [0,1,2]), ("b", [  1,2  ]), ("c", [    2    ])]
 -- @
 -- @
--- >>> 'gcd' m1 m2 '==' m3
+-- >>> 'intersection' m1 m2 '==' m3
 -- 'True'
 -- @
 --
-gcd
+intersection
     :: (Ord k, MonoidNull v, GCDMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-gcd = merge MergeStrategy
+intersection = merge MergeStrategy
     { withNonNullL =
         keepNull
         -- Justification:
@@ -2357,7 +2357,7 @@ gcd = merge MergeStrategy
     , withNonNullP =
         withBoth C.gcd
     }
-{-# INLINE gcd #-}
+{-# INLINE intersection #-}
 
 --------------------------------------------------------------------------------
 -- LCM

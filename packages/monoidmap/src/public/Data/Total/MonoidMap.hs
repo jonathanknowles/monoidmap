@@ -61,6 +61,7 @@ module Data.Total.MonoidMap
     , isSubmapOfBy
 
     -- * Merging
+    , intersection
     , intersectionWith
     , intersectionWithA
     , unionWith
@@ -81,7 +82,6 @@ module Data.Total.MonoidMap
     , power
 
     -- * Bounds
-    , gcd
     , lcm
 
     -- * Prefixes
