@@ -9,13 +9,12 @@ module Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude
 
-import Data.Monoid.Monus
-    ( Monus ((<\>)) )
 import Data.Set
     ( Set )
 import Data.Total.MonoidMap
     ( MonoidMap )
 
+import qualified Data.Set as Set
 import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Examples.MultiMap.Class as Class
 
@@ -44,11 +43,14 @@ instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
 
     isSubmapOf (MultiMap m1) (MultiMap m2) = m1 `MonoidMap.isSubmapOf` m2
 
-    update k vs (MultiMap m) = MultiMap (MonoidMap.set k vs m)
+    update k vs (MultiMap m) =
+        MultiMap (MonoidMap.set k vs m)
 
-    insert k vs (MultiMap m) = MultiMap (MonoidMap.adjust (<> vs) k m)
+    insert k vs (MultiMap m) =
+        MultiMap (MonoidMap.adjust (`Set.union` vs) k m)
 
-    remove k vs (MultiMap m) = MultiMap (MonoidMap.adjust (<\> vs) k m)
+    remove k vs (MultiMap m) =
+        MultiMap (MonoidMap.adjust (`Set.difference` vs) k m)
 
     union (MultiMap m1) (MultiMap m2) =
         MultiMap (MonoidMap.union m1 m2)
