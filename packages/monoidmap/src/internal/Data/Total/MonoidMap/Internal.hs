@@ -1132,7 +1132,13 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 
 -- | Indicates whether or not the first map is a /submap/ of the second.
 --
--- Uses the 'Reductive' operator '(</>)' to compare values for matching keys.
+-- 'MonoidMap' __@m1@__ is a /submap/ of 'MonoidMap' __@m2@__ if (and only if)
+-- for all possible keys __@k@__, the value for __@k@__ in __@m2@__ can be
+-- /reduced/ by the value for __@k@__ in __@m1@__ with the '(</>)' operator:
+--
+-- @
+-- m1 '`isSubmapOf`' m2 '==' (∀ k. 'isJust' ('get' k m2 '</>' 'get' k m1))
+-- @
 --
 isSubmapOf
     :: (Ord k, Monoid v, Reductive v)
