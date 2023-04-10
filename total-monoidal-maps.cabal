@@ -99,7 +99,7 @@ library examples
     hs-source-dirs:
         src/examples
     exposed-modules:
-        Examples.MultiMap
+        Examples.MultiMap.Class
         Examples.MultiMap.MultiMap1
         Examples.MultiMap.MultiMap2
         Examples.MultiMap.MultiMap3

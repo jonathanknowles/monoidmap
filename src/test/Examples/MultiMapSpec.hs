@@ -23,7 +23,7 @@ import Data.Set
     ( Set )
 import Data.Typeable
     ( Typeable, typeRep )
-import Examples.MultiMap
+import Examples.MultiMap.Class
     ( MultiMap )
 import Examples.MultiMap.MultiMap1
     ( MultiMap1 )
@@ -52,7 +52,7 @@ import Test.QuickCheck.Instances.Text
 
 import qualified Data.Foldable as F
 import qualified Data.Set as Set
-import qualified Examples.MultiMap as M
+import qualified Examples.MultiMap.Class as M
 import qualified Test.QuickCheck as QC
 
 spec :: Spec

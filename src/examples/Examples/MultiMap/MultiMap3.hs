@@ -16,7 +16,7 @@ import Data.Maybe
     ( mapMaybe )
 import Data.Set.NonEmpty
     ( NESet )
-import Examples.MultiMap
+import Examples.MultiMap.Class
     ( MultiMap (..) )
 
 import qualified Data.Map.Merge.Strict as Map
