@@ -16,16 +16,15 @@ import Data.Map.Strict
     ( Map )
 import Data.Set
     ( Set )
-import Examples.MultiMap.Class
-    ( MultiMap (..) )
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import qualified Examples.MultiMap.Class as Class
 
 newtype MultiMap1 k v = MultiMap (Map k (Set v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => MultiMap MultiMap1 k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap1 k v where
 
     fromList = MultiMap . Map.fromList
 

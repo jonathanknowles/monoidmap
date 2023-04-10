@@ -16,18 +16,17 @@ import Data.Maybe
     ( mapMaybe )
 import Data.Set.NonEmpty
     ( NESet )
-import Examples.MultiMap.Class
-    ( MultiMap (..) )
 
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Set.NonEmpty as NESet
+import qualified Examples.MultiMap.Class as Class
 
 newtype MultiMap3 k v = MultiMap (Map k (NESet v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => MultiMap MultiMap3 k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap3 k v where
 
     fromList
         = MultiMap
