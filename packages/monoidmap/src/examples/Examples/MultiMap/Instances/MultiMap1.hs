@@ -51,10 +51,10 @@ instance (Ord k, Ord v) => MultiMap MultiMap1 k v where
     update k vs (MultiMap m) = MultiMap (Map.insert k vs m)
 
     insert k vs (MultiMap m) = MultiMap $
-        Map.insert k (lookup k (MultiMap m) `Set.union` vs) m
+        Map.insert k (Map.findWithDefault Set.empty k m `Set.union` vs) m
 
     remove k vs (MultiMap m) = MultiMap $
-        Map.insert k (lookup k (MultiMap m) `Set.difference` vs) m
+        Map.insert k (Map.findWithDefault Set.empty k m `Set.difference` vs) m
 
     union (MultiMap m1) (MultiMap m2) = MultiMap $
         Map.unionWith Set.union m1 m2

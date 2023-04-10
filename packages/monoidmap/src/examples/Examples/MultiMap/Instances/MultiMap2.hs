@@ -52,16 +52,16 @@ instance (Ord k, Ord v) => MultiMap MultiMap2 k v where
         | otherwise   = MultiMap (Map.insert k vs m)
 
     insert k vs (MultiMap m)
-        | Set.null zs = MultiMap (Map.delete k    m)
-        | otherwise   = MultiMap (Map.insert k zs m)
+        | Set.null xs = MultiMap (Map.delete k    m)
+        | otherwise   = MultiMap (Map.insert k xs m)
       where
-        zs = lookup k (MultiMap m) `Set.union` vs
+        xs = Map.findWithDefault Set.empty k m `Set.union` vs
 
     remove k vs (MultiMap m)
-        | Set.null zs = MultiMap (Map.delete k    m)
-        | otherwise   = MultiMap (Map.insert k zs m)
+        | Set.null xs = MultiMap (Map.delete k    m)
+        | otherwise   = MultiMap (Map.insert k xs m)
       where
-        zs = lookup k (MultiMap m) `Set.difference` vs
+        xs = Map.findWithDefault Set.empty k m `Set.difference` vs
 
     union (MultiMap m1) (MultiMap m2) = MultiMap $
         Map.unionWith Set.union m1 m2
