@@ -7,7 +7,7 @@
 --
 -- This implementation has several subtle bugs.
 --
-module Examples.MultiMap.MultiMap1 where
+module Examples.MultiMap.Instances.MultiMap1 where
 
 import Prelude hiding
     ( lookup )

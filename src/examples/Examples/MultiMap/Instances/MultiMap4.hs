@@ -5,7 +5,7 @@
 -- A lawful implementation of 'MultiMap', implemented in terms of 'MonoidMap'
 -- and 'Set'.
 --
-module Examples.MultiMap.MultiMap4 where
+module Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude hiding
     ( gcd, lcm, lookup )
