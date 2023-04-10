@@ -14,7 +14,7 @@ import Data.Map.Strict
     ( Map )
 import Data.Set
     ( Set )
-import Examples.MultiMap
+import Examples.MultiMap.Class
     ( MultiMap (..) )
 
 import qualified Data.Map.Merge.Strict as Map

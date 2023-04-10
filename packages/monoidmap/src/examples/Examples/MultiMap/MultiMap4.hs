@@ -20,7 +20,7 @@ import Data.Set
     ( Set )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Examples.MultiMap
+import Examples.MultiMap.Class
     ( MultiMap (..) )
 
 import qualified Data.Total.MonoidMap as MonoidMap
