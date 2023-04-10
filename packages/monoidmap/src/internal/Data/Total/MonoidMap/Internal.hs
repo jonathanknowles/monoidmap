@@ -1410,7 +1410,7 @@ isSuffixOf
     => MonoidMap k v
     -> MonoidMap k v
     -> Bool
-isSuffixOf m1 m2 =
+isSuffixOf = isSubmapOfBy C.isSuffixOf
     -- Note that in practice, it's sufficient to check the following property:
     --
     -- @
@@ -1456,9 +1456,6 @@ isSuffixOf m1 m2 =
     -- (k '`Data.Set.member`' 'nonNullKeys' m1) '==' ('get' k m1 '/=' 'mempty')
     -- @
     --
-    all
-        (\k -> get k m1 `C.isSuffixOf` get k m2)
-        (nonNullKeys m1)
 {-# INLINE isSuffixOf #-}
 
 -- | Strips a /prefix/ from a 'MonoidMap'.
