@@ -64,6 +64,7 @@ module Data.Total.MonoidMap.Internal
     , mapKeysWith
 
     -- * Comparison
+    , isSubmapOf
     , isSubmapOfBy
 
     -- * Merging
@@ -1128,6 +1129,18 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 --------------------------------------------------------------------------------
 -- Comparison
 --------------------------------------------------------------------------------
+
+-- | Indicates whether or not the first map is a /submap/ of the second.
+--
+-- Uses the 'Reductive' operator '(</>)' to compare values for matching keys.
+--
+isSubmapOf
+    :: (Ord k, Monoid v, Reductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Bool
+isSubmapOf = isSubmapOfBy $ \v1 v2 -> isJust (v2 </> v1)
+{-# INLINE isSubmapOf #-}
 
 -- | Indicates whether or not the first map is a /submap/ of the second.
 --
