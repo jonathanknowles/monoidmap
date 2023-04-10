@@ -9,8 +9,7 @@
 --
 module Examples.MultiMap.Instances.MultiMap1 where
 
-import Prelude hiding
-    ( lookup )
+import Prelude
 
 import Data.Map.Strict
     ( Map )

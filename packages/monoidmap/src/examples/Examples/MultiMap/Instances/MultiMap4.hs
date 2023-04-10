@@ -7,8 +7,7 @@
 --
 module Examples.MultiMap.Instances.MultiMap4 where
 
-import Prelude hiding
-    ( lookup )
+import Prelude
 
 import Data.Monoid.Monus
     ( Monus ((<\>)) )
