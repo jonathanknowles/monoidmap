@@ -2339,17 +2339,13 @@ intersection = merge MergeStrategy
         keepNull
         -- Justification:
         --
-        -- gcd a b      ≡ commonPrefix a b      ≡ commonSuffix a b
-        -- gcd a mempty ≡ commonPrefix a mempty ≡ commonSuffix a mempty
-        -- gcd a mempty ≡                mempty ≡                mempty
+        -- gcd a mempty ≡ mempty
 
     , withNonNullR =
         keepNull
         -- Justification:
         --
-        -- gcd a      b ≡ commonPrefix a      b ≡ commonSuffix a      b
-        -- gcd mempty b ≡ commonPrefix mempty b ≡ commonSuffix mempty b
-        -- gcd mempty b ≡              mempty   ≡              mempty
+        -- gcd mempty b ≡ mempty
 
     , withNonNullP =
         withBoth C.gcd
