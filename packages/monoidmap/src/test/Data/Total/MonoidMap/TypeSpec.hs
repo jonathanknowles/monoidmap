@@ -87,6 +87,7 @@ import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Type properties" $ do
+
     specMonoidNull (Proxy @Key) (Proxy @(Set Int))
     specMonoidNull (Proxy @Key) (Proxy @(Set Natural))
     specMonoidNull (Proxy @Key) (Proxy @(Sum Int))
@@ -97,6 +98,17 @@ spec = describe "Type properties" $ do
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
+
+    specLeftReductive (Proxy @Key) (Proxy @(Set Int))
+    specLeftReductive (Proxy @Key) (Proxy @(Set Natural))
+    specLeftReductive (Proxy @Key) (Proxy @(Sum Int))
+    specLeftReductive (Proxy @Key) (Proxy @(Sum Natural))
+    specLeftReductive (Proxy @Key) (Proxy @[Int])
+    specLeftReductive (Proxy @Key) (Proxy @[Natural])
+    specLeftReductive (Proxy @Key) (Proxy @(Text))
+    specLeftReductive (Proxy @Key) (Proxy @(Dual [Int]))
+    specLeftReductive (Proxy @Key) (Proxy @(Dual [Natural]))
+    specLeftReductive (Proxy @Key) (Proxy @(Dual Text))
 
 type TestConstraints k v =
     ( Arbitrary k
@@ -325,6 +337,23 @@ specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
         it "prop_append_get" $
             prop_append_get
                 @k @v & property
+
+specLeftReductive
+    :: forall k v. (TestConstraints k v, LeftReductive v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specLeftReductive k v = specFor (Proxy @LeftReductive) k v $ do
+
+    it "prop_stripPrefix_isJust" $
+        prop_stripPrefix_isJust
+            @k @v & property
+    it "prop_stripPrefix_get" $
+        prop_stripPrefix_get
+            @k @v & property
+    it "prop_stripPrefix_mappend" $
+        prop_stripPrefix_mappend
+            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
