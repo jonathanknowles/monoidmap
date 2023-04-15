@@ -154,11 +154,19 @@ test-suite test
         SpecHook
         Data.Total.MonoidMap.ClassSpec
         Data.Total.MonoidMap.ExampleSpec
-        Data.Total.MonoidMap.TypeSpec
-        Data.Total.MonoidMap.TypeSpec.LeftGCDMonoidSpec
-        Data.Total.MonoidMap.TypeSpec.LeftReductiveSpec
-        Data.Total.MonoidMap.TypeSpec.RightGCDMonoidSpec
-        Data.Total.MonoidMap.TypeSpec.RightReductiveSpec
+        Data.Total.MonoidMap.OperationSpec.AccessSpec
+        Data.Total.MonoidMap.OperationSpec.AppendSpec
+        Data.Total.MonoidMap.OperationSpec.ConversionSpec
+        Data.Total.MonoidMap.OperationSpec.MapSpec
+        Data.Total.MonoidMap.OperationSpec.FilterSpec
+        Data.Total.MonoidMap.OperationSpec.PartitionSpec
+        Data.Total.MonoidMap.OperationSpec.MembershipSpec
+        Data.Total.MonoidMap.OperationSpec.SingletonSpec
+        Data.Total.MonoidMap.OperationSpec.SliceSpec
+        Data.Total.MonoidMap.OperationSpec.PrefixSpec
+        Data.Total.MonoidMap.OperationSpec.SuffixSpec
+        Data.Total.MonoidMap.OperationSpec.IntersectionSpec
+        Data.Total.MonoidMap.OperationSpec.UnionSpec
         Examples.MultiMapSpec
         Examples.RecoveredMapSpec
         Test.Common
