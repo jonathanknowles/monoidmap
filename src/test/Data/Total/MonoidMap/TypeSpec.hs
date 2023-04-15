@@ -115,210 +115,210 @@ specMonoidNull
     -> Spec
 specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
 
-        describe "Conversion to and from lists" $ do
-            it "prop_fromList_get" $
-                prop_fromList_get
-                    @k @v & property
-            it "prop_fromList_toMap" $
-                prop_fromList_toMap
-                    @k @v & property
-            it "prop_fromList_toList" $
-                prop_fromList_toList
-                    @k @v & property
-            it "prop_toList_fromList" $
-                prop_toList_fromList
-                    @k @v & property
-            it "prop_toList_sort" $
-                prop_toList_sort
-                    @k @v & property
-            it "prop_fromListWith_get" $
-                prop_fromListWith_get
-                    @k @v & property
+    describe "Conversion to and from lists" $ do
+        it "prop_fromList_get" $
+            prop_fromList_get
+                @k @v & property
+        it "prop_fromList_toMap" $
+            prop_fromList_toMap
+                @k @v & property
+        it "prop_fromList_toList" $
+            prop_fromList_toList
+                @k @v & property
+        it "prop_toList_fromList" $
+            prop_toList_fromList
+                @k @v & property
+        it "prop_toList_sort" $
+            prop_toList_sort
+                @k @v & property
+        it "prop_fromListWith_get" $
+            prop_fromListWith_get
+                @k @v & property
 
-        describe "Conversion to and from ordinary maps" $ do
-            it "prop_fromMap_toMap" $
-                prop_fromMap_toMap
-                    @k @v & property
-            it "prop_toMap_fromMap" $
-                prop_toMap_fromMap
-                    @k @v & property
+    describe "Conversion to and from ordinary maps" $ do
+        it "prop_fromMap_toMap" $
+            prop_fromMap_toMap
+                @k @v & property
+        it "prop_toMap_fromMap" $
+            prop_toMap_fromMap
+                @k @v & property
 
-        describe "Singleton" $ do
-            it "prop_singleton_get" $
-                prop_singleton_get
-                    @k @v & property
-            it "prop_singleton_nonNullKey" $
-                prop_singleton_nonNullKey
-                    @k @v & property
-            it "prop_singleton_nonNullKeys" $
-                prop_singleton_nonNullKeys
-                    @k @v & property
-            it "prop_singleton_null" $
-                prop_singleton_null
-                    @k @v & property
-            it "prop_singleton_nullify" $
-                prop_singleton_nullify
-                    @k @v & property
-            it "prop_singleton_nonNullCount" $
-                prop_singleton_nonNullCount
-                    @k @v & property
-            it "prop_singleton_toList" $
-                prop_singleton_toList
-                    @k @v & property
+    describe "Singleton" $ do
+        it "prop_singleton_get" $
+            prop_singleton_get
+                @k @v & property
+        it "prop_singleton_nonNullKey" $
+            prop_singleton_nonNullKey
+                @k @v & property
+        it "prop_singleton_nonNullKeys" $
+            prop_singleton_nonNullKeys
+                @k @v & property
+        it "prop_singleton_null" $
+            prop_singleton_null
+                @k @v & property
+        it "prop_singleton_nullify" $
+            prop_singleton_nullify
+                @k @v & property
+        it "prop_singleton_nonNullCount" $
+            prop_singleton_nonNullCount
+                @k @v & property
+        it "prop_singleton_toList" $
+            prop_singleton_toList
+                @k @v & property
 
-        describe "Get" $ do
-            it "prop_get_nonNullKey" $
-                prop_get_nonNullKey
-                    @k @v & property
-            it "prop_get_nonNullKeys" $
-                prop_get_nonNullKeys
-                    @k @v & property
+    describe "Get" $ do
+        it "prop_get_nonNullKey" $
+            prop_get_nonNullKey
+                @k @v & property
+        it "prop_get_nonNullKeys" $
+            prop_get_nonNullKeys
+                @k @v & property
 
-        describe "Set" $ do
-            it "prop_set_get" $
-                prop_set_get
-                    @k @v & property
-            it "prop_set_nonNullKey" $
-                prop_set_nonNullKey
-                    @k @v & property
-            it "prop_set_nonNullKeys" $
-                prop_set_nonNullKeys
-                    @k @v & property
-            it "prop_set_toList" $
-                prop_set_toList
-                    @k @v & property
+    describe "Set" $ do
+        it "prop_set_get" $
+            prop_set_get
+                @k @v & property
+        it "prop_set_nonNullKey" $
+            prop_set_nonNullKey
+                @k @v & property
+        it "prop_set_nonNullKeys" $
+            prop_set_nonNullKeys
+                @k @v & property
+        it "prop_set_toList" $
+            prop_set_toList
+                @k @v & property
 
-        describe "Nullify" $ do
-            it "prop_nullify_get" $
-                prop_nullify_get
-                    @k @v & property
-            it "prop_nullify_nonNullKey" $
-                prop_nullify_nonNullKey
-                    @k @v & property
-            it "prop_nullify_nonNullKeys" $
-                prop_nullify_nonNullKeys
-                    @k @v & property
+    describe "Nullify" $ do
+        it "prop_nullify_get" $
+            prop_nullify_get
+                @k @v & property
+        it "prop_nullify_nonNullKey" $
+            prop_nullify_nonNullKey
+                @k @v & property
+        it "prop_nullify_nonNullKeys" $
+            prop_nullify_nonNullKeys
+                @k @v & property
 
-        describe "Keys" $ do
-            it "prop_nonNullKeys_get" $
-                prop_nonNullKeys_get
-                    @k @v & property
+    describe "Keys" $ do
+        it "prop_nonNullKeys_get" $
+            prop_nonNullKeys_get
+                @k @v & property
 
-        describe "Filtering" $ do
-            it "prop_filter_get" $
-                prop_filter_get
-                    @k @v & property
-            it "prop_filter_asList" $
-                prop_filter_asList
-                    @k @v & property
-            it "prop_filterKeys_get" $
-                prop_filterKeys_get
-                    @k @v & property
-            it "prop_filterKeys_asList" $
-                prop_filterKeys_asList
-                    @k @v & property
-            it "prop_filterWithKey_get" $
-                prop_filterWithKey_get
-                    @k @v & property
-            it "prop_filterWithKey_asList" $
-                prop_filterWithKey_asList
-                    @k @v & property
+    describe "Filtering" $ do
+        it "prop_filter_get" $
+            prop_filter_get
+                @k @v & property
+        it "prop_filter_asList" $
+            prop_filter_asList
+                @k @v & property
+        it "prop_filterKeys_get" $
+            prop_filterKeys_get
+                @k @v & property
+        it "prop_filterKeys_asList" $
+            prop_filterKeys_asList
+                @k @v & property
+        it "prop_filterWithKey_get" $
+            prop_filterWithKey_get
+                @k @v & property
+        it "prop_filterWithKey_asList" $
+            prop_filterWithKey_asList
+                @k @v & property
 
-        describe "Partitioning" $ do
-            it "prop_partition_filter" $
-                prop_partition_filter
-                    @k @v & property
-            it "prop_partition_append" $
-                prop_partition_append
-                    @k @v & property
-            it "prop_partition_disjoint" $
-                prop_partition_disjoint
-                    @k @v & property
-            it "prop_partitionKeys_filterKeys" $
-                prop_partitionKeys_filterKeys
-                    @k @v & property
-            it "prop_partitionKeys_append" $
-                prop_partitionKeys_append
-                    @k @v & property
-            it "prop_partitionKeys_disjoint" $
-                prop_partitionKeys_disjoint
-                    @k @v & property
-            it "prop_partitionWithKey_filterWithKey" $
-                prop_partitionWithKey_filterWithKey
-                    @k @v & property
-            it "prop_partitionWithKey_append" $
-                prop_partitionWithKey_append
-                    @k @v & property
-            it "prop_partitionWithKey_disjoint" $
-                prop_partitionWithKey_disjoint
-                    @k @v & property
+    describe "Partitioning" $ do
+        it "prop_partition_filter" $
+            prop_partition_filter
+                @k @v & property
+        it "prop_partition_append" $
+            prop_partition_append
+                @k @v & property
+        it "prop_partition_disjoint" $
+            prop_partition_disjoint
+                @k @v & property
+        it "prop_partitionKeys_filterKeys" $
+            prop_partitionKeys_filterKeys
+                @k @v & property
+        it "prop_partitionKeys_append" $
+            prop_partitionKeys_append
+                @k @v & property
+        it "prop_partitionKeys_disjoint" $
+            prop_partitionKeys_disjoint
+                @k @v & property
+        it "prop_partitionWithKey_filterWithKey" $
+            prop_partitionWithKey_filterWithKey
+                @k @v & property
+        it "prop_partitionWithKey_append" $
+            prop_partitionWithKey_append
+                @k @v & property
+        it "prop_partitionWithKey_disjoint" $
+            prop_partitionWithKey_disjoint
+                @k @v & property
 
-        describe "Slicing" $ do
-            it "prop_take_toList_fromList" $
-                prop_take_toList_fromList
-                    @k @v & property
-            it "prop_drop_toList_fromList" $
-                prop_drop_toList_fromList
-                    @k @v & property
-            it "prop_splitAt_toList_fromList" $
-                prop_splitAt_toList_fromList
-                    @k @v & property
+    describe "Slicing" $ do
+        it "prop_take_toList_fromList" $
+            prop_take_toList_fromList
+                @k @v & property
+        it "prop_drop_toList_fromList" $
+            prop_drop_toList_fromList
+                @k @v & property
+        it "prop_splitAt_toList_fromList" $
+            prop_splitAt_toList_fromList
+                @k @v & property
 
-        describe "Mapping" $ do
-            it "prop_map_asList" $
-                prop_map_asList
-                    @k @v & property
-            it "prop_map_get" $
-                prop_map_get
-                    @k @v & property
-            it "prop_map_get_total" $
-                prop_map_get_total
-                    @k @v & property
-            it "prop_map_get_total_failure" $
-                prop_map_get_total_failure
-                    @k @v & property
-            it "prop_mapKeys_asList" $
-                prop_mapKeys_asList
-                    @k @v & property
-            it "prop_mapKeys_get" $
-                prop_mapKeys_get
-                    @k @v & property
-            it "prop_mapKeysWith_asList" $
-                prop_mapKeysWith_asList
-                    @k @v & property
+    describe "Mapping" $ do
+        it "prop_map_asList" $
+            prop_map_asList
+                @k @v & property
+        it "prop_map_get" $
+            prop_map_get
+                @k @v & property
+        it "prop_map_get_total" $
+            prop_map_get_total
+                @k @v & property
+        it "prop_map_get_total_failure" $
+            prop_map_get_total_failure
+                @k @v & property
+        it "prop_mapKeys_asList" $
+            prop_mapKeys_asList
+                @k @v & property
+        it "prop_mapKeys_get" $
+            prop_mapKeys_get
+                @k @v & property
+        it "prop_mapKeysWith_asList" $
+            prop_mapKeysWith_asList
+                @k @v & property
 
-        describe "Intersection" $ do
-            it "prop_intersectionWith_get" $
-                prop_intersectionWith_get
-                    @k @v & property
-            it "prop_intersectionWith_get_total" $
-                prop_intersectionWith_get_total
-                    @k @v & property
-            it "prop_intersectionWith_get_total_failure" $
-                prop_intersectionWith_get_total_failure
-                    @k @v & property
-            it "prop_intersectionWith_intersectionWithA" $
-                prop_intersectionWith_intersectionWithA
-                    @k @v & property
+    describe "Intersection" $ do
+        it "prop_intersectionWith_get" $
+            prop_intersectionWith_get
+                @k @v & property
+        it "prop_intersectionWith_get_total" $
+            prop_intersectionWith_get_total
+                @k @v & property
+        it "prop_intersectionWith_get_total_failure" $
+            prop_intersectionWith_get_total_failure
+                @k @v & property
+        it "prop_intersectionWith_intersectionWithA" $
+            prop_intersectionWith_intersectionWithA
+                @k @v & property
 
-        describe "Union" $ do
-            it "prop_unionWith_get" $
-                prop_unionWith_get
-                    @k @v & property
-            it "prop_unionWith_get_total" $
-                prop_unionWith_get_total
-                    @k @v & property
-            it "prop_unionWith_get_total_failure" $
-                prop_unionWith_get_total_failure
-                    @k @v & property
-            it "prop_unionWith_unionWithA" $
-                prop_unionWith_unionWithA
-                    @k @v & property
+    describe "Union" $ do
+        it "prop_unionWith_get" $
+            prop_unionWith_get
+                @k @v & property
+        it "prop_unionWith_get_total" $
+            prop_unionWith_get_total
+                @k @v & property
+        it "prop_unionWith_get_total_failure" $
+            prop_unionWith_get_total_failure
+                @k @v & property
+        it "prop_unionWith_unionWithA" $
+            prop_unionWith_unionWithA
+                @k @v & property
 
-        describe "Association" $ do
-            it "prop_append_get" $
-                prop_append_get
-                    @k @v & property
+    describe "Association" $ do
+        it "prop_append_get" $
+            prop_append_get
+                @k @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
