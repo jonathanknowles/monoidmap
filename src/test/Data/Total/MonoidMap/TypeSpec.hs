@@ -56,8 +56,6 @@ import Test.QuickCheck
     , oneof
     , (===)
     )
-import Test.QuickCheck.Instances.Natural
-    ()
 
 import qualified Data.Foldable as F
 import qualified Data.List as List
