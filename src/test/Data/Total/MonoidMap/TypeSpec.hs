@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fmax-simplifier-iterations=2 #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
@@ -8,7 +9,8 @@
 -- License: Apache-2.0
 --
 module Data.Total.MonoidMap.TypeSpec
-    where
+    ( spec
+    ) where
 
 import Prelude
 
@@ -18,12 +20,14 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
+import Data.Kind
+    ( Constraint, Type )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
     ( isJust )
 import Data.Monoid
-    ( Sum (..) )
+    ( Dual, Sum (..) )
 import Data.Monoid.GCD
     ( LeftGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Null
@@ -59,9 +63,11 @@ import Test.QuickCheck
     , checkCoverage
     , choose
     , coarbitraryIntegral
+    , coarbitraryShow
     , cover
     , expectFailure
     , functionIntegral
+    , functionShow
     , listOf
     , oneof
     , scale
@@ -70,8 +76,6 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Instances.Natural
     ()
-import Test.QuickCheck.Instances.Text
-    ()
 
 import qualified Data.Foldable as F
 import qualified Data.List as List
@@ -79,255 +83,349 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
+import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Type properties" $ do
-    specPropertiesFor (Proxy @Key) (Proxy @(Set Key))
-    specPropertiesFor (Proxy @Key) (Proxy @(Set Natural))
-    specPropertiesFor (Proxy @Key) (Proxy @(Sum Key))
-    specPropertiesFor (Proxy @Key) (Proxy @(Sum Natural))
-    specPropertiesFor (Proxy @Key) (Proxy @Text)
 
-specPropertiesFor
-    :: forall k v. () =>
-        ( Arbitrary k
-        , Arbitrary v
-        , CoArbitrary k
-        , CoArbitrary v
-        , Eq v
-        , Function k
-        , Function v
-        , MonoidNull v
-        , Ord k
-        , Show k
-        , Show v
-        , Typeable k
-        , Typeable v
-        )
+    specMonoidNull (Proxy @Key) (Proxy @(Set Int))
+    specMonoidNull (Proxy @Key) (Proxy @(Set Natural))
+    specMonoidNull (Proxy @Key) (Proxy @(Sum Int))
+    specMonoidNull (Proxy @Key) (Proxy @(Sum Natural))
+    specMonoidNull (Proxy @Key) (Proxy @[Int])
+    specMonoidNull (Proxy @Key) (Proxy @[Natural])
+    specMonoidNull (Proxy @Key) (Proxy @(Text))
+    specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
+    specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
+    specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
+
+    specLeftReductive (Proxy @Key) (Proxy @(Set Int))
+    specLeftReductive (Proxy @Key) (Proxy @(Set Natural))
+    specLeftReductive (Proxy @Key) (Proxy @(Sum Int))
+    specLeftReductive (Proxy @Key) (Proxy @(Sum Natural))
+    specLeftReductive (Proxy @Key) (Proxy @[Int])
+    specLeftReductive (Proxy @Key) (Proxy @[Natural])
+    specLeftReductive (Proxy @Key) (Proxy @(Text))
+    specLeftReductive (Proxy @Key) (Proxy @(Dual [Int]))
+    specLeftReductive (Proxy @Key) (Proxy @(Dual [Natural]))
+    specLeftReductive (Proxy @Key) (Proxy @(Dual Text))
+
+    specRightReductive (Proxy @Key) (Proxy @(Set Int))
+    specRightReductive (Proxy @Key) (Proxy @(Set Natural))
+    specRightReductive (Proxy @Key) (Proxy @(Sum Int))
+    specRightReductive (Proxy @Key) (Proxy @(Sum Natural))
+    specRightReductive (Proxy @Key) (Proxy @[Int])
+    specRightReductive (Proxy @Key) (Proxy @[Natural])
+    specRightReductive (Proxy @Key) (Proxy @(Text))
+    specRightReductive (Proxy @Key) (Proxy @(Dual [Int]))
+    specRightReductive (Proxy @Key) (Proxy @(Dual [Natural]))
+    specRightReductive (Proxy @Key) (Proxy @(Dual Text))
+
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Int))
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
+    specLeftGCDMonoid (Proxy @Key) (Proxy @[Int])
+    specLeftGCDMonoid (Proxy @Key) (Proxy @[Natural])
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Text))
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
+    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
+
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Int))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
+    specRightGCDMonoid (Proxy @Key) (Proxy @[Int])
+    specRightGCDMonoid (Proxy @Key) (Proxy @[Natural])
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Text))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
+
+type TestConstraints k v =
+    ( Arbitrary k
+    , Arbitrary v
+    , CoArbitrary k
+    , CoArbitrary v
+    , Eq v
+    , Function k
+    , Function v
+    , MonoidNull v
+    , Ord k
+    , Show k
+    , Show v
+    , Typeable k
+    , Typeable v
+    )
+
+specMonoidNull
+    :: forall k v. (TestConstraints k v, MonoidNull v)
     => Proxy k
     -> Proxy v
     -> Spec
-specPropertiesFor keyType valueType = do
+specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
 
-    let description = mconcat
-            [ "MonoidMap ("
-            , show (typeRep keyType)
-            , ") ("
-            , show (typeRep valueType)
-            , ")"
-            ]
+    describe "Conversion to and from lists" $ do
+        it "prop_fromList_get" $
+            prop_fromList_get
+                @k @v & property
+        it "prop_fromList_toMap" $
+            prop_fromList_toMap
+                @k @v & property
+        it "prop_fromList_toList" $
+            prop_fromList_toList
+                @k @v & property
+        it "prop_toList_fromList" $
+            prop_toList_fromList
+                @k @v & property
+        it "prop_toList_sort" $
+            prop_toList_sort
+                @k @v & property
+        it "prop_fromListWith_get" $
+            prop_fromListWith_get
+                @k @v & property
 
-    let property :: Testable t => t -> Property
-        property = checkCoverage . QC.property
+    describe "Conversion to and from ordinary maps" $ do
+        it "prop_fromMap_toMap" $
+            prop_fromMap_toMap
+                @k @v & property
+        it "prop_toMap_fromMap" $
+            prop_toMap_fromMap
+                @k @v & property
 
-    describe description $ do
+    describe "Singleton" $ do
+        it "prop_singleton_get" $
+            prop_singleton_get
+                @k @v & property
+        it "prop_singleton_nonNullKey" $
+            prop_singleton_nonNullKey
+                @k @v & property
+        it "prop_singleton_nonNullKeys" $
+            prop_singleton_nonNullKeys
+                @k @v & property
+        it "prop_singleton_null" $
+            prop_singleton_null
+                @k @v & property
+        it "prop_singleton_nullify" $
+            prop_singleton_nullify
+                @k @v & property
+        it "prop_singleton_nonNullCount" $
+            prop_singleton_nonNullCount
+                @k @v & property
+        it "prop_singleton_toList" $
+            prop_singleton_toList
+                @k @v & property
 
-        describe "Conversion to and from lists" $ do
-            it "prop_fromList_get" $
-                prop_fromList_get
-                    @k @v & property
-            it "prop_fromList_toMap" $
-                prop_fromList_toMap
-                    @k @v & property
-            it "prop_fromList_toList" $
-                prop_fromList_toList
-                    @k @v & property
-            it "prop_toList_fromList" $
-                prop_toList_fromList
-                    @k @v & property
-            it "prop_toList_sort" $
-                prop_toList_sort
-                    @k @v & property
-            it "prop_fromListWith_get" $
-                prop_fromListWith_get
-                    @k @v & property
+    describe "Get" $ do
+        it "prop_get_nonNullKey" $
+            prop_get_nonNullKey
+                @k @v & property
+        it "prop_get_nonNullKeys" $
+            prop_get_nonNullKeys
+                @k @v & property
 
-        describe "Conversion to and from ordinary maps" $ do
-            it "prop_fromMap_toMap" $
-                prop_fromMap_toMap
-                    @k @v & property
-            it "prop_toMap_fromMap" $
-                prop_toMap_fromMap
-                    @k @v & property
+    describe "Set" $ do
+        it "prop_set_get" $
+            prop_set_get
+                @k @v & property
+        it "prop_set_nonNullKey" $
+            prop_set_nonNullKey
+                @k @v & property
+        it "prop_set_nonNullKeys" $
+            prop_set_nonNullKeys
+                @k @v & property
+        it "prop_set_toList" $
+            prop_set_toList
+                @k @v & property
 
-        describe "Singleton" $ do
-            it "prop_singleton_get" $
-                prop_singleton_get
-                    @k @v & property
-            it "prop_singleton_nonNullKey" $
-                prop_singleton_nonNullKey
-                    @k @v & property
-            it "prop_singleton_nonNullKeys" $
-                prop_singleton_nonNullKeys
-                    @k @v & property
-            it "prop_singleton_null" $
-                prop_singleton_null
-                    @k @v & property
-            it "prop_singleton_nullify" $
-                prop_singleton_nullify
-                    @k @v & property
-            it "prop_singleton_nonNullCount" $
-                prop_singleton_nonNullCount
-                    @k @v & property
-            it "prop_singleton_toList" $
-                prop_singleton_toList
-                    @k @v & property
+    describe "Nullify" $ do
+        it "prop_nullify_get" $
+            prop_nullify_get
+                @k @v & property
+        it "prop_nullify_nonNullKey" $
+            prop_nullify_nonNullKey
+                @k @v & property
+        it "prop_nullify_nonNullKeys" $
+            prop_nullify_nonNullKeys
+                @k @v & property
 
-        describe "Get" $ do
-            it "prop_get_nonNullKey" $
-                prop_get_nonNullKey
-                    @k @v & property
-            it "prop_get_nonNullKeys" $
-                prop_get_nonNullKeys
-                    @k @v & property
+    describe "Keys" $ do
+        it "prop_nonNullKeys_get" $
+            prop_nonNullKeys_get
+                @k @v & property
 
-        describe "Set" $ do
-            it "prop_set_get" $
-                prop_set_get
-                    @k @v & property
-            it "prop_set_nonNullKey" $
-                prop_set_nonNullKey
-                    @k @v & property
-            it "prop_set_nonNullKeys" $
-                prop_set_nonNullKeys
-                    @k @v & property
-            it "prop_set_toList" $
-                prop_set_toList
-                    @k @v & property
+    describe "Filtering" $ do
+        it "prop_filter_get" $
+            prop_filter_get
+                @k @v & property
+        it "prop_filter_asList" $
+            prop_filter_asList
+                @k @v & property
+        it "prop_filterKeys_get" $
+            prop_filterKeys_get
+                @k @v & property
+        it "prop_filterKeys_asList" $
+            prop_filterKeys_asList
+                @k @v & property
+        it "prop_filterWithKey_get" $
+            prop_filterWithKey_get
+                @k @v & property
+        it "prop_filterWithKey_asList" $
+            prop_filterWithKey_asList
+                @k @v & property
 
-        describe "Nullify" $ do
-            it "prop_nullify_get" $
-                prop_nullify_get
-                    @k @v & property
-            it "prop_nullify_nonNullKey" $
-                prop_nullify_nonNullKey
-                    @k @v & property
-            it "prop_nullify_nonNullKeys" $
-                prop_nullify_nonNullKeys
-                    @k @v & property
+    describe "Partitioning" $ do
+        it "prop_partition_filter" $
+            prop_partition_filter
+                @k @v & property
+        it "prop_partition_append" $
+            prop_partition_append
+                @k @v & property
+        it "prop_partition_disjoint" $
+            prop_partition_disjoint
+                @k @v & property
+        it "prop_partitionKeys_filterKeys" $
+            prop_partitionKeys_filterKeys
+                @k @v & property
+        it "prop_partitionKeys_append" $
+            prop_partitionKeys_append
+                @k @v & property
+        it "prop_partitionKeys_disjoint" $
+            prop_partitionKeys_disjoint
+                @k @v & property
+        it "prop_partitionWithKey_filterWithKey" $
+            prop_partitionWithKey_filterWithKey
+                @k @v & property
+        it "prop_partitionWithKey_append" $
+            prop_partitionWithKey_append
+                @k @v & property
+        it "prop_partitionWithKey_disjoint" $
+            prop_partitionWithKey_disjoint
+                @k @v & property
 
-        describe "Keys" $ do
-            it "prop_nonNullKeys_get" $
-                prop_nonNullKeys_get
-                    @k @v & property
+    describe "Slicing" $ do
+        it "prop_take_toList_fromList" $
+            prop_take_toList_fromList
+                @k @v & property
+        it "prop_drop_toList_fromList" $
+            prop_drop_toList_fromList
+                @k @v & property
+        it "prop_splitAt_toList_fromList" $
+            prop_splitAt_toList_fromList
+                @k @v & property
 
-        describe "Filtering" $ do
-            it "prop_filter_get" $
-                prop_filter_get
-                    @k @v & property
-            it "prop_filter_asList" $
-                prop_filter_asList
-                    @k @v & property
-            it "prop_filterKeys_get" $
-                prop_filterKeys_get
-                    @k @v & property
-            it "prop_filterKeys_asList" $
-                prop_filterKeys_asList
-                    @k @v & property
-            it "prop_filterWithKey_get" $
-                prop_filterWithKey_get
-                    @k @v & property
-            it "prop_filterWithKey_asList" $
-                prop_filterWithKey_asList
-                    @k @v & property
+    describe "Mapping" $ do
+        it "prop_map_asList" $
+            prop_map_asList
+                @k @v & property
+        it "prop_map_get" $
+            prop_map_get
+                @k @v & property
+        it "prop_map_get_total" $
+            prop_map_get_total
+                @k @v & property
+        it "prop_map_get_total_failure" $
+            prop_map_get_total_failure
+                @k @v & property
+        it "prop_mapKeys_asList" $
+            prop_mapKeys_asList
+                @k @v & property
+        it "prop_mapKeys_get" $
+            prop_mapKeys_get
+                @k @v & property
+        it "prop_mapKeysWith_asList" $
+            prop_mapKeysWith_asList
+                @k @v & property
 
-        describe "Partitioning" $ do
-            it "prop_partition_filter" $
-                prop_partition_filter
-                    @k @v & property
-            it "prop_partition_append" $
-                prop_partition_append
-                    @k @v & property
-            it "prop_partition_disjoint" $
-                prop_partition_disjoint
-                    @k @v & property
-            it "prop_partitionKeys_filterKeys" $
-                prop_partitionKeys_filterKeys
-                    @k @v & property
-            it "prop_partitionKeys_append" $
-                prop_partitionKeys_append
-                    @k @v & property
-            it "prop_partitionKeys_disjoint" $
-                prop_partitionKeys_disjoint
-                    @k @v & property
-            it "prop_partitionWithKey_filterWithKey" $
-                prop_partitionWithKey_filterWithKey
-                    @k @v & property
-            it "prop_partitionWithKey_append" $
-                prop_partitionWithKey_append
-                    @k @v & property
-            it "prop_partitionWithKey_disjoint" $
-                prop_partitionWithKey_disjoint
-                    @k @v & property
+    describe "Intersection" $ do
+        it "prop_intersectionWith_get" $
+            prop_intersectionWith_get
+                @k @v & property
+        it "prop_intersectionWith_get_total" $
+            prop_intersectionWith_get_total
+                @k @v & property
+        it "prop_intersectionWith_get_total_failure" $
+            prop_intersectionWith_get_total_failure
+                @k @v & property
+        it "prop_intersectionWith_intersectionWithA" $
+            prop_intersectionWith_intersectionWithA
+                @k @v & property
 
-        describe "Slicing" $ do
-            it "prop_take_toList_fromList" $
-                prop_take_toList_fromList
-                    @k @v & property
-            it "prop_drop_toList_fromList" $
-                prop_drop_toList_fromList
-                    @k @v & property
-            it "prop_splitAt_toList_fromList" $
-                prop_splitAt_toList_fromList
-                    @k @v & property
+    describe "Union" $ do
+        it "prop_unionWith_get" $
+            prop_unionWith_get
+                @k @v & property
+        it "prop_unionWith_get_total" $
+            prop_unionWith_get_total
+                @k @v & property
+        it "prop_unionWith_get_total_failure" $
+            prop_unionWith_get_total_failure
+                @k @v & property
+        it "prop_unionWith_unionWithA" $
+            prop_unionWith_unionWithA
+                @k @v & property
 
-        describe "Mapping" $ do
-            it "prop_map_asList" $
-                prop_map_asList
-                    @k @v & property
-            it "prop_map_get" $
-                prop_map_get
-                    @k @v & property
-            it "prop_map_get_total" $
-                prop_map_get_total
-                    @k @v & property
-            it "prop_map_get_total_failure" $
-                prop_map_get_total_failure
-                    @k @v & property
-            it "prop_mapKeys_asList" $
-                prop_mapKeys_asList
-                    @k @v & property
-            it "prop_mapKeys_get" $
-                prop_mapKeys_get
-                    @k @v & property
-            it "prop_mapKeysWith_asList" $
-                prop_mapKeysWith_asList
-                    @k @v & property
+    describe "Association" $ do
+        it "prop_append_get" $
+            prop_append_get
+                @k @v & property
 
-        describe "Intersection" $ do
-            it "prop_intersectionWith_get" $
-                prop_intersectionWith_get
-                    @k @v & property
-            it "prop_intersectionWith_get_total" $
-                prop_intersectionWith_get_total
-                    @k @v & property
-            it "prop_intersectionWith_get_total_failure" $
-                prop_intersectionWith_get_total_failure
-                    @k @v & property
-            it "prop_intersectionWith_intersectionWithA" $
-                prop_intersectionWith_intersectionWithA
-                    @k @v & property
+specLeftReductive
+    :: forall k v. (TestConstraints k v, LeftReductive v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specLeftReductive k v = specFor (Proxy @LeftReductive) k v $ do
 
-        describe "Union" $ do
-            it "prop_unionWith_get" $
-                prop_unionWith_get
-                    @k @v & property
-            it "prop_unionWith_get_total" $
-                prop_unionWith_get_total
-                    @k @v & property
-            it "prop_unionWith_get_total_failure" $
-                prop_unionWith_get_total_failure
-                    @k @v & property
-            it "prop_unionWith_unionWithA" $
-                prop_unionWith_unionWithA
-                    @k @v & property
+    it "prop_stripPrefix_isJust" $
+        prop_stripPrefix_isJust
+            @k @v & property
+    it "prop_stripPrefix_get" $
+        prop_stripPrefix_get
+            @k @v & property
+    it "prop_stripPrefix_mappend" $
+        prop_stripPrefix_mappend
+            @k @v & property
 
-        describe "Association" $ do
-            it "prop_append_get" $
-                prop_append_get
-                    @k @v & property
+specRightReductive
+    :: forall k v. (TestConstraints k v, RightReductive v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specRightReductive k v = specFor (Proxy @RightReductive) k v $ do
+
+    it "prop_stripSuffix_isJust" $
+        prop_stripSuffix_isJust
+            @k @v & property
+    it "prop_stripSuffix_get" $
+        prop_stripSuffix_get
+            @k @v & property
+    it "prop_stripSuffix_mappend" $
+        prop_stripSuffix_mappend
+            @k @v & property
+
+specLeftGCDMonoid
+    :: forall k v. (TestConstraints k v, LeftGCDMonoid v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specLeftGCDMonoid k v = specFor (Proxy @LeftGCDMonoid) k v $ do
+
+    it "prop_commonPrefix_get" $
+        prop_commonPrefix_get
+            @k @v & property
+
+specRightGCDMonoid
+    :: forall k v. (TestConstraints k v, RightGCDMonoid v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specRightGCDMonoid k v = specFor (Proxy @RightGCDMonoid) k v $ do
+
+    it "prop_commonSuffix_get" $
+        prop_commonSuffix_get
+            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1420,6 +1518,9 @@ prop_stripPrefix_isJust
     -> Property
 prop_stripPrefix_isJust m1 m2 =
     isJust (stripPrefix m1 m2) === m1 `isPrefixOf` m2
+    & cover 1
+        (m1 `isPrefixOf` m2)
+        "m1 `isPrefixOf` m2"
 
 prop_stripSuffix_isJust
     :: (Ord k, MonoidNull v, RightReductive v)
@@ -1428,6 +1529,9 @@ prop_stripSuffix_isJust
     -> Property
 prop_stripSuffix_isJust m1 m2 =
     isJust (stripSuffix m1 m2) === m1 `isSuffixOf` m2
+    & cover 1
+        (m1 `isSuffixOf` m2)
+        "m1 `isSuffixOf` m2"
 
 prop_stripPrefix_get
     :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
@@ -1443,6 +1547,9 @@ prop_stripPrefix_get m1 m2 k = QC.property $
             stripPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
         )
         (stripPrefix m1 m2)
+    & cover 1
+        (isJust (stripPrefix m1 m2))
+        "isJust (stripPrefix m1 m2)"
 
 prop_stripSuffix_get
     :: (Ord k, Eq v, MonoidNull v, RightReductive v)
@@ -1458,6 +1565,9 @@ prop_stripSuffix_get m1 m2 k = QC.property $
             stripSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
         )
         (stripSuffix m1 m2)
+    & cover 1
+        (isJust (stripSuffix m1 m2))
+        "isJust (stripSuffix m1 m2)"
 
 prop_stripPrefix_mappend
     :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
@@ -1468,6 +1578,9 @@ prop_stripPrefix_mappend m1 m2 = QC.property $
     all
         (\r -> m1 <> r == m2)
         (stripPrefix m1 m2)
+    & cover 1
+        (isJust (stripPrefix m1 m2))
+        "isJust (stripPrefix m1 m2)"
 
 prop_stripSuffix_mappend
     :: (Ord k, Eq v, MonoidNull v, RightReductive v)
@@ -1478,6 +1591,9 @@ prop_stripSuffix_mappend m1 m2 = QC.property $
     all
         (\r -> r <> m1 == m2)
         (stripSuffix m1 m2)
+    & cover 1
+        (isJust (stripSuffix m1 m2))
+        "isJust (stripSuffix m1 m2)"
 
 prop_commonPrefix_get
     :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)
@@ -1489,6 +1605,12 @@ prop_commonPrefix_get m1 m2 k =
     MonoidMap.get k (commonPrefix m1 m2)
     ===
     commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
+    & cover 1
+        (MonoidMap.get k (commonPrefix m1 m2) == mempty)
+        "MonoidMap.get k (commonPrefix m1 m2) == mempty"
+    & cover 0.1
+        (MonoidMap.get k (commonPrefix m1 m2) /= mempty)
+        "MonoidMap.get k (commonPrefix m1 m2) /= mempty"
 
 prop_commonSuffix_get
     :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
@@ -1500,6 +1622,12 @@ prop_commonSuffix_get m1 m2 k =
     MonoidMap.get k (commonSuffix m1 m2)
     ===
     commonSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
+    & cover 1
+        (MonoidMap.get k (commonSuffix m1 m2) == mempty)
+        "MonoidMap.get k (commonSuffix m1 m2) == mempty"
+    & cover 0.1
+        (MonoidMap.get k (commonSuffix m1 m2) /= mempty)
+        "MonoidMap.get k (commonSuffix m1 m2) /= mempty"
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
@@ -1529,3 +1657,35 @@ instance CoArbitrary Key where
 
 instance Function Key where
     function = functionIntegral
+
+instance Arbitrary Text where
+    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
+
+instance CoArbitrary Text where
+    coarbitrary = coarbitraryShow
+
+instance Function Text where
+    function = functionShow
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+specFor
+    :: forall (c :: Type -> Constraint) k v. ()
+    => (Typeable c, Typeable k, Typeable v)
+    => Proxy c
+    -> Proxy k
+    -> Proxy v
+    -> Spec
+    -> Spec
+specFor _pc _pk _pv =
+    describe $ unwords
+        [ "Operations requiring"
+        , show $ typeRep (Proxy @c)
+        , "constraint for type"
+        , show $ typeRep (Proxy @(MonoidMap k v))
+        ]
+
+property :: Testable t => t -> Property
+property = checkCoverage . QC.property
