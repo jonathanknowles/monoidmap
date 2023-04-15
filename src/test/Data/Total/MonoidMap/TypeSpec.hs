@@ -26,8 +26,6 @@ import Data.Map.Strict
     ( Map )
 import Data.Monoid
     ( Dual, Sum (..) )
-import Data.Monoid.GCD
-    ( RightGCDMonoid (..) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
@@ -96,16 +94,6 @@ spec = describe "Type properties" $ do
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
-
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Int))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
-    specRightGCDMonoid (Proxy @Key) (Proxy @[Int])
-    specRightGCDMonoid (Proxy @Key) (Proxy @[Natural])
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Text))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
 
 type TestConstraints k v =
     ( Arbitrary k
@@ -334,17 +322,6 @@ specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
         it "prop_append_get" $
             prop_append_get
                 @k @v & property
-
-specRightGCDMonoid
-    :: forall k v. (TestConstraints k v, RightGCDMonoid v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specRightGCDMonoid k v = specFor (Proxy @RightGCDMonoid) k v $ do
-
-    it "prop_commonSuffix_get" $
-        prop_commonSuffix_get
-            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1425,27 +1402,6 @@ prop_append_get
     -> Property
 prop_append_get m1 m2 k =
     MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
-
---------------------------------------------------------------------------------
--- Prefixes and suffixes
---------------------------------------------------------------------------------
-
-prop_commonSuffix_get
-    :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_commonSuffix_get m1 m2 k =
-    MonoidMap.get k (commonSuffix m1 m2)
-    ===
-    commonSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
-    & cover 1
-        (MonoidMap.get k (commonSuffix m1 m2) == mempty)
-        "MonoidMap.get k (commonSuffix m1 m2) == mempty"
-    & cover 0.1
-        (MonoidMap.get k (commonSuffix m1 m2) /= mempty)
-        "MonoidMap.get k (commonSuffix m1 m2) /= mempty"
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
