@@ -156,6 +156,7 @@ test-suite test
         Data.Total.MonoidMap.ExampleSpec
         Data.Total.MonoidMap.TypeSpec
         Data.Total.MonoidMap.TypeSpec.AccessSpec
+        Data.Total.MonoidMap.TypeSpec.MembershipSpec
         Data.Total.MonoidMap.TypeSpec.ConversionSpec
         Data.Total.MonoidMap.TypeSpec.SingletonSpec
         Data.Total.MonoidMap.TypeSpec.FilterSpec
