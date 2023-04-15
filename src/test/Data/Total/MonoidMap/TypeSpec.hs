@@ -62,9 +62,11 @@ import Test.QuickCheck
     , checkCoverage
     , choose
     , coarbitraryIntegral
+    , coarbitraryShow
     , cover
     , expectFailure
     , functionIntegral
+    , functionShow
     , listOf
     , oneof
     , scale
@@ -73,8 +75,6 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Instances.Natural
     ()
-import Test.QuickCheck.Instances.Text
-    ()
 
 import qualified Data.Foldable as F
 import qualified Data.List as List
@@ -82,6 +82,7 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
+import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
@@ -1585,6 +1586,12 @@ prop_commonPrefix_get m1 m2 k =
     MonoidMap.get k (commonPrefix m1 m2)
     ===
     commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
+    & cover 1
+        (MonoidMap.get k (commonPrefix m1 m2) == mempty)
+        "MonoidMap.get k (commonPrefix m1 m2) == mempty"
+    & cover 0.1
+        (MonoidMap.get k (commonPrefix m1 m2) /= mempty)
+        "MonoidMap.get k (commonPrefix m1 m2) /= mempty"
 
 prop_commonSuffix_get
     :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
@@ -1596,6 +1603,12 @@ prop_commonSuffix_get m1 m2 k =
     MonoidMap.get k (commonSuffix m1 m2)
     ===
     commonSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
+    & cover 1
+        (MonoidMap.get k (commonSuffix m1 m2) == mempty)
+        "MonoidMap.get k (commonSuffix m1 m2) == mempty"
+    & cover 0.1
+        (MonoidMap.get k (commonSuffix m1 m2) /= mempty)
+        "MonoidMap.get k (commonSuffix m1 m2) /= mempty"
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
@@ -1625,6 +1638,15 @@ instance CoArbitrary Key where
 
 instance Function Key where
     function = functionIntegral
+
+instance Arbitrary Text where
+    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
+
+instance CoArbitrary Text where
+    coarbitrary = coarbitraryShow
+
+instance Function Text where
+    function = functionShow
 
 --------------------------------------------------------------------------------
 -- Utilities
