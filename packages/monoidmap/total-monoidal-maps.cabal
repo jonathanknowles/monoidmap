@@ -154,7 +154,6 @@ test-suite test
         SpecHook
         Data.Total.MonoidMap.ClassSpec
         Data.Total.MonoidMap.ExampleSpec
-        Data.Total.MonoidMap.TypeSpec
         Data.Total.MonoidMap.TypeSpec.AccessSpec
         Data.Total.MonoidMap.TypeSpec.AppendSpec
         Data.Total.MonoidMap.TypeSpec.MembershipSpec
