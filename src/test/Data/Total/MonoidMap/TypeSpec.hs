@@ -26,7 +26,7 @@ import Data.Map.Strict
 import Data.Maybe
     ( isJust )
 import Data.Monoid
-    ( Sum (..) )
+    ( Dual, Sum (..) )
 import Data.Monoid.GCD
     ( LeftGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Null
@@ -87,11 +87,16 @@ import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Type properties" $ do
-    specMonoidNull (Proxy @Key) (Proxy @(Set Key))
+    specMonoidNull (Proxy @Key) (Proxy @(Set Int))
     specMonoidNull (Proxy @Key) (Proxy @(Set Natural))
-    specMonoidNull (Proxy @Key) (Proxy @(Sum Key))
+    specMonoidNull (Proxy @Key) (Proxy @(Sum Int))
     specMonoidNull (Proxy @Key) (Proxy @(Sum Natural))
-    specMonoidNull (Proxy @Key) (Proxy @Text)
+    specMonoidNull (Proxy @Key) (Proxy @[Int])
+    specMonoidNull (Proxy @Key) (Proxy @[Natural])
+    specMonoidNull (Proxy @Key) (Proxy @(Text))
+    specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
+    specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
+    specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
 
 type TestConstraints k v =
     ( Arbitrary k
@@ -110,7 +115,7 @@ type TestConstraints k v =
     )
 
 specMonoidNull
-    :: forall k v. TestConstraints k v
+    :: forall k v. (TestConstraints k v, MonoidNull v)
     => Proxy k
     -> Proxy v
     -> Spec
