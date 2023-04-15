@@ -1540,6 +1540,9 @@ prop_stripPrefix_get m1 m2 k = QC.property $
             stripPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
         )
         (stripPrefix m1 m2)
+    & cover 1
+        (isJust (stripPrefix m1 m2))
+        "isJust (stripPrefix m1 m2)"
 
 prop_stripSuffix_get
     :: (Ord k, Eq v, MonoidNull v, RightReductive v)
@@ -1555,6 +1558,9 @@ prop_stripSuffix_get m1 m2 k = QC.property $
             stripSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
         )
         (stripSuffix m1 m2)
+    & cover 1
+        (isJust (stripSuffix m1 m2))
+        "isJust (stripSuffix m1 m2)"
 
 prop_stripPrefix_mappend
     :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
