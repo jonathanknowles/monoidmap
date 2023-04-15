@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
 {- HLINT ignore "Use null" -}
