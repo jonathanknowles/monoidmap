@@ -84,11 +84,11 @@ import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Type properties" $ do
-    specPropertiesFor (Proxy @Key) (Proxy @(Set Key))
-    specPropertiesFor (Proxy @Key) (Proxy @(Set Natural))
-    specPropertiesFor (Proxy @Key) (Proxy @(Sum Key))
-    specPropertiesFor (Proxy @Key) (Proxy @(Sum Natural))
-    specPropertiesFor (Proxy @Key) (Proxy @Text)
+    specMonoidNull (Proxy @Key) (Proxy @(Set Key))
+    specMonoidNull (Proxy @Key) (Proxy @(Set Natural))
+    specMonoidNull (Proxy @Key) (Proxy @(Sum Key))
+    specMonoidNull (Proxy @Key) (Proxy @(Sum Natural))
+    specMonoidNull (Proxy @Key) (Proxy @Text)
 
 type TestConstraints k v =
     ( Arbitrary k
@@ -106,12 +106,12 @@ type TestConstraints k v =
     , Typeable v
     )
 
-specPropertiesFor
+specMonoidNull
     :: forall k v. TestConstraints k v
     => Proxy k
     -> Proxy v
     -> Spec
-specPropertiesFor keyType valueType = do
+specMonoidNull keyType valueType = do
 
     let description = mconcat
             [ "MonoidMap ("
