@@ -7,7 +7,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.TypeSpec.AccessSpec
+module Data.Total.MonoidMap.OperationSpec.AccessSpec
     ( spec
     ) where
 
