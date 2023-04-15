@@ -154,9 +154,14 @@ test-suite test
         SpecHook
         Data.Total.MonoidMap.ClassSpec
         Data.Total.MonoidMap.ExampleSpec
-        Data.Total.MonoidMap.RecoveredMapSpec
         Data.Total.MonoidMap.TypeSpec
+        Data.Total.MonoidMap.TypeSpec.LeftGCDMonoidSpec
+        Data.Total.MonoidMap.TypeSpec.LeftReductiveSpec
+        Data.Total.MonoidMap.TypeSpec.RightGCDMonoidSpec
+        Data.Total.MonoidMap.TypeSpec.RightReductiveSpec
         Examples.MultiMapSpec
+        Examples.RecoveredMapSpec
+        Test.Common
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
     type:
