@@ -24,8 +24,6 @@ import Data.Kind
     ( Constraint, Type )
 import Data.Map.Strict
     ( Map )
-import Data.Maybe
-    ( isJust )
 import Data.Monoid
     ( Dual, Sum (..) )
 import Data.Monoid.GCD
@@ -34,8 +32,6 @@ import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Semigroup.Cancellative
-    ( RightReductive (..) )
 import Data.Set
     ( Set )
 import Data.Text
@@ -100,17 +96,6 @@ spec = describe "Type properties" $ do
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
-
-    specRightReductive (Proxy @Key) (Proxy @(Set Int))
-    specRightReductive (Proxy @Key) (Proxy @(Set Natural))
-    specRightReductive (Proxy @Key) (Proxy @(Sum Int))
-    specRightReductive (Proxy @Key) (Proxy @(Sum Natural))
-    specRightReductive (Proxy @Key) (Proxy @[Int])
-    specRightReductive (Proxy @Key) (Proxy @[Natural])
-    specRightReductive (Proxy @Key) (Proxy @(Text))
-    specRightReductive (Proxy @Key) (Proxy @(Dual [Int]))
-    specRightReductive (Proxy @Key) (Proxy @(Dual [Natural]))
-    specRightReductive (Proxy @Key) (Proxy @(Dual Text))
 
     specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Int))
     specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
@@ -359,23 +344,6 @@ specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
         it "prop_append_get" $
             prop_append_get
                 @k @v & property
-
-specRightReductive
-    :: forall k v. (TestConstraints k v, RightReductive v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specRightReductive k v = specFor (Proxy @RightReductive) k v $ do
-
-    it "prop_stripSuffix_isJust" $
-        prop_stripSuffix_isJust
-            @k @v & property
-    it "prop_stripSuffix_get" $
-        prop_stripSuffix_get
-            @k @v & property
-    it "prop_stripSuffix_mappend" $
-        prop_stripSuffix_mappend
-            @k @v & property
 
 specLeftGCDMonoid
     :: forall k v. (TestConstraints k v, LeftGCDMonoid v)
@@ -1482,48 +1450,6 @@ prop_append_get m1 m2 k =
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
 --------------------------------------------------------------------------------
-
-prop_stripSuffix_isJust
-    :: (Ord k, MonoidNull v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> Property
-prop_stripSuffix_isJust m1 m2 =
-    isJust (stripSuffix m1 m2) === m1 `isSuffixOf` m2
-    & cover 1
-        (m1 `isSuffixOf` m2)
-        "m1 `isSuffixOf` m2"
-
-prop_stripSuffix_get
-    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_stripSuffix_get m1 m2 k = QC.property $
-    all
-        (\r ->
-            Just (MonoidMap.get k r)
-            ==
-            stripSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
-        )
-        (stripSuffix m1 m2)
-    & cover 1
-        (isJust (stripSuffix m1 m2))
-        "isJust (stripSuffix m1 m2)"
-
-prop_stripSuffix_mappend
-    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> Property
-prop_stripSuffix_mappend m1 m2 = QC.property $
-    all
-        (\r -> r <> m1 == m2)
-        (stripSuffix m1 m2)
-    & cover 1
-        (isJust (stripSuffix m1 m2))
-        "isJust (stripSuffix m1 m2)"
 
 prop_commonPrefix_get
     :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)

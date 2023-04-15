@@ -156,6 +156,7 @@ test-suite test
         Data.Total.MonoidMap.ExampleSpec
         Data.Total.MonoidMap.TypeSpec
         Data.Total.MonoidMap.TypeSpec.LeftReductiveSpec
+        Data.Total.MonoidMap.TypeSpec.RightReductiveSpec
         Examples.MultiMapSpec
         Examples.RecoveredMapSpec
         Test.QuickCheck.Classes.Hspec
