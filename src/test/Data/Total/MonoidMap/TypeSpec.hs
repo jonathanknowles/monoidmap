@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -fmax-simplifier-iterations=2 #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
@@ -20,8 +19,6 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
-import Data.Kind
-    ( Constraint, Type )
 import Data.Map.Strict
     ( Map )
 import Data.Monoid
@@ -82,18 +79,18 @@ import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
-spec = describe "Type properties" $ do
+spec = describe "Operations that don't require a particular constraint" $ do
 
-    specMonoidNull (Proxy @Key) (Proxy @(Set Int))
-    specMonoidNull (Proxy @Key) (Proxy @(Set Natural))
-    specMonoidNull (Proxy @Key) (Proxy @(Sum Int))
-    specMonoidNull (Proxy @Key) (Proxy @(Sum Natural))
-    specMonoidNull (Proxy @Key) (Proxy @[Int])
-    specMonoidNull (Proxy @Key) (Proxy @[Natural])
-    specMonoidNull (Proxy @Key) (Proxy @(Text))
-    specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
-    specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
-    specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
+    specFor (Proxy @Key) (Proxy @(Set Int))
+    specFor (Proxy @Key) (Proxy @(Set Natural))
+    specFor (Proxy @Key) (Proxy @(Sum Int))
+    specFor (Proxy @Key) (Proxy @(Sum Natural))
+    specFor (Proxy @Key) (Proxy @[Int])
+    specFor (Proxy @Key) (Proxy @[Natural])
+    specFor (Proxy @Key) (Proxy @(Text))
+    specFor (Proxy @Key) (Proxy @(Dual [Int]))
+    specFor (Proxy @Key) (Proxy @(Dual [Natural]))
+    specFor (Proxy @Key) (Proxy @(Dual Text))
 
 type TestConstraints k v =
     ( Arbitrary k
@@ -111,12 +108,12 @@ type TestConstraints k v =
     , Typeable v
     )
 
-specMonoidNull
-    :: forall k v. (TestConstraints k v, MonoidNull v)
+specFor
+    :: forall k v. TestConstraints k v
     => Proxy k
     -> Proxy v
     -> Spec
-specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
+specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     describe "Conversion to and from lists" $ do
         it "prop_fromList_get" $
@@ -1444,22 +1441,6 @@ instance Function Text where
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
-
-specFor
-    :: forall (c :: Type -> Constraint) k v. ()
-    => (Typeable c, Typeable k, Typeable v)
-    => Proxy c
-    -> Proxy k
-    -> Proxy v
-    -> Spec
-    -> Spec
-specFor _pc _pk _pv =
-    describe $ unwords
-        [ "Operations requiring"
-        , show $ typeRep (Proxy @c)
-        , "constraint for type"
-        , show $ typeRep (Proxy @(MonoidMap k v))
-        ]
 
 property :: Testable t => t -> Property
 property = checkCoverage . QC.property
