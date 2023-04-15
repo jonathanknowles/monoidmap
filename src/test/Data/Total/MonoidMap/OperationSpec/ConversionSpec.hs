@@ -7,7 +7,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.TypeSpec.ConversionSpec
+module Data.Total.MonoidMap.OperationSpec.ConversionSpec
     ( spec
     ) where
 

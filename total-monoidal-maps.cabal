@@ -154,19 +154,19 @@ test-suite test
         SpecHook
         Data.Total.MonoidMap.ClassSpec
         Data.Total.MonoidMap.ExampleSpec
-        Data.Total.MonoidMap.TypeSpec.AccessSpec
-        Data.Total.MonoidMap.TypeSpec.AppendSpec
-        Data.Total.MonoidMap.TypeSpec.MembershipSpec
-        Data.Total.MonoidMap.TypeSpec.ConversionSpec
-        Data.Total.MonoidMap.TypeSpec.SingletonSpec
-        Data.Total.MonoidMap.TypeSpec.FilterSpec
-        Data.Total.MonoidMap.TypeSpec.PartitionSpec
-        Data.Total.MonoidMap.TypeSpec.SliceSpec
-        Data.Total.MonoidMap.TypeSpec.MapSpec
-        Data.Total.MonoidMap.TypeSpec.PrefixSpec
-        Data.Total.MonoidMap.TypeSpec.SuffixSpec
-        Data.Total.MonoidMap.TypeSpec.UnionSpec
-        Data.Total.MonoidMap.TypeSpec.IntersectionSpec
+        Data.Total.MonoidMap.OperationSpec.AccessSpec
+        Data.Total.MonoidMap.OperationSpec.AppendSpec
+        Data.Total.MonoidMap.OperationSpec.ConversionSpec
+        Data.Total.MonoidMap.OperationSpec.MapSpec
+        Data.Total.MonoidMap.OperationSpec.FilterSpec
+        Data.Total.MonoidMap.OperationSpec.PartitionSpec
+        Data.Total.MonoidMap.OperationSpec.MembershipSpec
+        Data.Total.MonoidMap.OperationSpec.SingletonSpec
+        Data.Total.MonoidMap.OperationSpec.SliceSpec
+        Data.Total.MonoidMap.OperationSpec.PrefixSpec
+        Data.Total.MonoidMap.OperationSpec.SuffixSpec
+        Data.Total.MonoidMap.OperationSpec.IntersectionSpec
+        Data.Total.MonoidMap.OperationSpec.UnionSpec
         Examples.MultiMapSpec
         Examples.RecoveredMapSpec
         Test.Common
