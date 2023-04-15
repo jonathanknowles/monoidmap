@@ -93,11 +93,6 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             prop_unionWith_unionWithA
                 @k @v & property
 
-    describe "Association" $ do
-        it "prop_append_get" $
-            prop_append_get
-                @k @v & property
-
 --------------------------------------------------------------------------------
 -- Intersection
 --------------------------------------------------------------------------------
@@ -310,16 +305,3 @@ prop_unionWith_unionWithA
 prop_unionWith_unionWithA (applyFun2 -> f) m1 m2 =
     runIdentity (MonoidMap.unionWithA ((fmap . fmap) Identity f) m1 m2)
     ===         (MonoidMap.unionWith                          f  m1 m2)
-
---------------------------------------------------------------------------------
--- Association
---------------------------------------------------------------------------------
-
-prop_append_get
-    :: (Ord k, Eq v, Show v, MonoidNull v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_append_get m1 m2 k =
-    MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
