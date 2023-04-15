@@ -90,22 +90,24 @@ spec = describe "Type properties" $ do
     specPropertiesFor (Proxy @Key) (Proxy @(Sum Natural))
     specPropertiesFor (Proxy @Key) (Proxy @Text)
 
+type TestConstraints k v =
+    ( Arbitrary k
+    , Arbitrary v
+    , CoArbitrary k
+    , CoArbitrary v
+    , Eq v
+    , Function k
+    , Function v
+    , MonoidNull v
+    , Ord k
+    , Show k
+    , Show v
+    , Typeable k
+    , Typeable v
+    )
+
 specPropertiesFor
-    :: forall k v. () =>
-        ( Arbitrary k
-        , Arbitrary v
-        , CoArbitrary k
-        , CoArbitrary v
-        , Eq v
-        , Function k
-        , Function v
-        , MonoidNull v
-        , Ord k
-        , Show k
-        , Show v
-        , Typeable k
-        , Typeable v
-        )
+    :: forall k v. TestConstraints k v
     => Proxy k
     -> Proxy v
     -> Spec
