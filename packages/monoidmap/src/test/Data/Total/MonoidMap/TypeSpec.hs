@@ -1517,6 +1517,9 @@ prop_stripPrefix_isJust
     -> Property
 prop_stripPrefix_isJust m1 m2 =
     isJust (stripPrefix m1 m2) === m1 `isPrefixOf` m2
+    & cover 1
+        (m1 `isPrefixOf` m2)
+        "m1 `isPrefixOf` m2"
 
 prop_stripSuffix_isJust
     :: (Ord k, MonoidNull v, RightReductive v)
@@ -1525,6 +1528,9 @@ prop_stripSuffix_isJust
     -> Property
 prop_stripSuffix_isJust m1 m2 =
     isJust (stripSuffix m1 m2) === m1 `isSuffixOf` m2
+    & cover 1
+        (m1 `isSuffixOf` m2)
+        "m1 `isSuffixOf` m2"
 
 prop_stripPrefix_get
     :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
