@@ -1565,6 +1565,9 @@ prop_stripPrefix_mappend m1 m2 = QC.property $
     all
         (\r -> m1 <> r == m2)
         (stripPrefix m1 m2)
+    & cover 1
+        (isJust (stripPrefix m1 m2))
+        "isJust (stripPrefix m1 m2)"
 
 prop_stripSuffix_mappend
     :: (Ord k, Eq v, MonoidNull v, RightReductive v)
@@ -1575,6 +1578,9 @@ prop_stripSuffix_mappend m1 m2 = QC.property $
     all
         (\r -> r <> m1 == m2)
         (stripSuffix m1 m2)
+    & cover 1
+        (isJust (stripSuffix m1 m2))
+        "isJust (stripSuffix m1 m2)"
 
 prop_commonPrefix_get
     :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)
