@@ -121,9 +121,6 @@ specPropertiesFor keyType valueType = do
             , ")"
             ]
 
-    let property :: Testable t => t -> Property
-        property = checkCoverage . QC.property
-
     describe description $ do
 
         describe "Conversion to and from lists" $ do
@@ -1531,3 +1528,10 @@ instance CoArbitrary Key where
 
 instance Function Key where
     function = functionIntegral
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+property :: Testable t => t -> Property
+property = checkCoverage . QC.property
