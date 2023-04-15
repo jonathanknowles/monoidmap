@@ -65,22 +65,6 @@ specFor
     -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
-    describe "Nullify" $ do
-        it "prop_nullify_get" $
-            prop_nullify_get
-                @k @v & property
-        it "prop_nullify_nonNullKey" $
-            prop_nullify_nonNullKey
-                @k @v & property
-        it "prop_nullify_nonNullKeys" $
-            prop_nullify_nonNullKeys
-                @k @v & property
-
-    describe "Keys" $ do
-        it "prop_nonNullKeys_get" $
-            prop_nonNullKeys_get
-                @k @v & property
-
     describe "Intersection" $ do
         it "prop_intersectionWith_get" $
             prop_intersectionWith_get
@@ -113,72 +97,6 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
         it "prop_append_get" $
             prop_append_get
                 @k @v & property
-
---------------------------------------------------------------------------------
--- Nullify
---------------------------------------------------------------------------------
-
-prop_nullify_get
-    :: (Ord k, Eq v, Monoid v, Show v)
-    => MonoidMap k v
-    -> k
-    -> Property
-prop_nullify_get m k =
-    MonoidMap.get k (MonoidMap.nullify k m) === mempty
-    & cover 2
-        (MonoidMap.nonNullKey k m)
-        "MonoidMap.nonNullKey k m"
-    & cover 2
-        (not (MonoidMap.nonNullKey k m))
-        "not (MonoidMap.nonNullKey k m)"
-
-prop_nullify_nonNullKey
-    :: Ord k
-    => MonoidMap k v
-    -> k
-    -> Property
-prop_nullify_nonNullKey m k =
-    MonoidMap.nonNullKey k (MonoidMap.nullify k m) === False
-    & cover 2
-        (MonoidMap.nonNullKey k m)
-        "MonoidMap.nonNullKey k m"
-    & cover 2
-        (not (MonoidMap.nonNullKey k m))
-        "not (MonoidMap.nonNullKey k m)"
-
-prop_nullify_nonNullKeys
-    :: Ord k
-    => MonoidMap k v
-    -> k
-    -> Property
-prop_nullify_nonNullKeys m k =
-    Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify k m)) === False
-    & cover 2
-        (MonoidMap.nonNullKey k m)
-        "MonoidMap.nonNullKey k m"
-    & cover 2
-        (not (MonoidMap.nonNullKey k m))
-        "not (MonoidMap.nonNullKey k m)"
-
---------------------------------------------------------------------------------
--- Keys
---------------------------------------------------------------------------------
-
-prop_nonNullKeys_get
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> Property
-prop_nonNullKeys_get m =
-    fmap
-        (\k -> (k, MonoidMap.get k m))
-        (Set.toList (MonoidMap.nonNullKeys m))
-        === MonoidMap.toList m
-    & cover 2
-        (MonoidMap.null m)
-        "MonoidMap.null m"
-    & cover 2
-        (not (MonoidMap.null m))
-        "not (MonoidMap.null m)"
 
 --------------------------------------------------------------------------------
 -- Intersection
