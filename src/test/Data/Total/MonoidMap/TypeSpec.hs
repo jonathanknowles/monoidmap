@@ -110,6 +110,17 @@ spec = describe "Type properties" $ do
     specLeftReductive (Proxy @Key) (Proxy @(Dual [Natural]))
     specLeftReductive (Proxy @Key) (Proxy @(Dual Text))
 
+    specRightReductive (Proxy @Key) (Proxy @(Set Int))
+    specRightReductive (Proxy @Key) (Proxy @(Set Natural))
+    specRightReductive (Proxy @Key) (Proxy @(Sum Int))
+    specRightReductive (Proxy @Key) (Proxy @(Sum Natural))
+    specRightReductive (Proxy @Key) (Proxy @[Int])
+    specRightReductive (Proxy @Key) (Proxy @[Natural])
+    specRightReductive (Proxy @Key) (Proxy @(Text))
+    specRightReductive (Proxy @Key) (Proxy @(Dual [Int]))
+    specRightReductive (Proxy @Key) (Proxy @(Dual [Natural]))
+    specRightReductive (Proxy @Key) (Proxy @(Dual Text))
+
 type TestConstraints k v =
     ( Arbitrary k
     , Arbitrary v
@@ -353,6 +364,23 @@ specLeftReductive k v = specFor (Proxy @LeftReductive) k v $ do
             @k @v & property
     it "prop_stripPrefix_mappend" $
         prop_stripPrefix_mappend
+            @k @v & property
+
+specRightReductive
+    :: forall k v. (TestConstraints k v, RightReductive v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specRightReductive k v = specFor (Proxy @RightReductive) k v $ do
+
+    it "prop_stripSuffix_isJust" $
+        prop_stripSuffix_isJust
+            @k @v & property
+    it "prop_stripSuffix_get" $
+        prop_stripSuffix_get
+            @k @v & property
+    it "prop_stripSuffix_mappend" $
+        prop_stripSuffix_mappend
             @k @v & property
 
 --------------------------------------------------------------------------------
