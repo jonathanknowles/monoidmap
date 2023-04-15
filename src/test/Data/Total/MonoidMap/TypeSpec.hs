@@ -131,6 +131,16 @@ spec = describe "Type properties" $ do
     specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
     specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
 
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Int))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
+    specRightGCDMonoid (Proxy @Key) (Proxy @[Int])
+    specRightGCDMonoid (Proxy @Key) (Proxy @[Natural])
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Text))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
+    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
+
 type TestConstraints k v =
     ( Arbitrary k
     , Arbitrary v
@@ -402,6 +412,17 @@ specLeftGCDMonoid k v = specFor (Proxy @LeftGCDMonoid) k v $ do
 
     it "prop_commonPrefix_get" $
         prop_commonPrefix_get
+            @k @v & property
+
+specRightGCDMonoid
+    :: forall k v. (TestConstraints k v, RightGCDMonoid v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specRightGCDMonoid k v = specFor (Proxy @RightGCDMonoid) k v $ do
+
+    it "prop_commonSuffix_get" $
+        prop_commonSuffix_get
             @k @v & property
 
 --------------------------------------------------------------------------------
