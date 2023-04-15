@@ -18,6 +18,8 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
+import Data.Kind
+    ( Constraint, Type )
 import Data.Map.Strict
     ( Map )
 import Data.Maybe
@@ -111,17 +113,7 @@ specMonoidNull
     => Proxy k
     -> Proxy v
     -> Spec
-specMonoidNull keyType valueType = do
-
-    let description = mconcat
-            [ "MonoidMap ("
-            , show (typeRep keyType)
-            , ") ("
-            , show (typeRep valueType)
-            , ")"
-            ]
-
-    describe description $ do
+specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
 
         describe "Conversion to and from lists" $ do
             it "prop_fromList_get" $
@@ -1532,6 +1524,22 @@ instance Function Key where
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
+
+specFor
+    :: forall (c :: Type -> Constraint) k v. ()
+    => (Typeable c, Typeable k, Typeable v)
+    => Proxy c
+    -> Proxy k
+    -> Proxy v
+    -> Spec
+    -> Spec
+specFor _pc _pk _pv =
+    describe $ unwords
+        [ "Operations requiring"
+        , show $ typeRep (Proxy @c)
+        , "constraint for type"
+        , show $ typeRep (Proxy @(MonoidMap k v))
+        ]
 
 property :: Testable t => t -> Property
 property = checkCoverage . QC.property
