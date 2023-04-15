@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fmax-simplifier-iterations=2 #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
