@@ -34,35 +34,26 @@ import Data.Text
 import Data.Total.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Typeable
-    ( Typeable, typeRep )
+    ( typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
     ( Natural )
+import Test.Common
+    ( Key, TestConstraints, property )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
     ( Arbitrary (..)
-    , CoArbitrary (..)
     , Fun (..)
-    , Function (..)
     , Gen
     , Property
-    , Testable
     , applyFun
     , applyFun2
-    , checkCoverage
     , choose
-    , coarbitraryIntegral
-    , coarbitraryShow
     , cover
     , expectFailure
-    , functionIntegral
-    , functionShow
-    , listOf
     , oneof
-    , scale
-    , shrinkMapBy
     , (===)
     )
 import Test.QuickCheck.Instances.Natural
@@ -74,9 +65,7 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
-import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
-import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Operations that don't require a particular constraint" $ do
@@ -91,22 +80,6 @@ spec = describe "Operations that don't require a particular constraint" $ do
     specFor (Proxy @Key) (Proxy @(Dual [Int]))
     specFor (Proxy @Key) (Proxy @(Dual [Natural]))
     specFor (Proxy @Key) (Proxy @(Dual Text))
-
-type TestConstraints k v =
-    ( Arbitrary k
-    , Arbitrary v
-    , CoArbitrary k
-    , CoArbitrary v
-    , Eq v
-    , Function k
-    , Function v
-    , MonoidNull v
-    , Ord k
-    , Show k
-    , Show v
-    , Typeable k
-    , Typeable v
-    )
 
 specFor
     :: forall k v. TestConstraints k v
@@ -1399,48 +1372,3 @@ prop_append_get
     -> Property
 prop_append_get m1 m2 k =
     MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
-
---------------------------------------------------------------------------------
--- Arbitrary instances
---------------------------------------------------------------------------------
-
-instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
-    Arbitrary (MonoidMap k v)
-  where
-    arbitrary =
-        fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
-    shrink =
-        shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
-
---------------------------------------------------------------------------------
--- Test types
---------------------------------------------------------------------------------
-
-newtype Key = Key Int
-    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
-
-instance Arbitrary Key where
-    arbitrary = Key <$> choose (0, 15)
-    shrink (Key k) = Key <$> shrink k
-
-instance CoArbitrary Key where
-    coarbitrary = coarbitraryIntegral
-
-instance Function Key where
-    function = functionIntegral
-
-instance Arbitrary Text where
-    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
-
-instance CoArbitrary Text where
-    coarbitrary = coarbitraryShow
-
-instance Function Text where
-    function = functionShow
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-property :: Testable t => t -> Property
-property = checkCoverage . QC.property
