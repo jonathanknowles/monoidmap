@@ -27,7 +27,7 @@ import Data.Map.Strict
 import Data.Monoid
     ( Dual, Sum (..) )
 import Data.Monoid.GCD
-    ( LeftGCDMonoid (..), RightGCDMonoid (..) )
+    ( RightGCDMonoid (..) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
@@ -96,16 +96,6 @@ spec = describe "Type properties" $ do
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
     specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
-
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Int))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @[Int])
-    specLeftGCDMonoid (Proxy @Key) (Proxy @[Natural])
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Text))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
 
     specRightGCDMonoid (Proxy @Key) (Proxy @(Set Int))
     specRightGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
@@ -344,17 +334,6 @@ specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
         it "prop_append_get" $
             prop_append_get
                 @k @v & property
-
-specLeftGCDMonoid
-    :: forall k v. (TestConstraints k v, LeftGCDMonoid v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specLeftGCDMonoid k v = specFor (Proxy @LeftGCDMonoid) k v $ do
-
-    it "prop_commonPrefix_get" $
-        prop_commonPrefix_get
-            @k @v & property
 
 specRightGCDMonoid
     :: forall k v. (TestConstraints k v, RightGCDMonoid v)
@@ -1450,23 +1429,6 @@ prop_append_get m1 m2 k =
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes
 --------------------------------------------------------------------------------
-
-prop_commonPrefix_get
-    :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_commonPrefix_get m1 m2 k =
-    MonoidMap.get k (commonPrefix m1 m2)
-    ===
-    commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
-    & cover 1
-        (MonoidMap.get k (commonPrefix m1 m2) == mempty)
-        "MonoidMap.get k (commonPrefix m1 m2) == mempty"
-    & cover 0.1
-        (MonoidMap.get k (commonPrefix m1 m2) /= mempty)
-        "MonoidMap.get k (commonPrefix m1 m2) /= mempty"
 
 prop_commonSuffix_get
     :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
