@@ -8,7 +8,8 @@
 -- License: Apache-2.0
 --
 module Data.Total.MonoidMap.TypeSpec
-    where
+    ( spec
+    ) where
 
 import Prelude
 
