@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -fmax-simplifier-iterations=2 #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
@@ -20,22 +19,14 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
-import Data.Kind
-    ( Constraint, Type )
 import Data.Map.Strict
     ( Map )
-import Data.Maybe
-    ( isJust )
 import Data.Monoid
     ( Dual, Sum (..) )
-import Data.Monoid.GCD
-    ( LeftGCDMonoid (..), RightGCDMonoid (..) )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Semigroup.Cancellative
-    ( LeftReductive (..), RightReductive (..) )
 import Data.Set
     ( Set )
 import Data.Text
@@ -43,35 +34,26 @@ import Data.Text
 import Data.Total.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Typeable
-    ( Typeable, typeRep )
+    ( typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
     ( Natural )
+import Test.Common
+    ( Key, TestConstraints, property )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
     ( Arbitrary (..)
-    , CoArbitrary (..)
     , Fun (..)
-    , Function (..)
     , Gen
     , Property
-    , Testable
     , applyFun
     , applyFun2
-    , checkCoverage
     , choose
-    , coarbitraryIntegral
-    , coarbitraryShow
     , cover
     , expectFailure
-    , functionIntegral
-    , functionShow
-    , listOf
     , oneof
-    , scale
-    , shrinkMapBy
     , (===)
     )
 import Test.QuickCheck.Instances.Natural
@@ -83,88 +65,28 @@ import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
-import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
-import qualified Test.QuickCheck as QC
 
 spec :: Spec
-spec = describe "Type properties" $ do
+spec = describe "Operations that don't require a particular constraint" $ do
 
-    specMonoidNull (Proxy @Key) (Proxy @(Set Int))
-    specMonoidNull (Proxy @Key) (Proxy @(Set Natural))
-    specMonoidNull (Proxy @Key) (Proxy @(Sum Int))
-    specMonoidNull (Proxy @Key) (Proxy @(Sum Natural))
-    specMonoidNull (Proxy @Key) (Proxy @[Int])
-    specMonoidNull (Proxy @Key) (Proxy @[Natural])
-    specMonoidNull (Proxy @Key) (Proxy @(Text))
-    specMonoidNull (Proxy @Key) (Proxy @(Dual [Int]))
-    specMonoidNull (Proxy @Key) (Proxy @(Dual [Natural]))
-    specMonoidNull (Proxy @Key) (Proxy @(Dual Text))
+    specFor (Proxy @Key) (Proxy @(Set Int))
+    specFor (Proxy @Key) (Proxy @(Set Natural))
+    specFor (Proxy @Key) (Proxy @(Sum Int))
+    specFor (Proxy @Key) (Proxy @(Sum Natural))
+    specFor (Proxy @Key) (Proxy @[Int])
+    specFor (Proxy @Key) (Proxy @[Natural])
+    specFor (Proxy @Key) (Proxy @(Text))
+    specFor (Proxy @Key) (Proxy @(Dual [Int]))
+    specFor (Proxy @Key) (Proxy @(Dual [Natural]))
+    specFor (Proxy @Key) (Proxy @(Dual Text))
 
-    specLeftReductive (Proxy @Key) (Proxy @(Set Int))
-    specLeftReductive (Proxy @Key) (Proxy @(Set Natural))
-    specLeftReductive (Proxy @Key) (Proxy @(Sum Int))
-    specLeftReductive (Proxy @Key) (Proxy @(Sum Natural))
-    specLeftReductive (Proxy @Key) (Proxy @[Int])
-    specLeftReductive (Proxy @Key) (Proxy @[Natural])
-    specLeftReductive (Proxy @Key) (Proxy @(Text))
-    specLeftReductive (Proxy @Key) (Proxy @(Dual [Int]))
-    specLeftReductive (Proxy @Key) (Proxy @(Dual [Natural]))
-    specLeftReductive (Proxy @Key) (Proxy @(Dual Text))
-
-    specRightReductive (Proxy @Key) (Proxy @(Set Int))
-    specRightReductive (Proxy @Key) (Proxy @(Set Natural))
-    specRightReductive (Proxy @Key) (Proxy @(Sum Int))
-    specRightReductive (Proxy @Key) (Proxy @(Sum Natural))
-    specRightReductive (Proxy @Key) (Proxy @[Int])
-    specRightReductive (Proxy @Key) (Proxy @[Natural])
-    specRightReductive (Proxy @Key) (Proxy @(Text))
-    specRightReductive (Proxy @Key) (Proxy @(Dual [Int]))
-    specRightReductive (Proxy @Key) (Proxy @(Dual [Natural]))
-    specRightReductive (Proxy @Key) (Proxy @(Dual Text))
-
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Int))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @[Int])
-    specLeftGCDMonoid (Proxy @Key) (Proxy @[Natural])
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Text))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
-
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Int))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
-    specRightGCDMonoid (Proxy @Key) (Proxy @[Int])
-    specRightGCDMonoid (Proxy @Key) (Proxy @[Natural])
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Text))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
-    specRightGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
-
-type TestConstraints k v =
-    ( Arbitrary k
-    , Arbitrary v
-    , CoArbitrary k
-    , CoArbitrary v
-    , Eq v
-    , Function k
-    , Function v
-    , MonoidNull v
-    , Ord k
-    , Show k
-    , Show v
-    , Typeable k
-    , Typeable v
-    )
-
-specMonoidNull
-    :: forall k v. (TestConstraints k v, MonoidNull v)
+specFor
+    :: forall k v. TestConstraints k v
     => Proxy k
     -> Proxy v
     -> Spec
-specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
+specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     describe "Conversion to and from lists" $ do
         it "prop_fromList_get" $
@@ -370,62 +292,6 @@ specMonoidNull k v = specFor (Proxy @MonoidNull) k v $ do
         it "prop_append_get" $
             prop_append_get
                 @k @v & property
-
-specLeftReductive
-    :: forall k v. (TestConstraints k v, LeftReductive v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specLeftReductive k v = specFor (Proxy @LeftReductive) k v $ do
-
-    it "prop_stripPrefix_isJust" $
-        prop_stripPrefix_isJust
-            @k @v & property
-    it "prop_stripPrefix_get" $
-        prop_stripPrefix_get
-            @k @v & property
-    it "prop_stripPrefix_mappend" $
-        prop_stripPrefix_mappend
-            @k @v & property
-
-specRightReductive
-    :: forall k v. (TestConstraints k v, RightReductive v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specRightReductive k v = specFor (Proxy @RightReductive) k v $ do
-
-    it "prop_stripSuffix_isJust" $
-        prop_stripSuffix_isJust
-            @k @v & property
-    it "prop_stripSuffix_get" $
-        prop_stripSuffix_get
-            @k @v & property
-    it "prop_stripSuffix_mappend" $
-        prop_stripSuffix_mappend
-            @k @v & property
-
-specLeftGCDMonoid
-    :: forall k v. (TestConstraints k v, LeftGCDMonoid v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specLeftGCDMonoid k v = specFor (Proxy @LeftGCDMonoid) k v $ do
-
-    it "prop_commonPrefix_get" $
-        prop_commonPrefix_get
-            @k @v & property
-
-specRightGCDMonoid
-    :: forall k v. (TestConstraints k v, RightGCDMonoid v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specRightGCDMonoid k v = specFor (Proxy @RightGCDMonoid) k v $ do
-
-    it "prop_commonSuffix_get" $
-        prop_commonSuffix_get
-            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -1506,186 +1372,3 @@ prop_append_get
     -> Property
 prop_append_get m1 m2 k =
     MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
-
---------------------------------------------------------------------------------
--- Prefixes and suffixes
---------------------------------------------------------------------------------
-
-prop_stripPrefix_isJust
-    :: (Ord k, MonoidNull v, LeftReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> Property
-prop_stripPrefix_isJust m1 m2 =
-    isJust (stripPrefix m1 m2) === m1 `isPrefixOf` m2
-    & cover 1
-        (m1 `isPrefixOf` m2)
-        "m1 `isPrefixOf` m2"
-
-prop_stripSuffix_isJust
-    :: (Ord k, MonoidNull v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> Property
-prop_stripSuffix_isJust m1 m2 =
-    isJust (stripSuffix m1 m2) === m1 `isSuffixOf` m2
-    & cover 1
-        (m1 `isSuffixOf` m2)
-        "m1 `isSuffixOf` m2"
-
-prop_stripPrefix_get
-    :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_stripPrefix_get m1 m2 k = QC.property $
-    all
-        (\r ->
-            Just (MonoidMap.get k r)
-            ==
-            stripPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
-        )
-        (stripPrefix m1 m2)
-    & cover 1
-        (isJust (stripPrefix m1 m2))
-        "isJust (stripPrefix m1 m2)"
-
-prop_stripSuffix_get
-    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_stripSuffix_get m1 m2 k = QC.property $
-    all
-        (\r ->
-            Just (MonoidMap.get k r)
-            ==
-            stripSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
-        )
-        (stripSuffix m1 m2)
-    & cover 1
-        (isJust (stripSuffix m1 m2))
-        "isJust (stripSuffix m1 m2)"
-
-prop_stripPrefix_mappend
-    :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> Property
-prop_stripPrefix_mappend m1 m2 = QC.property $
-    all
-        (\r -> m1 <> r == m2)
-        (stripPrefix m1 m2)
-    & cover 1
-        (isJust (stripPrefix m1 m2))
-        "isJust (stripPrefix m1 m2)"
-
-prop_stripSuffix_mappend
-    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> Property
-prop_stripSuffix_mappend m1 m2 = QC.property $
-    all
-        (\r -> r <> m1 == m2)
-        (stripSuffix m1 m2)
-    & cover 1
-        (isJust (stripSuffix m1 m2))
-        "isJust (stripSuffix m1 m2)"
-
-prop_commonPrefix_get
-    :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_commonPrefix_get m1 m2 k =
-    MonoidMap.get k (commonPrefix m1 m2)
-    ===
-    commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
-    & cover 1
-        (MonoidMap.get k (commonPrefix m1 m2) == mempty)
-        "MonoidMap.get k (commonPrefix m1 m2) == mempty"
-    & cover 0.1
-        (MonoidMap.get k (commonPrefix m1 m2) /= mempty)
-        "MonoidMap.get k (commonPrefix m1 m2) /= mempty"
-
-prop_commonSuffix_get
-    :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_commonSuffix_get m1 m2 k =
-    MonoidMap.get k (commonSuffix m1 m2)
-    ===
-    commonSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
-    & cover 1
-        (MonoidMap.get k (commonSuffix m1 m2) == mempty)
-        "MonoidMap.get k (commonSuffix m1 m2) == mempty"
-    & cover 0.1
-        (MonoidMap.get k (commonSuffix m1 m2) /= mempty)
-        "MonoidMap.get k (commonSuffix m1 m2) /= mempty"
-
---------------------------------------------------------------------------------
--- Arbitrary instances
---------------------------------------------------------------------------------
-
-instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
-    Arbitrary (MonoidMap k v)
-  where
-    arbitrary =
-        fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
-    shrink =
-        shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
-
---------------------------------------------------------------------------------
--- Test types
---------------------------------------------------------------------------------
-
-newtype Key = Key Int
-    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
-
-instance Arbitrary Key where
-    arbitrary = Key <$> choose (0, 15)
-    shrink (Key k) = Key <$> shrink k
-
-instance CoArbitrary Key where
-    coarbitrary = coarbitraryIntegral
-
-instance Function Key where
-    function = functionIntegral
-
-instance Arbitrary Text where
-    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
-
-instance CoArbitrary Text where
-    coarbitrary = coarbitraryShow
-
-instance Function Text where
-    function = functionShow
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-specFor
-    :: forall (c :: Type -> Constraint) k v. ()
-    => (Typeable c, Typeable k, Typeable v)
-    => Proxy c
-    -> Proxy k
-    -> Proxy v
-    -> Spec
-    -> Spec
-specFor _pc _pk _pv =
-    describe $ unwords
-        [ "Operations requiring"
-        , show $ typeRep (Proxy @c)
-        , "constraint for type"
-        , show $ typeRep (Proxy @(MonoidMap k v))
-        ]
-
-property :: Testable t => t -> Property
-property = checkCoverage . QC.property
