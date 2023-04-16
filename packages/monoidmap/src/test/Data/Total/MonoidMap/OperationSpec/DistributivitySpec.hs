@@ -11,7 +11,7 @@ module Data.Total.MonoidMap.OperationSpec.DistributivitySpec
     ) where
 
 import Prelude hiding
-    ( gcd )
+    ( gcd, lcm )
 
 import Control.Monad
     ( forM_ )
@@ -19,6 +19,8 @@ import Data.Function
     ( (&) )
 import Data.Monoid.GCD
     ( GCDMonoid (gcd) )
+import Data.Monoid.LCM
+    ( LCMMonoid (lcm) )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -30,6 +32,7 @@ import Test.Common
     , makeSpec
     , property
     , testInstancesGCDMonoid
+    , testInstancesLCMMonoid
     , testInstancesMonoidNull
     )
 import Test.Hspec
@@ -44,6 +47,8 @@ spec = describe "Distributivity" $ do
         \(TestInstance p) -> specMonoidNull (Proxy @Key) p
     forM_ testInstancesGCDMonoid $
         \(TestInstance p) -> specGCDMonoid (Proxy @Key) p
+    forM_ testInstancesLCMMonoid $
+        \(TestInstance p) -> specLCMMonoid (Proxy @Key) p
 
 specMonoidNull
     :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
@@ -57,6 +62,13 @@ specGCDMonoid
 specGCDMonoid = makeSpec $ do
     it "prop_distributive_get_gcd" $
         prop_distributive_get_gcd
+            @k @v & property
+
+specLCMMonoid
+    :: forall k v. (Test k v, LCMMonoid v) => Proxy k -> Proxy v -> Spec
+specLCMMonoid = makeSpec $ do
+    it "prop_distributive_get_lcm" $
+        prop_distributive_get_lcm
             @k @v & property
 
 prop_distributive_get
@@ -99,3 +111,11 @@ prop_distributive_get_gcd
     -> MonoidMap k v
     -> Property
 prop_distributive_get_gcd = prop_distributive_get gcd gcd
+
+prop_distributive_get_lcm
+    :: (Test k v, LCMMonoid v)
+    => k
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_distributive_get_lcm = prop_distributive_get lcm lcm
