@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.OperationSpec.AppendSpec
+module Data.Total.MonoidMap.OperationSpec.DistributivitySpec
     ( spec
     ) where
 
@@ -36,7 +36,7 @@ import Test.QuickCheck
 import qualified Data.Total.MonoidMap as MonoidMap
 
 spec :: Spec
-spec = describe "Appending" $ do
+spec = describe "Distributivity" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 

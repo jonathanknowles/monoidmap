@@ -47,6 +47,8 @@ import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
     ( Natural )
+import Test.Hspec
+    ( Spec, describe )
 import Test.QuickCheck
     ( Arbitrary (..)
     , CoArbitrary (..)
@@ -68,8 +70,6 @@ import Test.QuickCheck.Instances.Natural
 
 import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
-import Test.Hspec
-    ( Spec, describe )
 import qualified Test.QuickCheck as QC
 
 --------------------------------------------------------------------------------
