@@ -19,7 +19,7 @@ import Data.Function
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
-    ( MonoidMap )
+    ( MonoidMap, get )
 import Test.Common
     ( Key
     , Test
@@ -31,9 +31,7 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Property, (===) )
-
-import qualified Data.Total.MonoidMap as MonoidMap
+    ( Property, cover, (===) )
 
 spec :: Spec
 spec = describe "Distributivity" $ do
@@ -43,11 +41,39 @@ spec = describe "Distributivity" $ do
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do
 
-    it "prop_append_get" $
-        prop_append_get
+    it "prop_distributive_get_mappend" $
+        prop_distributive_get_mappend
             @k @v & property
 
-prop_append_get
-    :: Test k v => MonoidMap k v -> MonoidMap k v -> k -> Property
-prop_append_get m1 m2 k =
-    MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
+prop_distributive_get
+    :: Test k v
+    => (MonoidMap k v -> MonoidMap k v -> MonoidMap k v)
+    -> (v -> v -> v)
+    -> k
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_distributive_get f g k m1 m2 =
+    get k (f m1 m2) === g (get k m1) (get k m2)
+    & cover 2
+        (get k (f m1 m2) == mempty)
+        "get k (f m1 m2) == mempty"
+    & cover 2
+        (get k (f m1 m2) /= mempty)
+        "get k (f m1 m2) /= mempty"
+    & cover 2
+        (get k m1 == mempty && get k m2 == mempty)
+        "get k m1 == mempty && get k m2 == mempty"
+    & cover 2
+        (get k m1 == mempty && get k m2 /= mempty)
+        "get k m1 == mempty && get k m2 /= mempty"
+    & cover 2
+        (get k m1 /= mempty && get k m2 == mempty)
+        "get k m1 /= mempty && get k m2 == mempty"
+    & cover 2
+        (get k m1 /= mempty && get k m2 /= mempty)
+        "get k m1 /= mempty && get k m2 /= mempty"
+
+prop_distributive_get_mappend
+    :: Test k v => k -> MonoidMap k v -> MonoidMap k v -> Property
+prop_distributive_get_mappend = prop_distributive_get mappend mappend
