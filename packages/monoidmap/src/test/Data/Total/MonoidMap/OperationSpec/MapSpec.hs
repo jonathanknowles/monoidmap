@@ -26,7 +26,7 @@ import Data.Typeable
     ( typeRep )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesMonoidNull
@@ -45,7 +45,7 @@ spec = describe "Mapping" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_map_asList" $
@@ -75,7 +75,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 --------------------------------------------------------------------------------
 
 prop_map_asList
-    :: TestConstraints k v
+    :: Test k v
     => Fun v v
     -> MonoidMap k v
     -> Property
@@ -88,7 +88,7 @@ prop_map_asList (applyFun -> f) m =
     n = MonoidMap.map f m
 
 prop_map_get
-    :: TestConstraints k v
+    :: Test k v
     => Fun v v
     -> k
     -> MonoidMap k v
@@ -105,7 +105,7 @@ prop_map_get (applyFun -> f) k m =
         "MonoidMap.nonNullKey k m"
 
 prop_map_get_total
-    :: forall k v. TestConstraints k v
+    :: forall k v. Test k v
     => Fun v v
     -> k
     -> MonoidMap k v
@@ -126,7 +126,7 @@ prop_map_get_total (applyFun -> g) k m =
         | otherwise   = g v
 
 prop_map_get_total_failure
-    :: TestConstraints k v
+    :: Test k v
     => Fun v v
     -> k
     -> MonoidMap k v
@@ -136,7 +136,7 @@ prop_map_get_total_failure (applyFun -> f) k m =
     MonoidMap.get k (MonoidMap.map f m) === f (MonoidMap.get k m)
 
 prop_mapKeys_asList
-    :: TestConstraints k v
+    :: Test k v
     => Fun k k
     -> MonoidMap k v
     -> Property
@@ -149,7 +149,7 @@ prop_mapKeys_asList (applyFun -> f) m =
     n = MonoidMap.mapKeys f m
 
 prop_mapKeys_get
-    :: TestConstraints k v
+    :: Test k v
     => Fun k k
     -> k
     -> MonoidMap k v
@@ -168,7 +168,7 @@ prop_mapKeys_get (applyFun -> f) k m =
         "MonoidMap.nonNullKey k (MonoidMap.mapKeys f m)"
 
 prop_mapKeysWith_asList
-    :: TestConstraints k v
+    :: Test k v
     => Fun (v, v) v
     -> Fun k k
     -> MonoidMap k v

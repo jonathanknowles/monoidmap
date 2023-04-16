@@ -26,7 +26,7 @@ import GHC.Exts
     ( IsList (..) )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesMonoidNull
@@ -44,7 +44,7 @@ spec = describe "Filtering" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_filter_get" $
@@ -67,7 +67,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_filter_get
-    :: TestConstraints k v => Fun v Bool -> k -> MonoidMap k v -> Property
+    :: Test k v => Fun v Bool -> k -> MonoidMap k v -> Property
 prop_filter_get (applyFun -> f) k m =
     MonoidMap.get k (MonoidMap.filter f m)
         ===
@@ -86,7 +86,7 @@ prop_filter_get (applyFun -> f) k m =
         "MonoidMap.nonNullKey k m && not (f (MonoidMap.get k m))"
 
 prop_filter_asList
-    :: TestConstraints k v => Fun v Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun v Bool -> MonoidMap k v -> Property
 prop_filter_asList (applyFun -> f) m =
     n === fromList (List.filter (f . snd) (toList m))
     & cover 2
@@ -99,7 +99,7 @@ prop_filter_asList (applyFun -> f) m =
     n = MonoidMap.filter f m
 
 prop_filterKeys_get
-    :: TestConstraints k v => Fun k Bool -> k -> MonoidMap k v -> Property
+    :: Test k v => Fun k Bool -> k -> MonoidMap k v -> Property
 prop_filterKeys_get (applyFun -> f) k m =
     MonoidMap.get k (MonoidMap.filterKeys f m)
         ===
@@ -118,7 +118,7 @@ prop_filterKeys_get (applyFun -> f) k m =
         "MonoidMap.nonNullKey k m && not (f k)"
 
 prop_filterKeys_asList
-    :: TestConstraints k v => Fun k Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun k Bool -> MonoidMap k v -> Property
 prop_filterKeys_asList (applyFun -> f) m =
     n === MonoidMap.fromList (List.filter (f . fst) (toList m))
     & cover 2
@@ -131,7 +131,7 @@ prop_filterKeys_asList (applyFun -> f) m =
     n = MonoidMap.filterKeys f m
 
 prop_filterWithKey_get
-    :: TestConstraints k v => Fun (k, v) Bool -> k -> MonoidMap k v -> Property
+    :: Test k v => Fun (k, v) Bool -> k -> MonoidMap k v -> Property
 prop_filterWithKey_get (applyFun2 -> f) k m =
     MonoidMap.get k (MonoidMap.filterWithKey f m)
         ===
@@ -150,7 +150,7 @@ prop_filterWithKey_get (applyFun2 -> f) k m =
         "MonoidMap.nonNullKey k m && not (f k (MonoidMap.get k m))"
 
 prop_filterWithKey_asList
-    :: TestConstraints k v => Fun (k, v) Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun (k, v) Bool -> MonoidMap k v -> Property
 prop_filterWithKey_asList (applyFun2 -> f) m =
     n === MonoidMap.fromList (List.filter (uncurry f) (toList m))
     & cover 2

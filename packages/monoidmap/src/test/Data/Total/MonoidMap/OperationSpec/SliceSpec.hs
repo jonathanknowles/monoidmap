@@ -30,7 +30,7 @@ import GHC.Exts
     ( IsList (..) )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesMonoidNull
@@ -47,7 +47,7 @@ spec = describe "Slicing" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_take_toList_fromList" $
@@ -84,7 +84,7 @@ instance (Arbitrary k, Arbitrary v, MonoidNull v, Ord k) =>
             ]
 
 prop_take_toList_fromList
-    :: TestConstraints k v => Slice k v -> Property
+    :: Test k v => Slice k v -> Property
 prop_take_toList_fromList (Slice i m) =
     MonoidMap.take i m
         === (fromList . Prelude.take i . toList) m
@@ -102,7 +102,7 @@ prop_take_toList_fromList (Slice i m) =
         "0 < nonNullCount m && nonNullCount m < i"
 
 prop_drop_toList_fromList
-    :: TestConstraints k v => Slice k v -> Property
+    :: Test k v => Slice k v -> Property
 prop_drop_toList_fromList (Slice i m) =
     MonoidMap.drop i m
         === (fromList . Prelude.drop i . toList) m
@@ -120,7 +120,7 @@ prop_drop_toList_fromList (Slice i m) =
         "0 < nonNullCount m && nonNullCount m < i"
 
 prop_splitAt_toList_fromList
-    :: TestConstraints k v => Slice k v -> Property
+    :: Test k v => Slice k v -> Property
 prop_splitAt_toList_fromList (Slice i m) =
     MonoidMap.splitAt i m
         === (bimap fromList fromList . Prelude.splitAt i . toList) m

@@ -30,7 +30,7 @@ import Data.Typeable
     ( typeRep )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesLeftGCDMonoid
@@ -53,10 +53,7 @@ spec = describe "Prefixes" $ do
         \(TestInstance p) -> specLeftGCDMonoid (Proxy @Key) p
 
 specLeftReductive
-    :: forall k v. (TestConstraints k v, LeftReductive v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
+    :: forall k v. (Test k v, LeftReductive v) => Proxy k -> Proxy v -> Spec
 specLeftReductive _k _v =
     describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
         it "prop_stripPrefix_isJust" $
@@ -70,10 +67,7 @@ specLeftReductive _k _v =
                 @k @v & property
 
 specLeftGCDMonoid
-    :: forall k v. (TestConstraints k v, LeftGCDMonoid v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
+    :: forall k v. (Test k v, LeftGCDMonoid v) => Proxy k -> Proxy v -> Spec
 specLeftGCDMonoid _k _v =
     describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
         it "prop_commonPrefix_get" $
@@ -81,7 +75,7 @@ specLeftGCDMonoid _k _v =
                 @k @v & property
 
 prop_stripPrefix_isJust
-    :: (TestConstraints k v, LeftReductive v)
+    :: (Test k v, LeftReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -92,7 +86,7 @@ prop_stripPrefix_isJust m1 m2 =
         "m1 `isPrefixOf` m2"
 
 prop_stripPrefix_get
-    :: (TestConstraints k v, LeftReductive v)
+    :: (Test k v, LeftReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k
@@ -110,7 +104,7 @@ prop_stripPrefix_get m1 m2 k = QC.property $
         "isJust (stripPrefix m1 m2)"
 
 prop_stripPrefix_mappend
-    :: (TestConstraints k v, LeftReductive v)
+    :: (Test k v, LeftReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -123,7 +117,7 @@ prop_stripPrefix_mappend m1 m2 = QC.property $
         "isJust (stripPrefix m1 m2)"
 
 prop_commonPrefix_get
-    :: (TestConstraints k v, LeftGCDMonoid v)
+    :: (Test k v, LeftGCDMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k

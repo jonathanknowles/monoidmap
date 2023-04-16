@@ -30,7 +30,7 @@ import Data.Typeable
     ( typeRep )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesRightGCDMonoid
@@ -53,10 +53,7 @@ spec = describe "Suffixes" $ do
         \(TestInstance p) -> specRightGCDMonoid (Proxy @Key) p
 
 specRightReductive
-    :: forall k v. (TestConstraints k v, RightReductive v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
+    :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
 specRightReductive _k _v =
     describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
         it "prop_stripSuffix_isJust" $
@@ -70,10 +67,7 @@ specRightReductive _k _v =
                 @k @v & property
 
 specRightGCDMonoid
-    :: forall k v. (TestConstraints k v, RightGCDMonoid v)
-    => Proxy k
-    -> Proxy v
-    -> Spec
+    :: forall k v. (Test k v, RightGCDMonoid v) => Proxy k -> Proxy v -> Spec
 specRightGCDMonoid _k _v =
     describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
         it "prop_commonSuffix_get" $
@@ -81,7 +75,7 @@ specRightGCDMonoid _k _v =
                 @k @v & property
 
 prop_stripSuffix_isJust
-    :: (TestConstraints k v, RightReductive v)
+    :: (Test k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -92,7 +86,7 @@ prop_stripSuffix_isJust m1 m2 =
         "m1 `isSuffixOf` m2"
 
 prop_stripSuffix_get
-    :: (TestConstraints k v, RightReductive v)
+    :: (Test k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k
@@ -110,7 +104,7 @@ prop_stripSuffix_get m1 m2 k = QC.property $
         "isJust (stripSuffix m1 m2)"
 
 prop_stripSuffix_mappend
-    :: (TestConstraints k v, RightReductive v)
+    :: (Test k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -123,7 +117,7 @@ prop_stripSuffix_mappend m1 m2 = QC.property $
         "isJust (stripSuffix m1 m2)"
 
 prop_commonSuffix_get
-    :: (TestConstraints k v, RightGCDMonoid v)
+    :: (Test k v, RightGCDMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k

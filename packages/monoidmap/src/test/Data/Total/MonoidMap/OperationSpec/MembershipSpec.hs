@@ -24,7 +24,7 @@ import Data.Typeable
     ( typeRep )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesMonoidNull
@@ -42,7 +42,7 @@ spec = describe "Membership" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_nullify_get" $
@@ -59,7 +59,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_nullify_get
-    :: TestConstraints k v => MonoidMap k v -> k -> Property
+    :: Test k v => MonoidMap k v -> k -> Property
 prop_nullify_get m k =
     MonoidMap.get k (MonoidMap.nullify k m) === mempty
     & cover 2
@@ -70,7 +70,7 @@ prop_nullify_get m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_nullify_nonNullKey
-    :: TestConstraints k v => MonoidMap k v -> k -> Property
+    :: Test k v => MonoidMap k v -> k -> Property
 prop_nullify_nonNullKey m k =
     MonoidMap.nonNullKey k (MonoidMap.nullify k m) === False
     & cover 2
@@ -81,7 +81,7 @@ prop_nullify_nonNullKey m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_nullify_nonNullKeys
-    :: TestConstraints k v => MonoidMap k v -> k -> Property
+    :: Test k v => MonoidMap k v -> k -> Property
 prop_nullify_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify k m)) === False
     & cover 2
@@ -92,7 +92,7 @@ prop_nullify_nonNullKeys m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_nonNullKeys_get
-    :: TestConstraints k v => MonoidMap k v -> Property
+    :: Test k v => MonoidMap k v -> Property
 prop_nonNullKeys_get m =
     fmap
         (\k -> (k, MonoidMap.get k m))

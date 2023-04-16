@@ -10,7 +10,7 @@
 --
 module Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (..)
     , testInstancesMonoidNull
     , testInstancesLeftReductive
@@ -111,7 +111,7 @@ instance Function Key where
 -- Test constraints
 --------------------------------------------------------------------------------
 
-type TestConstraints k v = (TestKey k, TestValue v)
+type Test k v = (TestKey k, TestValue v)
 
 type TestKey k =
     ( Arbitrary k
