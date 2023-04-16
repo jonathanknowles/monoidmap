@@ -18,8 +18,6 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -47,11 +45,7 @@ spec = describe "Intersection" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
+specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_intersectionWith_get" $
@@ -68,7 +62,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_intersectionWith_get
-    :: (Ord k, Eq v, Show v, MonoidNull v)
+    :: TestConstraints k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
@@ -107,7 +101,7 @@ prop_intersectionWith_get (applyFun2 -> f) m1 m2 k =
         MonoidMap.intersectionWith f m1 m2
 
 prop_intersectionWith_get_total
-    :: (Ord k, Eq v, Show v, MonoidNull v)
+    :: TestConstraints k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
@@ -148,7 +142,7 @@ prop_intersectionWith_get_total (applyFun2 -> f0) m1 m2 k =
         | otherwise = f0 v1 v2
 
 prop_intersectionWith_get_total_failure
-    :: (Ord k, Eq v, Show v, MonoidNull v)
+    :: TestConstraints k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
@@ -161,7 +155,7 @@ prop_intersectionWith_get_total_failure (applyFun2 -> f) m1 m2 k =
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
 
 prop_intersectionWith_intersectionWithA
-    :: (Ord k, Show k, Eq v, Show v, MonoidNull v)
+    :: TestConstraints k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v

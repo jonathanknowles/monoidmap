@@ -14,8 +14,6 @@ import Prelude
 
 import Data.Function
     ( (&) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -44,11 +42,7 @@ spec = describe "Singletons" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
+specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_singleton_get" $
@@ -74,10 +68,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_singleton_get
-    :: (Ord k, Eq v, MonoidNull v, Show v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_get k v =
     MonoidMap.get k (MonoidMap.singleton k v) === v
     & cover 2
@@ -88,10 +79,7 @@ prop_singleton_get k v =
         "v /= mempty"
 
 prop_singleton_nonNullKey
-    :: (Ord k, Eq v, MonoidNull v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_nonNullKey k v =
     MonoidMap.nonNullKey k (MonoidMap.singleton k v) === (v /= mempty)
     & cover 2
@@ -102,10 +90,7 @@ prop_singleton_nonNullKey k v =
         "v /= mempty"
 
 prop_singleton_nonNullKeys
-    :: (Ord k, Show k, Eq v, MonoidNull v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_nonNullKeys k v =
     MonoidMap.nonNullKeys (MonoidMap.singleton k v) ===
         (if v == mempty then Set.empty else Set.singleton k)
@@ -117,10 +102,7 @@ prop_singleton_nonNullKeys k v =
         "v /= mempty"
 
 prop_singleton_null
-    :: (Ord k, Eq v, MonoidNull v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_null k v =
     MonoidMap.null (MonoidMap.singleton k v) === (v == mempty)
     & cover 2
@@ -131,10 +113,7 @@ prop_singleton_null k v =
         "v /= mempty"
 
 prop_singleton_nullify
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_nullify k v =
     MonoidMap.nullify k (MonoidMap.singleton k v) === mempty
     & cover 2
@@ -145,10 +124,7 @@ prop_singleton_nullify k v =
         "v /= mempty"
 
 prop_singleton_nonNullCount
-    :: (Ord k, Eq v, MonoidNull v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_nonNullCount k v =
     nonNullCount (MonoidMap.singleton k v) ===
         (if v == mempty then 0 else 1)
@@ -160,10 +136,7 @@ prop_singleton_nonNullCount k v =
         "v /= mempty"
 
 prop_singleton_toList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => k
-    -> v
-    -> Property
+    :: TestConstraints k v => k -> v -> Property
 prop_singleton_toList k v =
     MonoidMap.toList (MonoidMap.singleton k v) ===
         [(k, v) | v /= mempty]
