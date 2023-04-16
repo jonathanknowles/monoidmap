@@ -18,6 +18,7 @@ module Test.Common
     , testInstancesLeftGCDMonoid
     , testInstancesRightGCDMonoid
     , testInstancesGCDMonoid
+    , testInstancesLCMMonoid
     , makeSpec
     , property
     ) where
@@ -30,6 +31,8 @@ import Data.Monoid
     ( Dual, Sum (..) )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, RightGCDMonoid )
+import Data.Monoid.LCM
+    ( LCMMonoid )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
@@ -213,6 +216,13 @@ testInstancesRightGCDMonoid =
 
 testInstancesGCDMonoid :: [TestInstance GCDMonoid]
 testInstancesGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    ]
+
+testInstancesLCMMonoid :: [TestInstance LCMMonoid]
+testInstancesLCMMonoid =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Natural))
