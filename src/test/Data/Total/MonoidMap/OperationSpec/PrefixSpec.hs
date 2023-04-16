@@ -20,8 +20,6 @@ import Data.Maybe
     ( isJust )
 import Data.Monoid.GCD
     ( LeftGCDMonoid (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
@@ -83,7 +81,7 @@ specLeftGCDMonoid _k _v =
                 @k @v & property
 
 prop_stripPrefix_isJust
-    :: (Ord k, MonoidNull v, LeftReductive v)
+    :: (TestConstraints k v, LeftReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -94,7 +92,7 @@ prop_stripPrefix_isJust m1 m2 =
         "m1 `isPrefixOf` m2"
 
 prop_stripPrefix_get
-    :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
+    :: (TestConstraints k v, LeftReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k
@@ -112,7 +110,7 @@ prop_stripPrefix_get m1 m2 k = QC.property $
         "isJust (stripPrefix m1 m2)"
 
 prop_stripPrefix_mappend
-    :: (Ord k, Eq v, MonoidNull v, LeftReductive v)
+    :: (TestConstraints k v, LeftReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -125,7 +123,7 @@ prop_stripPrefix_mappend m1 m2 = QC.property $
         "isJust (stripPrefix m1 m2)"
 
 prop_commonPrefix_get
-    :: (Ord k, Eq v, Show v, MonoidNull v, LeftGCDMonoid v)
+    :: (TestConstraints k v, LeftGCDMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k

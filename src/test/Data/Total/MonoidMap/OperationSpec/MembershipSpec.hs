@@ -16,8 +16,6 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -44,11 +42,7 @@ spec = describe "Membership" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
+specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_nullify_get" $
@@ -65,10 +59,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_nullify_get
-    :: (Ord k, Eq v, Monoid v, Show v)
-    => MonoidMap k v
-    -> k
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> Property
 prop_nullify_get m k =
     MonoidMap.get k (MonoidMap.nullify k m) === mempty
     & cover 2
@@ -79,10 +70,7 @@ prop_nullify_get m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_nullify_nonNullKey
-    :: Ord k
-    => MonoidMap k v
-    -> k
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> Property
 prop_nullify_nonNullKey m k =
     MonoidMap.nonNullKey k (MonoidMap.nullify k m) === False
     & cover 2
@@ -93,10 +81,7 @@ prop_nullify_nonNullKey m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_nullify_nonNullKeys
-    :: Ord k
-    => MonoidMap k v
-    -> k
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> Property
 prop_nullify_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys (MonoidMap.nullify k m)) === False
     & cover 2
@@ -107,9 +92,7 @@ prop_nullify_nonNullKeys m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_nonNullKeys_get
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> Property
 prop_nonNullKeys_get m =
     fmap
         (\k -> (k, MonoidMap.get k m))

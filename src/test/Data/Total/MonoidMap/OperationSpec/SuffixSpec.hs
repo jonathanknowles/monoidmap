@@ -20,8 +20,6 @@ import Data.Maybe
     ( isJust )
 import Data.Monoid.GCD
     ( RightGCDMonoid (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
@@ -83,7 +81,7 @@ specRightGCDMonoid _k _v =
                 @k @v & property
 
 prop_stripSuffix_isJust
-    :: (Ord k, MonoidNull v, RightReductive v)
+    :: (TestConstraints k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -94,7 +92,7 @@ prop_stripSuffix_isJust m1 m2 =
         "m1 `isSuffixOf` m2"
 
 prop_stripSuffix_get
-    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
+    :: (TestConstraints k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k
@@ -112,7 +110,7 @@ prop_stripSuffix_get m1 m2 k = QC.property $
         "isJust (stripSuffix m1 m2)"
 
 prop_stripSuffix_mappend
-    :: (Ord k, Eq v, MonoidNull v, RightReductive v)
+    :: (TestConstraints k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
@@ -125,7 +123,7 @@ prop_stripSuffix_mappend m1 m2 = QC.property $
         "isJust (stripSuffix m1 m2)"
 
 prop_commonSuffix_get
-    :: (Ord k, Eq v, Show v, MonoidNull v, RightGCDMonoid v)
+    :: (TestConstraints k v, RightGCDMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> k

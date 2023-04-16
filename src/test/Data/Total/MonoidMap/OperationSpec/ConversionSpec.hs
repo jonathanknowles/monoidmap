@@ -18,8 +18,6 @@ import Data.Function
     ( (&) )
 import Data.Map.Strict
     ( Map )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -49,11 +47,7 @@ spec = describe "Conversions" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
+specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     describe "Conversion to and from lists" $ do
@@ -89,10 +83,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 --------------------------------------------------------------------------------
 
 prop_fromList_get
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => [(k, v)]
-    -> k
-    -> Property
+    :: TestConstraints k v => [(k, v)] -> k -> Property
 prop_fromList_get kvs k =
     MonoidMap.get k (MonoidMap.fromList kvs)
         ===
@@ -114,9 +105,7 @@ prop_fromList_get kvs k =
         length $ filter ((== k) . fst) kvs
 
 prop_fromList_toMap
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => [(k, v)]
-    -> Property
+    :: TestConstraints k v => [(k, v)] -> Property
 prop_fromList_toMap kvs =
     MonoidMap.toMap m === Map.filter (/= mempty) o
     & cover 2
@@ -130,9 +119,7 @@ prop_fromList_toMap kvs =
     o = Map.fromListWith (flip (<>)) kvs
 
 prop_fromList_toList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => [(k, v)]
-    -> Property
+    :: TestConstraints k v => [(k, v)] -> Property
 prop_fromList_toList kvs =
     MonoidMap.toList m === Map.toList (Map.filter (/= mempty) o)
     & cover 2
@@ -146,9 +133,7 @@ prop_fromList_toList kvs =
     o = Map.fromListWith (flip (<>)) kvs
 
 prop_toList_fromList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> Property
 prop_toList_fromList m =
     MonoidMap.fromList (MonoidMap.toList m) === m
     & cover 2
@@ -156,9 +141,7 @@ prop_toList_fromList m =
         "MonoidMap.nonNull m"
 
 prop_toList_sort
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> Property
 prop_toList_sort m =
     List.sortOn fst (MonoidMap.toList m) === MonoidMap.toList m
     & cover 2
@@ -166,11 +149,7 @@ prop_toList_sort m =
         "MonoidMap.nonNull m"
 
 prop_fromListWith_get
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun (v, v) v
-    -> [(k, v)]
-    -> k
-    -> Property
+    :: TestConstraints k v => Fun (v, v) v -> [(k, v)] -> k -> Property
 prop_fromListWith_get (applyFun2 -> f) kvs k =
     MonoidMap.get k (MonoidMap.fromListWith f kvs)
         ===
@@ -198,9 +177,7 @@ prop_fromListWith_get (applyFun2 -> f) kvs k =
 --------------------------------------------------------------------------------
 
 prop_fromMap_toMap
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Map k v
-    -> Property
+    :: TestConstraints k v => Map k v -> Property
 prop_fromMap_toMap o =
     MonoidMap.toMap m === Map.filter (/= mempty) o
     & cover 2
@@ -213,8 +190,6 @@ prop_fromMap_toMap o =
     m = MonoidMap.fromMap o
 
 prop_toMap_fromMap
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> Property
 prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m

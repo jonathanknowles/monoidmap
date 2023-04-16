@@ -16,8 +16,6 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -43,11 +41,7 @@ spec = describe "Appending" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
+specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_append_get" $
@@ -55,10 +49,6 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_append_get
-    :: (Ord k, Eq v, Show v, MonoidNull v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> MonoidMap k v -> k -> Property
 prop_append_get m1 m2 k =
     MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2

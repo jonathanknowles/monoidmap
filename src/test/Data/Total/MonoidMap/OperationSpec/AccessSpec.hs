@@ -16,8 +16,6 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -44,11 +42,7 @@ spec = describe "Accessors" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
+specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     describe "Get" $ do
@@ -78,10 +72,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 --------------------------------------------------------------------------------
 
 prop_get_nonNullKey
-    :: (Ord k, Eq v, MonoidNull v)
-    => MonoidMap k v
-    -> k
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> Property
 prop_get_nonNullKey m k =
     MonoidMap.nonNullKey k m === (MonoidMap.get k m /= mempty)
     & cover 2
@@ -92,10 +83,7 @@ prop_get_nonNullKey m k =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_get_nonNullKeys
-    :: (Ord k, Eq v, MonoidNull v)
-    => MonoidMap k v
-    -> k
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> Property
 prop_get_nonNullKeys m k =
     Set.member k (MonoidMap.nonNullKeys m) === (MonoidMap.get k m /= mempty)
     & cover 2
@@ -110,11 +98,7 @@ prop_get_nonNullKeys m k =
 --------------------------------------------------------------------------------
 
 prop_set_get
-    :: (Ord k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> k
-    -> v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> v -> Property
 prop_set_get m k v =
     MonoidMap.get k (MonoidMap.set k v m) === v
     & cover 2
@@ -125,11 +109,7 @@ prop_set_get m k v =
         "not (MonoidMap.nonNullKey k m)"
 
 prop_set_nonNullKey
-    :: (Ord k, Eq v, MonoidNull v)
-    => MonoidMap k v
-    -> k
-    -> v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> v -> Property
 prop_set_nonNullKey m k v =
     MonoidMap.nonNullKey k (MonoidMap.set k v m) ===
         (v /= mempty)
@@ -141,11 +121,7 @@ prop_set_nonNullKey m k v =
         "v /= mempty"
 
 prop_set_nonNullKeys
-    :: (Ord k, Eq v, MonoidNull v)
-    => MonoidMap k v
-    -> k
-    -> v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> v -> Property
 prop_set_nonNullKeys m k v =
     Set.member k (MonoidMap.nonNullKeys (MonoidMap.set k v m)) ===
         (v /= mempty)
@@ -157,11 +133,7 @@ prop_set_nonNullKeys m k v =
         "v /= mempty"
 
 prop_set_toList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => MonoidMap k v
-    -> k
-    -> v
-    -> Property
+    :: TestConstraints k v => MonoidMap k v -> k -> v -> Property
 prop_set_toList m k v =
     filter ((== k) . fst) (MonoidMap.toList (MonoidMap.set k v m)) ===
         [(k, v) | v /= mempty]
