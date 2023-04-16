@@ -20,7 +20,10 @@ import Data.Function
 import Data.Group
     ( Group ((~~)) )
 import Data.Monoid.GCD
-    ( GCDMonoid (gcd), LeftGCDMonoid (commonPrefix) )
+    ( GCDMonoid (gcd)
+    , LeftGCDMonoid (commonPrefix)
+    , RightGCDMonoid (commonSuffix)
+    )
 import Data.Monoid.LCM
     ( LCMMonoid (lcm) )
 import Data.Monoid.Monus
@@ -41,6 +44,7 @@ import Test.Common
     , testInstancesLeftGCDMonoid
     , testInstancesMonoidNull
     , testInstancesMonus
+    , testInstancesRightGCDMonoid
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -61,6 +65,9 @@ spec = describe "Distributivity" $ do
             (Proxy @Key) p
     forM_ testInstancesLeftGCDMonoid $
         \(TestInstance p) -> specLeftGCDMonoid
+            (Proxy @Key) p
+    forM_ testInstancesRightGCDMonoid $
+        \(TestInstance p) -> specRightGCDMonoid
             (Proxy @Key) p
     forM_ testInstancesGCDMonoid $
         \(TestInstance p) -> specGCDMonoid
@@ -95,6 +102,13 @@ specLeftGCDMonoid
 specLeftGCDMonoid = makeSpec $ do
     it "prop_distributive_get_commonPrefix" $
         prop_distributive_get_commonPrefix
+            @k @v & property
+
+specRightGCDMonoid
+    :: forall k v. (Test k v, RightGCDMonoid v) => Proxy k -> Proxy v -> Spec
+specRightGCDMonoid = makeSpec $ do
+    it "prop_distributive_get_commonSuffix" $
+        prop_distributive_get_commonSuffix
             @k @v & property
 
 specGCDMonoid
@@ -160,6 +174,15 @@ prop_distributive_get_commonPrefix
     -> Property
 prop_distributive_get_commonPrefix =
     prop_distributive_get commonPrefix commonPrefix
+
+prop_distributive_get_commonSuffix
+    :: (Test k v, RightGCDMonoid v)
+    => k
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_distributive_get_commonSuffix =
+    prop_distributive_get commonSuffix commonSuffix
 
 prop_distributive_get_gcd
     :: (Test k v, GCDMonoid v)
