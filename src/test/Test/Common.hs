@@ -17,6 +17,7 @@ module Test.Common
     , testInstancesLeftGCDMonoid
     , testInstancesRightReductive
     , testInstancesRightGCDMonoid
+    , makeSpec
     , property
     ) where
 
@@ -41,7 +42,7 @@ import Data.Text
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Data.Typeable
-    ( Typeable )
+    ( Typeable, typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
@@ -67,6 +68,8 @@ import Test.QuickCheck.Instances.Natural
 
 import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
+import Test.Hspec
+    ( Spec, describe )
 import qualified Test.QuickCheck as QC
 
 --------------------------------------------------------------------------------
@@ -210,6 +213,9 @@ testInstancesRightGCDMonoid =
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
+
+makeSpec :: forall k v. Test k v => Spec -> Proxy k -> Proxy v -> Spec
+makeSpec spec _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) spec
 
 property :: Testable t => t -> Property
 property = checkCoverage . QC.property

@@ -20,10 +20,14 @@ import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Data.Typeable
-    ( typeRep )
 import Test.Common
-    ( Key, Test, TestInstance (..), property, testInstancesMonoidNull )
+    ( Key
+    , Test
+    , TestInstance (..)
+    , makeSpec
+    , property
+    , testInstancesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -37,7 +41,7 @@ spec = describe "Appending" $ do
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor = makeSpec $ do
 
     it "prop_append_get" $
         prop_append_get

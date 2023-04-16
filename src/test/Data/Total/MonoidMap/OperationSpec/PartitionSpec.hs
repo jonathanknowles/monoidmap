@@ -20,12 +20,11 @@ import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Data.Typeable
-    ( typeRep )
 import Test.Common
     ( Key
     , Test
     , TestInstance (TestInstance)
+    , makeSpec
     , property
     , testInstancesMonoidNull
     )
@@ -43,7 +42,7 @@ spec = describe "Partitioning" $ do
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor = makeSpec $ do
 
     it "prop_partition_filter" $
         prop_partition_filter

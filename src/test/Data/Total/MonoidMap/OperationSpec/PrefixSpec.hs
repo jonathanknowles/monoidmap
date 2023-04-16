@@ -26,12 +26,11 @@ import Data.Semigroup.Cancellative
     ( LeftReductive (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Data.Typeable
-    ( typeRep )
 import Test.Common
     ( Key
     , Test
     , TestInstance (TestInstance)
+    , makeSpec
     , property
     , testInstancesLeftGCDMonoid
     , testInstancesLeftReductive
@@ -54,25 +53,23 @@ spec = describe "Prefixes" $ do
 
 specLeftReductive
     :: forall k v. (Test k v, LeftReductive v) => Proxy k -> Proxy v -> Spec
-specLeftReductive _k _v =
-    describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
-        it "prop_stripPrefix_isJust" $
-            prop_stripPrefix_isJust
-                @k @v & property
-        it "prop_stripPrefix_get" $
-            prop_stripPrefix_get
-                @k @v & property
-        it "prop_stripPrefix_mappend" $
-            prop_stripPrefix_mappend
-                @k @v & property
+specLeftReductive = makeSpec $ do
+    it "prop_stripPrefix_isJust" $
+        prop_stripPrefix_isJust
+            @k @v & property
+    it "prop_stripPrefix_get" $
+        prop_stripPrefix_get
+            @k @v & property
+    it "prop_stripPrefix_mappend" $
+        prop_stripPrefix_mappend
+            @k @v & property
 
 specLeftGCDMonoid
     :: forall k v. (Test k v, LeftGCDMonoid v) => Proxy k -> Proxy v -> Spec
-specLeftGCDMonoid _k _v =
-    describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
-        it "prop_commonPrefix_get" $
-            prop_commonPrefix_get
-                @k @v & property
+specLeftGCDMonoid = makeSpec $ do
+    it "prop_commonPrefix_get" $
+        prop_commonPrefix_get
+            @k @v & property
 
 prop_stripPrefix_isJust
     :: (Test k v, LeftReductive v)

@@ -26,12 +26,11 @@ import Data.Semigroup.Cancellative
     ( RightReductive (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Data.Typeable
-    ( typeRep )
 import Test.Common
     ( Key
     , Test
     , TestInstance (TestInstance)
+    , makeSpec
     , property
     , testInstancesRightGCDMonoid
     , testInstancesRightReductive
@@ -54,25 +53,23 @@ spec = describe "Suffixes" $ do
 
 specRightReductive
     :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
-specRightReductive _k _v =
-    describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
-        it "prop_stripSuffix_isJust" $
-            prop_stripSuffix_isJust
-                @k @v & property
-        it "prop_stripSuffix_get" $
-            prop_stripSuffix_get
-                @k @v & property
-        it "prop_stripSuffix_mappend" $
-            prop_stripSuffix_mappend
-                @k @v & property
+specRightReductive = makeSpec $ do
+    it "prop_stripSuffix_isJust" $
+        prop_stripSuffix_isJust
+            @k @v & property
+    it "prop_stripSuffix_get" $
+        prop_stripSuffix_get
+            @k @v & property
+    it "prop_stripSuffix_mappend" $
+        prop_stripSuffix_mappend
+            @k @v & property
 
 specRightGCDMonoid
     :: forall k v. (Test k v, RightGCDMonoid v) => Proxy k -> Proxy v -> Spec
-specRightGCDMonoid _k _v =
-    describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
-        it "prop_commonSuffix_get" $
-            prop_commonSuffix_get
-                @k @v & property
+specRightGCDMonoid = makeSpec $ do
+    it "prop_commonSuffix_get" $
+        prop_commonSuffix_get
+            @k @v & property
 
 prop_stripSuffix_isJust
     :: (Test k v, RightReductive v)
