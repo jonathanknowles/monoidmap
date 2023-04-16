@@ -18,8 +18,6 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
-import Data.Monoid.GCD
-    ( LeftGCDMonoid (..) )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
@@ -32,7 +30,6 @@ import Test.Common
     , TestInstance (TestInstance)
     , makeSpec
     , property
-    , testInstancesLeftGCDMonoid
     , testInstancesLeftReductive
     )
 import Test.Hspec
@@ -48,8 +45,6 @@ spec = describe "Prefixes" $ do
 
     forM_ testInstancesLeftReductive $
         \(TestInstance p) -> specLeftReductive (Proxy @Key) p
-    forM_ testInstancesLeftGCDMonoid $
-        \(TestInstance p) -> specLeftGCDMonoid (Proxy @Key) p
 
 specLeftReductive
     :: forall k v. (Test k v, LeftReductive v) => Proxy k -> Proxy v -> Spec
@@ -62,13 +57,6 @@ specLeftReductive = makeSpec $ do
             @k @v & property
     it "prop_stripPrefix_mappend" $
         prop_stripPrefix_mappend
-            @k @v & property
-
-specLeftGCDMonoid
-    :: forall k v. (Test k v, LeftGCDMonoid v) => Proxy k -> Proxy v -> Spec
-specLeftGCDMonoid = makeSpec $ do
-    it "prop_commonPrefix_get" $
-        prop_commonPrefix_get
             @k @v & property
 
 prop_stripPrefix_isJust
@@ -112,20 +100,3 @@ prop_stripPrefix_mappend m1 m2 = QC.property $
     & cover 1
         (isJust (stripPrefix m1 m2))
         "isJust (stripPrefix m1 m2)"
-
-prop_commonPrefix_get
-    :: (Test k v, LeftGCDMonoid v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_commonPrefix_get m1 m2 k =
-    MonoidMap.get k (commonPrefix m1 m2)
-    ===
-    commonPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
-    & cover 1
-        (MonoidMap.get k (commonPrefix m1 m2) == mempty)
-        "MonoidMap.get k (commonPrefix m1 m2) == mempty"
-    & cover 0.1
-        (MonoidMap.get k (commonPrefix m1 m2) /= mempty)
-        "MonoidMap.get k (commonPrefix m1 m2) /= mempty"
