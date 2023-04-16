@@ -63,7 +63,7 @@ spec = do
     specFor (Proxy @(MultiMap3.MultiMap Int Int))
     specFor (Proxy @(MultiMap4.MultiMap Int Int))
 
-type TestConstraints m k v =
+type Test m k v =
         ( Arbitrary k
         , Arbitrary v
         , MultiMap m k v
@@ -75,7 +75,7 @@ type TestConstraints m k v =
         , Typeable v
         )
 
-specFor :: forall m k v. TestConstraints m k v => Proxy (m k v) -> Spec
+specFor :: forall m k v. Test m k v => Proxy (m k v) -> Spec
 specFor multimapType = do
 
     let description = show (typeRep multimapType)
@@ -206,7 +206,7 @@ specFor multimapType = do
 -- - all keys included in 'toList'      are associated with non-empty sets.
 
 prop_valid
-    :: TestConstraints m k v => m k v -> Property
+    :: Test m k v => m k v -> Property
 prop_valid m = QC.conjoin
     [ counterexample
         "prop_valid_nonNullKeys"
@@ -232,14 +232,14 @@ prop_valid m = QC.conjoin
 --------------------------------------------------------------------------------
 
 prop_fromList_valid
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_fromList_valid kvs =
     prop_valid @m @k @v (M.fromList kvs)
 
 prop_update_valid
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> Set v
     -> [(k, Set v)]
@@ -248,7 +248,7 @@ prop_update_valid k vs kvs =
     prop_valid @m @k @v (M.update k vs (M.fromList kvs))
 
 prop_insert_valid
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> Set v
     -> [(k, Set v)]
@@ -257,7 +257,7 @@ prop_insert_valid k vs kvs =
     prop_valid @m @k @v (M.insert k vs (M.fromList kvs))
 
 prop_remove_valid
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> Set v
     -> [(k, Set v)]
@@ -266,7 +266,7 @@ prop_remove_valid k vs kvs =
     prop_valid @m @k @v (M.remove k vs (M.fromList kvs))
 
 prop_union_valid
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -274,7 +274,7 @@ prop_union_valid kvs1 kvs2 =
     prop_valid @m @k @v (M.union (M.fromList kvs1) (M.fromList kvs2))
 
 prop_intersection_valid
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -286,14 +286,14 @@ prop_intersection_valid kvs1 kvs2 =
 --------------------------------------------------------------------------------
 
 prop_fromList_filter
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_fromList_filter kvs =
     M.fromList @m @k @v kvs === M.fromList (filter ((/= Set.empty) . snd) kvs)
 
 prop_toList_filter
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_toList_filter kvs =
@@ -303,13 +303,13 @@ prop_toList_filter kvs =
     m = M.fromList kvs
 
 prop_empty_fromList
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => Property
 prop_empty_fromList =
     M.empty @m @k @v === M.fromList []
 
 prop_lookup_filter_fold
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> Property
@@ -326,7 +326,7 @@ prop_lookup_filter_fold k kvs =
     m = M.fromList kvs
 
 prop_null_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> Property
@@ -346,7 +346,7 @@ prop_null_lookup k kvs =
     m = M.fromList kvs
 
 prop_nonNull_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> Property
@@ -366,7 +366,7 @@ prop_nonNull_lookup k kvs =
     m = M.fromList kvs
 
 prop_nonNullKey_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> Property
@@ -386,7 +386,7 @@ prop_nonNullKey_lookup k kvs =
     m = M.fromList kvs
 
 prop_nonNullKeys_nonNullKey
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_nonNullKeys_nonNullKey kvs = QC.property $
@@ -402,7 +402,7 @@ prop_nonNullKeys_nonNullKey kvs = QC.property $
     m = M.fromList kvs
 
 prop_nonNullCount_nonNullKeys
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_nonNullCount_nonNullKeys kvs =
@@ -424,7 +424,7 @@ prop_nonNullCount_nonNullKeys kvs =
     m = M.fromList kvs
 
 prop_isSubmapOf_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> [(k, Set v)]
@@ -442,7 +442,7 @@ prop_isSubmapOf_lookup k kvs1 kvs2 =
     m2 = M.fromList kvs2
 
 prop_update_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> k
     -> Set v
@@ -461,7 +461,7 @@ prop_update_lookup k1 k2 vs kvs =
     m = M.fromList kvs
 
 prop_insert_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> k
     -> Set v
@@ -481,7 +481,7 @@ prop_insert_lookup k1 k2 vs kvs =
     m = M.fromList kvs
 
 prop_remove_lookup
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> k
     -> Set v
@@ -501,7 +501,7 @@ prop_remove_lookup k1 k2 vs kvs =
     m = M.fromList kvs
 
 prop_union_idempotence
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_union_idempotence kvs =
@@ -511,7 +511,7 @@ prop_union_idempotence kvs =
     m = M.fromList kvs
 
 prop_union_identity_left
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_union_identity_left kvs =
@@ -521,7 +521,7 @@ prop_union_identity_left kvs =
     m = M.fromList kvs
 
 prop_union_identity_right
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_union_identity_right kvs =
@@ -531,7 +531,7 @@ prop_union_identity_right kvs =
     m = M.fromList kvs
 
 prop_union_commutativity
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -543,7 +543,7 @@ prop_union_commutativity kvs1 kvs2 =
     m2 = M.fromList kvs2
 
 prop_union_associativity
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> [(k, Set v)]
@@ -558,7 +558,7 @@ prop_union_associativity kvs1 kvs2 kvs3 =
     m3 = M.fromList kvs3
 
 prop_union_containment_left
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -570,7 +570,7 @@ prop_union_containment_left kvs1 kvs2 = QC.property $
     m2 = M.fromList kvs2
 
 prop_union_containment_right
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -582,7 +582,7 @@ prop_union_containment_right kvs1 kvs2 = QC.property $
     m2 = M.fromList kvs2
 
 prop_union_distributivity
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> [(k, Set v)]
@@ -598,7 +598,7 @@ prop_union_distributivity k kvs1 kvs2 =
     m2 = M.fromList kvs2
 
 prop_intersection_idempotence
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_intersection_idempotence kvs =
@@ -608,7 +608,7 @@ prop_intersection_idempotence kvs =
     m = M.fromList kvs
 
 prop_intersection_identity_left
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_intersection_identity_left kvs =
@@ -618,7 +618,7 @@ prop_intersection_identity_left kvs =
     m = M.fromList kvs
 
 prop_intersection_identity_right
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> Property
 prop_intersection_identity_right kvs =
@@ -628,7 +628,7 @@ prop_intersection_identity_right kvs =
     m = M.fromList kvs
 
 prop_intersection_commutativity
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -646,7 +646,7 @@ prop_intersection_commutativity kvs1 kvs2 =
     m2 = M.fromList kvs2
 
 prop_intersection_associativity
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> [(k, Set v)]
@@ -667,7 +667,7 @@ prop_intersection_associativity kvs1 kvs2 kvs3 =
     m3 = M.fromList kvs3
 
 prop_intersection_containment_left
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -682,7 +682,7 @@ prop_intersection_containment_left kvs1 kvs2 = QC.property $
     m2 = M.fromList kvs2
 
 prop_intersection_containment_right
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => [(k, Set v)]
     -> [(k, Set v)]
     -> Property
@@ -697,7 +697,7 @@ prop_intersection_containment_right kvs1 kvs2 = QC.property $
     m2 = M.fromList kvs2
 
 prop_intersection_distributivity
-    :: forall m k v. TestConstraints m k v
+    :: forall m k v. Test m k v
     => k
     -> [(k, Set v)]
     -> [(k, Set v)]

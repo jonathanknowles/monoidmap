@@ -24,7 +24,7 @@ import Data.Typeable
     ( typeRep )
 import Test.Common
     ( Key
-    , TestConstraints
+    , Test
     , TestInstance (TestInstance)
     , property
     , testInstancesMonoidNull
@@ -42,7 +42,7 @@ spec = describe "Partitioning" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_partition_filter" $
@@ -74,7 +74,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_partition_filter
-    :: TestConstraints k v => Fun v Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun v Bool -> MonoidMap k v -> Property
 prop_partition_filter (applyFun -> f) m =
     MonoidMap.partition f m === (m1, m2)
     & cover 2
@@ -85,7 +85,7 @@ prop_partition_filter (applyFun -> f) m =
     m2 = MonoidMap.filter (not . f) m
 
 prop_partition_append
-    :: TestConstraints k v => Fun v Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun v Bool -> MonoidMap k v -> Property
 prop_partition_append (applyFun -> f) m =
     m1 <> m2 === m
     & cover 2
@@ -95,7 +95,7 @@ prop_partition_append (applyFun -> f) m =
     (m1, m2) = MonoidMap.partition f m
 
 prop_partition_disjoint
-    :: TestConstraints k v => Fun v Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun v Bool -> MonoidMap k v -> Property
 prop_partition_disjoint (applyFun -> f) m =
     Set.disjoint
         (MonoidMap.nonNullKeys m1)
@@ -107,7 +107,7 @@ prop_partition_disjoint (applyFun -> f) m =
     (m1, m2) = MonoidMap.partition f m
 
 prop_partitionKeys_filterKeys
-    :: TestConstraints k v => Fun k Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun k Bool -> MonoidMap k v -> Property
 prop_partitionKeys_filterKeys (applyFun -> f) m =
     MonoidMap.partitionKeys f m === (m1, m2)
     & cover 2
@@ -118,7 +118,7 @@ prop_partitionKeys_filterKeys (applyFun -> f) m =
     m2 = MonoidMap.filterKeys (not . f) m
 
 prop_partitionKeys_append
-    :: TestConstraints k v => Fun k Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun k Bool -> MonoidMap k v -> Property
 prop_partitionKeys_append (applyFun -> f) m =
     m1 <> m2 === m
     & cover 2
@@ -128,7 +128,7 @@ prop_partitionKeys_append (applyFun -> f) m =
     (m1, m2) = MonoidMap.partitionKeys f m
 
 prop_partitionKeys_disjoint
-    :: TestConstraints k v => Fun k Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun k Bool -> MonoidMap k v -> Property
 prop_partitionKeys_disjoint (applyFun -> f) m =
     Set.disjoint
         (MonoidMap.nonNullKeys m1)
@@ -140,7 +140,7 @@ prop_partitionKeys_disjoint (applyFun -> f) m =
     (m1, m2) = MonoidMap.partitionKeys f m
 
 prop_partitionWithKey_filterWithKey
-    :: TestConstraints k v => Fun (k, v) Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun (k, v) Bool -> MonoidMap k v -> Property
 prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
     MonoidMap.partitionWithKey f m === (m1, m2)
     & cover 2
@@ -151,7 +151,7 @@ prop_partitionWithKey_filterWithKey (applyFun2 -> f) m =
     m2 = MonoidMap.filterWithKey ((fmap . fmap) not f) m
 
 prop_partitionWithKey_append
-    :: TestConstraints k v => Fun (k, v) Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun (k, v) Bool -> MonoidMap k v -> Property
 prop_partitionWithKey_append (applyFun2 -> f) m =
     m1 <> m2 === m
     & cover 2
@@ -161,7 +161,7 @@ prop_partitionWithKey_append (applyFun2 -> f) m =
     (m1, m2) = MonoidMap.partitionWithKey f m
 
 prop_partitionWithKey_disjoint
-    :: TestConstraints k v => Fun (k, v) Bool -> MonoidMap k v -> Property
+    :: Test k v => Fun (k, v) Bool -> MonoidMap k v -> Property
 prop_partitionWithKey_disjoint (applyFun2 -> f) m =
     Set.disjoint
         (MonoidMap.nonNullKeys m1)

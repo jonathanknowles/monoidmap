@@ -23,12 +23,7 @@ import Data.Total.MonoidMap
 import Data.Typeable
     ( typeRep )
 import Test.Common
-    ( Key
-    , TestConstraints
-    , TestInstance (..)
-    , property
-    , testInstancesMonoidNull
-    )
+    ( Key, Test, TestInstance (..), property, testInstancesMonoidNull )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -41,7 +36,7 @@ spec = describe "Appending" $ do
 
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor :: forall k v. TestConstraints k v => Proxy k -> Proxy v -> Spec
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
 
     it "prop_append_get" $
@@ -49,6 +44,6 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_append_get
-    :: TestConstraints k v => MonoidMap k v -> MonoidMap k v -> k -> Property
+    :: Test k v => MonoidMap k v -> MonoidMap k v -> k -> Property
 prop_append_get m1 m2 k =
     MonoidMap.get k (m1 <> m2) === MonoidMap.get k m1 <> MonoidMap.get k m2
