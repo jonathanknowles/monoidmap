@@ -17,6 +17,8 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
+import Data.Group
+    ( Group ((~~)) )
 import Data.Monoid.GCD
     ( GCDMonoid (gcd) )
 import Data.Monoid.LCM
@@ -32,6 +34,7 @@ import Test.Common
     , makeSpec
     , property
     , testInstancesGCDMonoid
+    , testInstancesGroup
     , testInstancesLCMMonoid
     , testInstancesMonoidNull
     )
@@ -44,17 +47,30 @@ spec :: Spec
 spec = describe "Distributivity" $ do
 
     forM_ testInstancesMonoidNull $
-        \(TestInstance p) -> specMonoidNull (Proxy @Key) p
+        \(TestInstance p) -> specMonoidNull
+            (Proxy @Key) p
+    forM_ testInstancesGroup $
+        \(TestInstance p) -> specGroup
+            (Proxy @Key) p
     forM_ testInstancesGCDMonoid $
-        \(TestInstance p) -> specGCDMonoid (Proxy @Key) p
+        \(TestInstance p) -> specGCDMonoid
+            (Proxy @Key) p
     forM_ testInstancesLCMMonoid $
-        \(TestInstance p) -> specLCMMonoid (Proxy @Key) p
+        \(TestInstance p) -> specLCMMonoid
+            (Proxy @Key) p
 
 specMonoidNull
     :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specMonoidNull = makeSpec $ do
     it "prop_distributive_get_mappend" $
         prop_distributive_get_mappend
+            @k @v & property
+
+specGroup
+    :: forall k v. (Test k v, Group v) => Proxy k -> Proxy v -> Spec
+specGroup = makeSpec $ do
+    it "prop_distributive_get_minus" $
+        prop_distributive_get_minus
             @k @v & property
 
 specGCDMonoid
@@ -103,6 +119,10 @@ prop_distributive_get f g k m1 m2 =
 prop_distributive_get_mappend
     :: Test k v => k -> MonoidMap k v -> MonoidMap k v -> Property
 prop_distributive_get_mappend = prop_distributive_get mappend mappend
+
+prop_distributive_get_minus
+    :: (Test k v, Group v) => k -> MonoidMap k v -> MonoidMap k v -> Property
+prop_distributive_get_minus = prop_distributive_get (~~) (~~)
 
 prop_distributive_get_gcd
     :: (Test k v, GCDMonoid v)

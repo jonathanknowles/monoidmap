@@ -13,6 +13,7 @@ module Test.Common
     , Test
     , TestInstance (..)
     , testInstancesMonoidNull
+    , testInstancesGroup
     , testInstancesLeftReductive
     , testInstancesRightReductive
     , testInstancesLeftGCDMonoid
@@ -25,6 +26,8 @@ module Test.Common
 
 import Prelude
 
+import Data.Group
+    ( Group )
 import Data.Kind
     ( Constraint, Type )
 import Data.Monoid
@@ -158,6 +161,11 @@ testInstancesMonoidNull =
     , TestInstance (Proxy @(Text))
     , TestInstance (Proxy @[Int])
     , TestInstance (Proxy @[Natural])
+    ]
+
+testInstancesGroup :: [TestInstance Group]
+testInstancesGroup =
+    [ TestInstance (Proxy @(Sum Int))
     ]
 
 testInstancesLeftReductive :: [TestInstance LeftReductive]
