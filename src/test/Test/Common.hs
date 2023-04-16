@@ -14,6 +14,7 @@ module Test.Common
     , TestInstance (..)
     , testInstancesMonoidNull
     , testInstancesGroup
+    , testInstancesMonus
     , testInstancesLeftReductive
     , testInstancesRightReductive
     , testInstancesLeftGCDMonoid
@@ -36,6 +37,8 @@ import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, RightGCDMonoid )
 import Data.Monoid.LCM
     ( LCMMonoid )
+import Data.Monoid.Monus
+    ( Monus )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
@@ -166,6 +169,13 @@ testInstancesMonoidNull =
 testInstancesGroup :: [TestInstance Group]
 testInstancesGroup =
     [ TestInstance (Proxy @(Sum Int))
+    ]
+
+testInstancesMonus :: [TestInstance Monus]
+testInstancesMonus =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
     ]
 
 testInstancesLeftReductive :: [TestInstance LeftReductive]
