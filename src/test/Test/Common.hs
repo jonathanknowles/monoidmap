@@ -64,19 +64,24 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
 -- Test types
 --------------------------------------------------------------------------------
 
-type TestConstraints k v =
+type TestConstraints k v = (TestKey k, TestValue v)
+
+type TestKey k =
     ( Arbitrary k
-    , Arbitrary v
     , CoArbitrary k
-    , CoArbitrary v
-    , Eq v
     , Function k
-    , Function v
-    , MonoidNull v
     , Ord k
     , Show k
-    , Show v
     , Typeable k
+    )
+
+type TestValue v =
+    ( Arbitrary v
+    , CoArbitrary v
+    , Eq v
+    , Function v
+    , MonoidNull v
+    , Show v
     , Typeable v
     )
 
