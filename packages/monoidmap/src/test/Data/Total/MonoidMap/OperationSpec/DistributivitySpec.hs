@@ -22,6 +22,7 @@ import Data.Group
 import Data.Monoid.GCD
     ( GCDMonoid (gcd)
     , LeftGCDMonoid (commonPrefix)
+    , OverlappingGCDMonoid (overlap)
     , RightGCDMonoid (commonSuffix)
     )
 import Data.Monoid.LCM
@@ -44,6 +45,7 @@ import Test.Common
     , testInstancesLeftGCDMonoid
     , testInstancesMonoidNull
     , testInstancesMonus
+    , testInstancesOverlappingGCDMonoid
     , testInstancesRightGCDMonoid
     )
 import Test.Hspec
@@ -68,6 +70,9 @@ spec = describe "Distributivity" $ do
             (Proxy @Key) p
     forM_ testInstancesRightGCDMonoid $
         \(TestInstance p) -> specRightGCDMonoid
+            (Proxy @Key) p
+    forM_ testInstancesOverlappingGCDMonoid $
+        \(TestInstance p) -> specOverlappingGCDMonoid
             (Proxy @Key) p
     forM_ testInstancesGCDMonoid $
         \(TestInstance p) -> specGCDMonoid
@@ -109,6 +114,16 @@ specRightGCDMonoid
 specRightGCDMonoid = makeSpec $ do
     it "prop_distributive_get_commonSuffix" $
         prop_distributive_get_commonSuffix
+            @k @v & property
+
+specOverlappingGCDMonoid
+    :: forall k v. (Test k v, OverlappingGCDMonoid v)
+    => Proxy k
+    -> Proxy v
+    -> Spec
+specOverlappingGCDMonoid = makeSpec $ do
+    it "prop_distributive_get_overlap" $
+        prop_distributive_get_overlap
             @k @v & property
 
 specGCDMonoid
@@ -183,6 +198,15 @@ prop_distributive_get_commonSuffix
     -> Property
 prop_distributive_get_commonSuffix =
     prop_distributive_get commonSuffix commonSuffix
+
+prop_distributive_get_overlap
+    :: (Test k v, OverlappingGCDMonoid v)
+    => k
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_distributive_get_overlap =
+    prop_distributive_get overlap overlap
 
 prop_distributive_get_gcd
     :: (Test k v, GCDMonoid v)

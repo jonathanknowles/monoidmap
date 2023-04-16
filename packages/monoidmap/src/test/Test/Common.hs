@@ -19,6 +19,7 @@ module Test.Common
     , testInstancesRightReductive
     , testInstancesLeftGCDMonoid
     , testInstancesRightGCDMonoid
+    , testInstancesOverlappingGCDMonoid
     , testInstancesGCDMonoid
     , testInstancesLCMMonoid
     , makeSpec
@@ -34,7 +35,7 @@ import Data.Kind
 import Data.Monoid
     ( Dual, Sum (..) )
 import Data.Monoid.GCD
-    ( GCDMonoid, LeftGCDMonoid, RightGCDMonoid )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.LCM
     ( LCMMonoid )
 import Data.Monoid.Monus
@@ -225,6 +226,15 @@ testInstancesLeftGCDMonoid =
 
 testInstancesRightGCDMonoid :: [TestInstance RightGCDMonoid]
 testInstancesRightGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual Text))
+    ]
+
+testInstancesOverlappingGCDMonoid :: [TestInstance OverlappingGCDMonoid]
+testInstancesOverlappingGCDMonoid =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Natural))
