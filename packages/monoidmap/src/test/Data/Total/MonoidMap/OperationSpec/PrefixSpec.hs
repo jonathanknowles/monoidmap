@@ -12,12 +12,12 @@ module Data.Total.MonoidMap.OperationSpec.PrefixSpec
 
 import Prelude
 
+import Control.Monad
+    ( forM_ )
 import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
-import Data.Monoid
-    ( Dual, Sum (..) )
 import Data.Monoid.GCD
     ( LeftGCDMonoid (..) )
 import Data.Monoid.Null
@@ -26,18 +26,18 @@ import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
     ( LeftReductive (..) )
-import Data.Set
-    ( Set )
-import Data.Text
-    ( Text )
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Data.Typeable
     ( typeRep )
-import Numeric.Natural
-    ( Natural )
 import Test.Common
-    ( Key, TestConstraints, property )
+    ( Key
+    , TestConstraints
+    , TestInstance (TestInstance)
+    , property
+    , testInstancesLeftGCDMonoid
+    , testInstancesLeftReductive
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -49,26 +49,10 @@ import qualified Test.QuickCheck as QC
 spec :: Spec
 spec = describe "Prefixes" $ do
 
-    specLeftReductive (Proxy @Key) (Proxy @(Set Int))
-    specLeftReductive (Proxy @Key) (Proxy @(Set Natural))
-    specLeftReductive (Proxy @Key) (Proxy @(Sum Int))
-    specLeftReductive (Proxy @Key) (Proxy @(Sum Natural))
-    specLeftReductive (Proxy @Key) (Proxy @[Int])
-    specLeftReductive (Proxy @Key) (Proxy @[Natural])
-    specLeftReductive (Proxy @Key) (Proxy @(Text))
-    specLeftReductive (Proxy @Key) (Proxy @(Dual [Int]))
-    specLeftReductive (Proxy @Key) (Proxy @(Dual [Natural]))
-    specLeftReductive (Proxy @Key) (Proxy @(Dual Text))
-
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Int))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Set Natural))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Sum Natural))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @[Int])
-    specLeftGCDMonoid (Proxy @Key) (Proxy @[Natural])
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Text))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Int]))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual [Natural]))
-    specLeftGCDMonoid (Proxy @Key) (Proxy @(Dual Text))
+    forM_ testInstancesLeftReductive $
+        \(TestInstance p) -> specLeftReductive (Proxy @Key) p
+    forM_ testInstancesLeftGCDMonoid $
+        \(TestInstance p) -> specLeftGCDMonoid (Proxy @Key) p
 
 specLeftReductive
     :: forall k v. (TestConstraints k v, LeftReductive v)

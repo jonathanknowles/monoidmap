@@ -1,3 +1,4 @@
+{-# LANGUAGE ExistentialQuantification #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
@@ -10,13 +11,31 @@
 module Test.Common
     ( Key
     , TestConstraints
+    , TestInstance (..)
+    , testInstancesMonoidNull
+    , testInstancesLeftReductive
+    , testInstancesLeftGCDMonoid
+    , testInstancesRightReductive
+    , testInstancesRightGCDMonoid
     , property
     ) where
 
 import Prelude
 
+import Data.Kind
+    ( Constraint, Type )
+import Data.Monoid
+    ( Dual, Sum (..) )
+import Data.Monoid.GCD
+    ( LeftGCDMonoid, RightGCDMonoid )
 import Data.Monoid.Null
     ( MonoidNull )
+import Data.Proxy
+    ( Proxy (Proxy) )
+import Data.Semigroup.Cancellative
+    ( LeftReductive, RightReductive )
+import Data.Set
+    ( Set )
 import Data.Text
     ( Text )
 import Data.Total.MonoidMap
@@ -25,6 +44,8 @@ import Data.Typeable
     ( Typeable )
 import GHC.Exts
     ( IsList (..) )
+import Numeric.Natural
+    ( Natural )
 import Test.QuickCheck
     ( Arbitrary (..)
     , CoArbitrary (..)
@@ -60,8 +81,34 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
 
+instance Arbitrary Text where
+    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
+
+instance CoArbitrary Text where
+    coarbitrary = coarbitraryShow
+
+instance Function Text where
+    function = functionShow
+
 --------------------------------------------------------------------------------
 -- Test types
+--------------------------------------------------------------------------------
+
+newtype Key = Key Int
+    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
+
+instance Arbitrary Key where
+    arbitrary = Key <$> choose (0, 15)
+    shrink (Key k) = Key <$> shrink k
+
+instance CoArbitrary Key where
+    coarbitrary = coarbitraryIntegral
+
+instance Function Key where
+    function = functionIntegral
+
+--------------------------------------------------------------------------------
+-- Test constraints
 --------------------------------------------------------------------------------
 
 type TestConstraints k v = (TestKey k, TestValue v)
@@ -85,27 +132,80 @@ type TestValue v =
     , Typeable v
     )
 
-newtype Key = Key Int
-    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
+--------------------------------------------------------------------------------
+-- Test instances
+--------------------------------------------------------------------------------
 
-instance Arbitrary Key where
-    arbitrary = Key <$> choose (0, 15)
-    shrink (Key k) = Key <$> shrink k
+data TestInstance (c :: Type -> Constraint) =
+    forall v. (TestValue v, c v) => TestInstance (Proxy v)
 
-instance CoArbitrary Key where
-    coarbitrary = coarbitraryIntegral
+testInstancesMonoidNull :: [TestInstance MonoidNull]
+testInstancesMonoidNull =
+    [ TestInstance (Proxy @(Dual Text))
+    , TestInstance (Proxy @(Dual [Int]))
+    , TestInstance (Proxy @(Dual [Natural]))
+    , TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Int))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @[Int])
+    , TestInstance (Proxy @[Natural])
+    ]
 
-instance Function Key where
-    function = functionIntegral
+testInstancesLeftReductive :: [TestInstance LeftReductive]
+testInstancesLeftReductive =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Int))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @[Int])
+    , TestInstance (Proxy @[Natural])
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual [Int]))
+    , TestInstance (Proxy @(Dual [Natural]))
+    , TestInstance (Proxy @(Dual Text))
+    ]
 
-instance Arbitrary Text where
-    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
+testInstancesLeftGCDMonoid :: [TestInstance LeftGCDMonoid]
+testInstancesLeftGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @[Int])
+    , TestInstance (Proxy @[Natural])
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual [Int]))
+    , TestInstance (Proxy @(Dual [Natural]))
+    , TestInstance (Proxy @(Dual Text))
+    ]
 
-instance CoArbitrary Text where
-    coarbitrary = coarbitraryShow
+testInstancesRightReductive :: [TestInstance RightReductive]
+testInstancesRightReductive =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Int))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @[Int])
+    , TestInstance (Proxy @[Natural])
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual [Int]))
+    , TestInstance (Proxy @(Dual [Natural]))
+    , TestInstance (Proxy @(Dual Text))
+    ]
 
-instance Function Text where
-    function = functionShow
+testInstancesRightGCDMonoid :: [TestInstance RightGCDMonoid]
+testInstancesRightGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @[Int])
+    , TestInstance (Proxy @[Natural])
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual [Int]))
+    , TestInstance (Proxy @(Dual [Natural]))
+    , TestInstance (Proxy @(Dual Text))
+    ]
 
 --------------------------------------------------------------------------------
 -- Utilities
