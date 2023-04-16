@@ -155,8 +155,8 @@ test-suite test
         Data.Total.MonoidMap.ClassSpec
         Data.Total.MonoidMap.ExampleSpec
         Data.Total.MonoidMap.OperationSpec.AccessSpec
-        Data.Total.MonoidMap.OperationSpec.AppendSpec
         Data.Total.MonoidMap.OperationSpec.ConversionSpec
+        Data.Total.MonoidMap.OperationSpec.DistributivitySpec
         Data.Total.MonoidMap.OperationSpec.MapSpec
         Data.Total.MonoidMap.OperationSpec.FilterSpec
         Data.Total.MonoidMap.OperationSpec.PartitionSpec

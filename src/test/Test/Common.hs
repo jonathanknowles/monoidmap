@@ -13,22 +13,33 @@ module Test.Common
     , Test
     , TestInstance (..)
     , testInstancesMonoidNull
+    , testInstancesGroup
+    , testInstancesMonus
     , testInstancesLeftReductive
-    , testInstancesLeftGCDMonoid
     , testInstancesRightReductive
+    , testInstancesLeftGCDMonoid
     , testInstancesRightGCDMonoid
+    , testInstancesOverlappingGCDMonoid
+    , testInstancesGCDMonoid
+    , testInstancesLCMMonoid
     , makeSpec
     , property
     ) where
 
 import Prelude
 
+import Data.Group
+    ( Group )
 import Data.Kind
     ( Constraint, Type )
 import Data.Monoid
     ( Dual, Sum (..) )
 import Data.Monoid.GCD
-    ( LeftGCDMonoid, RightGCDMonoid )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+import Data.Monoid.LCM
+    ( LCMMonoid )
+import Data.Monoid.Monus
+    ( Monus )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
@@ -47,6 +58,8 @@ import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
     ( Natural )
+import Test.Hspec
+    ( Spec, describe )
 import Test.QuickCheck
     ( Arbitrary (..)
     , CoArbitrary (..)
@@ -57,6 +70,7 @@ import Test.QuickCheck
     , choose
     , coarbitraryIntegral
     , coarbitraryShow
+    , frequency
     , functionIntegral
     , functionShow
     , listOf
@@ -68,8 +82,6 @@ import Test.QuickCheck.Instances.Natural
 
 import qualified Data.Text as Text
 import qualified Data.Total.MonoidMap as MonoidMap
-import Test.Hspec
-    ( Spec, describe )
 import qualified Test.QuickCheck as QC
 
 --------------------------------------------------------------------------------
@@ -85,7 +97,14 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
 
 instance Arbitrary Text where
-    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
+    arbitrary = Text.pack <$> listOf genChar
+      where
+        genChar = frequency
+            [ (64, pure 'a')
+            , (16, pure 'b')
+            , ( 4, pure 'c')
+            , ( 1, pure 'd')
+            ]
 
 instance CoArbitrary Text where
     coarbitrary = coarbitraryShow
@@ -156,24 +175,23 @@ testInstancesMonoidNull =
     , TestInstance (Proxy @[Natural])
     ]
 
+testInstancesGroup :: [TestInstance Group]
+testInstancesGroup =
+    [ TestInstance (Proxy @(Sum Int))
+    ]
+
+testInstancesMonus :: [TestInstance Monus]
+testInstancesMonus =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    ]
+
 testInstancesLeftReductive :: [TestInstance LeftReductive]
 testInstancesLeftReductive =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Int))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
-    , TestInstance (Proxy @(Dual Text))
-    ]
-
-testInstancesLeftGCDMonoid :: [TestInstance LeftGCDMonoid]
-testInstancesLeftGCDMonoid =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Natural))
     , TestInstance (Proxy @[Int])
     , TestInstance (Proxy @[Natural])
@@ -197,17 +215,45 @@ testInstancesRightReductive =
     , TestInstance (Proxy @(Dual Text))
     ]
 
+testInstancesLeftGCDMonoid :: [TestInstance LeftGCDMonoid]
+testInstancesLeftGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual Text))
+    ]
+
 testInstancesRightGCDMonoid :: [TestInstance RightGCDMonoid]
 testInstancesRightGCDMonoid =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
     , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
     , TestInstance (Proxy @(Dual Text))
+    ]
+
+testInstancesOverlappingGCDMonoid :: [TestInstance OverlappingGCDMonoid]
+testInstancesOverlappingGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    , TestInstance (Proxy @(Text))
+    , TestInstance (Proxy @(Dual Text))
+    ]
+
+testInstancesGCDMonoid :: [TestInstance GCDMonoid]
+testInstancesGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
+    ]
+
+testInstancesLCMMonoid :: [TestInstance LCMMonoid]
+testInstancesLCMMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
     ]
 
 --------------------------------------------------------------------------------
