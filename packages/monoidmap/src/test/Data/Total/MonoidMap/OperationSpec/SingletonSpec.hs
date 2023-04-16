@@ -17,13 +17,12 @@ import Data.Function
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
-    ( MonoidMap, nonNullCount )
-import Data.Typeable
-    ( typeRep )
+    ( nonNullCount )
 import Test.Common
     ( Key
     , Test
     , TestInstance (TestInstance)
+    , makeSpec
     , property
     , testInstancesMonoidNull
     )
@@ -43,7 +42,7 @@ spec = describe "Singletons" $ do
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor = makeSpec $ do
 
     it "prop_singleton_get" $
         prop_singleton_get

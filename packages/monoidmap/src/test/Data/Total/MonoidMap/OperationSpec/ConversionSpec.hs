@@ -22,12 +22,11 @@ import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap, nonNullCount )
-import Data.Typeable
-    ( typeRep )
 import Test.Common
     ( Key
     , Test
     , TestInstance (TestInstance)
+    , makeSpec
     , property
     , testInstancesMonoidNull
     )
@@ -48,7 +47,7 @@ spec = describe "Conversions" $ do
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor = makeSpec $ do
 
     describe "Conversion to and from lists" $ do
         it "prop_fromList_get" $

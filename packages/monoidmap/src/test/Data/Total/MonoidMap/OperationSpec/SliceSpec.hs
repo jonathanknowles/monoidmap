@@ -24,14 +24,13 @@ import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap, nonNullCount )
-import Data.Typeable
-    ( typeRep )
 import GHC.Exts
     ( IsList (..) )
 import Test.Common
     ( Key
     , Test
     , TestInstance (TestInstance)
+    , makeSpec
     , property
     , testInstancesMonoidNull
     )
@@ -48,7 +47,7 @@ spec = describe "Slicing" $ do
     forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor = makeSpec $ do
 
     it "prop_take_toList_fromList" $
         prop_take_toList_fromList
