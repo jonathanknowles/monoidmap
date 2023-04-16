@@ -25,10 +25,10 @@ import Data.Total.MonoidMap
 import Test.Common
     ( Key
     , Test
-    , TestInstance (TestInstance)
-    , makeSpec
+    , TestType (TestType)
+    , describeType
     , property
-    , testInstancesMonoidNull
+    , testTypesMonoidNull
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -44,10 +44,11 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Conversions" $ do
 
-    forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
+    forM_ testTypesMonoidNull $
+        \(TestType v) -> specFor (Proxy @Key) v
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor = makeSpec $ do
+specFor = describeType $ do
 
     describe "Conversion to and from lists" $ do
         it "prop_fromList_get" $

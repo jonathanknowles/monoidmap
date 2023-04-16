@@ -27,10 +27,10 @@ import Data.Total.MonoidMap
 import Test.Common
     ( Key
     , Test
-    , TestInstance (TestInstance)
-    , makeSpec
+    , TestType (TestType)
+    , describeType
     , property
-    , testInstancesRightReductive
+    , testTypesRightReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -43,12 +43,12 @@ import qualified Test.QuickCheck as QC
 spec :: Spec
 spec = describe "Suffixes" $ do
 
-    forM_ testInstancesRightReductive $
-        \(TestInstance p) -> specRightReductive (Proxy @Key) p
+    forM_ testTypesRightReductive $
+        \(TestType v) -> specRightReductive (Proxy @Key) v
 
 specRightReductive
     :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
-specRightReductive = makeSpec $ do
+specRightReductive = describeType $ do
     it "prop_stripSuffix_isJust" $
         prop_stripSuffix_isJust
             @k @v & property

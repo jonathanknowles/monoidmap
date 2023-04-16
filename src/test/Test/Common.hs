@@ -11,18 +11,20 @@
 module Test.Common
     ( Key
     , Test
-    , TestInstance (..)
-    , testInstancesMonoidNull
-    , testInstancesGroup
-    , testInstancesMonus
-    , testInstancesLeftReductive
-    , testInstancesRightReductive
-    , testInstancesLeftGCDMonoid
-    , testInstancesRightGCDMonoid
-    , testInstancesOverlappingGCDMonoid
-    , testInstancesGCDMonoid
-    , testInstancesLCMMonoid
-    , makeSpec
+    , TestKey
+    , TestValue
+    , TestType (..)
+    , testTypesMonoidNull
+    , testTypesGroup
+    , testTypesMonus
+    , testTypesLeftReductive
+    , testTypesRightReductive
+    , testTypesLeftGCDMonoid
+    , testTypesRightGCDMonoid
+    , testTypesOverlappingGCDMonoid
+    , testTypesGCDMonoid
+    , testTypesLCMMonoid
+    , describeType
     , property
     ) where
 
@@ -155,113 +157,114 @@ type TestValue v =
     )
 
 --------------------------------------------------------------------------------
--- Test instances
+-- Test types
 --------------------------------------------------------------------------------
 
-data TestInstance (c :: Type -> Constraint) =
-    forall v. (TestValue v, c v) => TestInstance (Proxy v)
+data TestType (c :: Type -> Constraint) =
+    forall v. (TestValue v, c v) => TestType (Proxy v)
 
-testInstancesMonoidNull :: [TestInstance MonoidNull]
-testInstancesMonoidNull =
-    [ TestInstance (Proxy @(Dual Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
-    , TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Int))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
+testTypesMonoidNull :: [TestType MonoidNull]
+testTypesMonoidNull =
+    [ TestType (Proxy @(Dual Text))
+    , TestType (Proxy @(Dual [Int]))
+    , TestType (Proxy @(Dual [Natural]))
+    , TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Int))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @[Int])
+    , TestType (Proxy @[Natural])
     ]
 
-testInstancesGroup :: [TestInstance Group]
-testInstancesGroup =
-    [ TestInstance (Proxy @(Sum Int))
+testTypesGroup :: [TestType Group]
+testTypesGroup =
+    [ TestType (Proxy @(Sum Int))
     ]
 
-testInstancesMonus :: [TestInstance Monus]
-testInstancesMonus =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Natural))
+testTypesMonus :: [TestType Monus]
+testTypesMonus =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Natural))
     ]
 
-testInstancesLeftReductive :: [TestInstance LeftReductive]
-testInstancesLeftReductive =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Int))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
-    , TestInstance (Proxy @(Dual Text))
+testTypesLeftReductive :: [TestType LeftReductive]
+testTypesLeftReductive =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Int))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @[Int])
+    , TestType (Proxy @[Natural])
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @(Dual [Int]))
+    , TestType (Proxy @(Dual [Natural]))
+    , TestType (Proxy @(Dual Text))
     ]
 
-testInstancesRightReductive :: [TestInstance RightReductive]
-testInstancesRightReductive =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Int))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
-    , TestInstance (Proxy @(Dual Text))
+testTypesRightReductive :: [TestType RightReductive]
+testTypesRightReductive =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Int))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @[Int])
+    , TestType (Proxy @[Natural])
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @(Dual [Int]))
+    , TestType (Proxy @(Dual [Natural]))
+    , TestType (Proxy @(Dual Text))
     ]
 
-testInstancesLeftGCDMonoid :: [TestInstance LeftGCDMonoid]
-testInstancesLeftGCDMonoid =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual Text))
+testTypesLeftGCDMonoid :: [TestType LeftGCDMonoid]
+testTypesLeftGCDMonoid =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @(Dual Text))
     ]
 
-testInstancesRightGCDMonoid :: [TestInstance RightGCDMonoid]
-testInstancesRightGCDMonoid =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual Text))
+testTypesRightGCDMonoid :: [TestType RightGCDMonoid]
+testTypesRightGCDMonoid =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @(Dual Text))
     ]
 
-testInstancesOverlappingGCDMonoid :: [TestInstance OverlappingGCDMonoid]
-testInstancesOverlappingGCDMonoid =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual Text))
+testTypesOverlappingGCDMonoid :: [TestType OverlappingGCDMonoid]
+testTypesOverlappingGCDMonoid =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @(Dual Text))
     ]
 
-testInstancesGCDMonoid :: [TestInstance GCDMonoid]
-testInstancesGCDMonoid =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Natural))
+testTypesGCDMonoid :: [TestType GCDMonoid]
+testTypesGCDMonoid =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Natural))
     ]
 
-testInstancesLCMMonoid :: [TestInstance LCMMonoid]
-testInstancesLCMMonoid =
-    [ TestInstance (Proxy @(Set Int))
-    , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Natural))
+testTypesLCMMonoid :: [TestType LCMMonoid]
+testTypesLCMMonoid =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Natural))
     ]
 
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
 
-makeSpec :: forall k v. Test k v => Spec -> Proxy k -> Proxy v -> Spec
-makeSpec spec _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) spec
+describeType :: forall k v. Test k v => Spec -> Proxy k -> Proxy v -> Spec
+describeType spec _k _v =
+    describe (show $ typeRep (Proxy @(MonoidMap k v))) spec
 
 property :: Testable t => t -> Property
 property = checkCoverage . QC.property
