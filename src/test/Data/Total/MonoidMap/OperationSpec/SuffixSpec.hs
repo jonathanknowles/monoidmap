@@ -18,8 +18,6 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
-import Data.Monoid.GCD
-    ( RightGCDMonoid (..) )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
@@ -32,7 +30,6 @@ import Test.Common
     , TestInstance (TestInstance)
     , makeSpec
     , property
-    , testInstancesRightGCDMonoid
     , testInstancesRightReductive
     )
 import Test.Hspec
@@ -48,8 +45,6 @@ spec = describe "Suffixes" $ do
 
     forM_ testInstancesRightReductive $
         \(TestInstance p) -> specRightReductive (Proxy @Key) p
-    forM_ testInstancesRightGCDMonoid $
-        \(TestInstance p) -> specRightGCDMonoid (Proxy @Key) p
 
 specRightReductive
     :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
@@ -62,13 +57,6 @@ specRightReductive = makeSpec $ do
             @k @v & property
     it "prop_stripSuffix_mappend" $
         prop_stripSuffix_mappend
-            @k @v & property
-
-specRightGCDMonoid
-    :: forall k v. (Test k v, RightGCDMonoid v) => Proxy k -> Proxy v -> Spec
-specRightGCDMonoid = makeSpec $ do
-    it "prop_commonSuffix_get" $
-        prop_commonSuffix_get
             @k @v & property
 
 prop_stripSuffix_isJust
@@ -112,20 +100,3 @@ prop_stripSuffix_mappend m1 m2 = QC.property $
     & cover 1
         (isJust (stripSuffix m1 m2))
         "isJust (stripSuffix m1 m2)"
-
-prop_commonSuffix_get
-    :: (Test k v, RightGCDMonoid v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_commonSuffix_get m1 m2 k =
-    MonoidMap.get k (commonSuffix m1 m2)
-    ===
-    commonSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
-    & cover 1
-        (MonoidMap.get k (commonSuffix m1 m2) == mempty)
-        "MonoidMap.get k (commonSuffix m1 m2) == mempty"
-    & cover 0.1
-        (MonoidMap.get k (commonSuffix m1 m2) /= mempty)
-        "MonoidMap.get k (commonSuffix m1 m2) /= mempty"
