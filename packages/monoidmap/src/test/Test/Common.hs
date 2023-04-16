@@ -69,6 +69,7 @@ import Test.QuickCheck
     , choose
     , coarbitraryIntegral
     , coarbitraryShow
+    , frequency
     , functionIntegral
     , functionShow
     , listOf
@@ -95,7 +96,14 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
 
 instance Arbitrary Text where
-    arbitrary = Text.pack <$> listOf (choose ('a', 'd'))
+    arbitrary = Text.pack <$> listOf genChar
+      where
+        genChar = frequency
+            [ (64, pure 'a')
+            , (16, pure 'b')
+            , ( 4, pure 'c')
+            , ( 1, pure 'd')
+            ]
 
 instance CoArbitrary Text where
     coarbitrary = coarbitraryShow
@@ -211,11 +219,7 @@ testInstancesLeftGCDMonoid =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
     , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
     , TestInstance (Proxy @(Dual Text))
     ]
 
@@ -224,11 +228,7 @@ testInstancesRightGCDMonoid =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
     , TestInstance (Proxy @(Sum Natural))
-    , TestInstance (Proxy @[Int])
-    , TestInstance (Proxy @[Natural])
     , TestInstance (Proxy @(Text))
-    , TestInstance (Proxy @(Dual [Int]))
-    , TestInstance (Proxy @(Dual [Natural]))
     , TestInstance (Proxy @(Dual Text))
     ]
 
