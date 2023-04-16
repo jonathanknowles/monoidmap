@@ -12,28 +12,24 @@ module Data.Total.MonoidMap.OperationSpec.FilterSpec
 
 import Prelude
 
+import Control.Monad
+    ( forM_ )
 import Data.Function
     ( (&) )
-import Data.Monoid
-    ( Dual, Sum (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Set
-    ( Set )
-import Data.Text
-    ( Text )
 import Data.Total.MonoidMap
     ( MonoidMap, nonNullCount )
-import Data.Typeable
-    ( typeRep )
 import GHC.Exts
     ( IsList (..) )
-import Numeric.Natural
-    ( Natural )
 import Test.Common
-    ( Key, TestConstraints, property )
+    ( Key
+    , Test
+    , TestInstance (TestInstance)
+    , makeSpec
+    , property
+    , testInstancesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -45,23 +41,10 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Filtering" $ do
 
-    specFor (Proxy @Key) (Proxy @(Set Int))
-    specFor (Proxy @Key) (Proxy @(Set Natural))
-    specFor (Proxy @Key) (Proxy @(Sum Int))
-    specFor (Proxy @Key) (Proxy @(Sum Natural))
-    specFor (Proxy @Key) (Proxy @[Int])
-    specFor (Proxy @Key) (Proxy @[Natural])
-    specFor (Proxy @Key) (Proxy @(Text))
-    specFor (Proxy @Key) (Proxy @(Dual [Int]))
-    specFor (Proxy @Key) (Proxy @(Dual [Natural]))
-    specFor (Proxy @Key) (Proxy @(Dual Text))
+    forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
+specFor = makeSpec $ do
 
     it "prop_filter_get" $
         prop_filter_get
@@ -83,11 +66,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_filter_get
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun v Bool
-    -> k
-    -> MonoidMap k v
-    -> Property
+    :: Test k v => Fun v Bool -> k -> MonoidMap k v -> Property
 prop_filter_get (applyFun -> f) k m =
     MonoidMap.get k (MonoidMap.filter f m)
         ===
@@ -106,10 +85,7 @@ prop_filter_get (applyFun -> f) k m =
         "MonoidMap.nonNullKey k m && not (f (MonoidMap.get k m))"
 
 prop_filter_asList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun v Bool
-    -> MonoidMap k v
-    -> Property
+    :: Test k v => Fun v Bool -> MonoidMap k v -> Property
 prop_filter_asList (applyFun -> f) m =
     n === fromList (List.filter (f . snd) (toList m))
     & cover 2
@@ -122,11 +98,7 @@ prop_filter_asList (applyFun -> f) m =
     n = MonoidMap.filter f m
 
 prop_filterKeys_get
-    :: (Ord k, Show k, Eq v, Monoid v, Show v)
-    => Fun k Bool
-    -> k
-    -> MonoidMap k v
-    -> Property
+    :: Test k v => Fun k Bool -> k -> MonoidMap k v -> Property
 prop_filterKeys_get (applyFun -> f) k m =
     MonoidMap.get k (MonoidMap.filterKeys f m)
         ===
@@ -145,10 +117,7 @@ prop_filterKeys_get (applyFun -> f) k m =
         "MonoidMap.nonNullKey k m && not (f k)"
 
 prop_filterKeys_asList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun k Bool
-    -> MonoidMap k v
-    -> Property
+    :: Test k v => Fun k Bool -> MonoidMap k v -> Property
 prop_filterKeys_asList (applyFun -> f) m =
     n === MonoidMap.fromList (List.filter (f . fst) (toList m))
     & cover 2
@@ -161,11 +130,7 @@ prop_filterKeys_asList (applyFun -> f) m =
     n = MonoidMap.filterKeys f m
 
 prop_filterWithKey_get
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun (k, v) Bool
-    -> k
-    -> MonoidMap k v
-    -> Property
+    :: Test k v => Fun (k, v) Bool -> k -> MonoidMap k v -> Property
 prop_filterWithKey_get (applyFun2 -> f) k m =
     MonoidMap.get k (MonoidMap.filterWithKey f m)
         ===
@@ -184,10 +149,7 @@ prop_filterWithKey_get (applyFun2 -> f) k m =
         "MonoidMap.nonNullKey k m && not (f k (MonoidMap.get k m))"
 
 prop_filterWithKey_asList
-    :: (Ord k, Show k, Eq v, MonoidNull v, Show v)
-    => Fun (k, v) Bool
-    -> MonoidMap k v
-    -> Property
+    :: Test k v => Fun (k, v) Bool -> MonoidMap k v -> Property
 prop_filterWithKey_asList (applyFun2 -> f) m =
     n === MonoidMap.fromList (List.filter (uncurry f) (toList m))
     & cover 2

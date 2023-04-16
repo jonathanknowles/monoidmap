@@ -12,28 +12,24 @@ module Data.Total.MonoidMap.OperationSpec.UnionSpec
 
 import Prelude
 
+import Control.Monad
+    ( forM_ )
 import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
-import Data.Monoid
-    ( Dual, Sum (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Set
-    ( Set )
-import Data.Text
-    ( Text )
 import Data.Total.MonoidMap
     ( MonoidMap )
-import Data.Typeable
-    ( typeRep )
-import Numeric.Natural
-    ( Natural )
 import Test.Common
-    ( Key, TestConstraints, property )
+    ( Key
+    , Test
+    , TestInstance (TestInstance)
+    , makeSpec
+    , property
+    , testInstancesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -46,23 +42,10 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Union" $ do
 
-    specFor (Proxy @Key) (Proxy @(Set Int))
-    specFor (Proxy @Key) (Proxy @(Set Natural))
-    specFor (Proxy @Key) (Proxy @(Sum Int))
-    specFor (Proxy @Key) (Proxy @(Sum Natural))
-    specFor (Proxy @Key) (Proxy @[Int])
-    specFor (Proxy @Key) (Proxy @[Natural])
-    specFor (Proxy @Key) (Proxy @(Text))
-    specFor (Proxy @Key) (Proxy @(Dual [Int]))
-    specFor (Proxy @Key) (Proxy @(Dual [Natural]))
-    specFor (Proxy @Key) (Proxy @(Dual Text))
+    forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
 
-specFor
-    :: forall k v. TestConstraints k v
-    => Proxy k
-    -> Proxy v
-    -> Spec
-specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
+specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
+specFor = makeSpec $ do
 
     it "prop_unionWith_get" $
         prop_unionWith_get
@@ -78,7 +61,7 @@ specFor _k _v = describe (show $ typeRep (Proxy @(MonoidMap k v))) $ do
             @k @v & property
 
 prop_unionWith_get
-    :: (Ord k, Eq v, Show v, MonoidNull v)
+    :: Test k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
@@ -117,7 +100,7 @@ prop_unionWith_get (applyFun2 -> f) m1 m2 k =
         MonoidMap.unionWith f m1 m2
 
 prop_unionWith_get_total
-    :: (Ord k, Eq v, Show v, MonoidNull v)
+    :: Test k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
@@ -157,7 +140,7 @@ prop_unionWith_get_total (applyFun2 -> f0) m1 m2 k =
         | otherwise = f0 v1 v2
 
 prop_unionWith_get_total_failure
-    :: (Ord k, Eq v, Show v, MonoidNull v)
+    :: Test k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
@@ -170,7 +153,7 @@ prop_unionWith_get_total_failure (applyFun2 -> f) m1 m2 k =
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
 
 prop_unionWith_unionWithA
-    :: (Ord k, Show k, Eq v, Show v, MonoidNull v)
+    :: Test k v
     => Fun (v, v) v
     -> MonoidMap k v
     -> MonoidMap k v
