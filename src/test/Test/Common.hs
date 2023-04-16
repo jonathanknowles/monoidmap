@@ -14,9 +14,10 @@ module Test.Common
     , TestInstance (..)
     , testInstancesMonoidNull
     , testInstancesLeftReductive
-    , testInstancesLeftGCDMonoid
     , testInstancesRightReductive
+    , testInstancesLeftGCDMonoid
     , testInstancesRightGCDMonoid
+    , testInstancesGCDMonoid
     , makeSpec
     , property
     ) where
@@ -28,7 +29,7 @@ import Data.Kind
 import Data.Monoid
     ( Dual, Sum (..) )
 import Data.Monoid.GCD
-    ( LeftGCDMonoid, RightGCDMonoid )
+    ( GCDMonoid, LeftGCDMonoid, RightGCDMonoid )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.Proxy
@@ -170,10 +171,11 @@ testInstancesLeftReductive =
     , TestInstance (Proxy @(Dual Text))
     ]
 
-testInstancesLeftGCDMonoid :: [TestInstance LeftGCDMonoid]
-testInstancesLeftGCDMonoid =
+testInstancesRightReductive :: [TestInstance RightReductive]
+testInstancesRightReductive =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Int))
     , TestInstance (Proxy @(Sum Natural))
     , TestInstance (Proxy @[Int])
     , TestInstance (Proxy @[Natural])
@@ -183,11 +185,10 @@ testInstancesLeftGCDMonoid =
     , TestInstance (Proxy @(Dual Text))
     ]
 
-testInstancesRightReductive :: [TestInstance RightReductive]
-testInstancesRightReductive =
+testInstancesLeftGCDMonoid :: [TestInstance LeftGCDMonoid]
+testInstancesLeftGCDMonoid =
     [ TestInstance (Proxy @(Set Int))
     , TestInstance (Proxy @(Set Natural))
-    , TestInstance (Proxy @(Sum Int))
     , TestInstance (Proxy @(Sum Natural))
     , TestInstance (Proxy @[Int])
     , TestInstance (Proxy @[Natural])
@@ -208,6 +209,13 @@ testInstancesRightGCDMonoid =
     , TestInstance (Proxy @(Dual [Int]))
     , TestInstance (Proxy @(Dual [Natural]))
     , TestInstance (Proxy @(Dual Text))
+    ]
+
+testInstancesGCDMonoid :: [TestInstance GCDMonoid]
+testInstancesGCDMonoid =
+    [ TestInstance (Proxy @(Set Int))
+    , TestInstance (Proxy @(Set Natural))
+    , TestInstance (Proxy @(Sum Natural))
     ]
 
 --------------------------------------------------------------------------------
