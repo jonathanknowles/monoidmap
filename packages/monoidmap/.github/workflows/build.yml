@@ -29,26 +29,14 @@ jobs:
         ghc:
           - 8.10.7
           - 9.0.2
-          - 9.2.5
+          - 9.2.7
           - 9.4.4
+          - 9.6.1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Environment (Permission)
-        # https://github.com/actions/runner-images/issues/7061
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo chown -R "runner" $GHCUP_INSTALL_BASE_PREFIX/.ghcup
-
-      - name: Environment (Purge)
-        # The version of `ghc` that comes pre-installed on runner images does
-        # not have documentation for core libraries. This makes it impossible
-        # to build documentation with working hyperlinks to those libraries. To
-        # solve this problem, we purge the existing installation, which enables
-        # the next build step to install ghc from scratch, with documentation.
-        run: ghcup nuke || true
-
-      - name: Environment (Installation)
+      - name: Environment
         uses: haskell/actions/setup@v2
         id: setup-haskell-cabal
         with:
@@ -100,6 +88,12 @@ jobs:
           cabal test all
           --builddir=${{ env.cabal-build-dir }}
 
+      - name: Benchmark
+        run: >
+          cabal bench all
+          --builddir=${{ env.cabal-build-dir }}
+          || true
+
       - name: Documentation (Generation)
         run: >
           cabal haddock
@@ -113,7 +107,7 @@ jobs:
         if: |
             github.ref == 'refs/heads/main'
             && matrix.os == 'ubuntu-latest'
-            && matrix.ghc == '9.4.4'
+            && matrix.ghc == '9.6.1'
         run: >
           mv ${{ env.cabal-build-dir }}/build/*/*/*/doc/html/* gh-pages
 
@@ -123,7 +117,7 @@ jobs:
         if: |
             github.ref == 'refs/heads/main'
             && matrix.os == 'ubuntu-latest'
-            && matrix.ghc == '9.4.4'
+            && matrix.ghc == '9.6.1'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
