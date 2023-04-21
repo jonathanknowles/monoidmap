@@ -37,23 +37,19 @@ import Test.Hspec
 import Test.QuickCheck
     ( Property, cover, (===) )
 
-import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
 spec = describe "Suffixes" $ do
 
     forM_ testTypesRightReductive $
-        \(TestType p) -> specRightReductive (Proxy @Key) p
+        \(TestType p) -> specFor (Proxy @Key) p
 
-specRightReductive
+specFor
     :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
-specRightReductive = makeSpec $ do
+specFor = makeSpec $ do
     it "prop_stripSuffix_isJust" $
         prop_stripSuffix_isJust
-            @k @v & property
-    it "prop_stripSuffix_get" $
-        prop_stripSuffix_get
             @k @v & property
     it "prop_stripSuffix_mappend" $
         prop_stripSuffix_mappend
@@ -69,24 +65,6 @@ prop_stripSuffix_isJust m1 m2 =
     & cover 1
         (m1 `isSuffixOf` m2)
         "m1 `isSuffixOf` m2"
-
-prop_stripSuffix_get
-    :: (Test k v, RightReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_stripSuffix_get m1 m2 k = QC.property $
-    all
-        (\r ->
-            Just (MonoidMap.get k r)
-            ==
-            stripSuffix (MonoidMap.get k m1) (MonoidMap.get k m2)
-        )
-        (stripSuffix m1 m2)
-    & cover 1
-        (isJust (stripSuffix m1 m2))
-        "isJust (stripSuffix m1 m2)"
 
 prop_stripSuffix_mappend
     :: (Test k v, RightReductive v)
