@@ -36,11 +36,12 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Union" $ do
 
-    forM_ testTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
+    forM_ testTypesMonoidNull $
+        \(TestType p) -> specMonoidNull
+            (Proxy @Key) p
 
-specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
-specFor = makeSpec $ do
-
+specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
+specMonoidNull = makeSpec $ do
     it "prop_unionWith_get" $
         prop_unionWith_get
             @k @v & property
