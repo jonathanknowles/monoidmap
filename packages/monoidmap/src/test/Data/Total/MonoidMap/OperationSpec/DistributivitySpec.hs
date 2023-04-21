@@ -112,7 +112,6 @@ specDistributiveGet = do
         -> (forall k v m. (Test k v, c v, m ~ MonoidMap k v) => (m -> m -> m))
         -> (forall v. (TestValue v, c v) => (v -> v -> v))
         -> Spec
-
     specForAll testTypes funName f g =
         describe description $ forM_ testTypes $ specFor f g
       where
