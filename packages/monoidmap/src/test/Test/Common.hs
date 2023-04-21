@@ -17,6 +17,7 @@ module Test.Common
     , testTypesMonus
     , testTypesLeftReductive
     , testTypesRightReductive
+    , testTypesReductive
     , testTypesLeftGCDMonoid
     , testTypesRightGCDMonoid
     , testTypesOverlappingGCDMonoid
@@ -46,7 +47,7 @@ import Data.Monoid.Null
 import Data.Proxy
     ( Proxy (Proxy) )
 import Data.Semigroup.Cancellative
-    ( LeftReductive, RightReductive )
+    ( LeftReductive, Reductive, RightReductive )
 import Data.Set
     ( Set )
 import Data.Text
@@ -214,6 +215,14 @@ testTypesRightReductive =
     , TestType (Proxy @(Dual [Int]))
     , TestType (Proxy @(Dual [Natural]))
     , TestType (Proxy @(Dual Text))
+    ]
+
+testTypesReductive :: [TestType Reductive]
+testTypesReductive =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Int))
+    , TestType (Proxy @(Sum Natural))
     ]
 
 testTypesLeftGCDMonoid :: [TestType LeftGCDMonoid]
