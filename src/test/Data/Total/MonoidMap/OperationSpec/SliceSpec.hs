@@ -8,6 +8,7 @@
 --
 module Data.Total.MonoidMap.OperationSpec.SliceSpec
     ( spec
+    , Slice (..)
     ) where
 
 import Prelude

@@ -157,7 +157,7 @@ type TestValue v =
     )
 
 --------------------------------------------------------------------------------
--- Test instances
+-- Test types (for different type class constraints)
 --------------------------------------------------------------------------------
 
 data TestType (c :: Type -> Constraint) =
