@@ -23,13 +23,7 @@ import Data.Proxy
 import Data.Total.MonoidMap
     ( MonoidMap, nonNullCount )
 import Test.Common
-    ( Key
-    , Test
-    , TestInstance (TestInstance)
-    , makeSpec
-    , property
-    , testInstancesMonoidNull
-    )
+    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -44,7 +38,7 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Conversions" $ do
 
-    forM_ testInstancesMonoidNull $ \(TestInstance p) -> specFor (Proxy @Key) p
+    forM_ testTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do
