@@ -167,6 +167,7 @@ test-suite test
         Data.Total.MonoidMap.OperationSpec.SuffixSpec
         Data.Total.MonoidMap.OperationSpec.IntersectionSpec
         Data.Total.MonoidMap.OperationSpec.UnionSpec
+        Data.Total.MonoidMap.OperationSpec.ValiditySpec
         Examples.MultiMapSpec
         Examples.RecoveredMapSpec
         Test.Common
