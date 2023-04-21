@@ -22,6 +22,7 @@ module Test.Common
     , testTypesOverlappingGCDMonoid
     , testTypesGCDMonoid
     , testTypesLCMMonoid
+    , TestValue
     , makeSpec
     , property
     ) where
