@@ -37,7 +37,6 @@ import Test.Hspec
 import Test.QuickCheck
     ( Property, cover, (===) )
 
-import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
@@ -51,9 +50,6 @@ specLeftReductive
 specLeftReductive = makeSpec $ do
     it "prop_stripPrefix_isJust" $
         prop_stripPrefix_isJust
-            @k @v & property
-    it "prop_stripPrefix_get" $
-        prop_stripPrefix_get
             @k @v & property
     it "prop_stripPrefix_mappend" $
         prop_stripPrefix_mappend
@@ -69,24 +65,6 @@ prop_stripPrefix_isJust m1 m2 =
     & cover 1
         (m1 `isPrefixOf` m2)
         "m1 `isPrefixOf` m2"
-
-prop_stripPrefix_get
-    :: (Test k v, LeftReductive v)
-    => MonoidMap k v
-    -> MonoidMap k v
-    -> k
-    -> Property
-prop_stripPrefix_get m1 m2 k = QC.property $
-    all
-        (\r ->
-            Just (MonoidMap.get k r)
-            ==
-            stripPrefix (MonoidMap.get k m1) (MonoidMap.get k m2)
-        )
-        (stripPrefix m1 m2)
-    & cover 1
-        (isJust (stripPrefix m1 m2))
-        "isJust (stripPrefix m1 m2)"
 
 prop_stripPrefix_mappend
     :: (Test k v, LeftReductive v)
