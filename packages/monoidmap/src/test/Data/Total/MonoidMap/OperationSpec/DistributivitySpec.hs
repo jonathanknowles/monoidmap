@@ -18,17 +18,13 @@ import Control.Monad
 import Data.Function
     ( (&) )
 import Data.Group
-    ( Group ((~~)) )
+    ( Group )
 import Data.Monoid.GCD
-    ( GCDMonoid (gcd)
-    , LeftGCDMonoid (commonPrefix)
-    , OverlappingGCDMonoid (overlap)
-    , RightGCDMonoid (commonSuffix)
-    )
+    ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.LCM
-    ( LCMMonoid (lcm) )
+    ( LCMMonoid )
 import Data.Monoid.Monus
-    ( Monus ((<\>)) )
+    ( Monus )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
@@ -52,6 +48,23 @@ import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
     ( Property, cover, (===) )
+
+import qualified Data.Group as Group
+    ( Group (..) )
+import qualified Data.Monoid.GCD as LeftGCDMonoid
+    ( LeftGCDMonoid (..) )
+import qualified Data.Monoid.GCD as RightGCDMonoid
+    ( RightGCDMonoid (..) )
+import qualified Data.Monoid.GCD as OverlappingGCDMonoid
+    ( OverlappingGCDMonoid (..) )
+import qualified Data.Monoid.GCD as GCDMonoid
+    ( GCDMonoid (..) )
+import qualified Data.Monoid.LCM as LCMMonoid
+    ( LCMMonoid (..) )
+import qualified Data.Monoid.Monus as Monus
+    ( Monus (..) )
+import qualified Data.Semigroup as Semigroup
+    ( Semigroup (..) )
 
 spec :: Spec
 spec = describe "Distributivity" $ do
@@ -171,15 +184,24 @@ prop_distributive_get f g k m1 m2 =
 
 prop_distributive_get_mappend
     :: Test k v => k -> MonoidMap k v -> MonoidMap k v -> Property
-prop_distributive_get_mappend = prop_distributive_get mappend mappend
+prop_distributive_get_mappend =
+    prop_distributive_get
+        (Semigroup.<>)
+        (Semigroup.<>)
 
 prop_distributive_get_minus
     :: (Test k v, Group v) => k -> MonoidMap k v -> MonoidMap k v -> Property
-prop_distributive_get_minus = prop_distributive_get (~~) (~~)
+prop_distributive_get_minus =
+    prop_distributive_get
+        (Group.~~)
+        (Group.~~)
 
 prop_distributive_get_monus
     :: (Test k v, Monus v) => k -> MonoidMap k v -> MonoidMap k v -> Property
-prop_distributive_get_monus = prop_distributive_get (<\>) (<\>)
+prop_distributive_get_monus =
+    prop_distributive_get
+        (Monus.<\>)
+        (Monus.<\>)
 
 prop_distributive_get_commonPrefix
     :: (Test k v, LeftGCDMonoid v)
@@ -188,7 +210,9 @@ prop_distributive_get_commonPrefix
     -> MonoidMap k v
     -> Property
 prop_distributive_get_commonPrefix =
-    prop_distributive_get commonPrefix commonPrefix
+    prop_distributive_get
+        LeftGCDMonoid.commonPrefix
+        LeftGCDMonoid.commonPrefix
 
 prop_distributive_get_commonSuffix
     :: (Test k v, RightGCDMonoid v)
@@ -197,7 +221,9 @@ prop_distributive_get_commonSuffix
     -> MonoidMap k v
     -> Property
 prop_distributive_get_commonSuffix =
-    prop_distributive_get commonSuffix commonSuffix
+    prop_distributive_get
+        RightGCDMonoid.commonSuffix
+        RightGCDMonoid.commonSuffix
 
 prop_distributive_get_overlap
     :: (Test k v, OverlappingGCDMonoid v)
@@ -206,7 +232,9 @@ prop_distributive_get_overlap
     -> MonoidMap k v
     -> Property
 prop_distributive_get_overlap =
-    prop_distributive_get overlap overlap
+    prop_distributive_get
+        OverlappingGCDMonoid.overlap
+        OverlappingGCDMonoid.overlap
 
 prop_distributive_get_gcd
     :: (Test k v, GCDMonoid v)
@@ -214,7 +242,10 @@ prop_distributive_get_gcd
     -> MonoidMap k v
     -> MonoidMap k v
     -> Property
-prop_distributive_get_gcd = prop_distributive_get gcd gcd
+prop_distributive_get_gcd =
+    prop_distributive_get
+        GCDMonoid.gcd
+        GCDMonoid.gcd
 
 prop_distributive_get_lcm
     :: (Test k v, LCMMonoid v)
@@ -222,4 +253,7 @@ prop_distributive_get_lcm
     -> MonoidMap k v
     -> MonoidMap k v
     -> Property
-prop_distributive_get_lcm = prop_distributive_get lcm lcm
+prop_distributive_get_lcm =
+    prop_distributive_get
+        LCMMonoid.lcm
+        LCMMonoid.lcm
