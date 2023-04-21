@@ -43,11 +43,11 @@ spec :: Spec
 spec = describe "Suffixes" $ do
 
     forM_ testTypesRightReductive $
-        \(TestType p) -> specRightReductive (Proxy @Key) p
+        \(TestType p) -> specFor (Proxy @Key) p
 
-specRightReductive
+specFor
     :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
-specRightReductive = makeSpec $ do
+specFor = makeSpec $ do
     it "prop_stripSuffix_isJust" $
         prop_stripSuffix_isJust
             @k @v & property
