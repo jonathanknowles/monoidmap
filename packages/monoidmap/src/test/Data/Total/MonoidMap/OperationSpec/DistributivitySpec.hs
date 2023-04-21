@@ -36,17 +36,17 @@ import Data.Total.MonoidMap
 import Test.Common
     ( Key
     , Test
-    , TestInstance (..)
+    , TestType (..)
     , makeSpec
     , property
-    , testInstancesGCDMonoid
-    , testInstancesGroup
-    , testInstancesLCMMonoid
-    , testInstancesLeftGCDMonoid
-    , testInstancesMonoidNull
-    , testInstancesMonus
-    , testInstancesOverlappingGCDMonoid
-    , testInstancesRightGCDMonoid
+    , testTypesGCDMonoid
+    , testTypesGroup
+    , testTypesLCMMonoid
+    , testTypesLeftGCDMonoid
+    , testTypesMonoidNull
+    , testTypesMonus
+    , testTypesOverlappingGCDMonoid
+    , testTypesRightGCDMonoid
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -56,29 +56,29 @@ import Test.QuickCheck
 spec :: Spec
 spec = describe "Distributivity" $ do
 
-    forM_ testInstancesMonoidNull $
-        \(TestInstance p) -> specMonoidNull
+    forM_ testTypesMonoidNull $
+        \(TestType p) -> specMonoidNull
             (Proxy @Key) p
-    forM_ testInstancesGroup $
-        \(TestInstance p) -> specGroup
+    forM_ testTypesGroup $
+        \(TestType p) -> specGroup
             (Proxy @Key) p
-    forM_ testInstancesMonus $
-        \(TestInstance p) -> specMonus
+    forM_ testTypesMonus $
+        \(TestType p) -> specMonus
             (Proxy @Key) p
-    forM_ testInstancesLeftGCDMonoid $
-        \(TestInstance p) -> specLeftGCDMonoid
+    forM_ testTypesLeftGCDMonoid $
+        \(TestType p) -> specLeftGCDMonoid
             (Proxy @Key) p
-    forM_ testInstancesRightGCDMonoid $
-        \(TestInstance p) -> specRightGCDMonoid
+    forM_ testTypesRightGCDMonoid $
+        \(TestType p) -> specRightGCDMonoid
             (Proxy @Key) p
-    forM_ testInstancesOverlappingGCDMonoid $
-        \(TestInstance p) -> specOverlappingGCDMonoid
+    forM_ testTypesOverlappingGCDMonoid $
+        \(TestType p) -> specOverlappingGCDMonoid
             (Proxy @Key) p
-    forM_ testInstancesGCDMonoid $
-        \(TestInstance p) -> specGCDMonoid
+    forM_ testTypesGCDMonoid $
+        \(TestType p) -> specGCDMonoid
             (Proxy @Key) p
-    forM_ testInstancesLCMMonoid $
-        \(TestInstance p) -> specLCMMonoid
+    forM_ testTypesLCMMonoid $
+        \(TestType p) -> specLCMMonoid
             (Proxy @Key) p
 
 specMonoidNull
