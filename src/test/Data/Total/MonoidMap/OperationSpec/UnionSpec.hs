@@ -18,16 +18,25 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
+import Data.Monoid.LCM
+    ( LCMMonoid )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Test.Common
-    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+    ( Key
+    , Test
+    , TestType (TestType)
+    , makeSpec
+    , property
+    , testTypesLCMMonoid
+    , testTypesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Fun (..), Property, applyFun2, cover, expectFailure, (===) )
+    ( Fun (..), Property, applyFun2, conjoin, cover, expectFailure, (===) )
 
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
@@ -38,6 +47,9 @@ spec = describe "Union" $ do
 
     forM_ testTypesMonoidNull $
         \(TestType p) -> specMonoidNull
+            (Proxy @Key) p
+    forM_ testTypesLCMMonoid $
+        \(TestType p) -> specLCMMonoid
             (Proxy @Key) p
 
 specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
@@ -54,6 +66,28 @@ specMonoidNull = makeSpec $ do
     it "prop_unionWith_unionWithA" $
         prop_unionWith_unionWithA
             @k @v & property
+
+specLCMMonoid
+    :: forall k v. (Test k v, LCMMonoid v) => Proxy k -> Proxy v -> Spec
+specLCMMonoid = makeSpec $ do
+    it "prop_union_isSubmapOf" $
+        prop_union_isSubmapOf
+            @k @v & property
+
+prop_union_isSubmapOf
+    :: (Test k v, LCMMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_union_isSubmapOf m1 m2 = conjoin
+    [ m1 `MonoidMap.isSubmapOf` union_m1_m2
+    , m2 `MonoidMap.isSubmapOf` union_m1_m2
+    ]
+    & cover 2
+        (m1 /= m2 && MonoidMap.nonNull (union_m1_m2))
+        "m1 /= m2 && MonoidMap.nonNull (union_m1_m2)"
+  where
+    union_m1_m2 = MonoidMap.union m1 m2
 
 prop_unionWith_get
     :: Test k v
