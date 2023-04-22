@@ -35,7 +35,7 @@ import Data.Group
 import Data.Kind
     ( Constraint, Type )
 import Data.Monoid
-    ( Dual, Sum (..) )
+    ( Dual, Sum, Product )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.LCM
@@ -172,6 +172,8 @@ testTypesMonoidNull =
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Int))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Int))
+    , TestType (Proxy @(Product Natural))
     , TestType (Proxy @(Text))
     , TestType (Proxy @[Int])
     , TestType (Proxy @[Natural])
@@ -187,6 +189,7 @@ testTypesMonus =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Natural))
     ]
 
 testTypesLeftReductive :: [TestType LeftReductive]
@@ -195,6 +198,8 @@ testTypesLeftReductive =
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Int))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Int))
+    , TestType (Proxy @(Product Natural))
     , TestType (Proxy @[Int])
     , TestType (Proxy @[Natural])
     , TestType (Proxy @(Text))
@@ -209,6 +214,8 @@ testTypesRightReductive =
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Int))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Int))
+    , TestType (Proxy @(Product Natural))
     , TestType (Proxy @[Int])
     , TestType (Proxy @[Natural])
     , TestType (Proxy @(Text))
@@ -223,6 +230,8 @@ testTypesReductive =
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Int))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Int))
+    , TestType (Proxy @(Product Natural))
     ]
 
 testTypesLeftGCDMonoid :: [TestType LeftGCDMonoid]
@@ -230,6 +239,7 @@ testTypesLeftGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Natural))
     , TestType (Proxy @(Text))
     , TestType (Proxy @(Dual Text))
     ]
@@ -239,6 +249,7 @@ testTypesRightGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Natural))
     , TestType (Proxy @(Text))
     , TestType (Proxy @(Dual Text))
     ]
@@ -248,6 +259,7 @@ testTypesOverlappingGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Natural))
     , TestType (Proxy @(Text))
     , TestType (Proxy @(Dual Text))
     ]
@@ -257,6 +269,7 @@ testTypesGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Natural))
     ]
 
 testTypesLCMMonoid :: [TestType LCMMonoid]
@@ -264,6 +277,7 @@ testTypesLCMMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Natural))
     ]
 
 --------------------------------------------------------------------------------
