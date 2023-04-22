@@ -18,16 +18,25 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
+import Data.Monoid.Cancellative
+    ( GCDMonoid )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Test.Common
-    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+    ( Key
+    , Test
+    , TestType (TestType)
+    , makeSpec
+    , property
+    , testTypesGCDMonoid
+    , testTypesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Fun (..), Property, applyFun2, cover, expectFailure, (===) )
+    ( Fun (..), Property, applyFun2, conjoin, cover, expectFailure, (===) )
 
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
@@ -38,6 +47,9 @@ spec = describe "Intersection" $ do
 
     forM_ testTypesMonoidNull $
         \(TestType p) -> specMonoidNull
+            (Proxy @Key) p
+    forM_ testTypesGCDMonoid $
+        \(TestType p) -> specGCDMonoid
             (Proxy @Key) p
 
 specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
@@ -54,6 +66,28 @@ specMonoidNull = makeSpec $ do
     it "prop_intersectionWith_intersectionWithA" $
         prop_intersectionWith_intersectionWithA
             @k @v & property
+
+specGCDMonoid
+    :: forall k v. (Test k v, GCDMonoid v) => Proxy k -> Proxy v -> Spec
+specGCDMonoid = makeSpec $ do
+    it "prop_intersection_isSubmapOf" $
+        prop_intersection_isSubmapOf
+            @k @v & property
+
+prop_intersection_isSubmapOf
+    :: (Test k v, GCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_intersection_isSubmapOf m1 m2 = conjoin
+    [ intersection_m1_m2 `MonoidMap.isSubmapOf` m1
+    , intersection_m1_m2 `MonoidMap.isSubmapOf` m2
+    ]
+    & cover 2
+        (m1 /= m2 && MonoidMap.nonNull (intersection_m1_m2))
+        "m1 /= m2 && MonoidMap.nonNull (intersection_m1_m2)"
+  where
+    intersection_m1_m2 = MonoidMap.intersection m1 m2
 
 prop_intersectionWith_get
     :: Test k v
