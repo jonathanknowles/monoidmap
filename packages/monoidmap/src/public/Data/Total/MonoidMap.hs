@@ -60,10 +60,12 @@ module Data.Total.MonoidMap
     , isSubmapOf
     , isSubmapOfBy
 
-    -- * Merging
+    -- * Intersection
     , intersection
     , intersectionWith
     , intersectionWithA
+
+    -- * Union
     , union
     , unionWith
     , unionWithA
