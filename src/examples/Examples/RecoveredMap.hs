@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
@@ -10,14 +11,14 @@
 --
 module Examples.RecoveredMap where
 
-import Prelude
+import Prelude hiding (null)
 
 import Control.DeepSeq
-    ( NFData )
+    ( NFData (..) )
 import Data.Maybe
     ( mapMaybe )
-import Data.Monoid
-    ( First (..) )
+import Data.Monoid.Null
+    ( MonoidNull (..) )
 import Data.Set
     ( Set )
 import Data.Total.MonoidMap
@@ -29,6 +30,36 @@ newtype Map k v = Map
     {unMap :: MonoidMap k (First v)}
     deriving stock Eq
     deriving newtype (NFData, Semigroup, Monoid)
+
+data First a
+    = FirstNull
+    | FirstJust !a
+    deriving (Eq, Functor)
+
+firstToMaybe :: First a -> Maybe a
+firstToMaybe = \case
+    FirstNull -> Nothing
+    FirstJust a -> Just a
+
+instance Applicative First where
+    pure a = FirstJust a
+    FirstNull <*> _ = FirstNull
+    FirstJust f <*> something = fmap f something
+
+instance Semigroup (First a) where
+    FirstNull <> a = a
+    FirstJust a <> _ = FirstJust a
+
+instance Monoid (First a) where
+    mempty = FirstNull
+
+instance MonoidNull (First a) where
+    null FirstNull = True
+    null _ = False
+
+instance NFData a => NFData (First a) where
+    rnf FirstNull = ()
+    rnf (FirstJust a) = rnf a
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
@@ -43,7 +74,7 @@ fromList :: Ord k => [(k, v)] -> Map k v
 fromList = Map . MonoidMap.fromListWith (const id) . fmap (fmap pure)
 
 toList :: Map k v -> [(k, v)]
-toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
+toList = mapMaybe (firstToMaybe . sequenceA) . MonoidMap.toList . unMap
 
 delete :: Ord k => k -> Map k v -> Map k v
 delete k = Map . MonoidMap.nullify k . unMap
@@ -55,7 +86,7 @@ keysSet :: Map k v -> Set k
 keysSet = MonoidMap.nonNullKeys . unMap
 
 lookup :: Ord k => k -> Map k v -> Maybe v
-lookup k = getFirst . MonoidMap.get k . unMap
+lookup k = firstToMaybe . MonoidMap.get k . unMap
 
 member :: Ord k => k -> Map k v -> Bool
 member k = MonoidMap.nonNullKey k . unMap
