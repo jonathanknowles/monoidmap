@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.OperationSpec.PrefixSpec
+module Data.Total.MonoidMap.PrefixSpec
     ( spec
     ) where
 
