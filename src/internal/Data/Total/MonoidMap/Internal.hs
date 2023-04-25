@@ -66,6 +66,8 @@ module Data.Total.MonoidMap.Internal
     -- * Comparison
     , isSubmapOf
     , isSubmapOfBy
+    , disjoint
+    , disjointBy
 
     -- * Intersection
     , intersection
@@ -1185,6 +1187,26 @@ isSubmapOfBy leq m1 m2 =
         (\k -> get k m1 `leq` get k m2)
         (nonNullKeys m1)
 {-# INLINE isSubmapOfBy #-}
+
+disjoint
+    :: (Ord k, GCDMonoid v, MonoidNull v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Bool
+disjoint = disjointBy (\v1 v2 -> C.null (C.gcd v1 v2))
+{-# INLINE disjoint #-}
+
+disjointBy
+    :: (Ord k, Monoid v1, Monoid v2)
+    => (v1 -> v2 -> Bool)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> Bool
+disjointBy f m1 m2 =
+    all
+        (\k -> f (get k m1) (get k m2))
+        (Set.intersection (nonNullKeys m1) (nonNullKeys m2))
+{-# INLINE disjointBy #-}
 
 --------------------------------------------------------------------------------
 -- Association
