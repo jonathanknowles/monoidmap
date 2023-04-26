@@ -1,0 +1,83 @@
+{- HLINT ignore "Redundant bracket" -}
+{- HLINT ignore "Use camelCase" -}
+{- HLINT ignore "Use null" -}
+
+-- |
+-- Copyright: © 2022–2023 Jonathan Knowles
+-- License: Apache-2.0
+--
+module Data.Total.MonoidMap.ComparisonSpec
+    ( spec
+    ) where
+
+import Prelude
+
+import Control.Monad
+    ( forM_ )
+import Data.Function
+    ( (&) )
+import Data.Proxy
+    ( Proxy (..) )
+import Data.Total.MonoidMap
+    ( MonoidMap )
+import Test.Common
+    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+import Test.Hspec
+    ( Spec, describe, it )
+import Test.QuickCheck
+    ( Fun (..), Property, applyFun2, cover, (.||.) )
+
+import qualified Data.Monoid.Null as Null
+import qualified Data.Set as Set
+import qualified Data.Total.MonoidMap as MonoidMap
+
+spec :: Spec
+spec = describe "Comparison" $ do
+
+    forM_ testTypesMonoidNull $
+        \(TestType p) -> specMonoidNull
+            (Proxy @Key) p
+
+specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
+specMonoidNull = makeSpec $ do
+    it "prop_disjointBy_get_total" $
+        prop_disjointBy_get_total
+            @k @v & property
+
+prop_disjointBy_get_total
+    :: Test k v
+    => Fun (v, v) Bool
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_disjointBy_get_total (applyFun2 -> f0) m1 m2 k =
+    MonoidMap.disjointBy f m1 m2
+        ==>
+        f (MonoidMap.get k m1) (MonoidMap.get k m2)
+    & cover 8
+        (m1 /= mempty && m2 /= mempty && MonoidMap.disjointBy f m1 m2)
+        "m1 /= mempty && m2 /= mempty && MonoidMap.disjointBy f m1 m2"
+    & cover 2
+        (keyWithinIntersection)
+        "keyWithinIntersection"
+    & cover 2
+        (not keyWithinIntersection)
+        "not keyWithinIntersection"
+  where
+    keyWithinIntersection =
+        k `Set.member` Set.intersection
+            (MonoidMap.nonNullKeys m1)
+            (MonoidMap.nonNullKeys m2)
+    f v1 v2
+        | Null.null v1 = True
+        | Null.null v2 = True
+        | otherwise = f0 v1 v2
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+infixr 3 ==>
+(==>) :: Bool -> Bool -> Property
+a ==> b = not a .||. b
