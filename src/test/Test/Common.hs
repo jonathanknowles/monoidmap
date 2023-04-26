@@ -35,7 +35,7 @@ import Data.Group
 import Data.Kind
     ( Constraint, Type )
 import Data.Monoid
-    ( Dual, Sum, Product )
+    ( Dual, Product, Sum )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.LCM
