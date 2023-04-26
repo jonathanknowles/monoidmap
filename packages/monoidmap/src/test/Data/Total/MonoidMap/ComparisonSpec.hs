@@ -25,7 +25,7 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Fun (..), Property, applyFun2, cover, (.||.) )
+    ( Fun (..), Property, applyFun2, cover, expectFailure, (.||.) )
 
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
@@ -42,6 +42,9 @@ specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specMonoidNull = makeSpec $ do
     it "prop_disjointBy_get_total" $
         prop_disjointBy_get_total
+            @k @v & property
+    it "prop_disjointBy_get_total_failure" $
+        prop_disjointBy_get_total_failure
             @k @v & property
 
 prop_disjointBy_get_total
@@ -73,6 +76,19 @@ prop_disjointBy_get_total (applyFun2 -> f0) m1 m2 k =
         | Null.null v1 = True
         | Null.null v2 = True
         | otherwise = f0 v1 v2
+
+prop_disjointBy_get_total_failure
+    :: Test k v
+    => Fun (v, v) Bool
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_disjointBy_get_total_failure (applyFun2 -> f) m1 m2 k =
+    expectFailure $
+    MonoidMap.disjointBy f m1 m2
+        ==>
+        f (MonoidMap.get k m1) (MonoidMap.get k m2)
 
 --------------------------------------------------------------------------------
 -- Utilities
