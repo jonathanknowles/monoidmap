@@ -49,6 +49,9 @@ specMonoidNull = makeSpec $ do
     it "prop_isSubmapOfBy_get_total" $
         prop_isSubmapOfBy_get_total
             @k @v & property
+    it "prop_isSubmapOfBy_get_total_failure" $
+        prop_isSubmapOfBy_get_total_failure
+            @k @v & property
 
 prop_disjointBy_get_total
     :: Test k v
@@ -129,6 +132,19 @@ prop_isSubmapOfBy_get_total (applyFun2 -> f0) m1 m2 k =
     nonNullKeyR = MonoidMap.nonNullKey k m2
     nullKeyL = MonoidMap.nullKey k m1
     nullKeyR = MonoidMap.nullKey k m2
+
+prop_isSubmapOfBy_get_total_failure
+    :: Test k v
+    => Fun (v, v) Bool
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_isSubmapOfBy_get_total_failure (applyFun2 -> f) m1 m2 k =
+    expectFailure $
+    MonoidMap.isSubmapOfBy f m1 m2
+        ==>
+        f (MonoidMap.get k m1) (MonoidMap.get k m2)
 
 --------------------------------------------------------------------------------
 -- Utilities
