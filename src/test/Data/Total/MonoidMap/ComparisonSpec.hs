@@ -76,6 +76,9 @@ specGCDMonoid = makeSpec $ do
 specReductive
     :: forall k v. (Test k v, Reductive v) => Proxy k -> Proxy v -> Spec
 specReductive = makeSpec $ do
+    it "prop_isSubmapOf_minusMaybe" $
+        prop_isSubmapOf_minusMaybe
+            @k @v & property
     it "prop_isSubmapOf_reduce" $
         prop_isSubmapOf_reduce
             @k @v & property
@@ -168,6 +171,24 @@ prop_disjointBy_get_total_failure (applyFun2 -> f) m1 m2 k =
     MonoidMap.disjointBy f m1 m2
         ==>
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
+
+prop_isSubmapOf_minusMaybe
+    :: (Test k v, Reductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_isSubmapOf_minusMaybe m1 m2 =
+    MonoidMap.isSubmapOf m1 m2
+        ==> isJust (m2 `MonoidMap.minusMaybe` m1)
+    & cover 0.01
+        (nonTrivialSubmap)
+        "nonTrivialSubmap"
+  where
+    nonTrivialSubmap =
+        MonoidMap.isSubmapOf m1 m2
+        && m1 /= mempty
+        && m2 /= mempty
+        && m1 /= m2
 
 prop_isSubmapOf_reduce
     :: (Test k v, Reductive v)
