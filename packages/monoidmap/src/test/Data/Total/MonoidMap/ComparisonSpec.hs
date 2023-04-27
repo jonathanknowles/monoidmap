@@ -36,7 +36,10 @@ import Test.Hspec
 import Test.QuickCheck
     ( Fun (..), Property, applyFun2, cover, expectFailure, (.||.), (===) )
 
+import qualified Data.Monoid.GCD as GCDMonoid
+    ( GCDMonoid (..) )
 import qualified Data.Monoid.Null as Null
+    ( MonoidNull (..) )
 import qualified Data.Set as Set
 import qualified Data.Total.MonoidMap as MonoidMap
 
@@ -54,6 +57,9 @@ spec = describe "Comparison" $ do
 specGCDMonoid
     :: forall k v. (Test k v, GCDMonoid v) => Proxy k -> Proxy v -> Spec
 specGCDMonoid = makeSpec $ do
+    it "prop_disjoint_gcd" $
+        prop_disjoint_gcd
+            @k @v & property
     it "prop_disjoint_intersection" $
         prop_disjoint_intersection
             @k @v & property
@@ -73,6 +79,22 @@ specMonoidNull = makeSpec $ do
     it "prop_isSubmapOfBy_get_total_failure" $
         prop_isSubmapOfBy_get_total_failure
             @k @v & property
+
+prop_disjoint_gcd
+    :: (Test k v, GCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_disjoint_gcd m1 m2 k =
+    MonoidMap.disjoint m1 m2 ==>
+        (Null.null (GCDMonoid.gcd (MonoidMap.get k m1) (MonoidMap.get k m2)))
+    & cover 8
+        (MonoidMap.disjoint m1 m2)
+        "MonoidMap.disjoint m1 m2"
+    & cover 8
+        (not (MonoidMap.disjoint m1 m2))
+        "not (MonoidMap.disjoint m1 m2)"
 
 prop_disjoint_intersection
     :: (Test k v, GCDMonoid v)
