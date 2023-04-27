@@ -59,6 +59,8 @@ module Data.Total.MonoidMap
     -- * Comparison
     , isSubmapOf
     , isSubmapOfBy
+    , disjoint
+    , disjointBy
 
     -- * Intersection
     , intersection

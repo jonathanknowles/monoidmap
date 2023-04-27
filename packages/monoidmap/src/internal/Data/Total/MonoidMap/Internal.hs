@@ -66,6 +66,8 @@ module Data.Total.MonoidMap.Internal
     -- * Comparison
     , isSubmapOf
     , isSubmapOfBy
+    , disjoint
+    , disjointBy
 
     -- * Intersection
     , intersection
@@ -1132,9 +1134,16 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 
 -- | Indicates whether or not the first map is a /submap/ of the second.
 --
--- 'MonoidMap' __@m1@__ is a /submap/ of 'MonoidMap' __@m2@__ if (and only if)
--- for all possible keys __@k@__, the value for __@k@__ in __@m2@__ can be
--- /reduced/ by the value for __@k@__ in __@m1@__ with the '(</>)' operator:
+-- Map __@m1@__ is a submap of map __@m2@__ if (and only if) __@m1@__ can be
+-- subtracted from __@m2@__ with the 'minusMaybe' operation:
+--
+-- @
+-- m1 '`isSubmapOf`' m2 '==' 'isJust' (m2 '`minusMaybe`' m1)
+-- @
+--
+-- Equivalently, map __@m1@__ is a submap of map __@m2@__ if (and only if) for
+-- all possible keys __@k@__, the value for __@k@__ in __@m1@__ can be
+-- subtracted from the value for __@k@__ in __@m2@__ with the '(</>)' operator:
 --
 -- @
 -- m1 '`isSubmapOf`' m2 '==' (∀ k. 'isJust' ('get' k m2 '</>' 'get' k m1))
@@ -1185,6 +1194,71 @@ isSubmapOfBy leq m1 m2 =
         (\k -> get k m1 `leq` get k m2)
         (nonNullKeys m1)
 {-# INLINE isSubmapOfBy #-}
+
+-- | Indicates whether or not a pair of maps are /disjoint/.
+--
+-- Maps __@m1@__ and __@m2@__ are disjoint if (and only if) their intersection
+-- is empty:
+--
+-- @
+-- 'disjoint' m1 m2 '==' ('intersection' m1 m2 '==' 'mempty')
+-- @
+--
+-- Equivalently, maps __@m1@__ and __@m2@__ are disjoint if (and only if) for
+-- all possible keys __@k@__, the values for __@k@__ in __@m1@__ and __@m2@__
+-- have a 'C.gcd' that is 'C.null':
+--
+-- @
+-- 'disjoint' m1 m2 '==' (∀ k. 'C.null' ('C.gcd' ('get' k m1) ('get' k m2)))
+-- @
+--
+disjoint
+    :: (Ord k, GCDMonoid v, MonoidNull v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Bool
+disjoint = disjointBy (\v1 v2 -> C.null (C.gcd v1 v2))
+{-# INLINE disjoint #-}
+
+-- | Indicates whether or not a pair of maps are /disjoint/ using the given
+--   indicator function to test pairs of values for matching keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'disjointBy' f m1 m2 '=='
+--     'all'
+--         (\\k -> f ('get' k m1) ('get' k m2))
+--         ('Set.intersection' ('nonNullKeys' m1) ('nonNullKeys' m2))
+-- @
+--
+-- === Conditional totality
+--
+-- /If/ the given indicator function __@f@__ /always/ evaluates to 'True'
+-- when /either/ or /both/ of its arguments are 'mempty':
+--
+-- @
+-- ∀ v. (f v 'mempty') '&&' (f 'mempty' v)
+-- @
+--
+-- /Then/ the following property holds:
+--
+-- @
+-- 'disjointBy' f m1 m2 '==' (∀ k. f ('get' k m1) ('get' k m2))
+-- @
+--
+disjointBy
+    :: (Ord k, Monoid v1, Monoid v2)
+    => (v1 -> v2 -> Bool)
+    -- ^ Function with which to test pairs of values for matching keys.
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> Bool
+disjointBy f m1 m2 =
+    all
+        (\k -> f (get k m1) (get k m2))
+        (Set.intersection (nonNullKeys m1) (nonNullKeys m2))
+{-# INLINE disjointBy #-}
 
 --------------------------------------------------------------------------------
 -- Association
