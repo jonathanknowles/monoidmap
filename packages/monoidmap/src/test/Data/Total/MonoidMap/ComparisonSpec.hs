@@ -16,6 +16,10 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
+import Data.Maybe
+    ( isJust )
+import Data.Monoid.Cancellative
+    ( Reductive (..) )
 import Data.Monoid.GCD
     ( GCDMonoid )
 import Data.Proxy
@@ -30,6 +34,7 @@ import Test.Common
     , property
     , testTypesGCDMonoid
     , testTypesMonoidNull
+    , testTypesReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -50,6 +55,10 @@ spec = describe "Comparison" $ do
         \(TestType p) -> specGCDMonoid
             (Proxy @Key) p
 
+    forM_ testTypesReductive $
+        \(TestType p) -> specReductive
+            (Proxy @Key) p
+
     forM_ testTypesMonoidNull $
         \(TestType p) -> specMonoidNull
             (Proxy @Key) p
@@ -62,6 +71,13 @@ specGCDMonoid = makeSpec $ do
             @k @v & property
     it "prop_disjoint_intersection" $
         prop_disjoint_intersection
+            @k @v & property
+
+specReductive
+    :: forall k v. (Test k v, Reductive v) => Proxy k -> Proxy v -> Spec
+specReductive = makeSpec $ do
+    it "prop_isSubmapOf_reduce" $
+        prop_isSubmapOf_reduce
             @k @v & property
 
 specMonoidNull
@@ -152,6 +168,35 @@ prop_disjointBy_get_total_failure (applyFun2 -> f) m1 m2 k =
     MonoidMap.disjointBy f m1 m2
         ==>
         f (MonoidMap.get k m1) (MonoidMap.get k m2)
+
+prop_isSubmapOf_reduce
+    :: (Test k v, Reductive v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> k
+    -> Property
+prop_isSubmapOf_reduce m1 m2 k =
+    MonoidMap.isSubmapOf m1 m2
+        ==> isJust (MonoidMap.get k m2 </> MonoidMap.get k m1)
+    & cover 0.001
+        (nonTrivialSubmap && nonNullKeyL && nonNullKeyR)
+        "nonTrivialSubmap && nonNullKeyL && nonNullKeyR"
+    & cover 0.001
+        (nonTrivialSubmap && nullKeyL && nonNullKeyR)
+        "nonTrivialSubmap && nullKeyL && nonNullKeyR"
+    & cover 0.001
+        (nonTrivialSubmap && nullKeyL && nullKeyR)
+        "nonTrivialSubmap && nullKeyL && nullKeyR"
+  where
+    nonTrivialSubmap =
+        MonoidMap.isSubmapOf m1 m2
+        && m1 /= mempty
+        && m2 /= mempty
+        && m1 /= m2
+    nonNullKeyL = MonoidMap.nonNullKey k m1
+    nonNullKeyR = MonoidMap.nonNullKey k m2
+    nullKeyL = MonoidMap.nullKey k m1
+    nullKeyR = MonoidMap.nullKey k m2
 
 prop_isSubmapOfBy_get_total
     :: Test k v
