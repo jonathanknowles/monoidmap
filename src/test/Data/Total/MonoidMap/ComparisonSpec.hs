@@ -16,16 +16,25 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
+import Data.Monoid.GCD
+    ( GCDMonoid )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Total.MonoidMap
     ( MonoidMap )
 import Test.Common
-    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+    ( Key
+    , Test
+    , TestType (TestType)
+    , makeSpec
+    , property
+    , testTypesGCDMonoid
+    , testTypesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Fun (..), Property, applyFun2, cover, expectFailure, (.||.) )
+    ( Fun (..), Property, applyFun2, cover, expectFailure, (.||.), (===) )
 
 import qualified Data.Monoid.Null as Null
 import qualified Data.Set as Set
@@ -34,11 +43,23 @@ import qualified Data.Total.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Comparison" $ do
 
+    forM_ testTypesGCDMonoid $
+        \(TestType p) -> specGCDMonoid
+            (Proxy @Key) p
+
     forM_ testTypesMonoidNull $
         \(TestType p) -> specMonoidNull
             (Proxy @Key) p
 
-specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
+specGCDMonoid
+    :: forall k v. (Test k v, GCDMonoid v) => Proxy k -> Proxy v -> Spec
+specGCDMonoid = makeSpec $ do
+    it "prop_disjoint_intersection" $
+        prop_disjoint_intersection
+            @k @v & property
+
+specMonoidNull
+    :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specMonoidNull = makeSpec $ do
     it "prop_disjointBy_get_total" $
         prop_disjointBy_get_total
@@ -52,6 +73,20 @@ specMonoidNull = makeSpec $ do
     it "prop_isSubmapOfBy_get_total_failure" $
         prop_isSubmapOfBy_get_total_failure
             @k @v & property
+
+prop_disjoint_intersection
+    :: (Test k v, GCDMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_disjoint_intersection m1 m2 =
+    MonoidMap.disjoint m1 m2 === (MonoidMap.intersection m1 m2 == mempty)
+    & cover 8
+        (MonoidMap.disjoint m1 m2)
+        "MonoidMap.disjoint m1 m2"
+    & cover 8
+        (not (MonoidMap.disjoint m1 m2))
+        "not (MonoidMap.disjoint m1 m2)"
 
 prop_disjointBy_get_total
     :: Test k v
