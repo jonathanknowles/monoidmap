@@ -64,6 +64,9 @@ spec = describe "Examples" $ do
     describe "Comparison" $ do
 
         exampleSpec_isSubmapOf_Sum_Natural
+        exampleSpec_disjoint_Product_Natural
+        exampleSpec_disjoint_Sum_Natural
+        exampleSpec_disjoint_Set_Natural
 
     describe "Intersection" $ do
 
@@ -229,6 +232,102 @@ exampleData_isSubmapOf_Sum_Natural = unitTestData2
     ]
   where
     m = MonoidMap.fromList . zip [A ..]
+
+exampleSpec_disjoint_Product_Natural :: Spec
+exampleSpec_disjoint_Product_Natural = unitTestSpec
+    "MonoidMap.disjoint (Product Natural)"
+    "MonoidMap.disjoint"
+    (MonoidMap.disjoint)
+    (exampleData_disjoint_Product_Natural)
+
+exampleData_disjoint_Product_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Product Natural))
+    (MonoidMap LatinChar (Product Natural))
+    (Bool)
+exampleData_disjoint_Product_Natural = unitTestData2
+    [ ( m []
+      , m []
+      , True
+      )
+    , ( m [2, 3, 5, 7]
+      , m [3, 5, 7, 2]
+      , True
+      )
+    , ( m [2 * 3, 5 * 7]
+      , m [5 * 7, 2 * 3]
+      , True
+      )
+    , ( m [2 * 3    , 3 * 5    ]
+      , m [    3 * 5,     5 * 7]
+      , False
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+exampleSpec_disjoint_Sum_Natural :: Spec
+exampleSpec_disjoint_Sum_Natural = unitTestSpec
+    "MonoidMap.disjoint (Sum Natural)"
+    "MonoidMap.disjoint"
+    (MonoidMap.disjoint)
+    (exampleData_disjoint_Sum_Natural)
+
+exampleData_disjoint_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (Bool)
+exampleData_disjoint_Sum_Natural = unitTestData2
+    [ ( m []
+      , m []
+      , True
+      )
+    , ( m [0, 1, 0, 1]
+      , m [1, 0, 1, 0]
+      , True
+      )
+    , ( m [0, 8, 0, 8]
+      , m [8, 0, 8, 0]
+      , True
+      )
+    , ( m [0, 8, 0, 8]
+      , m [8, 0, 8, 1]
+      , False
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
+
+exampleSpec_disjoint_Set_Natural :: Spec
+exampleSpec_disjoint_Set_Natural = unitTestSpec
+    "MonoidMap.disjoint (Set Natural)"
+    "MonoidMap.disjoint"
+    (MonoidMap.disjoint)
+    (exampleData_disjoint_Set_Natural)
+
+exampleData_disjoint_Set_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Set Natural))
+    (MonoidMap LatinChar (Set Natural))
+    (Bool)
+exampleData_disjoint_Set_Natural = unitTestData2
+    [ ( m []
+      , m []
+      , True
+      )
+    , ( m [[1], [2], [3], [4]]
+      , m [[5], [6], [7], [8]]
+      , True
+      )
+    , ( m [[1, 2], [3, 4]]
+      , m [[5, 6], [7, 8]]
+      , True
+      )
+    , ( m [[1, 2   ], [3, 4   ]]
+      , m [[   2, 3], [   4, 5]]
+      , False
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
 
 --------------------------------------------------------------------------------
 -- Intersection
