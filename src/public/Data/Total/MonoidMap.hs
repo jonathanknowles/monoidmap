@@ -2,7 +2,8 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Total monoidal map type with support for semigroup and monoid subclasses.
+-- Provides the 'MonoidMap' type, which models a __total function__ from
+-- keys to __monoidal__ values.
 --
 module Data.Total.MonoidMap
     (
