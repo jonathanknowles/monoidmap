@@ -646,7 +646,7 @@ Since the [`MonoidMap.set`](https://jonathanknowles.github.io/total-monoidal-map
 - there is no need to handle empty lists differently from non-empty lists.
 </details>
 
-<details><summary><strong>Example: Multiasset Maps (Cardano Ledger)</strong></summary><br/>
+<details><summary><strong>Example: Nested maps</strong></summary><br/>
 
 The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from _policy identifiers_ to _asset names_ to _asset values_:
 ```hs
