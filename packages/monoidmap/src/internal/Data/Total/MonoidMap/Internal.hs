@@ -186,201 +186,83 @@ import qualified Data.Semigroup.Cancellative as C
 -- Type
 --------------------------------------------------------------------------------
 
--- | Models a relation from unique keys to /monoidal/ values.
+-- | Models a __total function__ from keys to __monoidal__ values.
 --
--- The mapping from keys to values is __total__: every possible key of type
--- __@k@__ is associated with a corresponding value of type __@v@__:
+-- A 'MonoidMap' of key type __@k@__ and value type __@v@__ associates every
+-- possible key of type __@k@__ with a value of type __@v@__:
 --
 -- @
 -- 'get' :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> v
 -- @
 --
--- By default, every key in an 'empty' map is associated with a value of
+-- The 'empty' map associates every key __@k@__ with a default value of
 -- 'mempty':
 --
 -- @
 -- ∀ k. 'get' k 'empty' '==' 'mempty'
 -- @
 --
--- == Comparison with partial map types
+-- == Encoding and automatic minimisation
 --
--- The 'MonoidMap' type differs from the standard 'Map' type in how it relates
--- /keys/ to /values/:
+-- The total function \(T\) modelled by a 'MonoidMap' is encoded internally as
+-- a __minimal difference set__ \(D\), defined as the subset of key-value pairs
+-- in \(T\) for which values are /not/ equal to 'mempty' (denoted by
+-- \(\varnothing\)):
 --
---  - 'Map' __@k@__ __@v@__:
+-- \( \quad D = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)
 --
---      relates /keys/ of type __@k@__ to /values/ of type __'Maybe'__ __@v@__.
+-- Set \(D\) is a /difference set/ in the sense that the value associated
+-- with any key __@k@__ in \(D\) can be viewed as a /difference/ from the
+-- 'mempty' value.
 --
---  - 'MonoidMap' __@k@__ __@v@__:
+-- All 'MonoidMap' operations perform __automatic minimisation__ of the
+-- difference set, so that 'mempty' values do not appear in:
 --
---      relates /keys/ of type __@k@__ to /values/ of type __@v@__.
+--   - any encoding of a 'MonoidMap'
+--   - any traversal of a 'MonoidMap'
 --
--- This becomes evident if we compare the type signatures of operations to
--- query a key for its value, for both types:
---
--- @
---       'Map'.'lookup' :: \      \      k ->       'Map' k v -> 'Maybe' v
--- 'MonoidMap'.'get'    :: 'Monoid' v => k -> 'MonoidMap' k v -> \     \ v
--- @
---
--- For /unconstrained/ value types, using 'Maybe' makes it possible to signal
--- the /presence/ or /absence/ of a value for a particular key.
---
--- However, /monoidal/ types have a natural way to represent empty values: the
--- 'mempty' constant, which represents the identity element of a monoid.
---
--- Consequently, using a standard 'Map' with a /monoidal/ value type gives rise
--- to /two/ distinct representations for missing or empty values:
---
--- +---------------------+--------------------------------------------+
--- | @                   |                                            |
--- | 'Map'.'lookup' k m  |                                            |
--- | @                   |                                            |
--- +=====================+============================================+
--- | @                   | Map __@m@__ has /no/ entry                 |
--- | 'Nothing'           | for key __@k@__.                           |
--- | @                   |                                            |
--- +---------------------+--------------------------------------------+
--- | @                   | Map __@m@__ /does/ have an entry           |
--- | 'Just' 'mempty'     | for key __@k@__, but the value is /empty/. |
--- | @                   |                                            |
--- +---------------------+--------------------------------------------+
---
--- In constrast, the 'MonoidMap' type provides a single, /canonical/
--- representation for empty values, according to the following mapping:
---
--- +------------------------------------+---+-------------------------+
--- | @                                  |   | @                       |
--- | 'Map'.'lookup' k m                 |   | 'MonoidMap'.'get' k m   |
--- | @                                  |   | @                       |
--- +====================================+===+=========================+
--- | @                                  |   | @                       |
--- | 'Nothing'                          | ⟼ | 'mempty'                |
--- | @                                  |   | @                       |
--- +--------------+---------------------+---+-------------------------+
--- | @            | @                   |   | @                       |
--- | 'Just' __v__ | __v__ '==' 'mempty' | ⟼ | 'mempty'                |
--- | @            | @                   |   | @                       |
--- +--------------+---------------------+---+-------------------------+
--- | @            | @                   |   | @                       |
--- | 'Just' __v__ | __v__ '/=' 'mempty' | ⟼ | __v__                   |
--- | @            | @                   |   | @                       |
--- +--------------+---------------------+---+-------------------------+
---
--- == Internal data structure
---
--- Internally, the 'MonoidMap' type uses a sparse 'Map' data structure to store
--- its key-value mappings, and only stores values that are /not/ equal to
--- 'mempty'.
---
--- Values that /are/ equal to 'mempty' are automatically garbage collected, and
--- /never/ included in the internal data structure.
---
--- As a result, the internal data structure is /always/ in a canonical form.
---
--- == Instances of 'Semigroup' and 'Monoid'
---
--- This module provides a 'Semigroup' instance that uses the '(<>)' operator to
--- combines values for matching keys, satisfying the following property:
+-- In order to perform minimisation, 'MonoidMap' operations use the 'C.null'
+-- indicator function (from 'MonoidNull') to detect and exclude 'mempty'
+-- values, where 'C.null' satisfies the following property:
 --
 -- @
--- 'get' k (m1 '<>' m2) == 'get' k m1 '<>' 'get' k m2
+-- ∀ v. 'C.null' v '==' (v '==' 'mempty')
 -- @
 --
--- The 'Monoid' instance satisfies the following property for all possible keys:
+-- == Monoidal operations
+--
+-- The 'MonoidMap' type provides a comprehensive set of monoidal operations
+-- for transforming, combining, and comparing maps, together with instances
+-- for several subclasses of 'Semigroup' and 'Monoid'.
+--
+-- In general, monoidal operations are __total__: their properties hold for
+-- /all/ possible keys.
+--
+-- Binary operations on /pairs of maps/ are typically defined in terms of their
+-- application to /pairs of values/ for matching keys.
+--
+-- === Examples
+--
+-- Appending one map to another with the 'Semigroup' /append/ operator
+-- '(<>)':
 --
 -- @
--- 'get' k 'mempty' == 'mempty'
+-- ∀ k. 'get' k (m1 '<>' m2) '==' 'get' k m1 '<>' 'get' k m2
 -- @
 --
--- == Subclasses of 'Semigroup' and 'Monoid'
---
--- This module also provides instances for several __subclasses__ of
--- 'Semigroup' and 'Monoid'.
---
--- In general, these instances are defined /analogously/ to the 'Semigroup'
--- instance, where binary operations on /pairs/ /of/ /maps/ are defined in
--- terms of their application to /pairs/ /of/ /values/ for matching keys.
---
--- For example, if subclass __@C@__ defines a binary operation __@f@__ of the
--- form:
+-- Subtracting one map from another with the 'Group' /subtraction/ operator
+-- '(C.~~)':
 --
 -- @
--- class 'Semigroup' a => C a where
---    f :: a -> a -> a
+-- ∀ k. 'get' k (m1 'C.~~' m2) '==' 'get' k m1 'C.~~' 'get' k m2
 -- @
 --
--- Then the result of applying __@f@__ to maps __@m1@__ and __@m2@__ will
--- typically satisfy a property of the following form:
+-- Subtracting one map from another with the 'Monus' /subtraction/ operator
+-- '(<\>)':
 --
 -- @
--- ∀ k m1 m2. 'get' k (f m1 m2) == f ('get' k m1) ('get' k m2)
+-- ∀ k. 'get' k (m1 'C.<\>' m2) '==' 'get' k m1 '<\>' 'get' k m2
 -- @
---
--- === __Examples__
---
--- The 'commonPrefix' function from 'LeftGCDMonoid':
---
--- @
--- 'get' k ('C.commonPrefix' m1 m2)
---     '==' 'C.commonPrefix' ('get' k m1) ('get' k m2)
--- @
---
--- The 'commonSuffix' function from 'RightGCDMonoid':
---
--- @
--- 'get' k ('C.commonSuffix' m1 m2)
---     '==' 'C.commonSuffix' ('get' k m1) ('get' k m2)
--- @
---
--- The 'overlap' function from 'OverlappingGCDMonoid':
---
--- @
--- 'get' k ('C.overlap' m1 m2)
---     '==' 'C.overlap' ('get' k m1) ('get' k m2)
--- @
---
--- == Constraints on value types
---
--- 'MonoidMap' operations generally require the value type to be an instance of
--- 'MonoidNull', which provides a convenient way to test whether or not a value
--- is 'mempty'.
---
--- Types that are instances of both 'MonoidNull' and 'Eq' satisfy the following
--- equivalence:
---
--- @
--- 'C.null' v '==' (v '==' 'mempty')
--- @
---
--- However, 'MonoidMap' operations generally do /not/ require that value types
--- are instances of 'Eq'.
---
--- === Justification
---
--- The set of monoidal types that admit a 'MonoidNull' instance is /strictly/
--- /larger/ than the set of monoidal types that admit an 'Eq' instance.
---
--- For any type __@v@__ that is an instance of both 'Eq' and 'Monoid', it is
--- /always/ possible to define a 'MonoidNull' instance:
---
--- @
--- instance 'MonoidNull' v where
---     'C.null' = ('==' 'mempty')
--- @
---
--- However, there are monoidal types for which it /is/ possible to define a
--- 'MonoidNull' instance, but /not/ practical (or possible) to define a lawful
--- 'Eq' instance.
---
--- For example, consider the following type:
---
--- @
--- 'Maybe' ('String' -> 'Data.Monoid.Sum' 'Numeric.Natural.Natural')
--- @
---
--- Requiring a 'MonoidNull' constraint instead of an 'Eq' constraint allows
--- 'MonoidMap' to be usable with a greater range of monoidal value types.
 --
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k (NonNull v) }
