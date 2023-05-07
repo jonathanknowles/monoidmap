@@ -8,7 +8,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.ExampleSpec
+module Data.MonoidMap.ExampleSpec
     where
 
 import Prelude hiding
@@ -26,14 +26,14 @@ import Data.Monoid.LCM
     ( LCMMonoid (..) )
 import Data.Monoid.Monus
     ( OverlappingGCDMonoid (..), (<\>) )
+import Data.MonoidMap
+    ( MonoidMap )
 import Data.Ratio
     ( (%) )
 import Data.Semigroup.Cancellative
     ( LeftReductive (..), RightReductive (..) )
 import Data.Set
     ( Set )
-import Data.Total.MonoidMap
-    ( MonoidMap )
 import Numeric.Natural
     ( Natural )
 import Test.Hspec
@@ -50,8 +50,8 @@ import Test.QuickCheck.Instances.Natural
 import Test.QuickCheck.Instances.Text
     ()
 
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
-import qualified Data.Total.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Examples" $ do

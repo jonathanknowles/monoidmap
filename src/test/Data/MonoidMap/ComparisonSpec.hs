@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.ComparisonSpec
+module Data.MonoidMap.ComparisonSpec
     ( spec
     ) where
 
@@ -22,10 +22,10 @@ import Data.Monoid.Cancellative
     ( Reductive (..) )
 import Data.Monoid.GCD
     ( GCDMonoid )
+import Data.MonoidMap
+    ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Total.MonoidMap
-    ( MonoidMap )
 import Test.Common
     ( Key
     , Test
@@ -45,8 +45,8 @@ import qualified Data.Monoid.GCD as GCDMonoid
     ( GCDMonoid (..) )
 import qualified Data.Monoid.Null as Null
     ( MonoidNull (..) )
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
-import qualified Data.Total.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Comparison" $ do

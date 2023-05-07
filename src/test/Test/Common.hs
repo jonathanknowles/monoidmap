@@ -44,6 +44,8 @@ import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
     ( MonoidNull )
+import Data.MonoidMap
+    ( MonoidMap )
 import Data.Proxy
     ( Proxy (Proxy) )
 import Data.Semigroup.Cancellative
@@ -52,8 +54,6 @@ import Data.Set
     ( Set )
 import Data.Text
     ( Text )
-import Data.Total.MonoidMap
-    ( MonoidMap )
 import Data.Typeable
     ( Typeable, typeRep )
 import GHC.Exts
@@ -82,8 +82,8 @@ import Test.QuickCheck
 import Test.QuickCheck.Instances.Natural
     ()
 
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Text as Text
-import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Test.QuickCheck as QC
 
 --------------------------------------------------------------------------------
