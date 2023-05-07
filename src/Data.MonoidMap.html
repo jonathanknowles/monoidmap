@@ -4,7 +4,7 @@
 </span><span id="line-4"></span><span class="hs-comment">-- Copyright: &#169; 2022&#8211;2023 Jonathan Knowles</span><span>
 </span><span id="line-5"></span><span class="hs-comment">-- License: Apache-2.0</span><span>
 </span><span id="line-6"></span><span class="hs-comment">--</span><span>
-</span><span id="line-7"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.Total.MonoidMap</span><span>
+</span><span id="line-7"></span><span class="hs-keyword">module</span><span> </span><span class="hs-identifier">Data.MonoidMap</span><span>
 </span><span id="line-8"></span><span>    </span><span class="hs-special">(</span><span>
 </span><span id="line-9"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Introduction</span></span><span>
 </span><span id="line-10"></span><span>    </span><span class="annot"><span class="hs-comment">-- $_introduction</span></span><span>
@@ -119,7 +119,7 @@
 </span><span id="line-119"></span><span>    </span><span class="hs-special">)</span><span>
 </span><span id="line-120"></span><span>    </span><span class="hs-keyword">where</span><span>
 </span><span id="line-121"></span><span>
-</span><span id="line-122"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Total.MonoidMap.Internal</span></span><span>
+</span><span id="line-122"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span>
 </span><span id="line-123"></span><span>
 </span><span id="line-124"></span><span class="hs-comment">-- Imports for module documentation:</span><span>
 </span><span id="line-125"></span><span>
@@ -147,7 +147,7 @@
 </span><span id="line-147"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Semigroup</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;&gt;)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
 </span><span id="line-148"></span><span>
 </span><span id="line-149"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SMap</span></span><span>
-</span><span id="line-150"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Total.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MMap</span></span><span>
+</span><span id="line-150"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MMap</span></span><span>
 </span><span id="line-151"></span><span>
 </span><span id="line-152"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Group</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
 </span><span id="line-153"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.GCD</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
@@ -177,7 +177,7 @@
 </span><span id="line-177"></span><span class="hs-comment">-- 'MonoidMap' type and its operations.</span><span>
 </span><span id="line-178"></span><span class="hs-comment">--</span><span>
 </span><span id="line-179"></span><span class="hs-comment">-- See the</span><span>
-</span><span id="line-180"></span><span class="hs-comment">-- [@README@](https://github.com/jonathanknowles/total-monoidal-maps/blob/main/README.md)</span><span>
+</span><span id="line-180"></span><span class="hs-comment">-- [@README@](https://github.com/jonathanknowles/monoidmap/blob/main/README.md)</span><span>
 </span><span id="line-181"></span><span class="hs-comment">-- file for:</span><span>
 </span><span id="line-182"></span><span class="hs-comment">--</span><span>
 </span><span id="line-183"></span><span class="hs-comment">--  - a __deeper introduction__ to the design of the 'MonoidMap' type.</span><span>
