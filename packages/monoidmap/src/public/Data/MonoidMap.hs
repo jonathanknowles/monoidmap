@@ -4,7 +4,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap
+module Data.MonoidMap
     (
     -- * Introduction
     -- $_introduction
@@ -119,7 +119,7 @@ module Data.Total.MonoidMap
     )
     where
 
-import Data.Total.MonoidMap.Internal
+import Data.MonoidMap.Internal
 
 -- Imports for module documentation:
 
@@ -147,7 +147,7 @@ import Data.Semigroup
     ( Semigroup ((<>)) )
 
 import qualified Data.Map.Strict as SMap
-import qualified Data.Total.MonoidMap.Internal as MMap
+import qualified Data.MonoidMap.Internal as MMap
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
@@ -177,7 +177,7 @@ import qualified Data.Monoid.Null as C
 -- 'MonoidMap' type and its operations.
 --
 -- See the
--- [@README@](https://github.com/jonathanknowles/total-monoidal-maps/blob/main/README.md)
+-- [@README@](https://github.com/jonathanknowles/monoidmap/blob/main/README.md)
 -- file for:
 --
 --  - a __deeper introduction__ to the design of the 'MonoidMap' type.

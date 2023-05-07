@@ -10,7 +10,7 @@
 --
 -- Provides /internal/ operations for the 'MonoidMap' type.
 --
-module Data.Total.MonoidMap.Internal
+module Data.MonoidMap.Internal
     (
     -- * Types
       MonoidMap (..)
@@ -435,7 +435,7 @@ fromListWith f =
 -- complexity that is linear in the length of the list.
 --
 -- For a version of this function that runs in constant time and does not
--- perform canonicalisation, see 'Data.Total.MonoidMap.Unsafe.unsafeFromMap'.
+-- perform canonicalisation, see 'Data.MonoidMap.Unsafe.unsafeFromMap'.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.mapMaybe maybeNonNull
