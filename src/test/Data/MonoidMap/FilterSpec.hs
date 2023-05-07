@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.FilterSpec
+module Data.MonoidMap.FilterSpec
     ( spec
     ) where
 
@@ -16,10 +16,10 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
+import Data.MonoidMap
+    ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Total.MonoidMap
-    ( MonoidMap, nonNullCount )
 import GHC.Exts
     ( IsList (..) )
 import Test.Common
@@ -30,7 +30,7 @@ import Test.QuickCheck
     ( Fun (..), Property, applyFun, applyFun2, cover, (===) )
 
 import qualified Data.List as List
-import qualified Data.Total.MonoidMap as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Filtering" $ do

@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.SingletonSpec
+module Data.MonoidMap.SingletonSpec
     ( spec
     ) where
 
@@ -14,10 +14,10 @@ import Prelude
 
 import Data.Function
     ( (&) )
+import Data.MonoidMap
+    ( nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Total.MonoidMap
-    ( nonNullCount )
 import Test.Common
     ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
 import Test.Hspec
@@ -27,8 +27,8 @@ import Test.QuickCheck
 
 import Control.Monad
     ( forM_ )
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
-import qualified Data.Total.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Singletons" $ do

@@ -5,7 +5,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.ValiditySpec
+module Data.MonoidMap.ValiditySpec
     ( spec
     ) where
 
@@ -36,9 +36,9 @@ import Data.Monoid.LCM
     ( LCMMonoid )
 import Data.Monoid.Monus
     ( Monus )
-import Data.Total.MonoidMap
+import Data.MonoidMap
     ( MonoidMap )
-import Data.Total.MonoidMap.SliceSpec
+import Data.MonoidMap.SliceSpec
     ( Slice (..) )
 import Test.Common
     ( Key
@@ -65,7 +65,7 @@ import Test.QuickCheck
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
-import qualified Data.Total.MonoidMap as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = do

@@ -7,7 +7,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.DistributivitySpec
+module Data.MonoidMap.DistributivitySpec
     ( spec
     ) where
 
@@ -21,10 +21,10 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
+import Data.MonoidMap
+    ( MonoidMap, get )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Total.MonoidMap
-    ( MonoidMap, get )
 import Test.Common
     ( Key
     , Test

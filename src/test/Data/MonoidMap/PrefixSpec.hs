@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.PrefixSpec
+module Data.MonoidMap.PrefixSpec
     ( spec
     ) where
 
@@ -18,12 +18,12 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
+import Data.MonoidMap
+    ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
     ( LeftReductive (..) )
-import Data.Total.MonoidMap
-    ( MonoidMap )
 import Test.Common
     ( Key
     , Test
