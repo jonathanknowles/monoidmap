@@ -1,9 +1,9 @@
-# `total-monoidal-maps`
-<a href="https://jonathanknowles.github.io/total-monoidal-maps/"><img src="https://img.shields.io/badge/API-Documentation-227755" /></a>
+# `monoidmap`
+<a href="https://jonathanknowles.github.io/monoidmap/"><img src="https://img.shields.io/badge/API-Documentation-227755" /></a>
 
 # Overview
 
-This library provides the [**`Total.MonoidMap`**](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type, which:
+This library provides the [**`Total.MonoidMap`**](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type, which:
 
 - models a [total function](#totality) from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
 - uses a [minimal difference set](#encoding-and-automatic-minimisation) to encode mappings from keys to values.
@@ -12,13 +12,13 @@ This library provides the [**`Total.MonoidMap`**](https://jonathanknowles.github
 
 # Totality
 
-A map of type <code><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap">MonoidMap</a> k v</code> associates **every** possible key of type `k` with a value of type `v`:
+A map of type <code><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap">MonoidMap</a> k v</code> associates **every** possible key of type `k` with a value of type `v`:
 
 ```hs
 MonoidMap.get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 ```
 
-The [`empty`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:empty) map associates every key with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
+The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:empty) map associates every key with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
 
 ```hs
 ∀ k. MonoidMap.get k MonoidMap.empty == mempty
@@ -26,14 +26,14 @@ The [`empty`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-M
 
 ## Comparison with standard `Map` type
 
-The [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values. This difference becomes clear if we compare the type signatures of operations to query a key for its value, for both types:
+The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values. This difference becomes clear if we compare the type signatures of operations to query a key for its value, for both types:
 
 ```hs
       Map.lookup ::             k ->       Map k v -> Maybe v
 MonoidMap.get    :: Monoid v => k -> MonoidMap k v ->       v
 ```
 
-Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) has a default value of [`Nothing`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) has a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
+Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) has a default value of [`Nothing`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) has a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
 
 ```hs
 ∀ k.       Map.lookup k       Map.empty == Nothing
@@ -51,7 +51,7 @@ Consequently, using a standard [`Map`](https://hackage.haskell.org/package/conta
 | `Nothing`        | Map `m` has _no_ entry for key `k`.                                 |
 | `Just mempty`    | Map `m` _does_ have an entry for key `k`, but the value is _empty_. |
 
-In constrast, the [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
+In constrast, the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
 
 | `Map.lookup k m`        | ⟼ | `MonoidMap.get k m`     |
 |:------------------------|---|:------------------------|
@@ -80,22 +80,22 @@ With a _pair_ of maps, there are now **nine** possible cases to consider for eac
 
 Mishandling cases such as these can give rise to subtle bugs that manifest in unexpected places. For maps with more complex value types (such as maps that nest other maps), the number of cases requiring consideration can easily multiply further, making it even easier to introduce bugs.
 
-Since all [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations provide a canonical representation for [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, it's possible to write functions that compare or combine maps without having to consider [`Nothing`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Maybe.html#v:Nothing) and <code><a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Just">Just</a> <a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty">mempty</a></code> as separate cases.
+Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) operations provide a canonical representation for [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, it's possible to write functions that compare or combine maps without having to consider [`Nothing`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Maybe.html#v:Nothing) and <code><a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Just">Just</a> <a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty">mempty</a></code> as separate cases.
 
 # Encoding and automatic minimisation
 
-The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) is encoded as a **minimal difference set** $D$: the subset of key-value pairs in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
+The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) is encoded as a **minimal difference set** $D$: the subset of key-value pairs in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
 
 > $D = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
 
 Set $D$ is a **difference set** in the sense that the value associated with any key $k$ in $D$ can be viewed as a **difference** from the [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) value ($\varnothing$).
 
-All [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the difference set, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values are excluded from:
-- the internal data structure of a [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap);
-- any encoding of a [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap);
-- any traversal of a [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap).
+All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the difference set, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values are excluded from:
+- the internal data structure of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap);
+- any encoding of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap);
+- any traversal of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap).
 
-To avoid imposing an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint on [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) values, [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations use the [`MonoidNull.null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, where [`null`](https://hackage.haskell.org/package/monoid-subclasses-1.2.3/docs/Data-Monoid-Null.html#v:null) satisfies the following property:
+To avoid imposing an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint on [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) values, [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) operations use the [`MonoidNull.null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, where [`null`](https://hackage.haskell.org/package/monoid-subclasses-1.2.3/docs/Data-Monoid-Null.html#v:null) satisfies the following property:
 
 ```hs
 null v == (v == mempty)
@@ -120,7 +120,7 @@ null v == (v == mempty)
 > Maybe (String -> Sum Natural)
 > ```
 >
-> Requiring a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) constraint instead of an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint allows [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) to be usable with a greater range of monoidal value types.
+> Requiring a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) constraint instead of an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint allows [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) to be usable with a greater range of monoidal value types.
 
 </details>
 
@@ -232,22 +232,22 @@ Automatic exclusion of [`mempty`](https://hackage.haskell.org/package/base/docs/
 </thead>
 <tbody>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
@@ -256,11 +256,11 @@ Automatic exclusion of [`mempty`](https://hackage.haskell.org/package/base/docs/
 
 ### Memory usage
 
-Automatic minimisation makes it easier to reason about the memory usage of a [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap), as memory is not required to encode mappings from keys to empty values.
+Automatic minimisation makes it easier to reason about the memory usage of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap), as memory is not required to encode mappings from keys to empty values.
 
 This is a useful property for large, long-lived map structures that are subject to multiple updates over their lifetimes, where it's important to not retain large numbers of mappings from keys to empty values.
 
-For nested maps such as <code><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of the outer map.
+For nested maps such as <code><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of the outer map.
 
 ### Simplicity
 
@@ -274,11 +274,11 @@ However, this approach also has some disadvantages:
 - Not calling [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
 - Even if [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
 
-Since all [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
+Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
 
 ## Limitations of automatic minimisation
 
-The [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type has no [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance, as the requirement to exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values means that the [`map`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:map) operation must remove [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from its result. Therefore, [`map`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
+The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type has no [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance, as the requirement to exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:map) operation must remove [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
 
 ```hs
 map (g . f) == map g . map f
@@ -287,7 +287,7 @@ map (g . f) == map g . map f
 <details><summary><strong>Example violation</strong></summary>
 <br/>
 
-Consider the following [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) `m`:
+Consider the following [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) `m`:
 ```hs
 m :: MonoidMap String String
 m = singleton "k" "v"
@@ -334,9 +334,9 @@ However, the composition law _can_ be satisfied _conditionally_, provided that f
 
 # Monoidal operations
 
-The [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type provides instances for several subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) provided by the [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses) and [`groups`](https://hackage.haskell.org/package/groups) libraries.
+The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type provides instances for several subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) provided by the [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses) and [`groups`](https://hackage.haskell.org/package/groups) libraries.
 
-In general, monoidal operations provided by [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) are **total**: their properties hold for **all** possible keys.
+In general, monoidal operations provided by [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) are **total**: their properties hold for **all** possible keys.
 
 Binary operations on _pairs of maps_ are generally defined **distributively** on _pairs of values_ for matching keys:
 
@@ -351,46 +351,46 @@ Binary operations on _pairs of maps_ are generally defined **distributively** on
 </thead>
 <tbody>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:append"><code>append</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:append"><code>append</code></a></td>
     <td><a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup"><code>Semigroup</code></a></td>
     <td><a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><code>(&lt;&gt;)</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   m2) ≡ <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:minus"><code>minus</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:minus"><code>minus</code></a></td>
     <td><a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group"><code>Group</code></a></td>
     <td><a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-"><code>(~~)</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   m2) ≡ <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:monus"><code>monus</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:monus"><code>monus</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#t:Monus"><code>Monus</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><code>(&lt;\&gt;)</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  m2) ≡ <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:intersection"><code>intersection</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:intersection"><code>intersection</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#t:GCDMonoid"><code>GCDMonoid</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd"><code>gcd</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` m2) ≡ <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:union"><code>union</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:union"><code>union</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#t:LCMMonoid"><code>LCMMonoid</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm"><code>lcm</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` m2) ≡ <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
 </tbody>
 </table>
 
-Rich support for subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) makes it possible manipulate [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) objects in a way that is consistent with the algebraic properties of the underlying monoidal value type.
+Rich support for subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) makes it possible manipulate [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) objects in a way that is consistent with the algebraic properties of the underlying monoidal value type.
 
 ## Examples of monoidal operations
 
 <details><summary><strong>Example: <code>MonoidMap k (Set Integer)</code></strong></summary>
 <br/>
 
-For maps with [`Set`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set)-based values, [`MonoidMap.union`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:intersection) compute the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) and [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of each pair of matching values, respectively.
+For maps with [`Set`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set)-based values, [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:intersection) compute the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) and [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of each pair of matching values, respectively.
 
 Consider the following maps of type `MonoidMap Char (Set Integer)`:
 
@@ -399,14 +399,14 @@ Consider the following maps of type `MonoidMap Char (Set Integer)`:
 >>> m2 = fromList [('a', Set.fromList [0, 2]), ('b', Set.fromList [3, 5])]
 ```
 
-The [`MonoidMap.union`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:union) of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) of the corresponding sets for `k` in `m1` and `m2`:
+The [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:union) of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) of the corresponding sets for `k` in `m1` and `m2`:
 
 ```hs
 >>> m1 `union` m2
 fromList [('a', Set.fromList [0,1,2]), ('b', Set.fromList [3,4,5])]
 ```
 
-The [`MonoidMap.intersection`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:intersection) of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of the corresponding sets for `k` in `m1` and `m2`:
+The [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:intersection) of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of the corresponding sets for `k` in `m1` and `m2`:
 
 ```hs
 >>> m1 `intersection` m2
@@ -424,7 +424,7 @@ Consider the following maps of type `MonoidMap Char (Sum Integer)`:
 >>> m2 = fromList [('a', Sum 40), ('b', Sum 20), ('c, Sum 10)]
 ```
 
-The [`MonoidMap.invert`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:invert) operation produces a new map where every key is associated with the negation of its value in the original map:
+The [`MonoidMap.invert`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:invert) operation produces a new map where every key is associated with the negation of its value in the original map:
 
 ```hs
 >>> invert m1
@@ -434,7 +434,7 @@ fromList [('a', Sum (-10)), ('b', Sum (-20)), ('c, Sum (-40))]
 fromList [('a', Sum (-40)), ('b', Sum (-20)), ('c, Sum (-10))]
 ```
 
-The [`MonoidMap.minus`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:minus) operation, when applied to maps `m1` and `m2`, produces a new map where every key `k` is associated with the value of `k` in `m1` minus the value of `k` in `m2`:
+The [`MonoidMap.minus`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:minus) operation, when applied to maps `m1` and `m2`, produces a new map where every key `k` is associated with the value of `k` in `m1` minus the value of `k` in `m2`:
 
 ```hs
 >>> m1 `minus` m2
@@ -449,7 +449,7 @@ fromList [('a', Sum 30), ('c', Sum (-30))]
 <details><summary><strong>Example: <code>MonoidMap k (Sum Natural)</code></strong></summary>
 <br/>
 
-For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:intersection) compute the _maximum_ and _minimum_ of each pair of matching values, respectively:
+For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:intersection) compute the _maximum_ and _minimum_ of each pair of matching values, respectively:
 
 ```hs
 >>> m1 = fromList [('a', Sum 10), ('b', Sum 20)]
@@ -466,7 +466,7 @@ fromList [('a', Sum 10), ('b', Sum 10)]
 <details><summary><strong>Example: <code>MonoidMap k (Product Natural)</code></strong></summary>
 <br/>
 
-For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Product">Product</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:intersection) compute the _lowest common multiple_ (LCM) and _greatest common divisor_ (GCD) of each pair of matching values, respectively:
+For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Product">Product</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:intersection) compute the _lowest common multiple_ (LCM) and _greatest common divisor_ (GCD) of each pair of matching values, respectively:
 
 ```hs
 >>> m1 = fromList [('a', Product  6), ('b', Product 15), ('c', Product 35)]
@@ -482,16 +482,16 @@ fromList [('a', Product 3), ('b', Product 5), ('c', Product 7)]
 
 # General basis for more specialised map types
 
-The [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type can be used as a general basis for building other more specialised map types.
+The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type can be used as a general basis for building other more specialised map types.
 
-If you have a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map)-based data type with an invariant that values **must not** be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), then by expressing this type in terms of [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap), [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) will handle the invariant for you:
+If you have a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map)-based data type with an invariant that values **must not** be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), then by expressing this type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap), [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) will handle the invariant for you:
 
 ```patch
 - newtype SomeMap k v = SomeMap (      Map k (SomeMonoidalContainer v))
 + newtype SomeMap k v = SomeMap (MonoidMap k (SomeMonoidalContainer v))
 ```
 
-If you're already using a specialised non-empty container type to enforce the invariant that values must not be empty, then [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) makes it possible to _replace_ the use of the specialised non-empty container type with its ordinary equivalent:
+If you're already using a specialised non-empty container type to enforce the invariant that values must not be empty, then [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) makes it possible to _replace_ the use of the specialised non-empty container type with its ordinary equivalent:
 
 Example transformations:
 ```patch
@@ -508,7 +508,7 @@ Example transformations:
 + newtype SeqMap k v = SeqMap (MonoidMap k         (Seq v))
 ```
 
-Using [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) can simplify the implementation of such types, as special handling code for empty values can often be greatly simplified or even eliminated.
+Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) can simplify the implementation of such types, as special handling code for empty values can often be greatly simplified or even eliminated.
 
 ## Real-world examples from the Haskell ecosystem
 
@@ -532,7 +532,7 @@ insertMany x n = SMS . Map.alter f x . unSMS
     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
 ```
 
-Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap):
+Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap):
 
 ```diff
 - newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
@@ -550,7 +550,7 @@ Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-mu
 -     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
 ```
 
-Since the [`MonoidMap.adjust`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:adjust) operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
+Since the [`MonoidMap.adjust`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:adjust) operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
 </details>
 
 <details><summary><strong>Example: Multimaps (set-based)</strong></summary><br/>
@@ -579,7 +579,7 @@ fromMap m = SetMultimap (m', sum (fmap Set.size m'))
     m' = Map.filter (not . Set.null) m
 ```
 
-Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap):
+Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap):
 ```patch
 - newtype SetMultimap k a = SetMultimap (      Map k (Set a), Size)
 + newtype SetMultimap k a = SetMultimap (MonoidMap k (Set a), Size)
@@ -595,7 +595,7 @@ alterWithKey f k (SetMultimap (m, size)) = SetMultiMap
     new = f k old
 ```
 
-Since the [`MonoidMap.set`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:set) operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
+Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:set) operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
 
 </details>
 
@@ -624,7 +624,7 @@ fromMap :: Map k (NonEmpty a) -> Multimap k a
 fromMap m = Multimap (m, sum (fmap length m))
 ```
 
-Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) and ordinary lists:
+Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) and ordinary lists:
 ```patch
 - newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
 + newtype Multimap k a = Multimap (MonoidMap k          [a], Size)
@@ -640,7 +640,7 @@ alterWithKey f k (Multimap (m, size)) = MultiMap
     new = f k old
 ```
 
-Since the [`MonoidMap.set`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:set) operation performs automatic minimisation:
+Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:set) operation performs automatic minimisation:
 - empty lists are automatically excluded from the internal data structure.
 - there is no need to use a specialised [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) type.
 - there is no need to handle empty lists differently from non-empty lists.
@@ -695,13 +695,13 @@ canonicalMapUnion  f (Bin _ k1 x1 l1 r1) t2 = case Map.splitLookup k1 t2 of
 ```
 The above function eschews the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge), and instead performs pattern matching on constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html): this approach was almost certainly taken for performance reasons.
 
-Nevertheless, in the spirit of having fun, let's redefine the `MultiAsset` type in terms of [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap):
+Nevertheless, in the spirit of having fun, let's redefine the `MultiAsset` type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap):
 ```patch
 - newtype MultiAsset c = MultiAsset (Map       (PolicyID c) (      Map AssetName      Integer))
 + newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
 ```
 
-Given that all [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) operations take care of the invariant that values cannot be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), we can now simplify the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for `MultiAsset`, dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+Given that all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) operations take care of the invariant that values cannot be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), we can now simplify the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for `MultiAsset`, dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
 
 ```patch
   instance Semigroup (MultiAsset c) where
@@ -716,9 +716,9 @@ Since this instance is trivial, we make a further simplification by deriving the
 +     deriving newtype (Semigroup, Monoid)
 ```
 
-Since the [`<>`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:append) operation for [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) performs automatic minimisation:
+Since the [`<>`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:append) operation for [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) performs automatic minimisation:
 - values of `Sum 0` are automatically excluded from the inner map.
-- values of [`MonoidMap.empty`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#v:empty) are automatically excluded from the outer map.
+- values of [`MonoidMap.empty`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#v:empty) are automatically excluded from the outer map.
 
 </details>
 
@@ -726,7 +726,7 @@ Since the [`<>`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Tota
 
 The Haskell ecosystem has several different types for maps with monoidal properties, and several different types that model total functions from keys to values. Each type comes with its own set of advantages and limitations.
 
-Here's a comparison between the [`MonoidMap`](https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap) type provided by this library and types provided by other libraries:
+Here's a comparison between the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap) type provided by this library and types provided by other libraries:
 
 <table>
 <thead>
@@ -772,11 +772,11 @@ Here's a comparison between the [`MonoidMap`](https://jonathanknowles.github.io/
 <tbody>
   <tr>
     <td>
-      <a href="https://github.com/jonathanknowles/total-monoidal-maps">
-        <code><em>total‑monoidal‑maps</em></code>
+      <a href="https://github.com/jonathanknowles/monoidmap">
+        <code><em>monoidmap</em></code>
       </a>
       <br/>
-      <a href="https://jonathanknowles.github.io/total-monoidal-maps/Data-Total-MonoidMap.html#t:MonoidMap">
+      <a href="https://jonathanknowles.github.io/monoidmap/Data-Total-MonoidMap.html#t:MonoidMap">
         <code>MonoidMap</code>
       </a>
       <br/>

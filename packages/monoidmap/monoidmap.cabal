@@ -1,7 +1,7 @@
 cabal-version:  3.0
-name:           total-monoidal-maps
+name:           monoidmap
 version:        0.0.0.0
-bug-reports:    https://github.com/jonathanknowles/total-monoidal-maps/issues
+bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
@@ -71,7 +71,7 @@ common extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/total-monoidal-maps
+    location: https://github.com/jonathanknowles/monoidmap
 
 library
     import:
@@ -112,7 +112,7 @@ library examples
     default-language:
         Haskell2010
     build-depends:
-      , total-monoidal-maps
+      , monoidmap
 
 library internal
     import:
@@ -183,7 +183,7 @@ test-suite test
         hspec-discover:hspec-discover ==2.*
     build-depends:
       , examples
-      , total-monoidal-maps
+      , monoidmap
 
 benchmark benchmark
     import:
@@ -202,4 +202,4 @@ benchmark benchmark
         Main.hs
     build-depends:
       , examples
-      , total-monoidal-maps
+      , monoidmap

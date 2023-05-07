@@ -177,7 +177,7 @@ import qualified Data.Monoid.Null as C
 -- 'MonoidMap' type and its operations.
 --
 -- See the
--- [@README@](https://github.com/jonathanknowles/total-monoidal-maps/blob/main/README.md)
+-- [@README@](https://github.com/jonathanknowles/monoidmap/blob/main/README.md)
 -- file for:
 --
 --  - a __deeper introduction__ to the design of the 'MonoidMap' type.
