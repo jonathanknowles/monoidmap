@@ -33,7 +33,7 @@ The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.htm
 MonoidMap.get    :: Monoid v => k -> MonoidMap k v ->       v
 ```
 
-Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) has a default value of [`Nothing`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) has a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
+Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) has a default value of [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) has a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
 
 ```hs
 ∀ k.       Map.lookup k       Map.empty == Nothing
@@ -80,7 +80,7 @@ With a _pair_ of maps, there are now **nine** possible cases to consider for eac
 
 Mishandling cases such as these can give rise to subtle bugs that manifest in unexpected places. For maps with more complex value types (such as maps that nest other maps), the number of cases requiring consideration can easily multiply further, making it even easier to introduce bugs.
 
-Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations provide a canonical representation for [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, it's possible to write functions that compare or combine maps without having to consider [`Nothing`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Maybe.html#v:Nothing) and <code><a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Just">Just</a> <a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty">mempty</a></code> as separate cases.
+Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations provide a canonical representation for [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, it's possible to write functions that compare or combine maps without having to consider [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing) and <code><a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Just">Just</a> <a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty">mempty</a></code> as separate cases.
 
 # Encoding and automatic minimisation
 
@@ -159,7 +159,7 @@ null v == (v == mempty)
 <br/>
 
 > Consider the following operation, which constructs a map of type `MonoidMap Char (Sum Natural)`:
-> 
+>
 > ```hs
 > >>> m = fromList [('a', Sum 0), ('b', Sum 1), ('c', Sum 2), ('d', Sum 3)]
 > ```
@@ -184,7 +184,7 @@ null v == (v == mempty)
 <br/>
 
 > Consider the following operations, which construct two maps of type `MonoidMap Char (Sum Natural)`:
-> 
+>
 > ```hs
 > >>> m1 = fromList [('a', Sum 1), ('b', Sum   1 )]
 > >>> m2 = fromList [('a', Sum 1), ('b', Sum (-1))]
