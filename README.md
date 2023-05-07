@@ -95,7 +95,7 @@ All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.htm
 - any encoding of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap);
 - any traversal of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap).
 
-To avoid imposing an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint on [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) values, [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`MonoidNull.null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, where [`null`](https://hackage.haskell.org/package/monoid-subclasses-1.2.3/docs/Data-Monoid-Null.html#v:null) satisfies the following property:
+To avoid imposing an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint on [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) values, [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`MonoidNull.null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, where [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) satisfies the following property:
 
 ```hs
 null v == (v == mempty)
