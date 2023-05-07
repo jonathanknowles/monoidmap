@@ -16,26 +16,28 @@ module Data.Total.MonoidMap.Internal
       MonoidMap (..)
     , NonNull (..)
 
-    -- * Construction
+    -- * General operations
+
+    -- ** Construction
     , empty
     , fromList
     , fromListWith
     , fromMap
     , singleton
 
-    -- * Deconstruction
+    -- ** Deconstruction
     , toList
     , toMap
 
-    -- * Lookup
+    -- ** Lookup
     , get
 
-    -- * Modification
+    -- ** Modification
     , set
     , adjust
     , nullify
 
-    -- * Membership
+    -- ** Membership
     , null
     , nullKey
     , nonNull
@@ -43,69 +45,71 @@ module Data.Total.MonoidMap.Internal
     , nonNullKey
     , nonNullKeys
 
-    -- * Slicing
+    -- ** Slicing
     , take
     , drop
     , splitAt
 
-    -- * Filtering
+    -- ** Filtering
     , filter
     , filterKeys
     , filterWithKey
 
-    -- * Partitioning
+    -- ** Partitioning
     , partition
     , partitionKeys
     , partitionWithKey
 
-    -- * Mapping
+    -- ** Mapping
     , map
     , mapKeys
     , mapKeysWith
 
-    -- * Comparison
+    -- * Monoidal operations
+
+    -- ** Association
+    , append
+
+    -- ** Subtraction
+    , minus
+    , minusMaybe
+    , monus
+
+    -- ** Inversion
+    , invert
+
+    -- ** Exponentiation
+    , power
+
+    -- ** Comparison
     , isSubmapOf
     , isSubmapOfBy
     , disjoint
     , disjointBy
 
-    -- * Intersection
+    -- ** Intersection
     , intersection
     , intersectionWith
     , intersectionWithA
 
-    -- * Union
+    -- ** Union
     , union
     , unionWith
     , unionWithA
 
-    -- * Association
-    , append
-
-    -- * Reduction
-    , minus
-    , minusMaybe
-    , monus
-
-    -- * Inversion
-    , invert
-
-    -- * Exponentiation
-    , power
-
-    -- * Prefixes
+    -- ** Prefixes
     , isPrefixOf
     , stripPrefix
     , commonPrefix
     , stripCommonPrefix
 
-    -- * Suffixes
+    -- ** Suffixes
     , isSuffixOf
     , stripSuffix
     , commonSuffix
     , stripCommonSuffix
 
-    -- * Overlap
+    -- ** Overlap
     , overlap
     , stripPrefixOverlap
     , stripSuffixOverlap
@@ -186,84 +190,6 @@ import qualified Data.Semigroup.Cancellative as C
 -- Type
 --------------------------------------------------------------------------------
 
--- | Models a __total function__ from keys to __monoidal__ values.
---
--- A 'MonoidMap' of key type __@k@__ and value type __@v@__ associates every
--- possible key of type __@k@__ with a value of type __@v@__:
---
--- @
--- 'get' :: ('Ord' k, 'Monoid' v) => k -> 'MonoidMap' k v -> v
--- @
---
--- The 'empty' map associates every key __@k@__ with a default value of
--- 'mempty':
---
--- @
--- ∀ k. 'get' k 'empty' '==' 'mempty'
--- @
---
--- == Encoding and automatic minimisation
---
--- The total function \(T\) modelled by a 'MonoidMap' is encoded internally as
--- a __minimal difference set__ \(D\), defined as the subset of key-value pairs
--- in \(T\) for which values are /not/ equal to 'mempty' (denoted by
--- \(\varnothing\)):
---
--- \( \quad D = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)
---
--- Set \(D\) is a /difference set/ in the sense that the value associated
--- with any key __@k@__ in \(D\) can be viewed as a /difference/ from the
--- 'mempty' value.
---
--- All 'MonoidMap' operations perform __automatic minimisation__ of the
--- difference set, so that 'mempty' values do not appear in:
---
---   - any encoding of a 'MonoidMap'
---   - any traversal of a 'MonoidMap'
---
--- In order to perform minimisation, 'MonoidMap' operations use the 'C.null'
--- indicator function (from 'MonoidNull') to detect and exclude 'mempty'
--- values, where 'C.null' satisfies the following property:
---
--- @
--- ∀ v. 'C.null' v '==' (v '==' 'mempty')
--- @
---
--- == Monoidal operations
---
--- The 'MonoidMap' type provides a comprehensive set of monoidal operations
--- for transforming, combining, and comparing maps, together with instances
--- for several subclasses of 'Semigroup' and 'Monoid'.
---
--- In general, monoidal operations are __total__: their properties hold for
--- /all/ possible keys.
---
--- Binary operations on /pairs of maps/ are typically defined in terms of their
--- application to /pairs of values/ for matching keys.
---
--- === Examples
---
--- Appending one map to another with the 'Semigroup' /append/ operator
--- '(<>)':
---
--- @
--- ∀ k. 'get' k (m1 '<>' m2) '==' 'get' k m1 '<>' 'get' k m2
--- @
---
--- Subtracting one map from another with the 'Group' /subtraction/ operator
--- '(C.~~)':
---
--- @
--- ∀ k. 'get' k (m1 'C.~~' m2) '==' 'get' k m1 'C.~~' 'get' k m2
--- @
---
--- Subtracting one map from another with the 'Monus' /subtraction/ operator
--- '(<\>)':
---
--- @
--- ∀ k. 'get' k (m1 'C.<\>' m2) '==' 'get' k m1 '<\>' 'get' k m2
--- @
---
 newtype MonoidMap k v = MonoidMap
     { unMonoidMap :: Map k (NonNull v) }
     deriving (Eq, Show, NFData, NoThunks)
