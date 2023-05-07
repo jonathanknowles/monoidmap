@@ -6,7 +6,7 @@
 --
 -- Provides /unsafe/ operations for the 'MonoidMap' type.
 --
-module Data.Total.MonoidMap.Unsafe
+module Data.MonoidMap.Unsafe
     (
     -- * Construction
       unsafeFromMap
@@ -19,12 +19,12 @@ import Data.Coerce
     ( coerce )
 import Data.Map.Strict
     ( Map )
-import Data.Total.MonoidMap.Internal
+import Data.MonoidMap.Internal
     ( MonoidMap (..), NonNull (..), fromMap )
 
 import qualified Data.Foldable as F
 import qualified Data.Monoid.Null as Null
-import qualified Data.Total.MonoidMap.Internal as Internal
+import qualified Data.MonoidMap.Internal as Internal
 
 --------------------------------------------------------------------------------
 -- Unsafe construction

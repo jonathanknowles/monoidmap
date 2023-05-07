@@ -9,13 +9,13 @@ module Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude
 
+import Data.MonoidMap
+    ( MonoidMap )
 import Data.Set
     ( Set )
-import Data.Total.MonoidMap
-    ( MonoidMap )
 
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
-import qualified Data.Total.MonoidMap as MonoidMap
 import qualified Examples.MultiMap.Class as Class
 
 newtype MultiMap k v = MultiMap (MonoidMap k (Set v))

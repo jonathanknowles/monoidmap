@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.ConversionSpec
+module Data.MonoidMap.ConversionSpec
     ( spec
     ) where
 
@@ -18,10 +18,10 @@ import Data.Function
     ( (&) )
 import Data.Map.Strict
     ( Map )
+import Data.MonoidMap
+    ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Total.MonoidMap
-    ( MonoidMap, nonNullCount )
 import Test.Common
     ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
 import Test.Hspec
@@ -33,7 +33,7 @@ import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
-import qualified Data.Total.MonoidMap as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Conversions" $ do

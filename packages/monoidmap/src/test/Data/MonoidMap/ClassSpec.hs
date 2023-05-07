@@ -4,7 +4,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.Total.MonoidMap.ClassSpec
+module Data.MonoidMap.ClassSpec
     where
 
 import Prelude
@@ -13,12 +13,12 @@ import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.Null
     ( MonoidNull )
+import Data.MonoidMap
+    ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Set
     ( Set )
-import Data.Total.MonoidMap
-    ( MonoidMap )
 import Data.Typeable
     ( Typeable, typeRep )
 import GHC.Exts
@@ -70,7 +70,7 @@ import Test.QuickCheck.Instances.Natural
 import Test.QuickCheck.Instances.Text
     ()
 
-import qualified Data.Total.MonoidMap as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = do
