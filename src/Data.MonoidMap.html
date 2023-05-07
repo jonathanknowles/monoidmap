@@ -164,7 +164,7 @@
 </span><span id="line-164"></span><span class="hs-comment">-- This module provides the 'MonoidMap' type, which:</span><span>
 </span><span id="line-165"></span><span class="hs-comment">--</span><span>
 </span><span id="line-166"></span><span class="hs-comment">--  - models a [__total mapping__](#_totality) from keys to</span><span>
-</span><span id="line-167"></span><span class="hs-comment">--    [__monoidal values__](&quot;Data.Monoid&quot;).</span><span>
+</span><span id="line-167"></span><span class="hs-comment">--    [__monoidal values__](&quot;Data.Monoid&quot;), with a default value of 'mempty'.</span><span>
 </span><span id="line-168"></span><span class="hs-comment">--</span><span>
 </span><span id="line-169"></span><span class="hs-comment">--  - uses a [__minimal difference set encoding__](#_encoding) to store</span><span>
 </span><span id="line-170"></span><span class="hs-comment">--    mappings from keys to values.</span><span>
@@ -353,7 +353,7 @@
 </span><span id="line-353"></span><span class="hs-comment">-- form:</span><span>
 </span><span id="line-354"></span><span class="hs-comment">--</span><span>
 </span><span id="line-355"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-356"></span><span class="hs-comment">-- &#8704; k. 'get' k (f m) '==' f ('get' m)</span><span>
+</span><span id="line-356"></span><span class="hs-comment">-- &#8704; k. 'get' k (f m) '==' f ('get' k m)</span><span>
 </span><span id="line-357"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-358"></span><span class="hs-comment">--</span><span>
 </span><span id="line-359"></span><span class="hs-comment">-- /Binary/ monoidal operations typically satisfy a property of the following</span><span>
