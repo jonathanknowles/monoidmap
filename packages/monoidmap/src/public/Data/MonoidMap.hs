@@ -164,7 +164,7 @@ import qualified Data.Monoid.Null as C
 -- This module provides the 'MonoidMap' type, which:
 --
 --  - models a [__total mapping__](#_totality) from keys to
---    [__monoidal values__]("Data.Monoid").
+--    [__monoidal values__]("Data.Monoid"), with a default value of 'mempty'.
 --
 --  - uses a [__minimal difference set encoding__](#_encoding) to store
 --    mappings from keys to values.
@@ -353,7 +353,7 @@ import qualified Data.Monoid.Null as C
 -- form:
 --
 -- @
--- ∀ k. 'get' k (f m) '==' f ('get' m)
+-- ∀ k. 'get' k (f m) '==' f ('get' k m)
 -- @
 --
 -- /Binary/ monoidal operations typically satisfy a property of the following
