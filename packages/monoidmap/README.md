@@ -47,7 +47,7 @@ Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/D
 ∀ k. MonoidMap.get    k MonoidMap.empty == mempty
 ```
 
-The standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type uses [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing) to signal the _absence_ of a value for a particular key.
+In practice, the standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type uses [`Maybe`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe) to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type imposes no constraints on value types.
 
 However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:mempty) constant, which represents the neutral or identity element of a [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid).
 
