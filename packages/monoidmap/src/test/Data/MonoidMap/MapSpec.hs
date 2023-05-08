@@ -30,6 +30,7 @@ import Test.QuickCheck
     ( Fun (..), Property, applyFun, applyFun2, cover, expectFailure, (===) )
 
 import qualified Data.Foldable as F
+import qualified Data.Monoid.Null as Null
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
@@ -43,6 +44,9 @@ specFor = makeSpec $ do
 
     it "prop_map_asList" $
         prop_map_asList
+            @k @v & property
+    it "prop_map_composition" $
+        prop_map_composition
             @k @v & property
     it "prop_map_get" $
         prop_map_get
@@ -79,6 +83,29 @@ prop_map_asList (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.map f m
+
+prop_map_composition
+    :: forall k v. Test k v
+    => Fun v v
+    -> Fun v v
+    -> MonoidMap k v
+    -> Property
+prop_map_composition (applyFun -> f0) (applyFun -> g0) m =
+    MonoidMap.map (f . g) m === MonoidMap.map f (MonoidMap.map g m)
+    & cover 2
+        (MonoidMap.nonNull m)
+        "MonoidMap.nonNull m"
+  where
+    f = mkNonNullPreservingFn f0
+    g = mkNonNullPreservingFn g0
+
+    -- Creates a function that never maps non-null values to null values.
+    mkNonNullPreservingFn :: (v -> v) -> (v -> v)
+    mkNonNullPreservingFn h v0
+        | not (Null.null v0) && Null.null v1 = v0
+        | otherwise                          = v1
+      where
+        v1 = h v0
 
 prop_map_get
     :: Test k v
