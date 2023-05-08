@@ -213,7 +213,17 @@ import qualified Data.Monoid.Null as C
 -- == Comparison with standard 'Map' type
 --
 -- The 'MonoidMap' type differs from the standard 'Map' type in how it relates
--- keys to values.
+-- keys to values:
+--
+-- +---------------------------+------------------------------------+
+-- | @       'Map'@__@ k v @__ | a /total mapping/                  |
+-- |                           | from keys of type __@k@__          |
+-- |                           | to values of type __@'Maybe' v@__. |
+-- +---------------------------+------------------------------------+
+-- | @ 'MonoidMap'@__@ k v @__ | a /total mapping/                  |
+-- |                           | from keys of type __@k@__          |
+-- |                           | to values of type __@v@__.         |
+-- +---------------------------+------------------------------------+
 --
 -- This difference can be illustrated by comparing the type signatures of
 -- operations to query a key for its value, for both types:
