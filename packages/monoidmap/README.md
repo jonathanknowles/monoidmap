@@ -53,10 +53,10 @@ However, _monoidal_ types already have a natural way to represent null or empty 
 
 Consequently, using a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
 
-| `Map.lookup k m` | Interpretation                                                      |
-|:-----------------|:--------------------------------------------------------------------|
-| `Nothing`        | Map `m` has _no_ entry for key `k`.                                 |
-| `Just mempty`    | Map `m` _does_ have an entry for key `k`, but the value is _empty_. |
+| `Map.lookup k m` | Interpretation                                              |
+|:-----------------|:------------------------------------------------------------|
+| `Nothing`        | Map `m` has _no_ entry for key `k`.                         |
+| `Just mempty`    | Map `m` has an entry for key `k`, but the value is _empty_. |
 
 In constrast, the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
 

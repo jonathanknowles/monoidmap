@@ -261,7 +261,7 @@ import qualified Data.Monoid.Null as C
 -- | 'Nothing'               | for key __@k@__.                           |
 -- | @                       |                                            |
 -- +-------------------------+--------------------------------------------+
--- | @                       | 'Map' __@m@__ /does/ have an entry         |
+-- | @                       | 'Map' __@m@__ has an entry                 |
 -- | 'Just' 'mempty'         | for key __@k@__, but the value is /empty/. |
 -- | @                       |                                            |
 -- +-------------------------+--------------------------------------------+
