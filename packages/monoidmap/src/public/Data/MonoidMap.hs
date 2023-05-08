@@ -194,7 +194,7 @@ import qualified Data.Monoid.Null as C
 -- $_totality
 -- #_totality#
 --
--- = Totality
+-- = Relationship between keys and values
 --
 -- A 'MonoidMap' of key type __@k@__ and value type __@v@__ associates /every/
 -- possible key of type __@k@__ with a value of type __@v@__:
@@ -213,7 +213,17 @@ import qualified Data.Monoid.Null as C
 -- == Comparison with standard 'Map' type
 --
 -- The 'MonoidMap' type differs from the standard 'Map' type in how it relates
--- keys to values.
+-- keys to values:
+--
+-- +---------------------------+------------------------------------+
+-- | @       'Map'@__@ k v @__ | a /total mapping/                  |
+-- |                           | from keys of type __@k@__          |
+-- |                           | to values of type __@'Maybe' v@__. |
+-- +---------------------------+------------------------------------+
+-- | @ 'MonoidMap'@__@ k v @__ | a /total mapping/                  |
+-- |                           | from keys of type __@k@__          |
+-- |                           | to values of type __@v@__.         |
+-- +---------------------------+------------------------------------+
 --
 -- This difference can be illustrated by comparing the type signatures of
 -- operations to query a key for its value, for both types:
@@ -231,8 +241,9 @@ import qualified Data.Monoid.Null as C
 -- ∀ k. 'MonoidMap'.'MMap.get'    k 'MonoidMap'.'MMap.empty' '==' 'mempty'
 -- @
 --
--- The standard 'Map' type uses 'Nothing' to signal the /absence/ of a value
--- for a particular key.
+-- In practice, the standard 'Map' type uses 'Maybe' to indicate the /presence/
+-- or /absence/ of a value for a particular key. This representation is
+-- necessary because the 'Map' type imposes no constraints on value types.
 --
 -- However, /monoidal/ types already have a natural way to represent null or
 -- empty values: the 'mempty' constant, which represents the /neutral/ or
@@ -250,7 +261,7 @@ import qualified Data.Monoid.Null as C
 -- | 'Nothing'               | for key __@k@__.                           |
 -- | @                       |                                            |
 -- +-------------------------+--------------------------------------------+
--- | @                       | 'Map' __@m@__ /does/ have an entry         |
+-- | @                       | 'Map' __@m@__ has an entry                 |
 -- | 'Just' 'mempty'         | for key __@k@__, but the value is /empty/. |
 -- | @                       |                                            |
 -- +-------------------------+--------------------------------------------+
@@ -349,15 +360,13 @@ import qualified Data.Monoid.Null as C
 -- - /binary/ operations on /pairs of maps/ are defined in terms of their
 --   distributive application to all /pairs of values/ for matching keys.
 --
--- /Unary/ monoidal operations typically satisfy a property of the following
--- form:
+-- /Unary/ monoidal operations typically satisfy a property similar to:
 --
 -- @
 -- ∀ k. 'get' k (f m) '==' f ('get' k m)
 -- @
 --
--- /Binary/ monoidal operations typically satisfy a property of the following
--- form:
+-- /Binary/ monoidal operations typically satisfy a property similar to:
 --
 -- @
 -- ∀ k. 'get' k (f m1 m2) '==' f ('get' k m1) ('get' k m2)

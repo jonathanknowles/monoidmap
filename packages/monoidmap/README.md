@@ -5,12 +5,12 @@
 
 This library provides a [**`MonoidMap`**](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type that:
 
-- models a [total mapping](#totality) from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
+- models a [total mapping](#relationship-between-keys-and-values) from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
 - uses a [minimal difference set encoding](#encoding) to store mappings from keys to values.
 - provides a comprehensive set of [monoidal operations](#monoidal-operations) for transforming, combining, and comparing maps.
 - provides a [general basis](#General-basis-for-more-specialised-map-types) for building more specialised monoidal data structures.
 
-# Totality
+# Relationship between keys and values
 
 A map of type <code><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k v</code> associates **every** possible key of type `k` with a value of type `v`:
 
@@ -26,7 +26,12 @@ The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:
 
 ## Comparison with standard `Map` type
 
-The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values.
+The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values:
+
+|            Type | Relationship                                                         |
+|----------------:|:---------------------------------------------------------------------|
+|       `Map k v` | a _total mapping_ from keys of type `k` to values of type `Maybe v`. |
+| `MonoidMap k v` | a _total mapping_ from keys of type `k` to values of type `v`.       |
 
 This difference can be illustrated by comparing the type signatures of operations to query a key for its value, for both types:
 
@@ -42,16 +47,16 @@ Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/D
 ∀ k. MonoidMap.get    k MonoidMap.empty == mempty
 ```
 
-The standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type uses [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing) to signal the _absence_ of a value for a particular key.
+In practice, the standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type uses [`Maybe`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe) to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type imposes no constraints on value types.
 
 However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:mempty) constant, which represents the neutral or identity element of a [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid).
 
 Consequently, using a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
 
-| `Map.lookup k m` | Interpretation                                                      |
-|:-----------------|:--------------------------------------------------------------------|
-| `Nothing`        | Map `m` has _no_ entry for key `k`.                                 |
-| `Just mempty`    | Map `m` _does_ have an entry for key `k`, but the value is _empty_. |
+| `Map.lookup k m` | Interpretation                                              |
+|:-----------------|:------------------------------------------------------------|
+| `Nothing`        | Map `m` has _no_ entry for key `k`.                         |
+| `Just mempty`    | Map `m` has an entry for key `k`, but the value is _empty_. |
 
 In constrast, the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
 
@@ -355,13 +360,13 @@ In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.o
 - _unary_ operations on _individual maps_ are defined in terms of their distributive application to all values.
 - _binary_ operations on _pairs of maps_ are defined in terms of their distributive application to all _pairs of values_ for matching keys.
 
-_Unary_ monoidal operations typically satisfy a property of the following form:
+_Unary_ monoidal operations typically satisfy a property similar to:
 
 ```hs
 ∀ k. MonoidMap.get k (f m) == f (MonoidMap.get k m)
 ```
 
-_Binary_ monoidal operations typically satisfy a property of the following form:
+_Binary_ monoidal operations typically satisfy a property similar to:
 
 ```hs
 ∀ k. MonoidMap.get k (f m1 m2) == f (MonoidMap.get k m1) (MonoidMap.get k m2)
