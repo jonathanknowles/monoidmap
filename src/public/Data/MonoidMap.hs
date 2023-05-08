@@ -241,8 +241,9 @@ import qualified Data.Monoid.Null as C
 -- ∀ k. 'MonoidMap'.'MMap.get'    k 'MonoidMap'.'MMap.empty' '==' 'mempty'
 -- @
 --
--- The standard 'Map' type uses 'Nothing' to signal the /absence/ of a value
--- for a particular key.
+-- In practice, the standard 'Map' type uses 'Maybe' to indicate the /presence/
+-- or /absence/ of a value for a particular key. This representation is
+-- necessary because the 'Map' type imposes no constraints on value types.
 --
 -- However, /monoidal/ types already have a natural way to represent null or
 -- empty values: the 'mempty' constant, which represents the /neutral/ or
