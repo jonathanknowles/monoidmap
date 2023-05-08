@@ -194,7 +194,7 @@ import qualified Data.Monoid.Null as C
 -- $_totality
 -- #_totality#
 --
--- = Totality
+-- = Relationship between keys and values
 --
 -- A 'MonoidMap' of key type __@k@__ and value type __@v@__ associates /every/
 -- possible key of type __@k@__ with a value of type __@v@__:
