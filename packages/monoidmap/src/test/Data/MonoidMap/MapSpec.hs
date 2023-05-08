@@ -48,6 +48,9 @@ specFor = makeSpec $ do
     it "prop_map_composition" $
         prop_map_composition
             @k @v & property
+    it "prop_map_composition_failure" $
+        prop_map_composition_failure
+            @k @v & property
     it "prop_map_get" $
         prop_map_get
             @k @v & property
@@ -106,6 +109,19 @@ prop_map_composition (applyFun -> f0) (applyFun -> g0) m =
         | otherwise                          = v1
       where
         v1 = h v0
+
+prop_map_composition_failure
+    :: forall k v. Test k v
+    => Fun v v
+    -> Fun v v
+    -> MonoidMap k v
+    -> Property
+prop_map_composition_failure (applyFun -> f) (applyFun -> g) m =
+    expectFailure $
+    MonoidMap.map (f . g) m === MonoidMap.map f (MonoidMap.map g m)
+    & cover 1
+        (MonoidMap.map (f . g) m /= MonoidMap.map f (MonoidMap.map g m))
+        "MonoidMap.map (f . g) m /= MonoidMap.map f (MonoidMap.map g m)"
 
 prop_map_get
     :: Test k v
