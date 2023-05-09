@@ -190,7 +190,8 @@ nullify
     -> k2
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-nullify k1 k2 = set k1 k2 mempty
+nullify k1 k2 (NestedMonoidMap m) =
+    NestedMonoidMap $ MonoidMap.adjust (MonoidMap.nullify k2) k1 m
 
 --------------------------------------------------------------------------------
 -- Membership
