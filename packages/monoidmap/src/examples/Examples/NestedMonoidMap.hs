@@ -171,8 +171,8 @@ set :: (Ord k1, Ord k2, MonoidNull v)
     -> v
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-set k1 k2 v (NestedMonoidMap m) = NestedMonoidMap $
-    MonoidMap.set k1 (MonoidMap.set k2 v (MonoidMap.get k1 m)) m
+set k1 k2 v (NestedMonoidMap m) =
+    NestedMonoidMap $ MonoidMap.adjust (MonoidMap.set k2 v) k1 m
 
 adjust
     :: (Ord k1, Ord k2, MonoidNull v)
