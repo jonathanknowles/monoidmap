@@ -282,7 +282,7 @@ However, this approach also has some disadvantages:
 
 Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
 
-Furthermore, for nested maps such as <code><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of the outer map.
+Furthermore, for nested maps such as <code><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of outer maps. See the [`NestedMonoidMap`](https://github.com/jonathanknowles/monoidmap/blob/main/src/examples/Examples/NestedMonoidMap.hs) type for an example of this.
 
 ## Limitations of automatic minimisation
 
@@ -572,9 +572,11 @@ Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-mul
 - newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
 + newtype SignedMultiset a = SMS {unSMS :: MonoidMap a (Sum Int)}
 ```
+
 Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) as `Sum 0`, and [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as ordinary addition.
 
 Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) (and similar operations) in a simpler way:
+
 ```patch
   insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
 + insertMany x n = SMS . MonoidMap.adjust (+ Sum n) x . unSMS
@@ -599,6 +601,7 @@ type Size = Int
 All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
 
 For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
+
 ```hs
 alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
 alterWithKey f k mm@(SetMultimap (m, _))
@@ -614,12 +617,14 @@ fromMap m = SetMultimap (m', sum (fmap Set.size m'))
 ```
 
 Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+
 ```patch
 - newtype SetMultimap k a = SetMultimap (      Map k (Set a), Size)
 + newtype SetMultimap k a = SetMultimap (MonoidMap k (Set a), Size)
 ```
 
 Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) (and other operations):
+
 ```hs
 alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
 alterWithKey f k (SetMultimap (m, size)) = SetMultiMap
@@ -659,6 +664,7 @@ fromMap m = Multimap (m, sum (fmap length m))
 ```
 
 Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) and ordinary lists:
+
 ```patch
 - newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
 + newtype Multimap k a = Multimap (MonoidMap k          [a], Size)
@@ -683,6 +689,7 @@ Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-Mon
 <details><summary><strong>Example: Nested maps</strong></summary><br/>
 
 The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from _policy identifiers_ to _asset names_ to _asset values_:
+
 ```hs
 newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
 ```
@@ -692,6 +699,7 @@ All [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28
 - there are no mappings from `AssetName` keys to `Integer` values of `0`.
 
 To satisfy this invariant, the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance is defined as follows:
+
 ```hs
 instance Semigroup (MultiAsset c) where
     MultiAsset m1 <> MultiAsset m2 =
@@ -727,9 +735,11 @@ canonicalMapUnion  f (Bin _ k1 x1 l1 r1) t2 = case Map.splitLookup k1 t2 of
       !l1l2 = canonicalMapUnion f l1 l2
       !r1r2 = canonicalMapUnion f r1 r2
 ```
+
 The above function eschews the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge), and instead performs pattern matching on constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html): this approach was almost certainly taken for performance reasons.
 
 Nevertheless, in the spirit of having fun, let's redefine the `MultiAsset` type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+
 ```patch
 - newtype MultiAsset c = MultiAsset (Map       (PolicyID c) (      Map AssetName      Integer))
 + newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -745,6 +755,7 @@ Given that all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-Mo
 ```
 
 Since this instance is trivial, we make a further simplification by deriving the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
+
 ```patch
   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
 +     deriving newtype (Semigroup, Monoid)
