@@ -171,8 +171,8 @@ set :: (Ord k1, Ord k2, MonoidNull v)
     -> v
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-set k1 k2 v (NestedMonoidMap m) = NestedMonoidMap $
-    MonoidMap.set k1 (MonoidMap.set k2 v (MonoidMap.get k1 m)) m
+set k1 k2 v (NestedMonoidMap m) =
+    NestedMonoidMap $ MonoidMap.adjust (MonoidMap.set k2 v) k1 m
 
 adjust
     :: (Ord k1, Ord k2, MonoidNull v)
@@ -181,7 +181,8 @@ adjust
     -> k2
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-adjust f k1 k2 m = set k1 k2 (f $ get k1 k2 m) m
+adjust f k1 k2 (NestedMonoidMap m) =
+    NestedMonoidMap $ MonoidMap.adjust (MonoidMap.adjust f k2) k1 m
 
 nullify
     :: (Ord k1, Ord k2, MonoidNull v)
@@ -189,7 +190,8 @@ nullify
     -> k2
     -> NestedMonoidMap k1 k2 v
     -> NestedMonoidMap k1 k2 v
-nullify k1 k2 = set k1 k2 mempty
+nullify k1 k2 (NestedMonoidMap m) =
+    NestedMonoidMap $ MonoidMap.adjust (MonoidMap.nullify k2) k1 m
 
 --------------------------------------------------------------------------------
 -- Membership
