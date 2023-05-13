@@ -548,218 +548,218 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ### Real-world example: multisets
 
-The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from elements to signed integer occurrence counts:
-
-```hs
-newtype SignedMultiset a = SMS {unSMS :: Map a Int}
-```
-
-All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
-
-For example, the [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) operation:
-
-```hs
-insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
-insertMany x n = SMS . Map.alter f x . unSMS
-  where
-    f Nothing  = Just n
-    f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
-```
-
-Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
-
-```diff
-- newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
-+ newtype SignedMultiset a = SMS {unSMS :: MonoidMap a (Sum Int)}
-```
-
-Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) as `Sum 0`, and [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as ordinary addition.
-
-Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) (and similar operations) in a simpler way:
-
-```patch
-  insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
-+ insertMany x n = SMS . MonoidMap.adjust (+ Sum n) x . unSMS
-- insertMany x n = SMS . Map.alter f x . unSMS
--   where
--     f Nothing  = Just n
--     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
-```
-
-Since the [`MonoidMap.adjust`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust) operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
+> The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from elements to signed integer occurrence counts:
+>
+> ```hs
+> newtype SignedMultiset a = SMS {unSMS :: Map a Int}
+> ```
+>
+> All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
+>
+> For example, the [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) operation:
+>
+> ```hs
+> insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
+> insertMany x n = SMS . Map.alter f x . unSMS
+>   where
+>     f Nothing  = Just n
+>     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
+> ```
+>
+> Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+>
+> ```diff
+> - newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
+> + newtype SignedMultiset a = SMS {unSMS :: MonoidMap a (Sum Int)}
+> ```
+>
+> Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) as `Sum 0`, and [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as ordinary addition.
+>
+> Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) (and similar operations) in a simpler way:
+>
+> ```patch
+>   insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
+> + insertMany x n = SMS . MonoidMap.adjust (+ Sum n) x . unSMS
+> - insertMany x n = SMS . Map.alter f x . unSMS
+> -   where
+> -     f Nothing  = Just n
+> -     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
+> ```
+>
+> Since the [`MonoidMap.adjust`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust) operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
 
 ### Real-world example: multimaps (set-based)
 
-The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values:
-
-```hs
-newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
-type Size = Int
-```
-
-All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
-
-For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
-
-```hs
-alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
-alterWithKey f k mm@(SetMultimap (m, _))
-    | Set.null as = fromMap (Map.delete k    m)
-    | otherwise   = fromMap (Map.insert k as m)
-  where
-    as = f k (mm ! k)
-
-fromMap :: Map k (Set a) -> SetMultimap k a
-fromMap m = SetMultimap (m', sum (fmap Set.size m'))
-  where
-    m' = Map.filter (not . Set.null) m
-```
-
-Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
-
-```patch
-- newtype SetMultimap k a = SetMultimap (      Map k (Set a), Size)
-+ newtype SetMultimap k a = SetMultimap (MonoidMap k (Set a), Size)
-```
-
-Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) (and other operations):
-
-```hs
-alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
-alterWithKey f k (SetMultimap (m, size)) = SetMultiMap
-    (MonoidMap.set k new m, size - Set.size old + Set.size new)
-  where
-    old = MonoidMap.get k m
-    new = f k old
-```
-
-Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values:
+>
+> ```hs
+> newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
+> type Size = Int
+> ```
+>
+> All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
+>
+> For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
+>
+> ```hs
+> alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
+> alterWithKey f k mm@(SetMultimap (m, _))
+>     | Set.null as = fromMap (Map.delete k    m)
+>     | otherwise   = fromMap (Map.insert k as m)
+>   where
+>     as = f k (mm ! k)
+>
+> fromMap :: Map k (Set a) -> SetMultimap k a
+> fromMap m = SetMultimap (m', sum (fmap Set.size m'))
+>   where
+>     m' = Map.filter (not . Set.null) m
+> ```
+>
+> Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+>
+> ```patch
+> - newtype SetMultimap k a = SetMultimap (      Map k (Set a), Size)
+> + newtype SetMultimap k a = SetMultimap (MonoidMap k (Set a), Size)
+> ```
+>
+> Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) (and other operations):
+>
+> ```hs
+> alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
+> alterWithKey f k (SetMultimap (m, size)) = SetMultiMap
+>     (MonoidMap.set k new m, size - Set.size old + Set.size new)
+>   where
+>     old = MonoidMap.get k m
+>     new = f k old
+> ```
+>
+> Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
 
 ### Real-world example: multimaps (list-based)
 
-The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values:
-
-```hs
-newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
-type Size = Int
-```
-
-All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
-
-However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
-
-For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey) operation detects if the updated list is empty, and if so, performs a deletion instead of an insertion:
-
-```hs
-alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
-alterWithKey f k mm@(Multimap (m, _)) = case nonEmpty (f k (mm ! k)) of
-    Just as' -> fromMap (Map.insert k as' m)
-    Nothing  -> fromMap (Map.delete k     m)
-
-fromMap :: Map k (NonEmpty a) -> Multimap k a
-fromMap m = Multimap (m, sum (fmap length m))
-```
-
-Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) and ordinary lists:
-
-```patch
-- newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
-+ newtype Multimap k a = Multimap (MonoidMap k          [a], Size)
-```
-
-Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey) (and other operations):
-```hs
-alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
-alterWithKey f k (Multimap (m, size)) = MultiMap
-    (MonoidMap.set k new m, size - List.length old + List.length new)
-  where
-    old = MonoidMap.get k m
-    new = f k old
-```
-
-Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation:
-- empty lists are automatically excluded from the internal data structure.
-- there is no need to use a specialised [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) type.
-- there is no need to handle empty lists differently from non-empty lists.
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values:
+>
+> ```hs
+> newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
+> type Size = Int
+> ```
+>
+> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
+>
+> However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
+>
+> For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey) operation detects if the updated list is empty, and if so, performs a deletion instead of an insertion:
+>
+> ```hs
+> alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
+> alterWithKey f k mm@(Multimap (m, _)) = case nonEmpty (f k (mm ! k)) of
+>     Just as' -> fromMap (Map.insert k as' m)
+>     Nothing  -> fromMap (Map.delete k     m)
+>
+> fromMap :: Map k (NonEmpty a) -> Multimap k a
+> fromMap m = Multimap (m, sum (fmap length m))
+> ```
+>
+> Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) and ordinary lists:
+>
+> ```patch
+> - newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
+> + newtype Multimap k a = Multimap (MonoidMap k          [a], Size)
+> ```
+>
+> Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey) (and other operations):
+> ```hs
+> alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
+> alterWithKey f k (Multimap (m, size)) = MultiMap
+>     (MonoidMap.set k new m, size - List.length old + List.length new)
+>   where
+>     old = MonoidMap.get k m
+>     new = f k old
+> ```
+>
+> Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation:
+> - empty lists are automatically excluded from the internal data structure.
+> - there is no need to use a specialised [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) type.
+> - there is no need to handle empty lists differently from non-empty lists.
 
 ### Real-world example: nested maps
 
-The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from _policy identifiers_ to _asset names_ to _asset values_:
-
-```hs
-newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
-```
-
-All [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations maintain the invariant that:
-- there are no mappings from `PolicyID` keys to empty maps; and that
-- there are no mappings from `AssetName` keys to `Integer` values of `0`.
-
-To satisfy this invariant, the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance is defined as follows:
-
-```hs
-instance Semigroup (MultiAsset c) where
-    MultiAsset m1 <> MultiAsset m2 =
-        MultiAsset (canonicalMapUnion (canonicalMapUnion (+)) m1 m2)
-```
-
-The [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42) function does the heavy lifting work of performing a union while maintaining the above invariant, for both outer and inner maps:
-
-```hs
-canonicalMapUnion ::
-  (Ord k, CanonicalZero a) =>
-  (a -> a -> a) ->
-  Map k a ->
-  Map k a ->
-  Map k a
-canonicalMapUnion _f t1 Tip                 = t1
-canonicalMapUnion  f t1 (Bin _ k x Tip Tip) = canonicalInsert f k x t1
-canonicalMapUnion  f (Bin _ k x Tip Tip) t2 = canonicalInsert f k x t2
-canonicalMapUnion _f Tip t2                 = t2
-canonicalMapUnion  f (Bin _ k1 x1 l1 r1) t2 = case Map.splitLookup k1 t2 of
-  (l2, mb, r2) -> case mb of
-    Nothing ->
-      if x1 == zeroC
-        then link2 l1l2 r1r2
-        else link k1 x1 l1l2 r1r2
-    Just x2 ->
-      if new == zeroC
-        then link2 l1l2 r1r2
-        else link k1 new l1l2 r1r2
-      where
-        new = f x1 x2
-    where
-      !l1l2 = canonicalMapUnion f l1 l2
-      !r1r2 = canonicalMapUnion f r1 r2
-```
-
-The above function eschews the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge), and instead performs pattern matching on constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html): this approach was almost certainly taken for performance reasons.
-
-Nevertheless, in the spirit of having fun, let's redefine the `MultiAsset` type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
-
-```patch
-- newtype MultiAsset c = MultiAsset (Map       (PolicyID c) (      Map AssetName      Integer))
-+ newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
-```
-
-Given that all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations take care of the invariant that values cannot be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), we can now simplify the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for `MultiAsset`, dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
-
-```patch
-  instance Semigroup (MultiAsset c) where
-      MultiAsset m1 <> MultiAsset m2 =
--         MultiAsset (canonicalMapUnion (canonicalMapUnion (+)) m1 m2)
-+         m1 <> m2
-```
-
-Since this instance is trivial, we make a further simplification by deriving the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
-
-```patch
-  newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
-+     deriving newtype (Semigroup, Monoid)
-```
-
-Since the [`<>`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:append) operation for [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) performs automatic minimisation:
-- values of `Sum 0` are automatically excluded from the inner map.
-- values of [`MonoidMap.empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty) are automatically excluded from the outer map.
+> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from _policy identifiers_ to _asset names_ to _asset values_:
+>
+> ```hs
+> newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
+> ```
+>
+> All [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations maintain the invariant that:
+> - there are no mappings from `PolicyID` keys to empty maps; and that
+> - there are no mappings from `AssetName` keys to `Integer` values of `0`.
+>
+> To satisfy this invariant, the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance is defined as follows:
+>
+> ```hs
+> instance Semigroup (MultiAsset c) where
+>     MultiAsset m1 <> MultiAsset m2 =
+>         MultiAsset (canonicalMapUnion (canonicalMapUnion (+)) m1 m2)
+> ```
+>
+> The [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42) function does the heavy lifting work of performing a union while maintaining the above invariant, for both outer and inner maps:
+>
+> ```hs
+> canonicalMapUnion ::
+>   (Ord k, CanonicalZero a) =>
+>   (a -> a -> a) ->
+>   Map k a ->
+>   Map k a ->
+>   Map k a
+> canonicalMapUnion _f t1 Tip                 = t1
+> canonicalMapUnion  f t1 (Bin _ k x Tip Tip) = canonicalInsert f k x t1
+> canonicalMapUnion  f (Bin _ k x Tip Tip) t2 = canonicalInsert f k x t2
+> canonicalMapUnion _f Tip t2                 = t2
+> canonicalMapUnion  f (Bin _ k1 x1 l1 r1) t2 = case Map.splitLookup k1 t2 of
+>   (l2, mb, r2) -> case mb of
+>     Nothing ->
+>       if x1 == zeroC
+>         then link2 l1l2 r1r2
+>         else link k1 x1 l1l2 r1r2
+>     Just x2 ->
+>       if new == zeroC
+>         then link2 l1l2 r1r2
+>         else link k1 new l1l2 r1r2
+>       where
+>         new = f x1 x2
+>     where
+>       !l1l2 = canonicalMapUnion f l1 l2
+>       !r1r2 = canonicalMapUnion f r1 r2
+> ```
+>
+> The above function eschews the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge), and instead performs pattern matching on constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html): this approach was almost certainly taken for performance reasons.
+>
+> Nevertheless, in the spirit of having fun, let's redefine the `MultiAsset` type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+>
+> ```patch
+> - newtype MultiAsset c = MultiAsset (Map       (PolicyID c) (      Map AssetName      Integer))
+> + newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
+> ```
+>
+> Given that all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations take care of the invariant that values cannot be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), we can now simplify the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for `MultiAsset`, dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+>
+> ```patch
+>   instance Semigroup (MultiAsset c) where
+>       MultiAsset m1 <> MultiAsset m2 =
+> -         MultiAsset (canonicalMapUnion (canonicalMapUnion (+)) m1 m2)
+> +         m1 <> m2
+> ```
+>
+> Since this instance is trivial, we make a further simplification by deriving the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
+>
+> ```patch
+>   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
+> +     deriving newtype (Semigroup, Monoid)
+> ```
+>
+> Since the [`<>`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:append) operation for [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) performs automatic minimisation:
+> - values of `Sum 0` are automatically excluded from the inner map.
+> - values of [`MonoidMap.empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty) are automatically excluded from the outer map.
 
 # Comparison with other generalised map types
 
