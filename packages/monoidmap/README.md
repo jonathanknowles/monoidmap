@@ -546,7 +546,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ## Real-world examples from the Haskell ecosystem
 
-<details><summary><strong>Example: Multisets</strong></summary><br>
+### Real-world example: multisets
 
 The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from elements to signed integer occurrence counts:
 
@@ -587,9 +587,8 @@ Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-mu
 ```
 
 Since the [`MonoidMap.adjust`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust) operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
-</details>
 
-<details><summary><strong>Example: Multimaps (set-based)</strong></summary><br/>
+### Real-world example: multimaps (set-based)
 
 The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values:
 
@@ -636,9 +635,7 @@ alterWithKey f k (SetMultimap (m, size)) = SetMultiMap
 
 Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
 
-</details>
-
-<details><summary><strong>Example: Multimaps (list-based)</strong></summary><br/>
+### Real-world example: multimaps (list-based)
 
 The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values:
 
@@ -684,9 +681,8 @@ Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-Mon
 - empty lists are automatically excluded from the internal data structure.
 - there is no need to use a specialised [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) type.
 - there is no need to handle empty lists differently from non-empty lists.
-</details>
 
-<details><summary><strong>Example: Nested maps</strong></summary><br/>
+### Real-world example: nested maps
 
 The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from _policy identifiers_ to _asset names_ to _asset values_:
 
@@ -764,8 +760,6 @@ Since this instance is trivial, we make a further simplification by deriving the
 Since the [`<>`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:append) operation for [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) performs automatic minimisation:
 - values of `Sum 0` are automatically excluded from the inner map.
 - values of [`MonoidMap.empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty) are automatically excluded from the outer map.
-
-</details>
 
 # Comparison with other generalised map types
 
