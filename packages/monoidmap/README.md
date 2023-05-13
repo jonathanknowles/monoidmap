@@ -590,7 +590,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ### Example: `SetMultiMap` (a set-based multimap)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values:
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
@@ -637,7 +637,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ### Example: `MultiMap` (a list-based multimap)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values:
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
