@@ -684,17 +684,19 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ### Real-world example: nested maps
 
-> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from _policy identifiers_ to _asset names_ to _asset values_:
+> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from `PolicyID` keys to `AssetName` keys to `Integer` values:
 >
 > ```hs
 > newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
 > ```
 >
+> Each `Integer` value represents the value of some _asset_ that is uniquely identified by the `PolicyID` and `AssetName` keys.
+>
 > All [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations maintain the invariant that:
 > - there are no mappings from `PolicyID` keys to empty maps; and that
 > - there are no mappings from `AssetName` keys to `Integer` values of `0`.
 >
-> To satisfy this invariant, the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance is defined as follows:
+> To satisfy this invariant, the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) is defined as follows:
 >
 > ```hs
 > instance Semigroup (MultiAsset c) where
@@ -732,7 +734,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >       !r1r2 = canonicalMapUnion f r1 r2
 > ```
 >
-> The above function eschews the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge), and instead performs pattern matching on constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html): this approach was almost certainly taken for performance reasons.
+> One interesting feature of the above function is that it eschews the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge), and instead performs pattern matching on constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html): this approach was almost certainly taken for performance reasons.
 >
 > Nevertheless, in the spirit of having fun, let's redefine the `MultiAsset` type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
 >
@@ -750,7 +752,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 > +         m1 <> m2
 > ```
 >
-> Since this instance is trivial, we make a further simplification by deriving the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
+> Furthermore, since the above instance is now trivial, we make a further simplification by deriving the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
