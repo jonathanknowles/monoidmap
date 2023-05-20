@@ -307,19 +307,29 @@ import qualified Data.Monoid.Null as C
 --
 -- == Automatic minimisation
 --
--- All 'MonoidMap' operations perform __automatic minimisation__ of the
--- difference set, so that 'mempty' values do not appear in:
+-- All 'MonoidMap' operations perform __automatic minimisation__ of the support
+-- map, so that 'mempty' values do not appear in:
 --
 --   - any encoding of a 'MonoidMap'
 --   - any traversal of a 'MonoidMap'
 --
--- In order to perform minimisation, 'MonoidMap' operations use the
--- 'MonoidNull' indicator function 'C.null' to detect and exclude 'mempty'
--- values, where 'C.null' must satisfy the following law:
+-- == Constraints on values
+--
+-- 'MonoidMap' operations require the monoidal value type to be an instance of
+-- 'MonoidNull'.
+--
+-- Instances of 'MonoidNull' must provide a 'C.null' indicator function that
+-- satisfies the following law:
 --
 -- @
 -- ∀ v. 'MonoidNull'.'C.null' v '==' (v '==' 'mempty')
 -- @
+--
+-- 'MonoidMap' operations use the 'C.null' indicator function to detect and
+-- exclude 'mempty' values from the support map.
+--
+-- Note that it is /not/ generally necessary for the value type to be an
+-- instance of 'Eq'.
 
 --------------------------------------------------------------------------------
 -- Monoidal operations

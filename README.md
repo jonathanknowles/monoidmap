@@ -98,15 +98,23 @@ The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.githu
 
 ## Automatic minimisation
 
-All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the difference set, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values do not appear in:
+All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the support set, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values do not appear in:
 - any encoding of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap);
 - any traversal of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap).
 
-In order to perform minimisation, [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`MonoidNull.null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, where [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) must satisfy the following law:
+## Constraints on values
+
+[`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations require the monoidal value type to be an instance of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull).
+
+Instances of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) must provide a [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function that satisfies the following law:
 
 ```hs
 null v == (v == mempty)
 ```
+
+[`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from the support map.
+
+Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq).
 
 <details><summary><strong>Justification</strong></summary>
 <br/>
