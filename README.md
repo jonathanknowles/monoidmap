@@ -5,8 +5,7 @@
 
 This library provides a [**`MonoidMap`**](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type that:
 
-- models a [total mapping](#relationship-between-keys-and-values) from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
-- uses a [minimal difference set encoding](#encoding) to store mappings from keys to values.
+- models a [total function](#relationship-between-keys-and-values) with finite support from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with [automatic minimal encoding](#encoding).
 - provides a comprehensive set of [monoidal operations](#monoidal-operations) for transforming, combining, and comparing maps.
 - provides a [general basis](#General-basis-for-more-specialised-map-types) for building more specialised monoidal data structures.
 
@@ -28,10 +27,10 @@ The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:
 
 The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values:
 
-|            Type | Relationship                                                         |
-|----------------:|:---------------------------------------------------------------------|
-|       `Map k v` | a _total mapping_ from keys of type `k` to values of type `Maybe v`. |
-| `MonoidMap k v` | a _total mapping_ from keys of type `k` to values of type `v`.       |
+|            Type | Models a total function with finite support        |
+|----------------:|:---------------------------------------------------|
+|       `Map k v` | from keys of type `k` to values of type `Maybe v`. |
+| `MonoidMap k v` | from keys of type `k` to values of type `v`.       |
 
 This difference can be illustrated by comparing the type signatures of operations to query a key for its value, for both types:
 
@@ -91,23 +90,31 @@ Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidM
 
 # Encoding
 
-The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) is encoded internally as a **minimal difference set** $D$: the subset of key-value pairs in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
+A [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) only encodes mappings from keys to values that are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
 
-> $D = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
+The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) is encoded as a **support map** $S$, where $S$ is the finite subset of key-value mappings in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
 
-Set $D$ is a **difference set** in the sense that the value associated with any key $k$ in $D$ can be viewed as a **difference** from the [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) value ($\varnothing$).
+> $S = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
 
 ## Automatic minimisation
 
-All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the difference set, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values do not appear in:
+All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the support set, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values do not appear in:
 - any encoding of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap);
 - any traversal of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap).
 
-In order to perform minimisation, [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`MonoidNull.null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, where [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) must satisfy the following law:
+## Constraints on values
+
+[`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations require the monoidal value type to be an instance of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull).
+
+Instances of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) must provide a [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function that satisfies the following law:
 
 ```hs
 null v == (v == mempty)
 ```
+
+[`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from the support map.
+
+Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq).
 
 <details><summary><strong>Justification</strong></summary>
 <br/>
@@ -360,13 +367,13 @@ In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.o
 - _unary_ operations on _individual maps_ are defined in terms of their distributive application to all values.
 - _binary_ operations on _pairs of maps_ are defined in terms of their distributive application to all _pairs of values_ for matching keys.
 
-_Unary_ monoidal operations typically satisfy a property similar to:
+Unary monoidal operations typically satisfy a property similar to:
 
 ```hs
 ∀ k. MonoidMap.get k (f m) == f (MonoidMap.get k m)
 ```
 
-_Binary_ monoidal operations typically satisfy a property similar to:
+Binary monoidal operations typically satisfy a property similar to:
 
 ```hs
 ∀ k. MonoidMap.get k (f m1 m2) == f (MonoidMap.get k m1) (MonoidMap.get k m2)
