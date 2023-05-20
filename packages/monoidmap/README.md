@@ -27,10 +27,10 @@ The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:
 
 The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values:
 
-|            Type | Relationship                                                         |
-|----------------:|:---------------------------------------------------------------------|
-|       `Map k v` | a _total mapping_ from keys of type `k` to values of type `Maybe v`. |
-| `MonoidMap k v` | a _total mapping_ from keys of type `k` to values of type `v`.       |
+|            Type | Models a total function with finite support        |
+|----------------:|:---------------------------------------------------|
+|       `Map k v` | from keys of type `k` to values of type `Maybe v`. |
+| `MonoidMap k v` | from keys of type `k` to values of type `v`.       |
 
 This difference can be illustrated by comparing the type signatures of operations to query a key for its value, for both types:
 
