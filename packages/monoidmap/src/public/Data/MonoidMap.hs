@@ -295,16 +295,15 @@ import qualified Data.Monoid.Null as C
 --
 -- = Encoding
 --
--- The total function \(T\) modelled by a 'MonoidMap' is encoded internally as
--- a __minimal difference set__ \(D\), defined as the subset of key-value pairs
--- in \(T\) for which values are /not/ equal to 'mempty' (denoted by
+-- A 'MonoidMap' only encodes mappings from keys to values that are /not/ equal
+-- to 'mempty'.
+--
+-- The total function \(T\) modelled by a 'MonoidMap' is encoded as a
+-- __support__ __map__ \(S\), where \(S\) is the finite subset of key-value
+-- mappings in \(T\) for which values are not equal to 'mempty' (denoted by
 -- \(\varnothing\)):
 --
--- \( \quad D = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)
---
--- Set \(D\) is a /difference set/ in the sense that the value associated
--- with any key __@k@__ in \(D\) can be viewed as a /difference/ from the
--- 'mempty' value.
+-- \( \quad S = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)
 --
 -- == Automatic minimisation
 --
