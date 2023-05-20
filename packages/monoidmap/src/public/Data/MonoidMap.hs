@@ -163,11 +163,9 @@ import qualified Data.Monoid.Null as C
 --
 -- This module provides the 'MonoidMap' type, which:
 --
---  - models a [__total mapping__](#_totality) from keys to
---    [__monoidal values__]("Data.Monoid"), with a default value of 'mempty'.
---
---  - uses a [__minimal difference set encoding__](#_encoding) to store
---    mappings from keys to values.
+--  - models a [__total function__](#_totality) with __finite support__ from
+--    keys to [__monoidal values__]("Data.Monoid"), with
+--    [__automatic minimal encoding__](#_encoding).
 --
 --  - provides a comprehensive set of
 --    [__monoidal operations__](#_monoidal_operations) for transforming,
@@ -215,15 +213,15 @@ import qualified Data.Monoid.Null as C
 -- The 'MonoidMap' type differs from the standard 'Map' type in how it relates
 -- keys to values:
 --
--- +---------------------------+------------------------------------+
--- | @       'Map'@__@ k v @__ | a /total mapping/                  |
--- |                           | from keys of type __@k@__          |
--- |                           | to values of type __@'Maybe' v@__. |
--- +---------------------------+------------------------------------+
--- | @ 'MonoidMap'@__@ k v @__ | a /total mapping/                  |
--- |                           | from keys of type __@k@__          |
--- |                           | to values of type __@v@__.         |
--- +---------------------------+------------------------------------+
+-- +---------------------------+---------------------------------------------+
+-- | Type                      | Models a total function with finite support |
+-- +===========================+=============================================+
+-- | @       'Map'@__@ k v @__ | from keys of type __@k@__                   |
+-- |                           | to values of type __@'Maybe' v@__.          |
+-- +---------------------------+---------------------------------------------+
+-- | @ 'MonoidMap'@__@ k v @__ | from keys of type __@k@__                   |
+-- |                           | to values of type __@v@__.                  |
+-- +---------------------------+---------------------------------------------+
 --
 -- This difference can be illustrated by comparing the type signatures of
 -- operations to query a key for its value, for both types:
@@ -297,32 +295,41 @@ import qualified Data.Monoid.Null as C
 --
 -- = Encoding
 --
--- The total function \(T\) modelled by a 'MonoidMap' is encoded internally as
--- a __minimal difference set__ \(D\), defined as the subset of key-value pairs
--- in \(T\) for which values are /not/ equal to 'mempty' (denoted by
+-- A 'MonoidMap' only encodes mappings from keys to values that are /not/ equal
+-- to 'mempty'.
+--
+-- The total function \(T\) modelled by a 'MonoidMap' is encoded as a
+-- __support__ __map__ \(S\), where \(S\) is the finite subset of key-value
+-- mappings in \(T\) for which values are not equal to 'mempty' (denoted by
 -- \(\varnothing\)):
 --
--- \( \quad D = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)
---
--- Set \(D\) is a /difference set/ in the sense that the value associated
--- with any key __@k@__ in \(D\) can be viewed as a /difference/ from the
--- 'mempty' value.
+-- \( \quad S = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)
 --
 -- == Automatic minimisation
 --
--- All 'MonoidMap' operations perform __automatic minimisation__ of the
--- difference set, so that 'mempty' values do not appear in:
+-- All 'MonoidMap' operations perform __automatic minimisation__ of the support
+-- map, so that 'mempty' values do not appear in:
 --
 --   - any encoding of a 'MonoidMap'
 --   - any traversal of a 'MonoidMap'
 --
--- In order to perform minimisation, 'MonoidMap' operations use the
--- 'MonoidNull' indicator function 'C.null' to detect and exclude 'mempty'
--- values, where 'C.null' must satisfy the following law:
+-- == Constraints on values
+--
+-- 'MonoidMap' operations require the monoidal value type to be an instance of
+-- 'MonoidNull'.
+--
+-- Instances of 'MonoidNull' must provide a 'C.null' indicator function that
+-- satisfies the following law:
 --
 -- @
 -- ∀ v. 'MonoidNull'.'C.null' v '==' (v '==' 'mempty')
 -- @
+--
+-- 'MonoidMap' operations use the 'C.null' indicator function to detect and
+-- exclude 'mempty' values from the support map.
+--
+-- Note that it is /not/ generally necessary for the value type to be an
+-- instance of 'Eq'.
 
 --------------------------------------------------------------------------------
 -- Monoidal operations
@@ -360,13 +367,13 @@ import qualified Data.Monoid.Null as C
 -- - /binary/ operations on /pairs of maps/ are defined in terms of their
 --   distributive application to all /pairs of values/ for matching keys.
 --
--- /Unary/ monoidal operations typically satisfy a property similar to:
+-- Unary monoidal operations typically satisfy a property similar to:
 --
 -- @
 -- ∀ k. 'get' k (f m) '==' f ('get' k m)
 -- @
 --
--- /Binary/ monoidal operations typically satisfy a property similar to:
+-- Binary monoidal operations typically satisfy a property similar to:
 --
 -- @
 -- ∀ k. 'get' k (f m1 m2) '==' f ('get' k m1) ('get' k m2)
