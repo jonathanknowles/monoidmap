@@ -90,11 +90,11 @@ Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidM
 
 # Encoding
 
-The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) is encoded internally as a **minimal difference set** $D$: the subset of key-value pairs in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
+A [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) only encodes mappings from keys to values that are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
 
-> $D = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
+The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) is encoded as a **support map** $S$, where $S$ is the finite subset of key-value mappings in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
 
-Set $D$ is a **difference set** in the sense that the value associated with any key $k$ in $D$ can be viewed as a **difference** from the [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) value ($\varnothing$).
+> $S = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
 
 ## Automatic minimisation
 
