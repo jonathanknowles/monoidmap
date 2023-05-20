@@ -367,13 +367,13 @@ In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.o
 - _unary_ operations on _individual maps_ are defined in terms of their distributive application to all values.
 - _binary_ operations on _pairs of maps_ are defined in terms of their distributive application to all _pairs of values_ for matching keys.
 
-_Unary_ monoidal operations typically satisfy a property similar to:
+Unary monoidal operations typically satisfy a property similar to:
 
 ```hs
 ∀ k. MonoidMap.get k (f m) == f (MonoidMap.get k m)
 ```
 
-_Binary_ monoidal operations typically satisfy a property similar to:
+Binary monoidal operations typically satisfy a property similar to:
 
 ```hs
 ∀ k. MonoidMap.get k (f m1 m2) == f (MonoidMap.get k m1) (MonoidMap.get k m2)

@@ -367,13 +367,13 @@ import qualified Data.Monoid.Null as C
 -- - /binary/ operations on /pairs of maps/ are defined in terms of their
 --   distributive application to all /pairs of values/ for matching keys.
 --
--- /Unary/ monoidal operations typically satisfy a property similar to:
+-- Unary monoidal operations typically satisfy a property similar to:
 --
 -- @
 -- ∀ k. 'get' k (f m) '==' f ('get' k m)
 -- @
 --
--- /Binary/ monoidal operations typically satisfy a property similar to:
+-- Binary monoidal operations typically satisfy a property similar to:
 --
 -- @
 -- ∀ k. 'get' k (f m1 m2) '==' f ('get' k m1) ('get' k m2)
