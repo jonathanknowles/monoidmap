@@ -25,8 +25,9 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Property, cover, (===) )
+    ( Fun, Property, applyFun, cover, (===) )
 
+import qualified Data.Monoid.Null as Null
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
@@ -58,6 +59,11 @@ specFor = makeSpec $ do
                 @k @v & property
         it "prop_set_toList" $
             prop_set_toList
+                @k @v & property
+
+    describe "Adjust" $ do
+        it "prop_adjust_get_set" $
+            prop_adjust_get_set
                 @k @v & property
 
 --------------------------------------------------------------------------------
@@ -136,3 +142,24 @@ prop_set_toList m k v =
     & cover 2
         (v /= mempty)
         "v /= mempty"
+
+--------------------------------------------------------------------------------
+-- Adjust
+--------------------------------------------------------------------------------
+
+prop_adjust_get_set
+    :: Test k v => MonoidMap k v -> Fun v v -> k -> Property
+prop_adjust_get_set m (applyFun -> f) k =
+    MonoidMap.adjust f k m === MonoidMap.set k (f (MonoidMap.get k m)) m
+    & cover 1
+        (MonoidMap.nullKey k m && Null.null (f mempty))
+        "MonoidMap.nullKey k m && Null.null (f mempty)"
+    & cover 1
+        (MonoidMap.nullKey k m && not (Null.null (f mempty)))
+        "MonoidMap.nullKey k m && not (Null.null (f mempty))"
+    & cover 0.1
+        (MonoidMap.nonNullKey k m && Null.null (f (MonoidMap.get k m)))
+        "MonoidMap.nonNullKey k m && Null.null (f (MonoidMap.get k m))"
+    & cover 0.1
+        (MonoidMap.nonNullKey k m && not (Null.null (f (MonoidMap.get k m))))
+        "MonoidMap.nonNullKey k m && not (Null.null (f (MonoidMap.get k m)))"
