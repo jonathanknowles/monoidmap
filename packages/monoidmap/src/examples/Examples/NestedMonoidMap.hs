@@ -33,6 +33,20 @@ module Examples.NestedMonoidMap
     , nonNullCount
     , nonNullKey
     , nonNullKeys
+
+    -- * Intersection
+    , intersection
+    , intersectionWith
+
+    -- * Union
+    , union
+    , unionWith
+
+    -- * Comparison
+    , isSubmapOf
+    , isSubmapOfBy
+    , disjoint
+    , disjointBy
     )
     where
 
@@ -44,6 +58,8 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+import Data.Monoid.LCM
+    ( LCMMonoid )
 import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
@@ -80,6 +96,7 @@ newtype NestedMonoidMap k1 k2 v =
         ( Cancellative
         , Commutative
         , GCDMonoid
+        , LCMMonoid
         , LeftCancellative
         , LeftGCDMonoid
         , LeftReductive
@@ -215,3 +232,83 @@ nonNullKeys
     => NestedMonoidMap k1 k2 v
     -> Set (k1, k2)
 nonNullKeys = Set.fromList . fmap fst . toFlatList
+
+--------------------------------------------------------------------------------
+-- Intersection
+--------------------------------------------------------------------------------
+
+intersection
+    :: (Ord k1, Ord k2, MonoidNull v, GCDMonoid v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+intersection (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.intersection m1 m2
+
+intersectionWith
+    :: (Ord k1, Ord k2, MonoidNull v)
+    => (v -> v -> v)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+intersectionWith f (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.intersectionWith (MonoidMap.intersectionWith f) m1 m2
+
+--------------------------------------------------------------------------------
+-- Union
+--------------------------------------------------------------------------------
+
+union
+    :: (Ord k1, Ord k2, MonoidNull v, LCMMonoid v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+union (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.union m1 m2
+
+unionWith
+    :: (Ord k1, Ord k2, MonoidNull v)
+    => (v -> v -> v)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+unionWith f (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.unionWith (MonoidMap.unionWith f) m1 m2
+
+--------------------------------------------------------------------------------
+-- Comparison
+--------------------------------------------------------------------------------
+
+isSubmapOf
+    :: (Ord k1, Ord k2, MonoidNull v, Reductive v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+isSubmapOf (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.isSubmapOf m1 m2
+
+isSubmapOfBy
+    :: (Ord k1, Ord k2, MonoidNull v, Reductive v)
+    => (v -> v -> Bool)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+isSubmapOfBy f (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.isSubmapOfBy (MonoidMap.isSubmapOfBy f) m1 m2
+
+disjoint
+    :: (Ord k1, Ord k2, MonoidNull v, GCDMonoid v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+disjoint (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.disjoint m1 m2
+
+disjointBy
+    :: (Ord k1, Ord k2, MonoidNull v, GCDMonoid v)
+    => (v -> v -> Bool)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+disjointBy f (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.disjointBy (MonoidMap.disjointBy f) m1 m2
