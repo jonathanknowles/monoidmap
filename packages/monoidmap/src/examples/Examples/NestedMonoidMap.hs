@@ -37,6 +37,9 @@ module Examples.NestedMonoidMap
     -- * Intersection
     , intersection
     , intersectionWith
+
+    -- * Union
+    , union
     )
     where
 
@@ -48,6 +51,8 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
+import Data.Monoid.LCM
+    ( LCMMonoid )
 import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
@@ -84,6 +89,7 @@ newtype NestedMonoidMap k1 k2 v =
         ( Cancellative
         , Commutative
         , GCDMonoid
+        , LCMMonoid
         , LeftCancellative
         , LeftGCDMonoid
         , LeftReductive
@@ -240,3 +246,15 @@ intersectionWith
     -> NestedMonoidMap k1 k2 v
 intersectionWith f (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
     MonoidMap.intersectionWith (MonoidMap.intersectionWith f) m1 m2
+
+--------------------------------------------------------------------------------
+-- Union
+--------------------------------------------------------------------------------
+
+union
+    :: (Ord k1, Ord k2, MonoidNull v, LCMMonoid v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+union (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.union m1 m2
