@@ -36,6 +36,7 @@ module Examples.NestedMonoidMap
 
     -- * Intersection
     , intersection
+    , intersectionWith
     )
     where
 
@@ -230,3 +231,12 @@ intersection
     -> NestedMonoidMap k1 k2 v
 intersection (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
     MonoidMap.intersection m1 m2
+
+intersectionWith
+    :: (Ord k1, Ord k2, MonoidNull v)
+    => (v -> v -> v)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+intersectionWith f (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.intersectionWith (MonoidMap.intersectionWith f) m1 m2
