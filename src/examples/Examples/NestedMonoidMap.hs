@@ -45,6 +45,7 @@ module Examples.NestedMonoidMap
     -- * Comparison
     , isSubmapOf
     , isSubmapOfBy
+    , disjoint
     )
     where
 
@@ -293,3 +294,11 @@ isSubmapOfBy
     -> Bool
 isSubmapOfBy f (NestedMonoidMap m1) (NestedMonoidMap m2) =
     MonoidMap.isSubmapOfBy (MonoidMap.isSubmapOfBy f) m1 m2
+
+disjoint
+    :: (Ord k1, Ord k2, MonoidNull v, GCDMonoid v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+disjoint (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.disjoint m1 m2
