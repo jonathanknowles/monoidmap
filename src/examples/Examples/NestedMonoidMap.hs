@@ -40,6 +40,7 @@ module Examples.NestedMonoidMap
 
     -- * Union
     , union
+    , unionWith
     )
     where
 
@@ -258,3 +259,12 @@ union
     -> NestedMonoidMap k1 k2 v
 union (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
     MonoidMap.union m1 m2
+
+unionWith
+    :: (Ord k1, Ord k2, MonoidNull v)
+    => (v -> v -> v)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+unionWith f (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.unionWith (MonoidMap.unionWith f) m1 m2
