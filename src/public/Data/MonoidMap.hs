@@ -163,8 +163,9 @@ import qualified Data.Monoid.Null as C
 --
 -- This module provides the 'MonoidMap' type, which:
 --
---  - models a [__total function__](#_totality) with __finite support__ from
---    keys to [__monoidal values__]("Data.Monoid"), with
+--  - models a [__total function__](#_totality) with
+--    [__finite support__](https://wikipedia.org/wiki/Support_\(mathematics\))
+--    from keys to [__monoidal values__]("Data.Monoid"), with
 --    [__automatic minimal encoding__](#_encoding).
 --
 --  - provides a comprehensive set of
