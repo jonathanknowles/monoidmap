@@ -33,6 +33,9 @@ module Examples.NestedMonoidMap
     , nonNullCount
     , nonNullKey
     , nonNullKeys
+
+    -- * Intersection
+    , intersection
     )
     where
 
@@ -215,3 +218,15 @@ nonNullKeys
     => NestedMonoidMap k1 k2 v
     -> Set (k1, k2)
 nonNullKeys = Set.fromList . fmap fst . toFlatList
+
+--------------------------------------------------------------------------------
+-- Intersection
+--------------------------------------------------------------------------------
+
+intersection
+    :: (Ord k1, Ord k2, MonoidNull v, GCDMonoid v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+intersection (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
+    MonoidMap.intersection m1 m2
