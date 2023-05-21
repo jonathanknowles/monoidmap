@@ -41,6 +41,9 @@ module Examples.NestedMonoidMap
     -- * Union
     , union
     , unionWith
+
+    -- * Comparison
+    , isSubmapOf
     )
     where
 
@@ -268,3 +271,15 @@ unionWith
     -> NestedMonoidMap k1 k2 v
 unionWith f (NestedMonoidMap m1) (NestedMonoidMap m2) = NestedMonoidMap $
     MonoidMap.unionWith (MonoidMap.unionWith f) m1 m2
+
+--------------------------------------------------------------------------------
+-- Comparison
+--------------------------------------------------------------------------------
+
+isSubmapOf
+    :: (Ord k1, Ord k2, MonoidNull v, Reductive v)
+    => NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+isSubmapOf (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.isSubmapOf m1 m2
