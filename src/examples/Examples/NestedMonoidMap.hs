@@ -44,6 +44,7 @@ module Examples.NestedMonoidMap
 
     -- * Comparison
     , isSubmapOf
+    , isSubmapOfBy
     )
     where
 
@@ -283,3 +284,12 @@ isSubmapOf
     -> Bool
 isSubmapOf (NestedMonoidMap m1) (NestedMonoidMap m2) =
     MonoidMap.isSubmapOf m1 m2
+
+isSubmapOfBy
+    :: (Ord k1, Ord k2, MonoidNull v, Reductive v)
+    => (v -> v -> Bool)
+    -> NestedMonoidMap k1 k2 v
+    -> NestedMonoidMap k1 k2 v
+    -> Bool
+isSubmapOfBy f (NestedMonoidMap m1) (NestedMonoidMap m2) =
+    MonoidMap.isSubmapOfBy (MonoidMap.isSubmapOfBy f) m1 m2
