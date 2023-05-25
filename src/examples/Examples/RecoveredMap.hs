@@ -35,6 +35,9 @@ newtype Map k v = Map
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
 
+instance Functor (Map k) where
+    fmap = map
+
 empty :: Map k v
 empty = Map MonoidMap.empty
 

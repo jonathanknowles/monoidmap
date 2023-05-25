@@ -46,7 +46,7 @@ import Test.QuickCheck
     , (===)
     )
 import Test.QuickCheck.Classes
-    ( eqLaws, monoidLaws, semigroupLaws, semigroupMonoidLaws )
+    ( eqLaws, functorLaws, monoidLaws, semigroupLaws, semigroupMonoidLaws )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
 import Test.QuickCheck.Instances.Natural
@@ -105,6 +105,9 @@ specFor keyType valueType = do
                 , monoidLaws
                 , semigroupLaws
                 , semigroupMonoidLaws
+                ]
+            testLawsMany @(RMap.Map k)
+                [ functorLaws
                 ]
 
         describe "Conversion to and from lists" $ do
