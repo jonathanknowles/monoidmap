@@ -41,6 +41,10 @@ import Test.QuickCheck
     , shrinkMapBy
     , (===)
     )
+import Test.QuickCheck.Classes
+    ( eqLaws, monoidLaws, semigroupLaws, semigroupMonoidLaws )
+import Test.QuickCheck.Classes.Hspec
+    ( testLawsMany )
 import Test.QuickCheck.Instances.Natural
     ()
 import Test.QuickCheck.Instances.Text
@@ -87,6 +91,14 @@ specFor keyType valueType = do
         property = checkCoverage . QC.property
 
     describe description $ do
+
+        describe "Class laws" $ do
+            testLawsMany @(RMap.Map k v)
+                [ eqLaws
+                , monoidLaws
+                , semigroupLaws
+                , semigroupMonoidLaws
+                ]
 
         describe "Conversion to and from lists" $ do
             it "prop_fromList_toList" $
