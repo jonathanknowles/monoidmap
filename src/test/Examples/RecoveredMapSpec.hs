@@ -33,8 +33,12 @@ import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
     ( Arbitrary (..)
+    , CoArbitrary
+    , Fun
+    , Function
     , Property
     , Testable
+    , applyFun
     , checkCoverage
     , cover
     , listOf
@@ -67,7 +71,10 @@ specFor
     :: forall k v. () =>
         ( Arbitrary k
         , Arbitrary v
+        , CoArbitrary v
         , Eq v
+        , Function v
+        , Monoid v
         , Ord k
         , Show k
         , Show v
@@ -159,6 +166,14 @@ specFor keyType valueType = do
             it "prop_insert_toList" $
                 prop_insert_toList
                     @k @v & property
+
+        describe "Map" $ do
+            it "prop_map" $
+                prop_map
+                    @k @v @v & property
+            it "prop_map_mempty" $
+                prop_map_mempty
+                    @k @v @v & property
 
 --------------------------------------------------------------------------------
 -- Conversion to and from lists
@@ -389,6 +404,29 @@ prop_insert_toList kvs k v =
     & cover 10
         (filter ((== k) . fst) kvs /= [])
         "filter ((== k) . fst) kvs /= []"
+
+--------------------------------------------------------------------------------
+-- Map
+--------------------------------------------------------------------------------
+
+prop_map
+    :: (Ord k, Show k, Eq v2, Show v2)
+    => [(k, v1)]
+    -> Fun v1 v2
+    -> Property
+prop_map kvs (applyFun -> f) =
+    (===)
+        (RMap.toList (RMap.map f (RMap.fromList kvs)))
+        (OMap.toList (OMap.map f (OMap.fromList kvs)))
+
+prop_map_mempty
+    :: forall k v1 v2. (Ord k, Show k, Eq v2, Monoid v2, Show v2)
+    => [(k, v1)]
+    -> Property
+prop_map_mempty kvs =
+    (===)
+        (RMap.toList (RMap.map (const (mempty @v2)) (RMap.fromList kvs)))
+        (OMap.toList (OMap.map (const (mempty @v2)) (OMap.fromList kvs)))
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
