@@ -10,7 +10,8 @@
 --
 module Examples.RecoveredMap where
 
-import Prelude
+import Prelude hiding
+    ( map )
 
 import Control.DeepSeq
     ( NFData )
@@ -33,6 +34,9 @@ newtype Map k v = Map
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
+
+instance Functor (Map k) where
+    fmap = map
 
 empty :: Map k v
 empty = Map MonoidMap.empty
@@ -60,3 +64,6 @@ lookup k = getFirst . MonoidMap.get k . unMap
 
 member :: Ord k => k -> Map k v -> Bool
 member k = MonoidMap.nonNullKey k . unMap
+
+map :: (v1 -> v2) -> Map k v1 -> Map k v2
+map f = Map . MonoidMap.map (fmap f) . unMap
