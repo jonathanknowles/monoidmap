@@ -339,12 +339,10 @@ Therefore, for this example, the functor composition law is not satisfied.
 
 </details>
 
-However, the composition law _can_ be satisfied _conditionally_, provided that function `g` always maps non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the source [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) to non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the target [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid):
+However, if applying function `f` to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) produces [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), the functor composition law is satisfied:
 
 ```hs
-(∀ v. (v /= mempty) ==> (g v /= mempty))
-    ==>
-    map (f . g) == map f . map g
+(f mempty == mempty) ==> (∀ g. map (f . g) == map f . map g)
 ```
 
 # Monoidal operations
