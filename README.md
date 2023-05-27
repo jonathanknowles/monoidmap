@@ -296,7 +296,7 @@ Furthermore, for nested maps such as <code><a href="https://jonathanknowles.gith
 The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type has no [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance, as the requirement to exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) operation must remove [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
 
 ```hs
-map (g . f) == map g . map f
+map (f . g) == map f . map g
 ```
 
 <details><summary><strong>Example violation</strong></summary>
@@ -310,23 +310,23 @@ m = singleton "k" "v"
 
 And the following functions `f` and `g`:
 ```hs
-f :: (Monoid a, Monoid b) => a -> b
-f = const mempty
+f :: Monoid b => String -> String
+f = const "z"
 
-g :: Monoid b => String -> String
-g = const "z"
+g :: (Monoid a, Monoid b) => a -> b
+g = const mempty
 ```
 
 By substituting the above definitions into the left-hand side of the functor composition law, we obtain:
 ```hs
-map (g . f) m = map (const "z" . const mempty) (singleton "k" "v")
+map (f . g) m = map (const "z" . const mempty) (singleton "k" "v")
               = map (const "z"               ) (singleton "k" "v")
               =                                (singleton "k" "z")
 ```
 
 By substituting the above definitions into the right-hand side of the functor composition law, we obtain:
 ```hs
-map g (map f m) = map (const "z") (map (const mempty) (singleton "k" "v"))
+map f (map g m) = map (const "z") (map (const mempty) (singleton "k" "v"))
                 = map (const "z") mempty
                 =                 mempty
 ```
@@ -339,12 +339,12 @@ Therefore, for this example, the functor composition law is not satisfied.
 
 </details>
 
-However, the composition law _can_ be satisfied _conditionally_, provided that function `f` always maps non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the source [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) to non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the target [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid):
+However, the composition law _can_ be satisfied _conditionally_, provided that function `g` always maps non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the source [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) to non-[`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) values in the target [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid):
 
 ```hs
-(∀ v. (v /= mempty) ==> (f v /= mempty))
+(∀ v. (v /= mempty) ==> (g v /= mempty))
     ==>
-    map (g . f) == map g . map f
+    map (f . g) == map f . map g
 ```
 
 # Monoidal operations
