@@ -140,7 +140,7 @@ prop_map_get_total
     -> k
     -> MonoidMap k v
     -> Property
-prop_map_get_total (applyFun -> g) k m =
+prop_map_get_total (applyFun -> f0) k m =
     MonoidMap.get k (MonoidMap.map f m) === f (MonoidMap.get k m)
     & cover 2
         (MonoidMap.nullKey k m)
@@ -149,11 +149,7 @@ prop_map_get_total (applyFun -> g) k m =
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
   where
-    -- A function that preserves null values:
-    f :: v -> v
-    f v
-        | v == mempty = mempty
-        | otherwise   = g v
+    f = toNullPreservingFn f0
 
 prop_map_get_total_failure
     :: Test k v
