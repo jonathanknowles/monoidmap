@@ -99,16 +99,14 @@ prop_map_composition (applyFun -> f0) (applyFun -> g0) m =
         (MonoidMap.nonNull m)
         "MonoidMap.nonNull m"
   where
-    f = mkNonNullPreservingFn f0
-    g = mkNonNullPreservingFn g0
+    f = toNullPreservingFn f0
+    g = g0
 
-    -- Creates a function that never maps non-null values to null values.
-    mkNonNullPreservingFn :: (v -> v) -> (v -> v)
-    mkNonNullPreservingFn h v0
-        | not (Null.null v0) && Null.null v1 = v0
-        | otherwise                          = v1
-      where
-        v1 = h v0
+    -- Creates a function that never maps null values to non-null values.
+    toNullPreservingFn :: (v -> v) -> (v -> v)
+    toNullPreservingFn h v
+        | Null.null v = v
+        | otherwise = h v
 
 prop_map_composition_failure
     :: forall k v. Test k v
