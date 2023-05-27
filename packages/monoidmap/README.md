@@ -310,10 +310,10 @@ m = singleton "k" "v"
 
 And the following functions `f` and `g`:
 ```hs
-f :: Monoid b => String -> String
+f :: a -> String
 f = const "z"
 
-g :: (Monoid a, Monoid b) => a -> b
+g :: Monoid a => b -> a
 g = const mempty
 ```
 
