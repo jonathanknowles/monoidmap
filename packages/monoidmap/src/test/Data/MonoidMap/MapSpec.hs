@@ -18,6 +18,8 @@ import Data.Bifunctor
     ( first, second )
 import Data.Function
     ( (&) )
+import Data.Monoid.Null
+    ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Proxy
@@ -101,12 +103,6 @@ prop_map_composition (applyFun -> f0) (applyFun -> g0) m =
   where
     f = toNullPreservingFn f0
     g = g0
-
-    -- Creates a function that never maps null values to non-null values.
-    toNullPreservingFn :: (v -> v) -> (v -> v)
-    toNullPreservingFn h v
-        | Null.null v = v
-        | otherwise = h v
 
 prop_map_composition_failure
     :: forall k v. Test k v
@@ -214,3 +210,14 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.mapKeysWith c f m
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+-- | Creates a function that never maps null values to non-null values.
+--
+toNullPreservingFn :: MonoidNull v => (v -> v) -> (v -> v)
+toNullPreservingFn f v
+    | Null.null v = v
+    | otherwise = f v
