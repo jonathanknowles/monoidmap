@@ -18,6 +18,8 @@ import Data.Bifunctor
     ( first, second )
 import Data.Function
     ( (&) )
+import Data.Monoid.Null
+    ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Proxy
@@ -99,16 +101,8 @@ prop_map_composition (applyFun -> f0) (applyFun -> g0) m =
         (MonoidMap.nonNull m)
         "MonoidMap.nonNull m"
   where
-    f = mkNonNullPreservingFn f0
-    g = mkNonNullPreservingFn g0
-
-    -- Creates a function that never maps non-null values to null values.
-    mkNonNullPreservingFn :: (v -> v) -> (v -> v)
-    mkNonNullPreservingFn h v0
-        | not (Null.null v0) && Null.null v1 = v0
-        | otherwise                          = v1
-      where
-        v1 = h v0
+    f = toNullPreservingFn f0
+    g = g0
 
 prop_map_composition_failure
     :: forall k v. Test k v
@@ -146,7 +140,7 @@ prop_map_get_total
     -> k
     -> MonoidMap k v
     -> Property
-prop_map_get_total (applyFun -> g) k m =
+prop_map_get_total (applyFun -> f0) k m =
     MonoidMap.get k (MonoidMap.map f m) === f (MonoidMap.get k m)
     & cover 2
         (MonoidMap.nullKey k m)
@@ -155,11 +149,7 @@ prop_map_get_total (applyFun -> g) k m =
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
   where
-    -- A function that preserves null values:
-    f :: v -> v
-    f v
-        | v == mempty = mempty
-        | otherwise   = g v
+    f = toNullPreservingFn f0
 
 prop_map_get_total_failure
     :: Test k v
@@ -216,3 +206,14 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.mapKeysWith c f m
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+-- | Creates a function that never maps null values to non-null values.
+--
+toNullPreservingFn :: MonoidNull v => (v -> v) -> (v -> v)
+toNullPreservingFn f v
+    | Null.null v = v
+    | otherwise = f v
