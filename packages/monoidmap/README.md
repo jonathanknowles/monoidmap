@@ -774,7 +774,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >             new = f y x
 > ```
 >
-> Similarly, the [`insertMultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10) function, which "inserts" the value of an individual asset into a [`MultiAsset`] value, has the following definition:
+> Similarly, the [`insertMultiAsset`] function, which "inserts" the value of an individual asset into a [`MultiAsset`] value, has the following definition:
 >
 > ```hs
 > insertMultiAsset ::
@@ -852,7 +852,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > +     deriving newtype (Semigroup, Monoid)
 > ```
 >
-> We can also simplify the [`insertMultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10) function:
+> We can also simplify the [`insertMultiAsset`] function:
 >
 > ```patch
 >   insertMultiAsset ::
@@ -1102,6 +1102,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
+[`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [containers]: https://hackage.haskell.org/package/containers
