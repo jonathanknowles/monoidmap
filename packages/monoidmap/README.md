@@ -104,9 +104,9 @@ All [`MonoidMap`] operations perform **automatic minimisation** of the support m
 
 ## Constraints on values
 
-[`MonoidMap`] operations require the monoidal value type to be an instance of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull).
+[`MonoidMap`] operations require the monoidal value type to be an instance of [`MonoidNull`].
 
-Instances of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) must provide a [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function that satisfies the following law:
+Instances of [`MonoidNull`] must provide a [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function that satisfies the following law:
 
 ```hs
 null v == (v == mempty)
@@ -119,23 +119,23 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 <details><summary><strong>Justification</strong></summary>
 <br/>
 
-> The set of monoidal types that admit a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance is strictly larger than the set of monoidal types that admit an [`Eq`] instance.
+> The set of monoidal types that admit a [`MonoidNull`] instance is strictly larger than the set of monoidal types that admit an [`Eq`] instance.
 >
-> For any type `v` that is an instance of both [`Eq`] and [`Monoid`], it is _always_ possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance:
+> For any type `v` that is an instance of both [`Eq`] and [`Monoid`], it is _always_ possible to define a [`MonoidNull`] instance:
 >
 > ```hs
 > instance MonoidNull v where
 >     null = (== mempty)
 > ```
 >
-> However, there are monoidal types for which it is possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance, but not practical (or possible) to define a lawful [`Eq`] instance.
+> However, there are monoidal types for which it is possible to define a [`MonoidNull`] instance, but not practical (or possible) to define a lawful [`Eq`] instance.
 >
 > For example, consider the following type:
 > ```hs
 > Maybe (String -> Sum Natural)
 > ```
 >
-> Requiring a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) constraint instead of an [`Eq`] constraint allows [`MonoidMap`] to be usable with a greater range of monoidal value types.
+> Requiring a [`MonoidNull`] constraint instead of an [`Eq`] constraint allows [`MonoidMap`] to be usable with a greater range of monoidal value types.
 
 </details>
 
@@ -1089,6 +1089,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
+[`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
