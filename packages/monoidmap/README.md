@@ -279,13 +279,13 @@ This is a useful property for large, long-lived map structures that are subject 
 
 Some total map data types only perform minimisation when _explicitly demanded to_.
 
-For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance.
+For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance.
 
 However, this approach also has some disadvantages:
-- It might not be obvious _when_ it's necessary to call [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim). For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
-- Calling [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) when it _isn't_ necessary might adversely affect performance, since [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) must traverse the entire data structure.
-- Not calling [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
-- Even if [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
+- It might not be obvious _when_ it's necessary to call [`trim`]. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
+- Calling [`trim`] when it _isn't_ necessary might adversely affect performance, since [`trim`] must traverse the entire data structure.
+- Not calling [`trim`] when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
+- Even if [`trim`] is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
 
 Since all [`MonoidMap`] operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
 
@@ -1106,4 +1106,5 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
+[`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
 [containers]: https://hackage.haskell.org/package/containers
