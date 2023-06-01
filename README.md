@@ -720,9 +720,9 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > Then:
 > - [`MultiAsset`] `m1 <> m2` will map asset `a` to a value of `30`.
 >
-> The definition of [`<>`] uses a function called [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42), which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
+> The definition of [`<>`] uses a function called [`canonicalMapUnion`], which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
 >
-> Let's have a look at the definition of [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+> Let's have a look at the definition of [`canonicalMapUnion`]:
 >
 > ```hs
 > canonicalMapUnion ::
@@ -752,7 +752,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >       !r1r2 = canonicalMapUnion f r1 r2
 > ```
 >
-> The [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42) function in turn relies on [`canonicalInsert`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69), which handles individual insertions:
+> The [`canonicalMapUnion`] function in turn relies on [`canonicalInsert`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69), which handles individual insertions:
 >
 > ```hs
 > canonicalInsert ::
@@ -836,7 +836,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > As a result, we can remove virtually all code that deals with canonicalisation.
 >
-> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`], dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`], dispensing entirely with the need to call [`canonicalMapUnion`]:
 >
 > ```patch
 >   instance Semigroup (MultiAsset c) where
@@ -1100,6 +1100,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
+[`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [containers]: https://hackage.haskell.org/package/containers
