@@ -25,7 +25,7 @@ The [`empty`][`MonoidMap.empty`] map associates every key `k` with a default val
 
 ## Comparison with standard `Map` type
 
-The [`MonoidMap`] type differs from the standard [containers] [`Map`] type in how it relates keys to values:
+The [`MonoidMap`] type differs from the standard [`containers`] [`Map`] type in how it relates keys to values:
 
 |            Type | Models a total function with finite support        |
 |----------------:|:---------------------------------------------------|
@@ -1107,9 +1107,9 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
+[`containers`]: https://hackage.haskell.org/package/containers
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
-[containers]: https://hackage.haskell.org/package/containers
