@@ -649,7 +649,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > type Size = Int
 > ```
 >
-> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
+> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`] list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
 >
 > However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
 >
@@ -684,7 +684,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation:
 > - empty lists are automatically excluded from the internal data structure.
-> - there is no need to use a specialised [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) type.
+> - there is no need to use a specialised [`NonEmpty`] type.
 > - there is no need to handle empty lists differently from non-empty lists.
 
 ### Example: `MultiAsset` (a nested map type)
@@ -1096,6 +1096,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
+[`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
