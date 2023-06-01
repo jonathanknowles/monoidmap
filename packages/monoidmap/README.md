@@ -25,7 +25,7 @@ The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:
 
 ## Comparison with standard `Map` type
 
-The [`MonoidMap`] type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values:
+The [`MonoidMap`] type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`] type in how it relates keys to values:
 
 |            Type | Models a total function with finite support        |
 |----------------:|:---------------------------------------------------|
@@ -39,18 +39,18 @@ This difference can be illustrated by comparing the type signatures of operation
 MonoidMap.get    :: Monoid v => k -> MonoidMap k v ->       v
 ```
 
-Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) has a default value of [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`] has a default value of [`mempty`]:
+Whereas a standard [`Map`] has a default value of [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`] has a default value of [`mempty`]:
 
 ```hs
 ∀ k.       Map.lookup k       Map.empty == Nothing
 ∀ k. MonoidMap.get    k MonoidMap.empty == mempty
 ```
 
-In practice, the standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type uses [`Maybe`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe) to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type imposes no constraints on value types.
+In practice, the standard [`Map`] type uses [`Maybe`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe) to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`] type imposes no constraints on value types.
 
 However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`] constant, which represents the neutral or identity element of a [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid).
 
-Consequently, using a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
+Consequently, using a standard [`Map`] with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
 
 | `Map.lookup k m` | Interpretation                                              |
 |:-----------------|:------------------------------------------------------------|
@@ -69,18 +69,18 @@ In constrast, the [`MonoidMap`] type provides a single, _canonical_ representati
 
 A canonical representation for [`mempty`] values can make it easier to correctly implement operations that compare or combine pairs of maps.
 
-When comparing or combining maps of the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type, there are **two** cases to consider for each key `k` in each map:
+When comparing or combining maps of the standard [containers](https://hackage.haskell.org/package/containers) [`Map`] type, there are **two** cases to consider for each key `k` in each map:
 
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Nothing`.
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Just v`.
+- [`Map`] `m` associates `k` with `Nothing`.
+- [`Map`] `m` associates `k` with `Just v`.
 
 With a _pair_ of maps, there are **four** possible cases to consider for each key.
 
 For maps with monoidal values, and in contexts that assume or require a default value of [`mempty`], there are now **three** cases to consider for each map:
 
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Nothing`.
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Just v` where `v == mempty`.
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Just v` where `v /= mempty`.
+- [`Map`] `m` associates `k` with `Nothing`.
+- [`Map`] `m` associates `k` with `Just v` where `v == mempty`.
+- [`Map`] `m` associates `k` with `Just v` where `v /= mempty`.
 
 With a _pair_ of maps, there are now **nine** possible cases to consider for each key.
 
@@ -523,7 +523,7 @@ fromList [('a', Product 3), ('b', Product 5), ('c', Product 7)]
 
 The [`MonoidMap`] type can be used as a general basis for building other more specialised map types.
 
-If you have a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map)-based data type with an invariant that values **must not** be [`mempty`], then by expressing this type in terms of [`MonoidMap`], [`MonoidMap`] will handle the invariant for you:
+If you have a [`Map`]-based data type with an invariant that values **must not** be [`mempty`], then by expressing this type in terms of [`MonoidMap`], [`MonoidMap`] will handle the invariant for you:
 
 ```patch
 - newtype SomeMap k v = SomeMap (      Map k (SomeMonoidalContainer v))
@@ -553,13 +553,13 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `SignedMultiSet` (a signed multiset type)
 
-> The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from elements to signed integer occurrence counts:
+> The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
 >
 > ```hs
 > newtype SignedMultiset a = SMS {unSMS :: Map a Int}
 > ```
 >
-> All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
+> All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
 >
 > For example, the [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) operation:
 >
@@ -595,14 +595,14 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `SetMultiMap` (a set-based multimap type)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`] from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
 > type Size = Int
 > ```
 >
-> All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
+> All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
 >
 > For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
 >
@@ -642,14 +642,14 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `MultiMap` (a list-based multimap type)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
 > type Size = Int
 > ```
 >
-> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
+> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
 >
 > However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
 >
@@ -720,7 +720,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > Then:
 > - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m1 <> m2` will map asset `a` to a value of `30`.
 >
-> The definition of [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) uses a function called [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42), which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) is in canonical form.
+> The definition of [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) uses a function called [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42), which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
 >
 > Let's have a look at the definition of [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
 >
@@ -1085,5 +1085,6 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 </tbody>
 </table>
 
+[`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
