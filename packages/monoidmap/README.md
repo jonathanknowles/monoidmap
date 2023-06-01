@@ -25,7 +25,7 @@ The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:
 
 ## Comparison with standard `Map` type
 
-The [`MonoidMap`] type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`] type in how it relates keys to values:
+The [`MonoidMap`] type differs from the standard [containers] [`Map`] type in how it relates keys to values:
 
 |            Type | Models a total function with finite support        |
 |----------------:|:---------------------------------------------------|
@@ -69,7 +69,7 @@ In constrast, the [`MonoidMap`] type provides a single, _canonical_ representati
 
 A canonical representation for [`mempty`] values can make it easier to correctly implement operations that compare or combine pairs of maps.
 
-When comparing or combining maps of the standard [containers](https://hackage.haskell.org/package/containers) [`Map`] type, there are **two** cases to consider for each key `k` in each map:
+When comparing or combining maps of the standard [containers] [`Map`] type, there are **two** cases to consider for each key `k` in each map:
 
 - [`Map`] `m` associates `k` with `Nothing`.
 - [`Map`] `m` associates `k` with `Just v`.
@@ -1093,3 +1093,4 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
+[containers]: https://hackage.haskell.org/package/containers
