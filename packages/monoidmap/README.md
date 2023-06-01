@@ -279,7 +279,7 @@ This is a useful property for large, long-lived map structures that are subject 
 
 Some total map data types only perform minimisation when _explicitly demanded to_.
 
-For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance.
+For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`] instance.
 
 However, this approach also has some disadvantages:
 - It might not be obvious _when_ it's necessary to call [`trim`]. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
@@ -293,7 +293,7 @@ Furthermore, for nested maps such as <code><a href="https://jonathanknowles.gith
 
 ## Limitations of automatic minimisation
 
-The [`MonoidMap`] type has no [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance, as the requirement to exclude [`mempty`] values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) operation must remove [`mempty`] values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
+The [`MonoidMap`] type has no [`Functor`] instance, as the requirement to exclude [`mempty`] values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) operation must remove [`mempty`] values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
 
 ```hs
 map (f . g) == map f . map g
@@ -1088,6 +1088,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
 [`AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
 [`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
+[`Functor`]: https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor
 [`Group`]: https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group
 [`Integer`]: https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
