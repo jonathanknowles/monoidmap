@@ -205,7 +205,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > >>> m2 = fromList [('a', Sum 1), ('b', Sum (-1))]
 > ```
 >
-> The [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as equivalent to ordinary addition.
+> The [`Semigroup`] instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as equivalent to ordinary addition.
 >
 > If we add both maps together with [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-), then each key in the resulting map will be associated with the result of applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to each matching pair of values in the original maps. However, adding together the values for key `'b'` with [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) produces `Sum 0`, so this value will not appear in the encoding:
 >
@@ -349,18 +349,18 @@ However, if applying function `f` to [`mempty`] produces [`mempty`], the functor
 
 The [`MonoidMap`] type provides a comprehensive set of monoidal operations for transforming, combining, and comparing maps.
 
-Instances for several _subclasses_ of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`] are provided, including classes from the following libraries:
+Instances for several _subclasses_ of [`Semigroup`] and [`Monoid`] are provided, including classes from the following libraries:
 
 - [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses)
 - [`groups`](https://hackage.haskell.org/package/groups)
 
-At the root of this hierarchy of subclasses is the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup") class, whose instance for [`MonoidMap`] is defined in terms of the _underlying value type_, so that applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to a _pair of maps_ is equivalent to applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to all _pairs of values_ for matching keys:
+At the root of this hierarchy of subclasses is the [`Semigroup`] class, whose instance for [`MonoidMap`] is defined in terms of the _underlying value type_, so that applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to a _pair of maps_ is equivalent to applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to all _pairs of values_ for matching keys:
 
 ```hs
 ∀ k. MonoidMap.get k (m1 <> m2) == MonoidMap.get k m1 <> get k m2
 ```
 
-In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`] are defined _analogously_ to the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance, so that:
+In general, operations for subclasses of [`Semigroup`] and [`Monoid`] are defined _analogously_ to the [`Semigroup`] instance, so that:
 
 - _unary_ operations on _individual maps_ are defined in terms of their distributive application to all values.
 - _binary_ operations on _pairs of maps_ are defined in terms of their distributive application to all _pairs of values_ for matching keys.
@@ -703,7 +703,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > To satisfy this invariant, [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations use a variety of helper functions to ensure that [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) values are always in a canonical form.
 >
-> For example, consider the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> For example, consider the [`Semigroup`] instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
 >
 > ```hs
 > instance Semigroup (MultiAsset c) where
@@ -828,7 +828,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > + newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
 > ```
 >
-> Note that we have replaced [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`] instance defines [`mempty`] as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance defines [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) as equivalent to ordinary integer addition.
+> Note that we have replaced [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`] instance defines [`mempty`] as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`] instance defines [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) as equivalent to ordinary integer addition.
 >
 > Recall that all [`MonoidMap`] operations automatically take care of the invariant that values cannot be [`mempty`]. For the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, this means that:
 > - outer maps are now prevented from including any mappings from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) to empty inner maps.
@@ -836,7 +836,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > As a result, we can remove virtually all code that deals with canonicalisation.
 >
-> For example, we can now simplify the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157), dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157), dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
 >
 > ```patch
 >   instance Semigroup (MultiAsset c) where
@@ -845,7 +845,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > +         m1 <> m2
 > ```
 >
-> Given that the above instance is trivial, we can even derive the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`] instances automatically:
+> Given that the above instance is trivial, we can even derive the [`Semigroup`] and [`Monoid`] instances automatically:
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -1090,4 +1090,5 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
+[`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
