@@ -752,7 +752,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >       !r1r2 = canonicalMapUnion f r1 r2
 > ```
 >
-> The [`canonicalMapUnion`] function in turn relies on [`canonicalInsert`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69), which handles individual insertions:
+> The [`canonicalMapUnion`] function in turn relies on [`canonicalInsert`], which handles individual insertions:
 >
 > ```hs
 > canonicalInsert ::
@@ -1100,6 +1100,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
+[`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
