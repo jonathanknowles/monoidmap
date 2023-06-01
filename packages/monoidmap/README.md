@@ -114,28 +114,28 @@ null v == (v == mempty)
 
 [`MonoidMap`] operations use the [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function to detect and exclude [`mempty`] values from the support map.
 
-Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq).
+Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`].
 
 <details><summary><strong>Justification</strong></summary>
 <br/>
 
-> The set of monoidal types that admit a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance is strictly larger than the set of monoidal types that admit an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance.
+> The set of monoidal types that admit a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance is strictly larger than the set of monoidal types that admit an [`Eq`] instance.
 >
-> For any type `v` that is an instance of both [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Monoid`], it is _always_ possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance:
+> For any type `v` that is an instance of both [`Eq`] and [`Monoid`], it is _always_ possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance:
 >
 > ```hs
 > instance MonoidNull v where
 >     null = (== mempty)
 > ```
 >
-> However, there are monoidal types for which it is possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance, but not practical (or possible) to define a lawful [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance.
+> However, there are monoidal types for which it is possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance, but not practical (or possible) to define a lawful [`Eq`] instance.
 >
 > For example, consider the following type:
 > ```hs
 > Maybe (String -> Sum Natural)
 > ```
 >
-> Requiring a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) constraint instead of an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint allows [`MonoidMap`] to be usable with a greater range of monoidal value types.
+> Requiring a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) constraint instead of an [`Eq`] constraint allows [`MonoidMap`] to be usable with a greater range of monoidal value types.
 
 </details>
 
@@ -871,7 +871,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > -  ...
 > ```
 >
-> Finally, since [`MonoidMap`] already provides [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> Finally, since [`MonoidMap`] already provides [`Eq`] and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`] and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -1085,6 +1085,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 </tbody>
 </table>
 
+[`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
