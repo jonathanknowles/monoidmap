@@ -48,7 +48,7 @@ Whereas a standard [`Map`] has a default value of [`Nothing`], a [`MonoidMap`] h
 
 In practice, the standard [`Map`] type uses [`Maybe`] to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`] type imposes no constraints on value types.
 
-However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`] constant, which represents the neutral or identity element of a [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid).
+However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`] constant, which represents the neutral or identity element of a [`Monoid`].
 
 Consequently, using a standard [`Map`] with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
 
@@ -121,7 +121,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 
 > The set of monoidal types that admit a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance is strictly larger than the set of monoidal types that admit an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance.
 >
-> For any type `v` that is an instance of both [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid), it is _always_ possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance:
+> For any type `v` that is an instance of both [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Monoid`], it is _always_ possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance:
 >
 > ```hs
 > instance MonoidNull v where
@@ -152,7 +152,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > fromList [(1, "hello"), (2, "brave"), (3, "new"), (4, "world")]
 > ```
 >
-> The [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance for [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) defines [`mempty`] to be the empty [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) `""`.
+> The [`Monoid`] instance for [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) defines [`mempty`] to be the empty [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) `""`.
 >
 > If we update the map to associate key `3` with value `""`, that association will no longer appear when encoding the map:
 >
@@ -178,7 +178,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > ```hs
 > >>> m = fromList [('a', Sum 0), ('b', Sum 1), ('c', Sum 2), ('d', Sum 3)]
 > ```
-> The [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`mempty`] to be `Sum 0`.
+> The [`Monoid`] instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`mempty`] to be `Sum 0`.
 >
 > The original list contained a mapping from key `'a'` to value `Sum 0`, but that association will not appear when encoding the map:
 >
@@ -349,7 +349,7 @@ However, if applying function `f` to [`mempty`] produces [`mempty`], the functor
 
 The [`MonoidMap`] type provides a comprehensive set of monoidal operations for transforming, combining, and comparing maps.
 
-Instances for several _subclasses_ of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) are provided, including classes from the following libraries:
+Instances for several _subclasses_ of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`] are provided, including classes from the following libraries:
 
 - [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses)
 - [`groups`](https://hackage.haskell.org/package/groups)
@@ -360,7 +360,7 @@ At the root of this hierarchy of subclasses is the [`Semigroup`](https://hackage
 ∀ k. MonoidMap.get k (m1 <> m2) == MonoidMap.get k m1 <> get k m2
 ```
 
-In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) are defined _analogously_ to the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance, so that:
+In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`] are defined _analogously_ to the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance, so that:
 
 - _unary_ operations on _individual maps_ are defined in terms of their distributive application to all values.
 - _binary_ operations on _pairs of maps_ are defined in terms of their distributive application to all _pairs of values_ for matching keys.
@@ -578,7 +578,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > + newtype SignedMultiset a = SMS {unSMS :: MonoidMap a (Sum Int)}
 > ```
 >
-> Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance defines [`mempty`] as `Sum 0`, and [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as ordinary addition.
+> Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`] instance defines [`mempty`] as `Sum 0`, and [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as ordinary addition.
 >
 > Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) (and similar operations) in a simpler way:
 >
@@ -828,7 +828,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > + newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
 > ```
 >
-> Note that we have replaced [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instance defines [`mempty`] as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance defines [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) as equivalent to ordinary integer addition.
+> Note that we have replaced [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`] instance defines [`mempty`] as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance defines [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) as equivalent to ordinary integer addition.
 >
 > Recall that all [`MonoidMap`] operations automatically take care of the invariant that values cannot be [`mempty`]. For the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, this means that:
 > - outer maps are now prevented from including any mappings from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) to empty inner maps.
@@ -845,7 +845,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > +         m1 <> m2
 > ```
 >
-> Given that the above instance is trivial, we can even derive the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
+> Given that the above instance is trivial, we can even derive the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`] instances automatically:
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -1088,5 +1088,6 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
+[`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
