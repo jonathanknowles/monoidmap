@@ -279,7 +279,7 @@ This is a useful property for large, long-lived map structures that are subject 
 
 Some total map data types only perform minimisation when _explicitly demanded to_.
 
-For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`] instance.
+For example, the [`TMap`] data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`] instance.
 
 However, this approach also has some disadvantages:
 - It might not be obvious _when_ it's necessary to call [`trim`]. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
@@ -1103,6 +1103,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
+[`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
