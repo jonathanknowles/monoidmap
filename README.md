@@ -106,13 +106,13 @@ All [`MonoidMap`] operations perform **automatic minimisation** of the support m
 
 [`MonoidMap`] operations require the monoidal value type to be an instance of [`MonoidNull`].
 
-Instances of [`MonoidNull`] must provide a [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function that satisfies the following law:
+Instances of [`MonoidNull`] must provide a [`null`] indicator function that satisfies the following law:
 
 ```hs
 null v == (v == mempty)
 ```
 
-[`MonoidMap`] operations use the [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function to detect and exclude [`mempty`] values from the support map.
+[`MonoidMap`] operations use the [`null`] indicator function to detect and exclude [`mempty`] values from the support map.
 
 Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`].
 
@@ -1094,4 +1094,5 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
+[`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [containers]: https://hackage.haskell.org/package/containers
