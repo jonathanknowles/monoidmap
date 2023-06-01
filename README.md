@@ -152,7 +152,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > fromList [(1, "hello"), (2, "brave"), (3, "new"), (4, "world")]
 > ```
 >
-> The [`Monoid`] instance for [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) defines [`mempty`] to be the empty [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) `""`.
+> The [`Monoid`] instance for [`String`] defines [`mempty`] to be the empty [`String`] `""`.
 >
 > If we update the map to associate key `3` with value `""`, that association will no longer appear when encoding the map:
 >
@@ -1093,6 +1093,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
+[`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [containers]: https://hackage.haskell.org/package/containers
