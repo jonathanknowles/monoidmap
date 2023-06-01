@@ -84,7 +84,6 @@ library
         src/public
     exposed-modules:
         Data.MonoidMap
-        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
     build-depends:
@@ -127,6 +126,7 @@ library internal
         src/internal
     exposed-modules:
         Data.MonoidMap.Internal
+        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
 
