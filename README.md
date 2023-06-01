@@ -46,7 +46,7 @@ Whereas a standard [`Map`] has a default value of [`Nothing`], a [`MonoidMap`] h
 ∀ k. MonoidMap.get    k MonoidMap.empty == mempty
 ```
 
-In practice, the standard [`Map`] type uses [`Maybe`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe) to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`] type imposes no constraints on value types.
+In practice, the standard [`Map`] type uses [`Maybe`] to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`] type imposes no constraints on value types.
 
 However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`] constant, which represents the neutral or identity element of a [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid).
 
@@ -1086,6 +1086,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 </table>
 
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
+[`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
