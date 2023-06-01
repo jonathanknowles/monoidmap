@@ -871,7 +871,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > -  ...
 > ```
 >
-> Finally, since [`MonoidMap`] already provides [`Eq`] and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`] and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> Finally, since [`MonoidMap`] already provides [`Eq`] and [`Group`] instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`] and [`Group`] instances for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -1087,6 +1087,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 
 [`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
 [`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
+[`Group`]: https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
