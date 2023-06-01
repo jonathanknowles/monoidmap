@@ -3,7 +3,7 @@
 
 # Overview
 
-This library provides a [**`MonoidMap`**](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type that:
+This library provides a **[`MonoidMap`]** type that:
 
 - models a [total function](#relationship-between-keys-and-values) with [finite support](https://en.wikipedia.org/wiki/Support_(mathematics)) from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with [automatic minimal encoding](#encoding).
 - provides a comprehensive set of [monoidal operations](#monoidal-operations) for transforming, combining, and comparing maps.
@@ -17,7 +17,7 @@ A map of type <code><a href="https://jonathanknowles.github.io/monoidmap/Data-Mo
 MonoidMap.get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 ```
 
-The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty) map associates every key `k` with a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
+The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty) map associates every key `k` with a default value of [`mempty`]:
 
 ```hs
 ∀ k. MonoidMap.get k MonoidMap.empty == mempty
@@ -25,7 +25,7 @@ The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:
 
 ## Comparison with standard `Map` type
 
-The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type differs from the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type in how it relates keys to values:
+The [`MonoidMap`] type differs from the standard [containers] [`Map`] type in how it relates keys to values:
 
 |            Type | Models a total function with finite support        |
 |----------------:|:---------------------------------------------------|
@@ -39,25 +39,25 @@ This difference can be illustrated by comparing the type signatures of operation
 MonoidMap.get    :: Monoid v => k -> MonoidMap k v ->       v
 ```
 
-Whereas a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) has a default value of [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing), a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) has a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
+Whereas a standard [`Map`] has a default value of [`Nothing`], a [`MonoidMap`] has a default value of [`mempty`]:
 
 ```hs
 ∀ k.       Map.lookup k       Map.empty == Nothing
 ∀ k. MonoidMap.get    k MonoidMap.empty == mempty
 ```
 
-In practice, the standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type uses [`Maybe`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe) to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type imposes no constraints on value types.
+In practice, the standard [`Map`] type uses [`Maybe`] to indicate the _presence_ or _absence_ of a value for a particular key. This representation is necessary because the [`Map`] type imposes no constraints on value types.
 
-However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:mempty) constant, which represents the neutral or identity element of a [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid).
+However, _monoidal_ types already have a natural way to represent null or empty values: the [`mempty`] constant, which represents the neutral or identity element of a [`Monoid`].
 
-Consequently, using a standard [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
+Consequently, using a standard [`Map`] with a _monoidal_ value type gives rise to _two_ distinct representations for null or empty values:
 
 | `Map.lookup k m` | Interpretation                                              |
 |:-----------------|:------------------------------------------------------------|
 | `Nothing`        | Map `m` has _no_ entry for key `k`.                         |
 | `Just mempty`    | Map `m` has an entry for key `k`, but the value is _empty_. |
 
-In constrast, the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
+In constrast, the [`MonoidMap`] type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
 
 | `Map.lookup k m`        | ⟼ | `MonoidMap.get k m`     |
 |:------------------------|---|:------------------------|
@@ -67,75 +67,75 @@ In constrast, the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data
 
 ## Advantages of using a canonical representation
 
-A canonical representation for [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values can make it easier to correctly implement operations that compare or combine pairs of maps.
+A canonical representation for [`mempty`] values can make it easier to correctly implement operations that compare or combine pairs of maps.
 
-When comparing or combining maps of the standard [containers](https://hackage.haskell.org/package/containers) [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) type, there are **two** cases to consider for each key `k` in each map:
+When comparing or combining maps of the standard [containers] [`Map`] type, there are **two** cases to consider for each key `k` in each map:
 
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Nothing`.
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Just v`.
+- [`Map`] `m` associates `k` with `Nothing`.
+- [`Map`] `m` associates `k` with `Just v`.
 
 With a _pair_ of maps, there are **four** possible cases to consider for each key.
 
-For maps with monoidal values, and in contexts that assume or require a default value of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), there are now **three** cases to consider for each map:
+For maps with monoidal values, and in contexts that assume or require a default value of [`mempty`], there are now **three** cases to consider for each map:
 
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Nothing`.
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Just v` where `v == mempty`.
-- [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) `m` associates `k` with `Just v` where `v /= mempty`.
+- [`Map`] `m` associates `k` with `Nothing`.
+- [`Map`] `m` associates `k` with `Just v` where `v == mempty`.
+- [`Map`] `m` associates `k` with `Just v` where `v /= mempty`.
 
 With a _pair_ of maps, there are now **nine** possible cases to consider for each key.
 
 Mishandling cases such as these can give rise to subtle bugs that manifest in unexpected places. For maps with more complex value types (such as maps that nest other maps), the number of cases requiring consideration can easily multiply further, making it even easier to introduce bugs.
 
-Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations provide a canonical representation for [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values, it's possible to write functions that compare or combine maps without having to consider [`Nothing`](https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing) and <code><a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Just">Just</a> <a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty">mempty</a></code> as separate cases.
+Since all [`MonoidMap`] operations provide a canonical representation for [`mempty`] values, it's possible to write functions that compare or combine maps without having to consider [`Nothing`] and <code><a href="https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Just">Just</a> <a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty">mempty</a></code> as separate cases.
 
 # Encoding
 
-A [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) only encodes mappings from keys to values that are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty).
+A [`MonoidMap`] only encodes mappings from keys to values that are **_not_** equal to [`mempty`].
 
-The total function $T$ modelled by a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) is encoded as a **support map** $S$, where $S$ is the finite subset of key-value mappings in $T$ for which values are **_not_** equal to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) (denoted by $\varnothing$):
+The total function $T$ modelled by a [`MonoidMap`] is encoded as a **support map** $S$, where $S$ is the finite subset of key-value mappings in $T$ for which values are **_not_** equal to [`mempty`] (denoted by $\varnothing$):
 
 > $S = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
 
 ## Automatic minimisation
 
-All [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform **automatic minimisation** of the support map, so that [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values do not appear in:
-- any encoding of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap);
-- any traversal of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap).
+All [`MonoidMap`] operations perform **automatic minimisation** of the support map, so that [`mempty`] values do not appear in:
+- any encoding of a [`MonoidMap`];
+- any traversal of a [`MonoidMap`].
 
 ## Constraints on values
 
-[`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations require the monoidal value type to be an instance of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull).
+[`MonoidMap`] operations require the monoidal value type to be an instance of [`MonoidNull`].
 
-Instances of [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) must provide a [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function that satisfies the following law:
+Instances of [`MonoidNull`] must provide a [`null`] indicator function that satisfies the following law:
 
 ```hs
 null v == (v == mempty)
 ```
 
-[`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations use the [`null`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null) indicator function to detect and exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from the support map.
+[`MonoidMap`] operations use the [`null`] indicator function to detect and exclude [`mempty`] values from the support map.
 
-Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq).
+Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`].
 
 <details><summary><strong>Justification</strong></summary>
 <br/>
 
-> The set of monoidal types that admit a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance is strictly larger than the set of monoidal types that admit an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance.
+> The set of monoidal types that admit a [`MonoidNull`] instance is strictly larger than the set of monoidal types that admit an [`Eq`] instance.
 >
-> For any type `v` that is an instance of both [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid), it is _always_ possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance:
+> For any type `v` that is an instance of both [`Eq`] and [`Monoid`], it is _always_ possible to define a [`MonoidNull`] instance:
 >
 > ```hs
 > instance MonoidNull v where
 >     null = (== mempty)
 > ```
 >
-> However, there are monoidal types for which it is possible to define a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) instance, but not practical (or possible) to define a lawful [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) instance.
+> However, there are monoidal types for which it is possible to define a [`MonoidNull`] instance, but not practical (or possible) to define a lawful [`Eq`] instance.
 >
 > For example, consider the following type:
 > ```hs
 > Maybe (String -> Sum Natural)
 > ```
 >
-> Requiring a [`MonoidNull`](https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull) constraint instead of an [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) constraint allows [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) to be usable with a greater range of monoidal value types.
+> Requiring a [`MonoidNull`] constraint instead of an [`Eq`] constraint allows [`MonoidMap`] to be usable with a greater range of monoidal value types.
 
 </details>
 
@@ -152,7 +152,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > fromList [(1, "hello"), (2, "brave"), (3, "new"), (4, "world")]
 > ```
 >
-> The [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance for [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) to be the empty [`String`](https://hackage.haskell.org/package/base/docs/Data-String.html#t:String) `""`.
+> The [`Monoid`] instance for [`String`] defines [`mempty`] to be the empty [`String`] `""`.
 >
 > If we update the map to associate key `3` with value `""`, that association will no longer appear when encoding the map:
 >
@@ -178,7 +178,7 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > ```hs
 > >>> m = fromList [('a', Sum 0), ('b', Sum 1), ('c', Sum 2), ('d', Sum 3)]
 > ```
-> The [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) to be `Sum 0`.
+> The [`Monoid`] instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`mempty`] to be `Sum 0`.
 >
 > The original list contained a mapping from key `'a'` to value `Sum 0`, but that association will not appear when encoding the map:
 >
@@ -205,9 +205,9 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 > >>> m2 = fromList [('a', Sum 1), ('b', Sum (-1))]
 > ```
 >
-> The [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as equivalent to ordinary addition.
+> The [`Semigroup`] instance for <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> defines [`<>`] as equivalent to ordinary addition.
 >
-> If we add both maps together with [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-), then each key in the resulting map will be associated with the result of applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to each matching pair of values in the original maps. However, adding together the values for key `'b'` with [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) produces `Sum 0`, so this value will not appear in the encoding:
+> If we add both maps together with [`<>`], then each key in the resulting map will be associated with the result of applying [`<>`] to each matching pair of values in the original maps. However, adding together the values for key `'b'` with [`<>`] produces `Sum 0`, so this value will not appear in the encoding:
 >
 > ```hs
 > >>> m1 <> m2
@@ -226,16 +226,16 @@ Note that it is _not_ generally necessary for the value type to be an instance o
 
 ### Consistency
 
-Automatic exclusion of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values can help to ensure consistency when encoding to or decoding from other formats such as JSON, CBOR, or YAML.
+Automatic exclusion of [`mempty`] values can help to ensure consistency when encoding to or decoding from other formats such as JSON, CBOR, or YAML.
 
 For example, you may wish to ensure that:
 
-- When _encoding_ a map, no [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values appear in the encoded result.
-- When _decoding_ a map, no [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values appear in the decoded result.
+- When _encoding_ a map, no [`mempty`] values appear in the encoded result.
+- When _decoding_ a map, no [`mempty`] values appear in the decoded result.
 
 ### Performance
 
-Automatic exclusion of [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values makes it possible to perform certain operations in _constant time_, rather than in linear time, as it is never necessary to traverse the entire map in order to determine which values may or may not be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty):
+Automatic exclusion of [`mempty`] values makes it possible to perform certain operations in _constant time_, rather than in linear time, as it is never necessary to traverse the entire map in order to determine which values may or may not be [`mempty`]:
 
 <table>
 <thead>
@@ -271,7 +271,7 @@ Automatic exclusion of [`mempty`](https://hackage.haskell.org/package/base/docs/
 
 ### Memory usage
 
-Automatic minimisation makes it easier to reason about the memory usage of a [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap), as memory is not required to encode mappings from keys to empty values.
+Automatic minimisation makes it easier to reason about the memory usage of a [`MonoidMap`], as memory is not required to encode mappings from keys to empty values.
 
 This is a useful property for large, long-lived map structures that are subject to multiple updates over their lifetimes, where it's important to not retain large numbers of mappings from keys to empty values.
 
@@ -279,21 +279,21 @@ This is a useful property for large, long-lived map structures that are subject 
 
 Some total map data types only perform minimisation when _explicitly demanded to_.
 
-For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance.
+For example, the [`TMap`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap) data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`] instance.
 
 However, this approach also has some disadvantages:
-- It might not be obvious _when_ it's necessary to call [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim). For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
-- Calling [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) when it _isn't_ necessary might adversely affect performance, since [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) must traverse the entire data structure.
-- Not calling [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
-- Even if [`trim`](https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim) is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
+- It might not be obvious _when_ it's necessary to call [`trim`]. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
+- Calling [`trim`] when it _isn't_ necessary might adversely affect performance, since [`trim`] must traverse the entire data structure.
+- Not calling [`trim`] when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
+- Even if [`trim`] is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
 
-Since all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
+Since all [`MonoidMap`] operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
 
 Furthermore, for nested maps such as <code><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of outer maps. See the [`NestedMonoidMap`](https://github.com/jonathanknowles/monoidmap/blob/main/src/examples/Examples/NestedMonoidMap.hs) type for an example of this.
 
 ## Limitations of automatic minimisation
 
-The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type has no [`Functor`](https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor) instance, as the requirement to exclude [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) operation must remove [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
+The [`MonoidMap`] type has no [`Functor`] instance, as the requirement to exclude [`mempty`] values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) operation must remove [`mempty`] values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
 
 ```hs
 map (f . g) == map f . map g
@@ -302,7 +302,7 @@ map (f . g) == map f . map g
 <details><summary><strong>Example violation</strong></summary>
 <br/>
 
-Consider the following [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) `m`:
+Consider the following [`MonoidMap`] `m`:
 ```hs
 m :: MonoidMap String String
 m = singleton "k" "v"
@@ -339,7 +339,7 @@ Therefore, for this example, the functor composition law is not satisfied.
 
 </details>
 
-However, if applying function `f` to [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) produces [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), the functor composition law is satisfied:
+However, if applying function `f` to [`mempty`] produces [`mempty`], the functor composition law is satisfied:
 
 ```hs
 (f mempty == mempty) ==> (∀ g. map (f . g) == map f . map g)
@@ -347,20 +347,20 @@ However, if applying function `f` to [`mempty`](https://hackage.haskell.org/pack
 
 # Monoidal operations
 
-The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type provides a comprehensive set of monoidal operations for transforming, combining, and comparing maps.
+The [`MonoidMap`] type provides a comprehensive set of monoidal operations for transforming, combining, and comparing maps.
 
-Instances for several _subclasses_ of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) are provided, including classes from the following libraries:
+Instances for several _subclasses_ of [`Semigroup`] and [`Monoid`] are provided, including classes from the following libraries:
 
 - [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses)
 - [`groups`](https://hackage.haskell.org/package/groups)
 
-At the root of this hierarchy of subclasses is the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup") class, whose instance for [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) is defined in terms of the _underlying value type_, so that applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to a _pair of maps_ is equivalent to applying [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) to all _pairs of values_ for matching keys:
+At the root of this hierarchy of subclasses is the [`Semigroup`] class, whose instance for [`MonoidMap`] is defined in terms of the _underlying value type_, so that applying [`<>`] to a _pair of maps_ is equivalent to applying [`<>`] to all _pairs of values_ for matching keys:
 
 ```hs
 ∀ k. MonoidMap.get k (m1 <> m2) == MonoidMap.get k m1 <> get k m2
 ```
 
-In general, operations for subclasses of [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) are defined _analogously_ to the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance, so that:
+In general, operations for subclasses of [`Semigroup`] and [`Monoid`] are defined _analogously_ to the [`Semigroup`] instance, so that:
 
 - _unary_ operations on _individual maps_ are defined in terms of their distributive application to all values.
 - _binary_ operations on _pairs of maps_ are defined in terms of their distributive application to all _pairs of values_ for matching keys.
@@ -521,16 +521,16 @@ fromList [('a', Product 3), ('b', Product 5), ('c', Product 7)]
 
 # General basis for more specialised map types
 
-The [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type can be used as a general basis for building other more specialised map types.
+The [`MonoidMap`] type can be used as a general basis for building other more specialised map types.
 
-If you have a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map)-based data type with an invariant that values **must not** be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty), then by expressing this type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap), [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) will handle the invariant for you:
+If you have a [`Map`]-based data type with an invariant that values **must not** be [`mempty`], then by expressing this type in terms of [`MonoidMap`], [`MonoidMap`] will handle the invariant for you:
 
 ```patch
 - newtype SomeMap k v = SomeMap (      Map k (SomeMonoidalContainer v))
 + newtype SomeMap k v = SomeMap (MonoidMap k (SomeMonoidalContainer v))
 ```
 
-If you're already using a specialised non-empty container type to enforce the invariant that values must not be empty, then [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) makes it possible to _replace_ the use of the specialised non-empty container type with its ordinary equivalent:
+If you're already using a specialised non-empty container type to enforce the invariant that values must not be empty, then [`MonoidMap`] makes it possible to _replace_ the use of the specialised non-empty container type with its ordinary equivalent:
 
 Example transformations:
 ```patch
@@ -547,19 +547,19 @@ Example transformations:
 + newtype SeqMap k v = SeqMap (MonoidMap k         (Seq v))
 ```
 
-Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) can simplify the implementation of such types, as special handling code for empty values can often be greatly simplified or even eliminated.
+Using [`MonoidMap`] can simplify the implementation of such types, as special handling code for empty values can often be greatly simplified or even eliminated.
 
 ## Real-world examples from the Haskell ecosystem
 
 ### Example: `SignedMultiSet` (a signed multiset type)
 
-> The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from elements to signed integer occurrence counts:
+> The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
 >
 > ```hs
 > newtype SignedMultiset a = SMS {unSMS :: Map a Int}
 > ```
 >
-> All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
+> All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
 >
 > For example, the [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) operation:
 >
@@ -571,14 +571,14 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
 > ```
 >
-> Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+> Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`]:
 >
 > ```diff
 > - newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
 > + newtype SignedMultiset a = SMS {unSMS :: MonoidMap a (Sum Int)}
 > ```
 >
-> Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Monoid) instance defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) as `Sum 0`, and [`<>`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-) as ordinary addition.
+> Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`] instance defines [`mempty`] as `Sum 0`, and [`<>`] as ordinary addition.
 >
 > Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) (and similar operations) in a simpler way:
 >
@@ -595,14 +595,14 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ### Example: `SetMultiMap` (a set-based multimap type)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`] from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
 > type Size = Int
 > ```
 >
-> All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
+> All [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) functions to detect and eliminate values of [`Set.empty`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty) (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
 >
 > For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
 >
@@ -620,7 +620,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >     m' = Map.filter (not . Set.null) m
 > ```
 >
-> Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+> Let's redefine [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) in terms of [`MonoidMap`]:
 >
 > ```patch
 > - newtype SetMultimap k a = SetMultimap (      Map k (Set a), Size)
@@ -642,14 +642,14 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 ### Example: `MultiMap` (a list-based multimap type)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
 > type Size = Int
 > ```
 >
-> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
+> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`] list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
 >
 > However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
 >
@@ -665,7 +665,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 > fromMap m = Multimap (m, sum (fmap length m))
 > ```
 >
-> Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) and ordinary lists:
+> Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`] and ordinary lists:
 >
 > ```patch
 > - newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
@@ -684,26 +684,26 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >
 > Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation:
 > - empty lists are automatically excluded from the internal data structure.
-> - there is no need to use a specialised [`NonEmpty`](https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty) type.
+> - there is no need to use a specialised [`NonEmpty`] type.
 > - there is no need to handle empty lists differently from non-empty lists.
 
 ### Example: `MultiAsset` (a nested map type)
 
-> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) keys to [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) keys to [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) values:
+> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`] type, which models a **nested** mapping from [`PolicyID`] keys to [`AssetName`] keys to [`Integer`] values:
 >
 > ```hs
 > newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
 > ```
 >
-> Each [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) value represents the value of an **asset** on the Cardano blockchain, where each asset is uniquely identified by the combination of a [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) and an [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110). (Multiple assets can share the same [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140).)
+> Each [`Integer`] value represents the value of an **asset** on the Cardano blockchain, where each asset is uniquely identified by the combination of a [`PolicyID`] and an [`AssetName`]. (Multiple assets can share the same [`PolicyID`].)
 >
-> All [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations maintain a **dual invariant** that:
-> - there must be no mappings from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) keys to empty maps; and that
-> - there must be no mappings from [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) keys to [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) values of `0`.
+> All [`MultiAsset`] operations maintain a **dual invariant** that:
+> - there must be no mappings from [`PolicyID`] keys to empty maps; and that
+> - there must be no mappings from [`AssetName`] keys to [`Integer`] values of `0`.
 >
-> To satisfy this invariant, [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations use a variety of helper functions to ensure that [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) values are always in a canonical form.
+> To satisfy this invariant, [`MultiAsset`] operations use a variety of helper functions to ensure that [`MultiAsset`] values are always in a canonical form.
 >
-> For example, consider the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> For example, consider the [`Semigroup`] instance for [`MultiAsset`]:
 >
 > ```hs
 > instance Semigroup (MultiAsset c) where
@@ -711,18 +711,18 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >         MultiAsset (canonicalMapUnion (canonicalMapUnion (+)) m1 m2)
 > ```
 >
-> The above definition of [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) performs pointwise addition of all pairs of values for matching assets.
+> The above definition of [`<>`] performs pointwise addition of all pairs of values for matching assets.
 >
 > For example, if:
-> - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m1` maps asset `a` to a value of `10`;
-> - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m2` maps asset `a` to a value of `20`;
+> - [`MultiAsset`] `m1` maps asset `a` to a value of `10`;
+> - [`MultiAsset`] `m2` maps asset `a` to a value of `20`;
 >
 > Then:
-> - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m1 <> m2` will map asset `a` to a value of `30`.
+> - [`MultiAsset`] `m1 <> m2` will map asset `a` to a value of `30`.
 >
-> The definition of [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) uses a function called [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42), which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`](https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map) is in canonical form.
+> The definition of [`<>`] uses a function called [`canonicalMapUnion`], which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
 >
-> Let's have a look at the definition of [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+> Let's have a look at the definition of [`canonicalMapUnion`]:
 >
 > ```hs
 > canonicalMapUnion ::
@@ -752,7 +752,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >       !r1r2 = canonicalMapUnion f r1 r2
 > ```
 >
-> The [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42) function in turn relies on [`canonicalInsert`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69), which handles individual insertions:
+> The [`canonicalMapUnion`] function in turn relies on [`canonicalInsert`], which handles individual insertions:
 >
 > ```hs
 > canonicalInsert ::
@@ -774,7 +774,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >             new = f y x
 > ```
 >
-> Similarly, the [`insertMultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10) function, which "inserts" the value of an individual asset into a [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) value, has the following definition:
+> Similarly, the [`insertMultiAsset`] function, which "inserts" the value of an individual asset into a [`MultiAsset`] value, has the following definition:
 >
 > ```hs
 > insertMultiAsset ::
@@ -821,22 +821,22 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 >
 > However, it's clear that maintaining the invariant in this way comes at a **cost**: the code is rather complex, and it were not for a comprehensive test suite, it would probably be very easy to introduce a regression.
 >
-> In the spirit of demonstration, let's see what happens if we redefine the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type in terms of [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap):
+> In the spirit of demonstration, let's see what happens if we redefine the [`MultiAsset`] type in terms of [`MonoidMap`]:
 >
 > ```patch
 > - newtype MultiAsset c = MultiAsset (Map       (PolicyID c) (      Map AssetName      Integer))
 > + newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
 > ```
 >
-> Note that we have replaced [`Integer`](https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer) with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instance defines [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty) as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance defines [`<>`](https://hackage.haskell.org/package/base/docs/Prelude.html#v:-60--62-) as equivalent to ordinary integer addition.
+> Note that we have replaced [`Integer`] with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`] instance defines [`mempty`] as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`] instance defines [`<>`] as equivalent to ordinary integer addition.
 >
-> Recall that all [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) operations automatically take care of the invariant that values cannot be [`mempty`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty). For the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, this means that:
-> - outer maps are now prevented from including any mappings from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) to empty inner maps.
-> - inner maps are now prevented from including any mappings from [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) to values of <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>.
+> Recall that all [`MonoidMap`] operations automatically take care of the invariant that values cannot be [`mempty`]. For the [`MultiAsset`] type, this means that:
+> - outer maps are now prevented from including any mappings from [`PolicyID`] to empty inner maps.
+> - inner maps are now prevented from including any mappings from [`AssetName`] to values of <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>.
 >
 > As a result, we can remove virtually all code that deals with canonicalisation.
 >
-> For example, we can now simplify the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157), dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`], dispensing entirely with the need to call [`canonicalMapUnion`]:
 >
 > ```patch
 >   instance Semigroup (MultiAsset c) where
@@ -845,14 +845,14 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 > +         m1 <> m2
 > ```
 >
-> Given that the above instance is trivial, we can even derive the [`Semigroup`](https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup) and [`Monoid`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) instances automatically:
+> Given that the above instance is trivial, we can even derive the [`Semigroup`] and [`Monoid`] instances automatically:
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
 > +     deriving newtype (Semigroup, Monoid)
 > ```
 >
-> We can also simplify the [`insertMultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10) function:
+> We can also simplify the [`insertMultiAsset`] function:
 >
 > ```patch
 >   insertMultiAsset ::
@@ -871,7 +871,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 > -  ...
 > ```
 >
-> Finally, since [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) already provides [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`](https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq) and [`Group`](https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group) instances for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> Finally, since [`MonoidMap`] already provides [`Eq`] and [`Group`] instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`] and [`Group`] instances for [`MultiAsset`]:
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -892,7 +892,7 @@ Using [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.h
 
 The Haskell ecosystem has several different types for maps with monoidal properties, and several different types that model total functions from keys to values. Each type comes with its own set of advantages and limitations.
 
-Here's a comparison between the [`MonoidMap`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap) type provided by this library and types provided by other libraries:
+Here's a comparison between the [`MonoidMap`] type provided by this library and types provided by other libraries:
 
 <table>
 <thead>
@@ -1084,3 +1084,28 @@ Here's a comparison between the [`MonoidMap`](https://jonathanknowles.github.io/
   </tr>
 </tbody>
 </table>
+
+[`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
+[`AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
+[`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
+[`Functor`]: https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor
+[`Group`]: https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group
+[`Integer`]: https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer
+[`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
+[`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
+[`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
+[`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
+[`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
+[`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
+[`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
+[`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
+[`PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
+[`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
+[`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
+[`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
+[`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
+[`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
+[`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
+[`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
+[`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
+[containers]: https://hackage.haskell.org/package/containers
