@@ -689,7 +689,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `MultiAsset` (a nested map type)
 
-> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, which models a **nested** mapping from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) keys to [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) keys to [`Integer`] values:
+> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`] type, which models a **nested** mapping from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) keys to [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) keys to [`Integer`] values:
 >
 > ```hs
 > newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
@@ -697,13 +697,13 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Each [`Integer`] value represents the value of an **asset** on the Cardano blockchain, where each asset is uniquely identified by the combination of a [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) and an [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110). (Multiple assets can share the same [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140).)
 >
-> All [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations maintain a **dual invariant** that:
+> All [`MultiAsset`] operations maintain a **dual invariant** that:
 > - there must be no mappings from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) keys to empty maps; and that
 > - there must be no mappings from [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) keys to [`Integer`] values of `0`.
 >
-> To satisfy this invariant, [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) operations use a variety of helper functions to ensure that [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) values are always in a canonical form.
+> To satisfy this invariant, [`MultiAsset`] operations use a variety of helper functions to ensure that [`MultiAsset`] values are always in a canonical form.
 >
-> For example, consider the [`Semigroup`] instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> For example, consider the [`Semigroup`] instance for [`MultiAsset`]:
 >
 > ```hs
 > instance Semigroup (MultiAsset c) where
@@ -714,11 +714,11 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > The above definition of [`<>`] performs pointwise addition of all pairs of values for matching assets.
 >
 > For example, if:
-> - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m1` maps asset `a` to a value of `10`;
-> - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m2` maps asset `a` to a value of `20`;
+> - [`MultiAsset`] `m1` maps asset `a` to a value of `10`;
+> - [`MultiAsset`] `m2` maps asset `a` to a value of `20`;
 >
 > Then:
-> - [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) `m1 <> m2` will map asset `a` to a value of `30`.
+> - [`MultiAsset`] `m1 <> m2` will map asset `a` to a value of `30`.
 >
 > The definition of [`<>`] uses a function called [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42), which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
 >
@@ -774,7 +774,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >             new = f y x
 > ```
 >
-> Similarly, the [`insertMultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10) function, which "inserts" the value of an individual asset into a [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) value, has the following definition:
+> Similarly, the [`insertMultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10) function, which "inserts" the value of an individual asset into a [`MultiAsset`] value, has the following definition:
 >
 > ```hs
 > insertMultiAsset ::
@@ -821,7 +821,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > However, it's clear that maintaining the invariant in this way comes at a **cost**: the code is rather complex, and it were not for a comprehensive test suite, it would probably be very easy to introduce a regression.
 >
-> In the spirit of demonstration, let's see what happens if we redefine the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type in terms of [`MonoidMap`]:
+> In the spirit of demonstration, let's see what happens if we redefine the [`MultiAsset`] type in terms of [`MonoidMap`]:
 >
 > ```patch
 > - newtype MultiAsset c = MultiAsset (Map       (PolicyID c) (      Map AssetName      Integer))
@@ -830,13 +830,13 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Note that we have replaced [`Integer`] with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer">Integer</a></code>, whose [`Monoid`] instance defines [`mempty`] as <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>, and whose [`Semigroup`] instance defines [`<>`] as equivalent to ordinary integer addition.
 >
-> Recall that all [`MonoidMap`] operations automatically take care of the invariant that values cannot be [`mempty`]. For the [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157) type, this means that:
+> Recall that all [`MonoidMap`] operations automatically take care of the invariant that values cannot be [`mempty`]. For the [`MultiAsset`] type, this means that:
 > - outer maps are now prevented from including any mappings from [`PolicyID`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140) to empty inner maps.
 > - inner maps are now prevented from including any mappings from [`AssetName`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110) to values of <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> 0</code>.
 >
 > As a result, we can remove virtually all code that deals with canonicalisation.
 >
-> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157), dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
+> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`], dispensing entirely with the need to call [`canonicalMapUnion`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42):
 >
 > ```patch
 >   instance Semigroup (MultiAsset c) where
@@ -871,7 +871,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > -  ...
 > ```
 >
-> Finally, since [`MonoidMap`] already provides [`Eq`] and [`Group`] instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`] and [`Group`] instances for [`MultiAsset`](https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157):
+> Finally, since [`MonoidMap`] already provides [`Eq`] and [`Group`] instances that are defined in terms of the underlying monoidal value type, we can automatically derive [`Eq`] and [`Group`] instances for [`MultiAsset`]:
 >
 > ```patch
 >   newtype MultiAsset c = MultiAsset (MonoidMap (PolicyID c) (MonoidMap AssetName (Sum Integer))
@@ -1094,6 +1094,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
+[`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
