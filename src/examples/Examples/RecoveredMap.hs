@@ -20,7 +20,7 @@ import Data.Maybe
 import Data.Monoid
     ( First (..) )
 import Data.MonoidMap
-    ( MonoidMap )
+    ( MonoidMap, MonoidMapF (..) )
 import Data.Set
     ( Set )
 
@@ -30,12 +30,10 @@ newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':
     {unMap :: MonoidMap k (First v)}
     deriving newtype (Eq, NFData, Semigroup, Monoid)
+    deriving Functor via (MonoidMapF k First)
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
-
-instance Functor (Map k) where
-    fmap = map
 
 empty :: Map k v
 empty = Map MonoidMap.empty
@@ -65,4 +63,4 @@ member :: Ord k => k -> Map k v -> Bool
 member k = MonoidMap.nonNullKey k . unMap
 
 map :: (v1 -> v2) -> Map k v1 -> Map k v2
-map f = Map . MonoidMap.map (fmap f) . unMap
+map = fmap
