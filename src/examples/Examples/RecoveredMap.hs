@@ -29,8 +29,7 @@ import qualified Data.MonoidMap as MonoidMap
 newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':
     {unMap :: MonoidMap k (First v)}
-    deriving stock Eq
-    deriving newtype (NFData, Semigroup, Monoid)
+    deriving newtype (Eq, NFData, Semigroup, Monoid)
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
