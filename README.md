@@ -602,7 +602,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > type Size = Int
 > ```
 >
-> All [`SetMultiMap`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultiMap`] functions to detect and eliminate values of [`Set.empty`] (indicated by the [`Set.null`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null) function).
+> All [`SetMultiMap`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultiMap`] functions to detect and eliminate values of [`Set.empty`] (indicated by the [`Set.null`] function).
 >
 > For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
 >
@@ -1112,6 +1112,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`Set.empty`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty
 [`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
+[`Set.null`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
 [`SetMultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap
