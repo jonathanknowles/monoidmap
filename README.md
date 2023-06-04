@@ -293,7 +293,7 @@ Furthermore, for nested maps such as <code><a href="https://jonathanknowles.gith
 
 ## Limitations of automatic minimisation
 
-The [`MonoidMap`] type has no [`Functor`] instance, as the requirement to exclude [`mempty`] values means that the [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) operation must remove [`mempty`] values from its result. Therefore, [`map`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map) does _not_ unconditionally satisfy the functor composition law:
+The [`MonoidMap`] type has no [`Functor`] instance, as the requirement to exclude [`mempty`] values means that the [`map`][`MonoidMap.map`] operation must remove [`mempty`] values from its result. Therefore, [`map`][`MonoidMap.map`] does _not_ unconditionally satisfy the functor composition law:
 
 ```hs
 map (f . g) == map f . map g
@@ -1094,6 +1094,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
+[`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
