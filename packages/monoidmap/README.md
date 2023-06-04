@@ -5,7 +5,7 @@
 
 This library provides a **[`MonoidMap`]** type that:
 
-- models a [total function](#relationship-between-keys-and-values) with [finite support](https://en.wikipedia.org/wiki/Support_(mathematics)) from keys to [monoidal](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid) values, with [automatic minimal encoding](#encoding).
+- models a [total function](#relationship-between-keys-and-values) with [finite support](https://en.wikipedia.org/wiki/Support_(mathematics)) from keys to [monoidal][`Monoid`] values, with [automatic minimal encoding](#encoding).
 - provides a comprehensive set of [monoidal operations](#monoidal-operations) for transforming, combining, and comparing maps.
 - provides a [general basis](#General-basis-for-more-specialised-map-types) for building more specialised monoidal data structures.
 
