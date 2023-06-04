@@ -817,7 +817,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >         )
 > ```
 >
-> A notable feature of all the above functions is that they completely eschew the use of [`Map.merge`](https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge). Instead, they directly manipulate constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html). This approach was probably taken for performance reasons.
+> A notable feature of all the above functions is that they completely eschew the use of [`Map.merge`]. Instead, they directly manipulate constructors exported from [`Data.Map.Internal`](https://hackage.haskell.org/package/containers/docs/Data-Map-Internal.html). This approach was probably taken for performance reasons.
 >
 > However, it's clear that maintaining the invariant in this way comes at a **cost**: the code is rather complex, and it were not for a comprehensive test suite, it would probably be very easy to introduce a regression.
 >
@@ -1091,6 +1091,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Functor`]: https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor
 [`Group`]: https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group
 [`Integer`]: https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer
+[`Map.merge`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap.adjust`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust
