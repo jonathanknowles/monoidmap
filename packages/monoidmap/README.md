@@ -463,7 +463,7 @@ Consider the following maps of type `MonoidMap Char (Sum Integer)`:
 >>> m2 = fromList [('a', Sum 40), ('b', Sum 20), ('c, Sum 10)]
 ```
 
-The [`MonoidMap.invert`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:invert) operation produces a new map where every key is associated with the negation of its value in the original map:
+The [`MonoidMap.invert`] operation produces a new map where every key is associated with the negation of its value in the original map:
 
 ```hs
 >>> invert m1
@@ -1095,6 +1095,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
 [`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection
+[`MonoidMap.invert`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:invert
 [`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
 [`MonoidMap.set`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set
 [`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union
