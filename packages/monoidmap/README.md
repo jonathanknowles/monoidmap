@@ -1085,6 +1085,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 </tbody>
 </table>
 
+[`cardano-ledger`]: https://github.com/input-output-hk/cardano-ledger
+[`containers`]: https://hackage.haskell.org/package/containers
+[`groups`]: https://hackage.haskell.org/package/groups
+[`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
+[`multi-containers`]: https://hackage.haskell.org/package/multi-containers
+[`signed-multiset`]: https://hackage.haskell.org/package/signed-multiset
+
 [`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
 [`AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
 [`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
@@ -1128,13 +1135,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
-[`cardano-ledger`]: https://github.com/input-output-hk/cardano-ledger
-[`containers`]: https://hackage.haskell.org/package/containers
-[`groups`]: https://hackage.haskell.org/package/groups
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
-[`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
-[`multi-containers`]: https://hackage.haskell.org/package/multi-containers
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
-[`signed-multiset`]: https://hackage.haskell.org/package/signed-multiset/
 [`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
