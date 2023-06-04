@@ -279,13 +279,13 @@ This is a useful property for large, long-lived map structures that are subject 
 
 Some total map data types only perform minimisation when _explicitly demanded to_.
 
-For example, the [`TMap`] data type provides a [`trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`] instance.
+For example, the [`TMap`] data type provides a [`trim`][`TMap.trim`] operation that traverses the map and removes any values that are equal to the _default_ value. This approach has some advantages, such the ability to provide a lawful [`Functor`] instance.
 
 However, this approach also has some disadvantages:
-- It might not be obvious _when_ it's necessary to call [`trim`]. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
-- Calling [`trim`] when it _isn't_ necessary might adversely affect performance, since [`trim`] must traverse the entire data structure.
-- Not calling [`trim`] when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
-- Even if [`trim`] is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
+- It might not be obvious _when_ it's necessary to call [`trim`][`TMap.trim`]. For example, consider the following operation: `m1 <> m2`. Could this operation produce a map where some keys map to default values? (Answer: it depends on the choice of default value and the underlying value type.)
+- Calling [`trim`][`TMap.trim`] when it _isn't_ necessary might adversely affect performance, since [`trim`][`TMap.trim`] must traverse the entire data structure.
+- Not calling [`trim`][`TMap.trim`] when it _is_ necessary might affect correctness. The compiler will not help here, as trimmed and untrimmed maps share the same type.
+- Even if [`trim`][`TMap.trim`] is a semantic no-op, default values can _still_ be made visible by operations that encode maps to other types.
 
 Since all [`MonoidMap`] operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
 
@@ -1137,5 +1137,5 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`Sum`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum
+[`TMap.trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
-[`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
