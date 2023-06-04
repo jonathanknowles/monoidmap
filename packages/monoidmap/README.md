@@ -604,7 +604,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > All [`SetMultiMap`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultiMap`] functions to detect and eliminate values of [`Set.empty`] (indicated by the [`Set.null`] function).
 >
-> For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
+> For example, the [`alterWithKey`][`SetMultiMap.alterWithKey`] operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
 >
 > ```hs
 > alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
@@ -627,7 +627,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > + newtype SetMultimap k a = SetMultimap (MonoidMap k (Set a), Size)
 > ```
 >
-> Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey) (and other operations):
+> Now we can provide a simpler definition for [`alterWithKey`][`SetMultiMap.alterWithKey`] (and other operations):
 >
 > ```hs
 > alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
@@ -1115,6 +1115,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Set.null`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
+[`SetMultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey
 [`SetMultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap
 [`SignedMultiSet.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
 [`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
