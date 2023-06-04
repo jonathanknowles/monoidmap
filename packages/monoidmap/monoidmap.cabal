@@ -13,6 +13,7 @@ description:
     Monoidal map type with support for semigroup and monoid subclasses.
 
 extra-doc-files:
+    CHANGELOG.md
     README.md
 
 common dependency-base
