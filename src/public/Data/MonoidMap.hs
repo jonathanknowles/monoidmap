@@ -168,7 +168,7 @@ import qualified Data.Monoid.Null as C
 --    from keys to [__monoidal values__]("Data.Monoid"), with a default value
 --    of 'mempty'.
 --
---  - encodes key-value mappings with a [__minimal encoding__](#encoding) that
+--  - encodes key-value mappings with a [__minimal encoding__](#_encoding) that
 --    only includes values /not/ equal to 'mempty'.
 --
 --  - provides a comprehensive set of
