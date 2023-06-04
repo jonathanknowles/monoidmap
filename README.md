@@ -720,9 +720,9 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > Then:
 > - [`MultiAsset`] `m1 <> m2` will map asset `a` to a value of `30`.
 >
-> The definition of [`<>`] uses a function called [`canonicalMapUnion`], which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
+> The definition of [`<>`] uses a function called [`canonicalMapUnion`][`CanonicalMaps.canonicalMapUnion`], which does the heavy lifting work of performing a union while ensuring that each resulting [`Map`] is in canonical form.
 >
-> Let's have a look at the definition of [`canonicalMapUnion`]:
+> Let's have a look at the definition of [`canonicalMapUnion`][`CanonicalMaps.canonicalMapUnion`]:
 >
 > ```hs
 > canonicalMapUnion ::
@@ -752,7 +752,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >       !r1r2 = canonicalMapUnion f r1 r2
 > ```
 >
-> The [`canonicalMapUnion`] function in turn relies on [`canonicalInsert`][`CanonicalMaps.canonicalInsert`], which handles individual insertions:
+> The [`canonicalMapUnion`][`CanonicalMaps.canonicalMapUnion`] function in turn relies on [`canonicalInsert`][`CanonicalMaps.canonicalInsert`], which handles individual insertions:
 >
 > ```hs
 > canonicalInsert ::
@@ -836,7 +836,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > As a result, we can remove virtually all code that deals with canonicalisation.
 >
-> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`], dispensing entirely with the need to call [`canonicalMapUnion`]:
+> For example, we can now simplify the [`Semigroup`] instance for [`MultiAsset`], dispensing entirely with the need to call [`canonicalMapUnion`][`CanonicalMaps.canonicalMapUnion`]:
 >
 > ```patch
 >   instance Semigroup (MultiAsset c) where
@@ -1095,6 +1095,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
 [`AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
 [`CanonicalMaps.canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
+[`CanonicalMaps.canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
 [`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
 [`Functor`]: https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor
 [`Group`]: https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group
@@ -1134,7 +1135,6 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`Sum`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
-[`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
