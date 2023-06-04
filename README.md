@@ -553,13 +553,13 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `SignedMultiSet` (a signed multiset type)
 
-> The [`signed-multiset`] library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
+> The [`signed-multiset`] library provides the [`SignedMultiSet`] type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
 >
 > ```hs
 > newtype SignedMultiset a = SMS {unSMS :: Map a Int}
 > ```
 >
-> All [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) functions to detect and eliminate values of `0`.
+> All [`SignedMultiSet`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`] functions to detect and eliminate values of `0`.
 >
 > For example, the [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) operation:
 >
@@ -571,7 +571,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
 > ```
 >
-> Let's redefine [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) in terms of [`MonoidMap`]:
+> Let's redefine [`SignedMultiSet`] in terms of [`MonoidMap`]:
 >
 > ```diff
 > - newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
@@ -1113,6 +1113,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
+[`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
