@@ -578,7 +578,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > + newtype SignedMultiset a = SMS {unSMS :: MonoidMap a (Sum Int)}
 > ```
 >
-> Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`] instance defines [`mempty`] as `Sum 0`, and [`<>`] as ordinary addition.
+> Here we've used the [`Sum`] wrapper type, whose [`Monoid`] instance defines [`mempty`] as `Sum 0`, and [`<>`] as ordinary addition.
 >
 > Now we can redefine [`insertMany`][`SignedMultiSet.insertMany`] (and similar operations) in a simpler way:
 >
@@ -1116,6 +1116,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`SignedMultiSet.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
 [`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
+[`Sum`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
