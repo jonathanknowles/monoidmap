@@ -638,7 +638,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >     new = f k old
 > ```
 >
-> Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
+> Since the [`MonoidMap.set`] operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
 
 ### Example: `MultiMap` (a list-based multimap type)
 
@@ -682,7 +682,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >     new = f k old
 > ```
 >
-> Since the [`MonoidMap.set`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set) operation performs automatic minimisation:
+> Since the [`MonoidMap.set`] operation performs automatic minimisation:
 > - empty lists are automatically excluded from the internal data structure.
 > - there is no need to use a specialised [`NonEmpty`] type.
 > - there is no need to handle empty lists differently from non-empty lists.
@@ -1096,6 +1096,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
 [`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection
 [`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
+[`MonoidMap.set`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set
 [`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
