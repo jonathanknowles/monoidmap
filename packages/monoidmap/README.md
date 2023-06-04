@@ -429,7 +429,7 @@ Defining monoidal operations in this way makes it possible to transform, combine
 <details><summary><strong>Example: <code>MonoidMap k (Set Integer)</code></strong></summary>
 <br/>
 
-For maps with [`Set`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set)-based values, [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection) compute the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) and [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of each pair of matching values, respectively.
+For maps with [`Set`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set)-based values, [`MonoidMap.union`] and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection) compute the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) and [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of each pair of matching values, respectively.
 
 Consider the following maps of type `MonoidMap Char (Set Integer)`:
 
@@ -438,7 +438,7 @@ Consider the following maps of type `MonoidMap Char (Set Integer)`:
 >>> m2 = fromList [('a', Set.fromList [0, 2]), ('b', Set.fromList [3, 5])]
 ```
 
-The [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union) of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) of the corresponding sets for `k` in `m1` and `m2`:
+The [`MonoidMap.union`] of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.union`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union) of the corresponding sets for `k` in `m1` and `m2`:
 
 ```hs
 >>> m1 `union` m2
@@ -488,7 +488,7 @@ fromList [('a', Sum 30), ('c', Sum (-30))]
 <details><summary><strong>Example: <code>MonoidMap k (Sum Natural)</code></strong></summary>
 <br/>
 
-For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection) compute the _maximum_ and _minimum_ of each pair of matching values, respectively:
+For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum">Sum</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`] and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection) compute the _maximum_ and _minimum_ of each pair of matching values, respectively:
 
 ```hs
 >>> m1 = fromList [('a', Sum 10), ('b', Sum 20)]
@@ -505,7 +505,7 @@ fromList [('a', Sum 10), ('b', Sum 10)]
 <details><summary><strong>Example: <code>MonoidMap k (Product Natural)</code></strong></summary>
 <br/>
 
-For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Product">Product</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union) and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection) compute the _lowest common multiple_ (LCM) and _greatest common divisor_ (GCD) of each pair of matching values, respectively:
+For maps with <code><a href="https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Product">Product</a> <a href="https://hackage.haskell.org/package/base/docs/Numeric-Natural.html#t:Natural">Natural</a></code> values, [`MonoidMap.union`] and [`MonoidMap.intersection`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection) compute the _lowest common multiple_ (LCM) and _greatest common divisor_ (GCD) of each pair of matching values, respectively:
 
 ```hs
 >>> m1 = fromList [('a', Product  6), ('b', Product 15), ('c', Product 35)]
@@ -1095,6 +1095,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
 [`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
+[`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
