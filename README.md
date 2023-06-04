@@ -473,7 +473,7 @@ fromList [('a', Sum (-10)), ('b', Sum (-20)), ('c, Sum (-40))]
 fromList [('a', Sum (-40)), ('b', Sum (-20)), ('c, Sum (-10))]
 ```
 
-The [`MonoidMap.minus`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:minus) operation, when applied to maps `m1` and `m2`, produces a new map where every key `k` is associated with the value of `k` in `m1` minus the value of `k` in `m2`:
+The [`MonoidMap.minus`] operation, when applied to maps `m1` and `m2`, produces a new map where every key `k` is associated with the value of `k` in `m1` minus the value of `k` in `m2`:
 
 ```hs
 >>> m1 `minus` m2
@@ -1097,6 +1097,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection
 [`MonoidMap.invert`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:invert
 [`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
+[`MonoidMap.minus`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:minus
 [`MonoidMap.set`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set
 [`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
