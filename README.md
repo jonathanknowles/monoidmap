@@ -595,7 +595,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `SetMultiMap` (a set-based multimap type)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`] from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`] library provides the [`SetMultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap) type, which is internally defined as a [`Map`] from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
@@ -642,7 +642,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `MultiMap` (a list-based multimap type)
 
-> The [`multi-containers`](https://hackage.haskell.org/package/multi-containers) library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`] library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
@@ -1125,6 +1125,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
+[`multi-containers`]: https://hackage.haskell.org/package/multi-containers
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`signed-multiset`]: https://hackage.haskell.org/package/signed-multiset/
 [`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
