@@ -7,7 +7,7 @@ license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2023 Jonathan Knowles
-category:       Testing
+category:       Data Structures
 synopsis:       Monoidal map type
 description:
     Monoidal map type with support for semigroup and monoid subclasses.
