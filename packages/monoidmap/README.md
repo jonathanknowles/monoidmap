@@ -106,13 +106,13 @@ All [`MonoidMap`] operations perform **automatic minimisation** of the support m
 
 [`MonoidMap`] operations require the monoidal value type to be an instance of [`MonoidNull`].
 
-Instances of [`MonoidNull`] must provide a [`null`] indicator function that satisfies the following law:
+Instances of [`MonoidNull`] must provide a [`null`][`MonoidNull.null`] indicator function that satisfies the following law:
 
 ```hs
 null v == (v == mempty)
 ```
 
-[`MonoidMap`] operations use the [`null`] indicator function to detect and exclude [`mempty`][`Monoid.mempty`] values from the support map.
+[`MonoidMap`] operations use the [`null`][`MonoidNull.null`] indicator function to detect and exclude [`mempty`][`Monoid.mempty`] values from the support map.
 
 Note that it is _not_ generally necessary for the value type to be an instance of [`Eq`].
 
@@ -1113,6 +1113,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidMap.set`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set
 [`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
+[`MonoidNull.null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid.mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
@@ -1137,5 +1138,4 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`Sum`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
-[`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
