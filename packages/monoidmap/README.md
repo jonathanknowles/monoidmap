@@ -351,7 +351,7 @@ The [`MonoidMap`] type provides a comprehensive set of monoidal operations for t
 
 Instances for several _subclasses_ of [`Semigroup`] and [`Monoid`] are provided, including classes from the following libraries:
 
-- [`monoid-subclasses`](https://hackage.haskell.org/package/monoid-subclasses)
+- [`monoid-subclasses`]
 - [`groups`]
 
 At the root of this hierarchy of subclasses is the [`Semigroup`] class, whose instance for [`MonoidMap`] is defined in terms of the _underlying value type_, so that applying [`<>`] to a _pair of maps_ is equivalent to applying [`<>`] to all _pairs of values_ for matching keys:
@@ -1118,5 +1118,6 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`groups`]: https://hackage.haskell.org/package/groups
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
+[`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
