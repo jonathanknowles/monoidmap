@@ -653,7 +653,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
 >
-> For example, the [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey) operation detects if the updated list is empty, and if so, performs a deletion instead of an insertion:
+> For example, the [`alterWithKey`][`MultiMap.alterWithKey`] operation detects if the updated list is empty, and if so, performs a deletion instead of an insertion:
 >
 > ```hs
 > alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
@@ -672,7 +672,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > + newtype Multimap k a = Multimap (MonoidMap k          [a], Size)
 > ```
 >
-> Now we can provide a simpler definition for [`alterWithKey`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey) (and other operations):
+> Now we can provide a simpler definition for [`alterWithKey`][`MultiMap.alterWithKey`] (and other operations):
 > ```hs
 > alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
 > alterWithKey f k (Multimap (m, size)) = MultiMap
@@ -1105,6 +1105,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
+[`MultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey
 [`MultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
 [`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/src/examples/Examples/NestedMonoidMap.hs
 [`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
