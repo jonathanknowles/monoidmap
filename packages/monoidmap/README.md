@@ -429,7 +429,7 @@ Defining monoidal operations in this way makes it possible to transform, combine
 <details><summary><strong>Example: <code>MonoidMap k (Set Integer)</code></strong></summary>
 <br/>
 
-For maps with [`Set`]-based values, [`MonoidMap.union`] and [`MonoidMap.intersection`] compute the [`Set.union`] and [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of each pair of matching values, respectively.
+For maps with [`Set`]-based values, [`MonoidMap.union`] and [`MonoidMap.intersection`] compute the [`Set.union`] and [`Set.intersection`] of each pair of matching values, respectively.
 
 Consider the following maps of type `MonoidMap Char (Set Integer)`:
 
@@ -445,7 +445,7 @@ The [`MonoidMap.union`] of maps `m1` and `m2` is a map that associates every key
 fromList [('a', Set.fromList [0,1,2]), ('b', Set.fromList [3,4,5])]
 ```
 
-The [`MonoidMap.intersection`] of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.intersection`](https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection) of the corresponding sets for `k` in `m1` and `m2`:
+The [`MonoidMap.intersection`] of maps `m1` and `m2` is a map that associates every key `k` with the [`Set.intersection`] of the corresponding sets for `k` in `m1` and `m2`:
 
 ```hs
 >>> m1 `intersection` m2
@@ -1110,6 +1110,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
+[`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
