@@ -689,7 +689,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `MultiAsset` (a nested map type)
 
-> The [`cardano-ledger`](https://github.com/input-output-hk/cardano-ledger) library provides the [`MultiAsset`] type, which models a **nested** mapping from [`PolicyID`] keys to [`AssetName`] keys to [`Integer`] values:
+> The [`cardano-ledger`] library provides the [`MultiAsset`] type, which models a **nested** mapping from [`PolicyID`] keys to [`AssetName`] keys to [`Integer`] values:
 >
 > ```hs
 > newtype MultiAsset c = MultiAsset (Map (PolicyID c) (Map AssetName Integer))
@@ -1126,6 +1126,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
 [`canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
 [`canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
+[`cardano-ledger`]: https://github.com/input-output-hk/cardano-ledger
 [`containers`]: https://hackage.haskell.org/package/containers
 [`groups`]: https://hackage.haskell.org/package/groups
 [`insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
