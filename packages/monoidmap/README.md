@@ -553,7 +553,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `SignedMultiSet` (a signed multiset type)
 
-> The [`signed-multiset`](https://hackage.haskell.org/package/signed-multiset/) library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
+> The [`signed-multiset`] library provides the [`SignedMultiSet`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset) type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
 >
 > ```hs
 > newtype SignedMultiset a = SMS {unSMS :: Map a Int}
@@ -1123,4 +1123,5 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
 [`null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
+[`signed-multiset`]: https://hackage.haskell.org/package/signed-multiset/
 [`trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
