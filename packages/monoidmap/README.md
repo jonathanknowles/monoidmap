@@ -591,7 +591,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > -     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
 > ```
 >
-> Since the [`MonoidMap.adjust`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust) operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
+> Since the [`MonoidMap.adjust`] operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
 
 ### Example: `SetMultiMap` (a set-based multimap type)
 
@@ -1093,6 +1093,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Integer`]: https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
+[`MonoidMap.adjust`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust
 [`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
 [`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection
 [`MonoidMap.invert`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:invert
