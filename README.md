@@ -561,7 +561,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > All [`SignedMultiSet`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`] functions to detect and eliminate values of `0`.
 >
-> For example, the [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) operation:
+> For example, the [`insertMany`][`SignedMultiSet.insertMany`] operation:
 >
 > ```hs
 > insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
@@ -580,7 +580,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Here we've used the [`Sum`](https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum) wrapper type, whose [`Monoid`] instance defines [`mempty`] as `Sum 0`, and [`<>`] as ordinary addition.
 >
-> Now we can redefine [`insertMany`](https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany) (and similar operations) in a simpler way:
+> Now we can redefine [`insertMany`][`SignedMultiSet.insertMany`] (and similar operations) in a simpler way:
 >
 > ```patch
 >   insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
@@ -1113,6 +1113,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
+[`SignedMultiSet.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
 [`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`TMap`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#t:TMap
