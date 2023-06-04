@@ -17,7 +17,7 @@ A map of type <code><a href="https://jonathanknowles.github.io/monoidmap/Data-Mo
 MonoidMap.get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 ```
 
-The [`empty`](https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty) map associates every key `k` with a default value of [`mempty`]:
+The [`empty`][`MonoidMap.empty`] map associates every key `k` with a default value of [`mempty`]:
 
 ```hs
 ∀ k. MonoidMap.get k MonoidMap.empty == mempty
@@ -1093,6 +1093,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Integer`]: https://hackage.haskell.org/package/base/docs/Prelude.html#t:Integer
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
+[`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
