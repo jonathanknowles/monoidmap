@@ -165,8 +165,11 @@ import qualified Data.Monoid.Null as C
 --
 --  - models a [__total function__](#_totality) with
 --    [__finite support__](https://wikipedia.org/wiki/Support_\(mathematics\))
---    from keys to [__monoidal values__]("Data.Monoid"), with
---    [__automatic minimal encoding__](#_encoding).
+--    from keys to [__monoidal values__]("Data.Monoid"), with a default value
+--    of 'mempty'.
+--
+--  - encodes key-value mappings with a [__minimal encoding__](#encoding) that
+--    only includes values /not/ equal to 'mempty'.
 --
 --  - provides a comprehensive set of
 --    [__monoidal operations__](#_monoidal_operations) for transforming,
