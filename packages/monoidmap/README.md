@@ -1103,6 +1103,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Map.merge`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Merge-Strict.html#v:merge
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
+[`Monoid.mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`MonoidMap.adjust`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust
 [`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
 [`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection
@@ -1114,7 +1115,6 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull.null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
-[`Monoid.mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`MultiAsset.AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
 [`MultiAsset.PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
@@ -1130,9 +1130,9 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
 [`Set.null`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
-[`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
 [`SetMultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey
 [`SetMultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap
+[`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
 [`SignedMultiSet.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
 [`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
