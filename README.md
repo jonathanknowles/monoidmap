@@ -642,14 +642,14 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ### Example: `MultiMap` (a list-based multimap type)
 
-> The [`multi-containers`] library provides the [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`] library provides the [`MultiMap`] type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
 > type Size = Int
 > ```
 >
-> All [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`] list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) were defined in terms of ordinary lists.
+> All [`MultiMap`] operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`] list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`] were defined in terms of ordinary lists.
 >
 > However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
 >
@@ -665,7 +665,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > fromMap m = Multimap (m, sum (fmap length m))
 > ```
 >
-> Let's redefine [`MultiMap`](https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap) in terms of [`MonoidMap`] and ordinary lists:
+> Let's redefine [`MultiMap`] in terms of [`MonoidMap`] and ordinary lists:
 >
 > ```patch
 > - newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
@@ -1105,6 +1105,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
+[`MultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
 [`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/src/examples/Examples/NestedMonoidMap.hs
 [`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
