@@ -12,8 +12,9 @@ module Data.MonoidMap
     -- $_encoding
     -- $_monoidal_operations
 
-    -- * Type
+    -- * Types
       MonoidMap
+    , MonoidMapF (..)
 
     -- * General operations
 

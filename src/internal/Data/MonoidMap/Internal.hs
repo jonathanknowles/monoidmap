@@ -1,3 +1,4 @@
+{-# LANGUAGE QuantifiedConstraints #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {- HLINT ignore "Avoid lambda" -}
@@ -14,6 +15,7 @@ module Data.MonoidMap.Internal
     (
     -- * Types
       MonoidMap (..)
+    , MonoidMapF (..)
     , NonNull (..)
 
     -- * General operations
@@ -187,7 +189,7 @@ import qualified Data.Monoid.Null as C
 import qualified Data.Semigroup.Cancellative as C
 
 --------------------------------------------------------------------------------
--- Type
+-- Types
 --------------------------------------------------------------------------------
 
 newtype MonoidMap k v = MonoidMap
@@ -198,6 +200,8 @@ newtype MonoidMap k v = MonoidMap
         via Map k
     deriving (Eq2, Show2, Bifoldable)
         via Map
+
+newtype MonoidMapF k f v = MonoidMapF (MonoidMap k (f v))
 
 --------------------------------------------------------------------------------
 -- Non-null values
@@ -234,6 +238,11 @@ instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
+
+instance (Functor f, forall b. MonoidNull (f b)) =>
+    Functor (MonoidMapF k f)
+  where
+    fmap f (MonoidMapF m) = MonoidMapF $ map (fmap f) m
 
 --------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
