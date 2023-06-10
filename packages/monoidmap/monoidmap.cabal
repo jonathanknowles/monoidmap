@@ -101,6 +101,7 @@ library examples
     hs-source-dirs:
         src/examples
     exposed-modules:
+        Examples.MultiMap
         Examples.MultiMap.Class
         Examples.MultiMap.Instances.MultiMap1
         Examples.MultiMap.Instances.MultiMap2
