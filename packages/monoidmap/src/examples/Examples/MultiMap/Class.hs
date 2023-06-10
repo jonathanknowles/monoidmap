@@ -115,25 +115,31 @@ class (Eq (m k v), Ord k, Ord v) => MultiMap m k v where
     --
     -- Instances must satisfy the following properties:
     --
-    -- /Idempotence/
+    -- __/Idempotence/__
+    --
     -- > union m m ≡ m
     --
-    -- /Identity/
-    -- > union empty m ≡ m
-    -- > union m empty ≡ m
+    -- __/Identity/__
     --
-    -- /Commutativity/
+    -- > union empty m     ≡ m
+    -- > union m     empty ≡ m
+    --
+    -- __/Commutativity/__
+    --
     -- > union m1 m2 ≡ union m2 m1
     --
-    -- /Associativity/
+    -- __/Associativity/__
+    --
     -- > union        m1 (union m2  m3) ≡
     -- > union (union m1        m2) m3
     --
-    -- /Containment/
+    -- __/Containment/__
+    --
     -- > m1 `isSubmapOf` union m1 m2
     -- > m2 `isSubmapOf` union m1 m2
     --
-    -- /Distributivity/
+    -- __/Distributivity/__
+    --
     -- > lookup k (union m1 m2) ≡ Set.union (lookup k m1)
     -- >                                    (lookup k m2)
     --
@@ -143,25 +149,31 @@ class (Eq (m k v), Ord k, Ord v) => MultiMap m k v where
     --
     -- Instances must satisfy the following properties:
     --
-    -- /Idempotence/
+    -- __/Idempotence/__
+    --
     -- > intersection m m ≡ m
     --
-    -- /Identity/
-    -- > intersection empty m ≡ empty
-    -- > intersection m empty ≡ empty
+    -- __/Identity/__
     --
-    -- /Commutativity/
+    -- > intersection empty m     ≡ empty
+    -- > intersection m     empty ≡ empty
+    --
+    -- __/Commutativity/__
+    --
     -- > intersection m1 m2 ≡ intersection m2 m1
     --
-    -- /Associativity/
+    -- __/Associativity/__
+    --
     -- > intersection               m1 (intersection m2  m3) ≡
     -- > intersection (intersection m1               m2) m3
     --
-    -- /Containment/
-    -- intersection m1 m2 `isSubmapOf` m1
-    -- intersection m1 m2 `isSubmapOf` m2
+    -- __/Containment/__
     --
-    -- /Distributivity/
+    -- > intersection m1 m2 `isSubmapOf` m1
+    -- > intersection m1 m2 `isSubmapOf` m2
+    --
+    -- __/Distributivity/__
+    --
     -- > lookup k (intersection m1 m2) ≡ Set.intersection (lookup k m1)
     -- >                                                  (lookup k m2)
     --
