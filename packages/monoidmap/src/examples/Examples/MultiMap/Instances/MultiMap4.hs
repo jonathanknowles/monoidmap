@@ -18,10 +18,10 @@ import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 import qualified Examples.MultiMap.Class as Class
 
-newtype MultiMap k v = MultiMap (MonoidMap k (Set v))
+newtype MultiMap4 k v = MultiMap (MonoidMap k (Set v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap4 k v where
 
     fromList = MultiMap . MonoidMap.fromListWith (<>)
 
