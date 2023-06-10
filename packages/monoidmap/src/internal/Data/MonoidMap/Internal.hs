@@ -190,8 +190,7 @@ import qualified Data.Semigroup.Cancellative as C
 -- Type
 --------------------------------------------------------------------------------
 
-newtype MonoidMap k v = MonoidMap
-    { unMonoidMap :: Map k (NonNull v) }
+newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
     deriving (Eq, Show, NFData, NoThunks)
         via Map k v
     deriving (Eq1, Show1, Foldable)
