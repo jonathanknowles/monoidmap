@@ -25,6 +25,14 @@ import Data.Typeable
     ( Typeable, typeRep )
 import Examples.MultiMap.Class
     ( MultiMap )
+import Examples.MultiMap.Instances.MultiMap1
+    ( MultiMap1 )
+import Examples.MultiMap.Instances.MultiMap2
+    ( MultiMap2 )
+import Examples.MultiMap.Instances.MultiMap3
+    ( MultiMap3 )
+import Examples.MultiMap.Instances.MultiMap4
+    ( MultiMap4 )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -45,10 +53,6 @@ import Test.QuickCheck.Instances.Text
 import qualified Data.Foldable as F
 import qualified Data.Set as Set
 import qualified Examples.MultiMap.Class as M
-import qualified Examples.MultiMap.Instances.MultiMap1 as MultiMap1
-import qualified Examples.MultiMap.Instances.MultiMap2 as MultiMap2
-import qualified Examples.MultiMap.Instances.MultiMap3 as MultiMap3
-import qualified Examples.MultiMap.Instances.MultiMap4 as MultiMap4
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
@@ -57,11 +61,11 @@ spec = do
     -- Uncomment the following line to see property test failures for an
     -- unlawful implementation of 'MultiMap':
     --
-    -- specFor (Proxy @(MultiMap1.MultiMap Int Int))
+    -- specFor (Proxy @(MultiMap1 Int Int))
 
-    specFor (Proxy @(MultiMap2.MultiMap Int Int))
-    specFor (Proxy @(MultiMap3.MultiMap Int Int))
-    specFor (Proxy @(MultiMap4.MultiMap Int Int))
+    specFor (Proxy @(MultiMap2 Int Int))
+    specFor (Proxy @(MultiMap3 Int Int))
+    specFor (Proxy @(MultiMap4 Int Int))
 
 type Test m k v =
         ( Arbitrary k
@@ -724,5 +728,5 @@ a ==> b = not a .||. b
 _preventRedundantImportErrors :: ()
 _preventRedundantImportErrors = ()
   where
-    _multiMap1 :: MultiMap1.MultiMap () ()
+    _multiMap1 :: MultiMap1 () ()
     _multiMap1 = M.empty

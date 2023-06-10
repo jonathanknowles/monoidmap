@@ -2,7 +2,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
--- A lawful implementation of 'MultiMap', implemented in terms of 'Map' and
+-- A __lawful__ implementation of 'MultiMap', implemented in terms of 'Map' and
 -- 'NESet'.
 --
 module Examples.MultiMap.Instances.MultiMap3 where
@@ -22,10 +22,10 @@ import qualified Data.Set as Set
 import qualified Data.Set.NonEmpty as NESet
 import qualified Examples.MultiMap.Class as Class
 
-newtype MultiMap k v = MultiMap (Map k (NESet v))
+newtype MultiMap3 k v = MultiMap (Map k (NESet v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap3 k v where
 
     fromList
         = MultiMap

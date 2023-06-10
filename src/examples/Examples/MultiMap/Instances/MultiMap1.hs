@@ -2,10 +2,10 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
--- An unlawful implementation of 'MultiMap', implemented in terms of 'Map' and
--- 'Set'.
+-- An __unlawful__ implementation of 'MultiMap', implemented in terms of 'Map'
+-- and 'Set'.
 --
--- This implementation has several subtle bugs.
+-- This implementation has several subtle bugs. 💥
 --
 module Examples.MultiMap.Instances.MultiMap1 where
 
@@ -20,10 +20,10 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Examples.MultiMap.Class as Class
 
-newtype MultiMap k v = MultiMap (Map k (Set v))
+newtype MultiMap1 k v = MultiMap (Map k (Set v))
     deriving stock (Eq, Show)
 
-instance (Ord k, Ord v) => Class.MultiMap MultiMap k v where
+instance (Ord k, Ord v) => Class.MultiMap MultiMap1 k v where
 
     fromList = MultiMap . Map.fromList
 
