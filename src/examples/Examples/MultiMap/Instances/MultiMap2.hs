@@ -2,7 +2,7 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
--- A lawful implementation of 'MultiMap', implemented in terms of 'Map' and
+-- A __lawful__ implementation of 'MultiMap', implemented in terms of 'Map' and
 -- 'Set'.
 --
 module Examples.MultiMap.Instances.MultiMap2 where

@@ -2,10 +2,10 @@
 -- Copyright: © 2022–2023 Jonathan Knowles
 -- License: Apache-2.0
 --
--- An unlawful implementation of 'MultiMap', implemented in terms of 'Map' and
--- 'Set'.
+-- An __unlawful__ implementation of 'MultiMap', implemented in terms of 'Map'
+-- and 'Set'.
 --
--- This implementation has several subtle bugs.
+-- This implementation has several subtle bugs. 💥
 --
 module Examples.MultiMap.Instances.MultiMap1 where
 
