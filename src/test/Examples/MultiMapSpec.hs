@@ -57,11 +57,11 @@ spec = do
     -- Uncomment the following line to see property test failures for an
     -- unlawful implementation of 'MultiMap':
     --
-    -- specFor (Proxy @(MultiMap1.MultiMap Int Int))
+    -- specFor (Proxy @(MultiMap1.MultiMap1 Int Int))
 
-    specFor (Proxy @(MultiMap2.MultiMap Int Int))
-    specFor (Proxy @(MultiMap3.MultiMap Int Int))
-    specFor (Proxy @(MultiMap4.MultiMap Int Int))
+    specFor (Proxy @(MultiMap2.MultiMap2 Int Int))
+    specFor (Proxy @(MultiMap3.MultiMap3 Int Int))
+    specFor (Proxy @(MultiMap4.MultiMap4 Int Int))
 
 type Test m k v =
         ( Arbitrary k
@@ -724,5 +724,5 @@ a ==> b = not a .||. b
 _preventRedundantImportErrors :: ()
 _preventRedundantImportErrors = ()
   where
-    _multiMap1 :: MultiMap1.MultiMap () ()
+    _multiMap1 :: MultiMap1.MultiMap1 () ()
     _multiMap1 = M.empty
