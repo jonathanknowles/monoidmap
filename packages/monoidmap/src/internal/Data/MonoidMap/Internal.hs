@@ -153,6 +153,8 @@ import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
     ( MonoidNull, PositiveMonoid )
+import Data.Semigroup
+    ( stimes )
 import Data.Semigroup.Cancellative
     ( Cancellative
     , Commutative
@@ -242,6 +244,7 @@ instance (Ord k, MonoidNull v) =>
     Semigroup (MonoidMap k v)
   where
     (<>) = append
+    stimes n = map (stimes n)
 
 instance (Ord k, MonoidNull v, Commutative v) =>
     Commutative (MonoidMap k v)
