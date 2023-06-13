@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NumericUnderscores #-}
 
 module Main where
 
@@ -14,6 +15,8 @@ import Data.List
     ( foldl' )
 import Data.Maybe
     ( fromMaybe )
+import Data.Semigroup
+    ( stimes )
 import Test.Tasty.Bench
     ( bench, bgroup, defaultMain, nf )
 
@@ -23,14 +26,16 @@ import qualified Examples.RecoveredMap as RMap
 main :: IO ()
 main = do
 
-    let om_even = fromList elems_even :: OMap.Map Int Int
-        om_odd  = fromList elems_odd  :: OMap.Map Int Int
+    let om_natural = fromList elems_natural :: OMap.Map Int Int
+        om_even    = fromList elems_even    :: OMap.Map Int Int
+        om_odd     = fromList elems_odd     :: OMap.Map Int Int
 
-        rm_even = fromList elems_even :: RMap.Map Int Int
-        rm_odd  = fromList elems_odd  :: RMap.Map Int Int
+        rm_natural = fromList elems_natural :: RMap.Map Int Int
+        rm_even    = fromList elems_even    :: RMap.Map Int Int
+        rm_odd     = fromList elems_odd     :: RMap.Map Int Int
 
-    evaluate $ rnf [om_even, om_odd]
-    evaluate $ rnf [rm_even, rm_odd]
+    evaluate $ rnf [om_natural, om_even, om_odd]
+    evaluate $ rnf [rm_natural, rm_even, rm_odd]
 
     defaultMain
         [ bgroup "delete"
@@ -89,10 +94,19 @@ main = do
                     nf (<> rm_even) rm_even
                 ]
             ]
+        , bgroup "stimes"
+            [ bench "Data.Map.Strict" $
+                nf (stimes ten_power_24) om_natural
+            , bench "Data.MonoidMap" $
+                nf (stimes ten_power_24) rm_natural
+            ]
         ]
   where
     bound :: Int
     bound = 2 ^ (16 :: Int)
+
+    elems_natural :: [(Int, Int)]
+    elems_natural = zip naturals naturals
 
     elems_even :: [(Int, Int)]
     elems_even = zip evens evens
@@ -100,11 +114,17 @@ main = do
     elems_odd :: [(Int, Int)]
     elems_odd = zip odds odds
 
+    naturals :: [Int]
+    naturals = [1 .. bound]
+
     evens :: [Int]
     evens = [2, 4 .. bound]
 
     odds :: [Int]
     odds = [1, 3 .. bound]
+
+    ten_power_24 :: Integer
+    ten_power_24 = 1_000_000_000_000_000_000_000_000
 
 class Ord k => Map m k v where
     fromList :: [(k, v)] -> m k v
