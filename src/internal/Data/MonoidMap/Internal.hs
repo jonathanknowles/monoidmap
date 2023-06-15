@@ -244,6 +244,8 @@ instance (Ord k, MonoidNull v) =>
     Semigroup (MonoidMap k v)
   where
     (<>) = append
+    stimes 0 = const mempty
+    stimes 1 = id
     stimes n = map (stimes n)
 
 instance (Ord k, MonoidNull v, Commutative v) =>
