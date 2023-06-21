@@ -21,6 +21,8 @@ import Data.Monoid
     ( Sum (..) )
 import Data.Proxy
     ( Proxy (..) )
+import Data.Semigroup
+    ( Semigroup (stimes) )
 import Data.Set
     ( Set )
 import Data.Text
@@ -36,6 +38,7 @@ import Test.QuickCheck
     , CoArbitrary
     , Fun
     , Function
+    , NonNegative (..)
     , Property
     , Testable
     , applyFun
@@ -146,6 +149,11 @@ specFor keyType valueType = do
         describe "Append" $ do
             it "prop_append_toList" $
                 prop_append_toList
+                    @k @v & property
+
+        describe "Times" $ do
+            it "prop_stimes_toList" $
+                prop_stimes_toList
                     @k @v & property
 
         describe "Delete" $ do
@@ -300,6 +308,29 @@ prop_append_toList kvs1 kvs2 =
   where
     ks1 = Set.fromList (fst <$> kvs1)
     ks2 = Set.fromList (fst <$> kvs2)
+
+--------------------------------------------------------------------------------
+-- Times
+--------------------------------------------------------------------------------
+
+prop_stimes_toList
+    :: forall k v. (Ord k, Show k, Eq v, Show v)
+    => [(k, v)]
+    -> NonNegative Int
+    -> Property
+prop_stimes_toList kvs (NonNegative n) =
+    (===)
+        (RMap.toList (stimes n (RMap.fromList kvs)))
+        (OMap.toList (stimes n (OMap.fromList kvs)))
+    & cover 1
+        (n == 0)
+        "n == 0"
+    & cover 1
+        (n == 1)
+        "n == 1"
+    & cover 10
+        (n >= 2)
+        "n >= 2"
 
 --------------------------------------------------------------------------------
 -- Delete
