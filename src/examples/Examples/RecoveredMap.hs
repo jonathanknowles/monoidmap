@@ -15,12 +15,16 @@ import Prelude hiding
 
 import Control.DeepSeq
     ( NFData )
+import Data.Coerce
+    ( coerce )
 import Data.Maybe
     ( mapMaybe )
 import Data.Monoid
     ( First (..) )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.Semigroup
+    ( Semigroup (stimes), stimesIdempotentMonoid )
 import Data.Set
     ( Set )
 
@@ -29,7 +33,11 @@ import qualified Data.MonoidMap as MonoidMap
 newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':
     {unMap :: MonoidMap k (First v)}
-    deriving newtype (Eq, NFData, Semigroup, Monoid)
+    deriving newtype (Eq, NFData, Monoid)
+
+instance Ord k => Semigroup (Map k v) where
+    (<>) = coerce @(MonoidMap k (First v) -> _ -> _) (<>)
+    stimes = stimesIdempotentMonoid
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
