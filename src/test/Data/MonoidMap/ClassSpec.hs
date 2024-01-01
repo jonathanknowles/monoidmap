@@ -9,10 +9,6 @@ module Data.MonoidMap.ClassSpec
 
 import Prelude
 
-import Data.Group
-    ( Group )
-import Data.Maybe
-    ( mapMaybe )
 import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.Null
@@ -21,8 +17,6 @@ import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Semigroup.Cancellative
-    ( Commutative )
 import Data.Set
     ( Set )
 import Data.Typeable
@@ -33,8 +27,10 @@ import Numeric.Natural
     ( Natural )
 import Test.Hspec
     ( Spec, describe )
+import Test.Combinators.NonZero
+    ( NonZero, genNonZero, shrinkNonZero )
 import Test.QuickCheck
-    ( Arbitrary (..), listOf, scale, shrinkMapBy, suchThatMap )
+    ( Arbitrary (..), listOf, scale, shrinkMapBy )
 import Test.QuickCheck.Classes
     ( eqLaws
     , isListLaws
@@ -157,7 +153,10 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Wrapped (Product Rational)))
+        -- Here we restrict the generator and shrinker so that they can never
+        -- produce zero values, to avoid running into cases of ArithException
+        -- caused by operations that may produce zero demoninators:
+        testLawsMany @(MonoidMap k (NonZero (Product Rational)))
             [ commutativeLaws
             , eqLaws
             , groupLaws
@@ -340,16 +339,9 @@ specLawsFor keyType = do
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-newtype Wrapped a = Wrapped a
-    deriving newtype (Eq, Num, Read, Show, IsList)
-    deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
-
-instance Arbitrary (Wrapped (Product Rational)) where
-    -- Here we restrict the generator and shrinker so that they can never
-    -- produce zero values, to avoid running into cases of ArithException
-    -- caused by operations that may produce zero demoninators:
-    arbitrary = Wrapped <$> suchThatMap arbitrary maybeNonZero
-    shrink = mapMaybe maybeNonZero . shrink
+instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
+    arbitrary = genNonZero arbitrary
+    shrink = shrinkNonZero shrink
 
 instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     Arbitrary (MonoidMap k v)
@@ -358,12 +350,3 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-maybeNonZero :: (Eq a, Num a) => a -> Maybe a
-maybeNonZero p
-    | p == 0 = Nothing
-    | otherwise = Just p
