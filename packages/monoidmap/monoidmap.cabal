@@ -174,6 +174,7 @@ test-suite test
         Data.MonoidMap.ValiditySpec
         Examples.MultiMapSpec
         Examples.RecoveredMapSpec
+        Test.Combinators.NonZero
         Test.Common
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
