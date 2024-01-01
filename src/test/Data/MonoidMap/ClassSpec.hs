@@ -157,6 +157,9 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
+        -- Here we restrict the generator and shrinker so that they can never
+        -- produce zero values, to avoid running into cases of ArithException
+        -- caused by operations that may produce zero demoninators:
         testLawsMany @(MonoidMap k (NonZero (Product Rational)))
             [ commutativeLaws
             , eqLaws
@@ -345,9 +348,6 @@ newtype NonZero a = NonZero {getNonZero :: a}
     deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
 
 instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
-    -- Here we restrict the generator and shrinker so that they can never
-    -- produce zero values, to avoid running into cases of ArithException
-    -- caused by operations that may produce zero demoninators:
     arbitrary = genNonZero arbitrary
     shrink = shrinkNonZero shrink
 
