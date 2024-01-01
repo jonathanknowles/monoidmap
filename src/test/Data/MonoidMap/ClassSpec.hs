@@ -341,7 +341,7 @@ specLawsFor keyType = do
 --------------------------------------------------------------------------------
 
 newtype NonZero a = NonZero a
-    deriving newtype (Eq, Num, Read, Show, IsList)
+    deriving newtype (Eq, Num, Read, Show)
     deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
 
 instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
