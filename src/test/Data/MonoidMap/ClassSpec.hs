@@ -9,10 +9,6 @@ module Data.MonoidMap.ClassSpec
 
 import Prelude
 
-import Data.Group
-    ( Group )
-import Data.Maybe
-    ( mapMaybe )
 import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.Null
@@ -21,8 +17,6 @@ import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
-import Data.Semigroup.Cancellative
-    ( Commutative )
 import Data.Set
     ( Set )
 import Data.Typeable
@@ -33,8 +27,10 @@ import Numeric.Natural
     ( Natural )
 import Test.Hspec
     ( Spec, describe )
+import Test.Combinators.NonZero
+    ( NonZero, genNonZero, shrinkNonZero )
 import Test.QuickCheck
-    ( Arbitrary (..), Gen, listOf, scale, shrinkMapBy, suchThatMap )
+    ( Arbitrary (..), listOf, scale, shrinkMapBy )
 import Test.QuickCheck.Classes
     ( eqLaws
     , isListLaws
@@ -343,10 +339,6 @@ specLawsFor keyType = do
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-newtype NonZero a = NonZero {getNonZero :: a}
-    deriving newtype (Eq, Num, Read, Show)
-    deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
-
 instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
     arbitrary = genNonZero arbitrary
     shrink = shrinkNonZero shrink
@@ -358,18 +350,3 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-genNonZero :: (Eq a, Num a) => Gen a -> Gen (NonZero a)
-genNonZero genA = suchThatMap genA maybeNonZero
-
-shrinkNonZero :: (Eq a, Num a) => (a -> [a]) -> NonZero a -> [NonZero a]
-shrinkNonZero shrinkA = mapMaybe maybeNonZero . shrinkA . getNonZero
-
-maybeNonZero :: (Eq a, Num a) => a -> Maybe (NonZero a)
-maybeNonZero p
-    | p == 0 = Nothing
-    | otherwise = Just (NonZero p)
