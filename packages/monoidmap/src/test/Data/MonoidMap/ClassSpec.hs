@@ -157,7 +157,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Wrapped (Product Rational)))
+        testLawsMany @(MonoidMap k (NonZero (Product Rational)))
             [ commutativeLaws
             , eqLaws
             , groupLaws
@@ -340,15 +340,15 @@ specLawsFor keyType = do
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-newtype Wrapped a = Wrapped a
+newtype NonZero a = NonZero a
     deriving newtype (Eq, Num, Read, Show, IsList)
     deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
 
-instance Arbitrary (Wrapped (Product Rational)) where
+instance Arbitrary (NonZero (Product Rational)) where
     -- Here we restrict the generator and shrinker so that they can never
     -- produce zero values, to avoid running into cases of ArithException
     -- caused by operations that may produce zero demoninators:
-    arbitrary = Wrapped <$> suchThatMap arbitrary maybeNonZero
+    arbitrary = NonZero <$> suchThatMap arbitrary maybeNonZero
     shrink = mapMaybe maybeNonZero . shrink
 
 instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
