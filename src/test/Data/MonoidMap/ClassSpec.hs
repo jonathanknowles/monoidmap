@@ -340,7 +340,7 @@ specLawsFor keyType = do
 -- Arbitrary instances
 --------------------------------------------------------------------------------
 
-newtype NonZero a = NonZero a
+newtype NonZero a = NonZero {getNonZero :: a}
     deriving newtype (Eq, Num, Read, Show)
     deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
 
@@ -348,8 +348,8 @@ instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
     -- Here we restrict the generator and shrinker so that they can never
     -- produce zero values, to avoid running into cases of ArithException
     -- caused by operations that may produce zero demoninators:
-    arbitrary = NonZero <$> suchThatMap arbitrary maybeNonZero
-    shrink = mapMaybe maybeNonZero . shrink
+    arbitrary = suchThatMap arbitrary maybeNonZero
+    shrink = mapMaybe maybeNonZero . shrink . getNonZero
 
 instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     Arbitrary (MonoidMap k v)
@@ -363,7 +363,7 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
 -- Utilities
 --------------------------------------------------------------------------------
 
-maybeNonZero :: (Eq a, Num a) => a -> Maybe a
+maybeNonZero :: (Eq a, Num a) => a -> Maybe (NonZero a)
 maybeNonZero p
     | p == 0 = Nothing
-    | otherwise = Just p
+    | otherwise = Just (NonZero p)
