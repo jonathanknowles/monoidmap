@@ -349,7 +349,7 @@ instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
     -- produce zero values, to avoid running into cases of ArithException
     -- caused by operations that may produce zero demoninators:
     arbitrary = genNonZero arbitrary
-    shrink = shrinkNonZero
+    shrink = shrinkNonZero shrink
 
 instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     Arbitrary (MonoidMap k v)
@@ -366,8 +366,8 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
 genNonZero :: (Eq a, Num a) => Gen a -> Gen (NonZero a)
 genNonZero genA = suchThatMap genA maybeNonZero
 
-shrinkNonZero :: (Arbitrary a, Eq a, Num a) => NonZero a -> [NonZero a]
-shrinkNonZero = mapMaybe maybeNonZero . shrink . getNonZero
+shrinkNonZero :: (Eq a, Num a) => (a -> [a]) -> NonZero a -> [NonZero a]
+shrinkNonZero shrinkA = mapMaybe maybeNonZero . shrinkA . getNonZero
 
 maybeNonZero :: (Eq a, Num a) => a -> Maybe (NonZero a)
 maybeNonZero p
