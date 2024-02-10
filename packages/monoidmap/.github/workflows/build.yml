@@ -25,17 +25,17 @@ jobs:
           - macOS-latest
           - windows-latest
         cabal:
-          - 3.8.1.0
+          - 3.10.2.0
         ghc:
           - 8.10.7
           - 9.0.2
           - 9.2.8
           - 9.4.8
-          - 9.6.3
+          - 9.6.4
           - 9.8.1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Environment
         uses: haskell-actions/setup@v2
@@ -60,7 +60,7 @@ jobs:
           --builddir=${{ env.cabal-build-dir }}
 
       - name: Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           hash: ${{ hashFiles('cabal.project.freeze') }}
         with:
