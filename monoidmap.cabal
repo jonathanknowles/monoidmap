@@ -1,12 +1,12 @@
 cabal-version:  3.0
 name:           monoidmap
-version:        0.0.1.1
+version:        0.0.1.2
 bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
-copyright:      2022–2023 Jonathan Knowles
+copyright:      2022–2024 Jonathan Knowles
 category:       Data Structures
 synopsis:       Monoidal map type
 description:
@@ -19,7 +19,7 @@ extra-doc-files:
 common dependency-base
     build-depends:base                          >= 4.14.3.0   && < 4.20
 common dependency-containers
-    build-depends:containers                    >= 0.6.5.1    && < 0.7
+    build-depends:containers                    >= 0.6.5.1    && < 0.8
 common dependency-deepseq
     build-depends:deepseq                       >= 1.4.4.0    && < 1.6
 common dependency-groups
