@@ -1,3 +1,7 @@
+# 0.0.1.3
+
+- Updated version bounds for dependencies.
+
 # 0.0.1.2
 
 - Updated version bounds for dependencies.
