@@ -4,19 +4,28 @@
 
 module Main where
 
-import Prelude hiding
-    ( lookup )
-
 import Control.DeepSeq
     ( rnf )
 import Control.Exception
     ( evaluate )
+import Data.Eq
+    ( Eq )
+import Data.Function
+    ( flip, ($) )
+import Data.Int
+    ( Int )
 import Data.List
-    ( foldl' )
+    ( foldl', zip )
 import Data.Maybe
-    ( fromMaybe )
+    ( Maybe, fromMaybe )
+import Data.Ord
+    ( Ord )
 import Data.Semigroup
-    ( stimes )
+    ( Semigroup ((<>)), stimes )
+import Prelude
+    ( Integer, Num, (^) )
+import System.IO
+    ( IO )
 import Test.Tasty.Bench
     ( bench, bgroup, defaultMain, nf )
 
