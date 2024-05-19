@@ -25,10 +25,10 @@ import GHC.Exts
     ( IsList (..) )
 import Numeric.Natural
     ( Natural )
-import Test.Hspec
-    ( Spec, describe )
 import Test.Combinators.NonZero
     ( NonZero, genNonZero, shrinkNonZero )
+import Test.Hspec
+    ( Spec, describe )
 import Test.QuickCheck
     ( Arbitrary (..), listOf, scale, shrinkMapBy )
 import Test.QuickCheck.Classes
