@@ -45,7 +45,7 @@ common dependency-quickcheck-instances
 common dependency-quickcheck-monoid-subclasses
     build-depends:quickcheck-monoid-subclasses  >= 0.3.0.0    && < 0.4
 common dependency-tasty-bench
-    build-depends:tasty-bench                   >= 0.3.2      && < 0.4
+    build-depends:tasty-bench                   >= 0.3.2      && < 0.5
 common dependency-tasty-hunit
     build-depends:tasty-hunit                   >= 0.10.0.3   && < 0.11
 common dependency-text
