@@ -65,6 +65,19 @@ module Data.MonoidMap.Internal
     , mapKeys
     , mapKeysWith
 
+    -- ** Folding
+    , foldl
+    , foldr
+    , foldlWithKey
+    , foldrWithKey
+    , foldMapWithKey
+
+    -- *** Strict folding
+    , foldl'
+    , foldr'
+    , foldlWithKey'
+    , foldrWithKey'
+
     -- * Monoidal operations
 
     -- ** Association
@@ -118,7 +131,18 @@ module Data.MonoidMap.Internal
     where
 
 import Prelude hiding
-    ( drop, filter, lookup, map, null, splitAt, subtract, take )
+    ( drop
+    , filter
+    , foldl
+    , foldl'
+    , foldr
+    , lookup
+    , map
+    , null
+    , splitAt
+    , subtract
+    , take
+    )
 
 import Control.DeepSeq
     ( NFData )
@@ -945,6 +969,86 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
+
+--------------------------------------------------------------------------------
+-- Lazy folding
+--------------------------------------------------------------------------------
+
+foldl :: (r -> v -> r) -> r -> MonoidMap k v -> r
+foldl =
+    (coerce
+        :: ((r -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldl
+
+foldr :: (v -> r -> r) -> r -> MonoidMap k v -> r
+foldr =
+    (coerce
+        :: ((v -> r -> r) -> r ->       Map k v -> r)
+        -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldr
+
+foldlWithKey :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
+foldlWithKey =
+    (coerce
+        :: ((r -> k -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldlWithKey
+
+foldrWithKey :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
+foldrWithKey =
+    (coerce
+        :: ((k -> v -> r -> r) -> r ->       Map k v -> r)
+        -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldrWithKey
+
+foldMapWithKey :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
+foldMapWithKey =
+    (coerce
+        :: ((k -> v -> r) ->       Map k v -> r)
+        -> ((k -> v -> r) -> MonoidMap k v -> r)
+    )
+    Map.foldMapWithKey
+
+--------------------------------------------------------------------------------
+-- Strict folding
+--------------------------------------------------------------------------------
+
+foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
+foldl' =
+    (coerce
+        :: ((r -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldl'
+
+foldr' :: (v -> r -> r) -> r -> MonoidMap k v -> r
+foldr' =
+    (coerce
+        :: ((v -> r -> r) -> r ->       Map k v -> r)
+        -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldr'
+
+foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
+foldlWithKey' =
+    (coerce
+        :: ((r -> k -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldlWithKey'
+
+foldrWithKey' :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
+foldrWithKey' =
+    (coerce
+        :: ((k -> v -> r -> r) -> r ->       Map k v -> r)
+        -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldrWithKey'
 
 --------------------------------------------------------------------------------
 -- Comparison
