@@ -983,6 +983,8 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 -- 'foldl' f r m '==' 'Map'.'Map.foldl' f r ('toMap' m)
 -- @
 --
+-- @since 0.0.1.7
+--
 foldl :: (r -> v -> r) -> r -> MonoidMap k v -> r
 foldl =
     (coerce
@@ -1000,6 +1002,8 @@ foldl =
 -- @
 -- 'foldr' f r m '==' 'Map'.'Map.foldr' f r ('toMap' m)
 -- @
+--
+-- @since 0.0.1.7
 --
 foldr :: (v -> r -> r) -> r -> MonoidMap k v -> r
 foldr =
@@ -1019,6 +1023,8 @@ foldr =
 -- 'foldlWithKey' f r m '==' 'Map'.'Map.foldlWithKey' f r ('toMap' m)
 -- @
 --
+-- @since 0.0.1.7
+--
 foldlWithKey :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
 foldlWithKey =
     (coerce
@@ -1037,6 +1043,8 @@ foldlWithKey =
 -- 'foldrWithKey' f r m '==' 'Map'.'Map.foldrWithKey' f r ('toMap' m)
 -- @
 --
+-- @since 0.0.1.7
+--
 foldrWithKey :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
 foldrWithKey =
     (coerce
@@ -1054,6 +1062,8 @@ foldrWithKey =
 -- @
 -- 'foldMapWithKey' f m '==' 'Map'.'Map.foldMapWithKey' f ('toMap' m)
 -- @
+--
+-- @since 0.0.1.7
 --
 foldMapWithKey :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
 foldMapWithKey =
@@ -1079,6 +1089,8 @@ foldMapWithKey =
 -- 'foldl'' f r m '==' 'Map'.'Map.foldl'' f r ('toMap' m)
 -- @
 --
+-- @since 0.0.1.7
+--
 foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
 foldl' =
     (coerce
@@ -1098,6 +1110,8 @@ foldl' =
 -- @
 -- 'foldr'' f r m '==' 'Map'.'Map.foldr'' f r ('toMap' m)
 -- @
+--
+-- @since 0.0.1.7
 --
 foldr' :: (v -> r -> r) -> r -> MonoidMap k v -> r
 foldr' =
@@ -1119,6 +1133,8 @@ foldr' =
 -- 'foldlWithKey'' f r m '==' 'Map'.'Map.foldlWithKey'' f r ('toMap' m)
 -- @
 --
+-- @since 0.0.1.7
+--
 foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
 foldlWithKey' =
     (coerce
@@ -1138,6 +1154,8 @@ foldlWithKey' =
 -- @
 -- 'foldrWithKey'' f r m '==' 'Map'.'Map.foldrWithKey'' f r ('toMap' m)
 -- @
+--
+-- @since 0.0.1.7
 --
 foldrWithKey' :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
 foldrWithKey' =
