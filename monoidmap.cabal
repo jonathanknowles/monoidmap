@@ -163,6 +163,7 @@ test-suite test
         Data.MonoidMap.DistributivitySpec
         Data.MonoidMap.MapSpec
         Data.MonoidMap.FilterSpec
+        Data.MonoidMap.FoldSpec
         Data.MonoidMap.PartitionSpec
         Data.MonoidMap.MembershipSpec
         Data.MonoidMap.SingletonSpec
