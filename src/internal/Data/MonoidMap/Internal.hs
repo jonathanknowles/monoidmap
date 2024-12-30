@@ -974,6 +974,15 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 -- Lazy folding
 --------------------------------------------------------------------------------
 
+-- | \(O(n)\). Folds over the values in the map using the given
+--   left-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldl' f r m '==' 'Map'.'Map.foldl' f r ('toMap' m)
+-- @
+--
 foldl :: (r -> v -> r) -> r -> MonoidMap k v -> r
 foldl =
     (coerce
@@ -982,6 +991,15 @@ foldl =
     )
     Map.foldl
 
+-- | \(O(n)\). Folds over the values in the map using the given
+--   right-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldr' f r m '==' 'Map'.'Map.foldr' f r ('toMap' m)
+-- @
+--
 foldr :: (v -> r -> r) -> r -> MonoidMap k v -> r
 foldr =
     (coerce
@@ -990,6 +1008,15 @@ foldr =
     )
     Map.foldr
 
+-- | \(O(n)\). Folds over the keys and values in the map using the given
+--   left-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldlWithKey' f r m '==' 'Map'.'Map.foldlWithKey' f r ('toMap' m)
+-- @
+--
 foldlWithKey :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
 foldlWithKey =
     (coerce
@@ -998,6 +1025,15 @@ foldlWithKey =
     )
     Map.foldlWithKey
 
+-- | \(O(n)\). Folds over the keys and values in the map using the given
+--   right-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldrWithKey' f r m '==' 'Map'.'Map.foldrWithKey' f r ('toMap' m)
+-- @
+--
 foldrWithKey :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
 foldrWithKey =
     (coerce
@@ -1006,6 +1042,15 @@ foldrWithKey =
     )
     Map.foldrWithKey
 
+-- | \(O(n)\). Folds over the keys and values in the map using the given
+--   monoid.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldMapWithKey' f m '==' 'Map'.'Map.foldMapWithKey' f ('toMap' m)
+-- @
+--
 foldMapWithKey :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
 foldMapWithKey =
     (coerce
@@ -1018,6 +1063,17 @@ foldMapWithKey =
 -- Strict folding
 --------------------------------------------------------------------------------
 
+-- | \(O(n)\). A strict version of 'foldl'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldl'' f r m '==' 'Map'.'Map.foldl'' f r ('toMap' m)
+-- @
+--
 foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
 foldl' =
     (coerce
@@ -1026,6 +1082,17 @@ foldl' =
     )
     Map.foldl'
 
+-- | \(O(n)\). A strict version of 'foldr'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldr'' f r m '==' 'Map'.'Map.foldr'' f r ('toMap' m)
+-- @
+--
 foldr' :: (v -> r -> r) -> r -> MonoidMap k v -> r
 foldr' =
     (coerce
@@ -1034,6 +1101,17 @@ foldr' =
     )
     Map.foldr'
 
+-- | \(O(n)\). A strict version of 'foldlWithKey'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldlWithKey'' f r m '==' 'Map'.'Map.foldlWithKey'' f r ('toMap' m)
+-- @
+--
 foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
 foldlWithKey' =
     (coerce
@@ -1042,6 +1120,17 @@ foldlWithKey' =
     )
     Map.foldlWithKey'
 
+-- | \(O(n)\). A strict version of 'foldrWithKey'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldrWithKey'' f r m '==' 'Map'.'Map.foldrWithKey'' f r ('toMap' m)
+-- @
+--
 foldrWithKey' :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
 foldrWithKey' =
     (coerce
