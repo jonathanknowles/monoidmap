@@ -362,7 +362,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k 'empty' == 'mempty'
+-- 'get' k 'empty' '==' 'mempty'
 -- @
 --
 -- Provides the definition of 'mempty' for the 'MonoidMap' instance of
