@@ -489,7 +489,7 @@ toList = Map.toAscList . toMap
 -- Satisfies the following round-trip property:
 --
 -- @
--- 'fromMap' ('toMap' m) == m
+-- 'fromMap' ('toMap' m) '==' m
 -- @
 --
 toMap :: forall k v. MonoidMap k v -> Map k v
