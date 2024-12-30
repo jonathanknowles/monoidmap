@@ -990,6 +990,7 @@ foldl =
         -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldl
+{-# INLINE foldl #-}
 
 -- | \(O(n)\). Folds over the values in the map using the given
 --   right-associative binary operator.
@@ -1007,6 +1008,7 @@ foldr =
         -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldr
+{-# INLINE foldr #-}
 
 -- | \(O(n)\). Folds over the keys and values in the map using the given
 --   left-associative binary operator.
@@ -1024,6 +1026,7 @@ foldlWithKey =
         -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldlWithKey
+{-# INLINE foldlWithKey #-}
 
 -- | \(O(n)\). Folds over the keys and values in the map using the given
 --   right-associative binary operator.
@@ -1041,6 +1044,7 @@ foldrWithKey =
         -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldrWithKey
+{-# INLINE foldrWithKey #-}
 
 -- | \(O(n)\). Folds over the keys and values in the map using the given
 --   monoid.
@@ -1058,6 +1062,7 @@ foldMapWithKey =
         -> ((k -> v -> r) -> MonoidMap k v -> r)
     )
     Map.foldMapWithKey
+{-# INLINE foldMapWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Strict folding
@@ -1081,6 +1086,7 @@ foldl' =
         -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldl'
+{-# INLINE foldl' #-}
 
 -- | \(O(n)\). A strict version of 'foldr'.
 --
@@ -1100,6 +1106,7 @@ foldr' =
         -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldr'
+{-# INLINE foldr' #-}
 
 -- | \(O(n)\). A strict version of 'foldlWithKey'.
 --
@@ -1119,6 +1126,7 @@ foldlWithKey' =
         -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldlWithKey'
+{-# INLINE foldlWithKey' #-}
 
 -- | \(O(n)\). A strict version of 'foldrWithKey'.
 --
@@ -1138,6 +1146,7 @@ foldrWithKey' =
         -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
     )
     Map.foldrWithKey'
+{-# INLINE foldrWithKey' #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
