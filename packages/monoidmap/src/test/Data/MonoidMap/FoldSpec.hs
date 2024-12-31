@@ -66,6 +66,9 @@ specFor = makeSpec $ do
         it "prop_toMap_foldrWithKey'" $
             prop_toMap_foldrWithKey'
                 @k @v & property
+        it "prop_equivalence_foldMapWithKey'" $
+            prop_equivalence_foldMapWithKey'
+                @k @v & property
 
 --------------------------------------------------------------------------------
 -- Lazy folding
@@ -172,3 +175,13 @@ prop_toMap_foldrWithKey'
 prop_toMap_foldrWithKey' (applyFun3 -> f) r m =
     MonoidMap.foldrWithKey' f r m
       === Map.foldrWithKey' f r (MonoidMap.toMap m)
+
+prop_equivalence_foldMapWithKey'
+    :: Test k v
+    => r ~ v
+    => Fun (k, v) r
+    -> MonoidMap k v
+    -> Property
+prop_equivalence_foldMapWithKey' (applyFun2 -> f) m =
+    MonoidMap.foldMapWithKey' f m ===
+    MonoidMap.foldMapWithKey  f m
