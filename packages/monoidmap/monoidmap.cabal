@@ -1,12 +1,12 @@
 cabal-version:  3.0
 name:           monoidmap
-version:        0.0.1.6
+version:        0.0.1.7
 bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
-copyright:      2022–2024 Jonathan Knowles
+copyright:      2022–2025 Jonathan Knowles
 category:       Data Structures
 synopsis:       Monoidal map type
 description:
