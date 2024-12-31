@@ -362,7 +362,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k 'empty' == 'mempty'
+-- 'get' k 'empty' '==' 'mempty'
 -- @
 --
 -- Provides the definition of 'mempty' for the 'MonoidMap' instance of
@@ -432,7 +432,7 @@ fromListWith f =
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
+-- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' 'k' m
 -- @
 --
 -- This function performs canonicalisation of 'C.null' values, and has a time
@@ -489,7 +489,7 @@ toList = Map.toAscList . toMap
 -- Satisfies the following round-trip property:
 --
 -- @
--- 'fromMap' ('toMap' m) == m
+-- 'fromMap' ('toMap' m) '==' m
 -- @
 --
 toMap :: forall k v. MonoidMap k v -> Map k v
