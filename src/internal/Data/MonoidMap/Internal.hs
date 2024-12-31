@@ -432,7 +432,7 @@ fromListWith f =
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('fromMap' m) '==' 'Map.findWithDefault' 'mempty' 'k' m
+-- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' 'k' m
 -- @
 --
 -- This function performs canonicalisation of 'C.null' values, and has a time
