@@ -64,6 +64,19 @@ module Data.MonoidMap
     , mapKeys
     , mapKeysWith
 
+    -- ** Folding
+    , foldl
+    , foldr
+    , foldlWithKey
+    , foldrWithKey
+    , foldMapWithKey
+
+    -- *** Strict folding
+    , foldl'
+    , foldr'
+    , foldlWithKey'
+    , foldrWithKey'
+
     -- * Monoidal operations
 
     -- | See the section on [monoidal operations](#_monoidal_operations) within
