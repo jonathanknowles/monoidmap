@@ -77,6 +77,7 @@ module Data.MonoidMap.Internal
     , foldr'
     , foldlWithKey'
     , foldrWithKey'
+    , foldMapWithKey'
 
     -- * Monoidal operations
 
@@ -1165,6 +1166,17 @@ foldrWithKey' =
     )
     Map.foldrWithKey'
 {-# INLINE foldrWithKey' #-}
+
+-- | \(O(n)\). A strict version of 'foldMapWithKey'.
+--
+-- Each application of `mappend` is evaluated before using the result in the
+-- next application.
+--
+-- @since 0.0.1.8
+--
+foldMapWithKey' :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
+foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
+{-# INLINE foldMapWithKey' #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
