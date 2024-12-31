@@ -1,5 +1,5 @@
 -- |
--- Copyright: © 2024-2024 Jonathan Knowles
+-- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
 module Data.MonoidMap.FoldSpec
