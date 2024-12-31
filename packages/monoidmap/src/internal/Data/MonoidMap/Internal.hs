@@ -65,6 +65,19 @@ module Data.MonoidMap.Internal
     , mapKeys
     , mapKeysWith
 
+    -- ** Folding
+    , foldl
+    , foldr
+    , foldlWithKey
+    , foldrWithKey
+    , foldMapWithKey
+
+    -- *** Strict folding
+    , foldl'
+    , foldr'
+    , foldlWithKey'
+    , foldrWithKey'
+
     -- * Monoidal operations
 
     -- ** Association
@@ -118,7 +131,18 @@ module Data.MonoidMap.Internal
     where
 
 import Prelude hiding
-    ( drop, filter, lookup, map, null, splitAt, subtract, take )
+    ( drop
+    , filter
+    , foldl
+    , foldl'
+    , foldr
+    , lookup
+    , map
+    , null
+    , splitAt
+    , subtract
+    , take
+    )
 
 import Control.DeepSeq
     ( NFData )
@@ -945,6 +969,202 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
+
+--------------------------------------------------------------------------------
+-- Lazy folding
+--------------------------------------------------------------------------------
+
+-- | \(O(n)\). Folds over the values in the map using the given
+--   left-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldl' f r m '==' 'Map'.'Map.foldl' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldl :: (r -> v -> r) -> r -> MonoidMap k v -> r
+foldl =
+    (coerce
+        :: ((r -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldl
+{-# INLINE foldl #-}
+
+-- | \(O(n)\). Folds over the values in the map using the given
+--   right-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldr' f r m '==' 'Map'.'Map.foldr' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldr :: (v -> r -> r) -> r -> MonoidMap k v -> r
+foldr =
+    (coerce
+        :: ((v -> r -> r) -> r ->       Map k v -> r)
+        -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldr
+{-# INLINE foldr #-}
+
+-- | \(O(n)\). Folds over the keys and values in the map using the given
+--   left-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldlWithKey' f r m '==' 'Map'.'Map.foldlWithKey' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldlWithKey :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
+foldlWithKey =
+    (coerce
+        :: ((r -> k -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldlWithKey
+{-# INLINE foldlWithKey #-}
+
+-- | \(O(n)\). Folds over the keys and values in the map using the given
+--   right-associative binary operator.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldrWithKey' f r m '==' 'Map'.'Map.foldrWithKey' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldrWithKey :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
+foldrWithKey =
+    (coerce
+        :: ((k -> v -> r -> r) -> r ->       Map k v -> r)
+        -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldrWithKey
+{-# INLINE foldrWithKey #-}
+
+-- | \(O(n)\). Folds over the keys and values in the map using the given
+--   monoid.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldMapWithKey' f m '==' 'Map'.'Map.foldMapWithKey' f ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldMapWithKey :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
+foldMapWithKey =
+    (coerce
+        :: ((k -> v -> r) ->       Map k v -> r)
+        -> ((k -> v -> r) -> MonoidMap k v -> r)
+    )
+    Map.foldMapWithKey
+{-# INLINE foldMapWithKey #-}
+
+--------------------------------------------------------------------------------
+-- Strict folding
+--------------------------------------------------------------------------------
+
+-- | \(O(n)\). A strict version of 'foldl'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldl'' f r m '==' 'Map'.'Map.foldl'' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
+foldl' =
+    (coerce
+        :: ((r -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldl'
+{-# INLINE foldl' #-}
+
+-- | \(O(n)\). A strict version of 'foldr'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldr'' f r m '==' 'Map'.'Map.foldr'' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldr' :: (v -> r -> r) -> r -> MonoidMap k v -> r
+foldr' =
+    (coerce
+        :: ((v -> r -> r) -> r ->       Map k v -> r)
+        -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldr'
+{-# INLINE foldr' #-}
+
+-- | \(O(n)\). A strict version of 'foldlWithKey'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldlWithKey'' f r m '==' 'Map'.'Map.foldlWithKey'' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
+foldlWithKey' =
+    (coerce
+        :: ((r -> k -> v -> r) -> r ->       Map k v -> r)
+        -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldlWithKey'
+{-# INLINE foldlWithKey' #-}
+
+-- | \(O(n)\). A strict version of 'foldrWithKey'.
+--
+-- Each application of the operator is evaluated before using the result in the
+-- next application. This function is strict in the starting value.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'foldrWithKey'' f r m '==' 'Map'.'Map.foldrWithKey'' f r ('toMap' m)
+-- @
+--
+-- @since 0.0.1.7
+--
+foldrWithKey' :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
+foldrWithKey' =
+    (coerce
+        :: ((k -> v -> r -> r) -> r ->       Map k v -> r)
+        -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
+    )
+    Map.foldrWithKey'
+{-# INLINE foldrWithKey' #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
