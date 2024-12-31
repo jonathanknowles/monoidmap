@@ -1,3 +1,7 @@
+# 0.0.1.7
+
+- Added a selection of folding operations for `MonoidMap`.
+
 # 0.0.1.6
 
 - Updated version bounds for dependencies.
