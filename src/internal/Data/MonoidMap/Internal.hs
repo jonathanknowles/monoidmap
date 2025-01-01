@@ -80,6 +80,7 @@ module Data.MonoidMap.Internal
     , foldMapWithKey'
 
     -- ** Traversal
+    , traverse
     , traverseWithKey
 
     -- * Monoidal operations
@@ -146,6 +147,7 @@ import Prelude hiding
     , splitAt
     , subtract
     , take
+    , traverse
     )
 
 import Control.DeepSeq
@@ -1160,6 +1162,25 @@ foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 --------------------------------------------------------------------------------
 -- Traversal
 --------------------------------------------------------------------------------
+
+-- | \(O(n)\). Traverses over the values of a map using the given function.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'traverse' f m '==' 'fmap' 'fromMap' ('Prelude.traverse' f ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
+traverse
+    :: Applicative t
+    => MonoidNull v2
+    => (v1 -> t v2)
+    -> MonoidMap k v1
+    -> t (MonoidMap k v2)
+traverse f = traverseWithKey (const f)
+{-# INLINE traverse #-}
 
 -- | \(O(n)\). Traverses over the keys and values of a map using the given
 --   function.
