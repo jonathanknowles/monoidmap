@@ -1,3 +1,7 @@
+# 0.0.1.8
+
+- Added strict variant of the `foldMapWithKey` function.
+
 # 0.0.1.7
 
 - Added a selection of folding operations for `MonoidMap`.
