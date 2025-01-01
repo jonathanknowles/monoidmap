@@ -54,17 +54,17 @@ specFor = makeSpec $ do
 
     describe "Strict" $ do
 
-        it "prop_toMap_foldl'" $
-            prop_toMap_foldl'
+        it "prop_equivalence_foldl'" $
+            prop_equivalence_foldl'
                 @k @v & property
-        it "prop_toMap_foldr'" $
-            prop_toMap_foldr'
+        it "prop_equivalence_foldr'" $
+            prop_equivalence_foldr'
                 @k @v & property
-        it "prop_toMap_foldlWithKey'" $
-            prop_toMap_foldlWithKey'
+        it "prop_equivalence_foldlWithKey'" $
+            prop_equivalence_foldlWithKey'
                 @k @v & property
-        it "prop_toMap_foldrWithKey'" $
-            prop_toMap_foldrWithKey'
+        it "prop_equivalence_foldrWithKey'" $
+            prop_equivalence_foldrWithKey'
                 @k @v & property
         it "prop_equivalence_foldMapWithKey'" $
             prop_equivalence_foldMapWithKey'
@@ -132,49 +132,49 @@ prop_toMap_foldMapWithKey (applyFun2 -> f) m =
 -- Strict folding
 --------------------------------------------------------------------------------
 
-prop_toMap_foldl'
+prop_equivalence_foldl'
     :: Test k v
     => r ~ v
     => Fun (r, v) r
     -> r
     -> MonoidMap k v
     -> Property
-prop_toMap_foldl' (applyFun2 -> f) r m =
-    MonoidMap.foldl' f r m
-      === Map.foldl' f r (MonoidMap.toMap m)
+prop_equivalence_foldl' (applyFun2 -> f) r m =
+    MonoidMap.foldl' f r m ===
+    MonoidMap.foldl  f r m
 
-prop_toMap_foldr'
+prop_equivalence_foldr'
     :: Test k v
     => r ~ v
     => Fun (v, r) r
     -> r
     -> MonoidMap k v
     -> Property
-prop_toMap_foldr' (applyFun2 -> f) r m =
-    MonoidMap.foldr' f r m
-      === Map.foldr' f r (MonoidMap.toMap m)
+prop_equivalence_foldr' (applyFun2 -> f) r m =
+    MonoidMap.foldr' f r m ===
+    MonoidMap.foldr  f r m
 
-prop_toMap_foldlWithKey'
+prop_equivalence_foldlWithKey'
     :: Test k v
     => r ~ v
     => Fun (r, k, v) r
     -> r
     -> MonoidMap k v
     -> Property
-prop_toMap_foldlWithKey' (applyFun3 -> f) r m =
-    MonoidMap.foldlWithKey' f r m
-      === Map.foldlWithKey' f r (MonoidMap.toMap m)
+prop_equivalence_foldlWithKey' (applyFun3 -> f) r m =
+    MonoidMap.foldlWithKey' f r m ===
+    MonoidMap.foldlWithKey  f r m
 
-prop_toMap_foldrWithKey'
+prop_equivalence_foldrWithKey'
     :: Test k v
     => r ~ v
     => Fun (k, v, r) r
     -> r
     -> MonoidMap k v
     -> Property
-prop_toMap_foldrWithKey' (applyFun3 -> f) r m =
-    MonoidMap.foldrWithKey' f r m
-      === Map.foldrWithKey' f r (MonoidMap.toMap m)
+prop_equivalence_foldrWithKey' (applyFun3 -> f) r m =
+    MonoidMap.foldrWithKey' f r m ===
+    MonoidMap.foldrWithKey  f r m
 
 prop_equivalence_foldMapWithKey'
     :: Test k v
