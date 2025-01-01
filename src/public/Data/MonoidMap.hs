@@ -78,6 +78,9 @@ module Data.MonoidMap
     , foldrWithKey'
     , foldMapWithKey'
 
+    -- ** Traversal
+    , traverseWithKey
+
     -- * Monoidal operations
 
     -- | See the section on [monoidal operations](#_monoidal_operations) within
