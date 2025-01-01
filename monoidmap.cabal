@@ -168,6 +168,7 @@ test-suite test
         Data.MonoidMap.MembershipSpec
         Data.MonoidMap.SingletonSpec
         Data.MonoidMap.SliceSpec
+        Data.MonoidMap.TraversalSpec
         Data.MonoidMap.PrefixSpec
         Data.MonoidMap.SuffixSpec
         Data.MonoidMap.IntersectionSpec
