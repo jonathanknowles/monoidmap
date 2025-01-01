@@ -76,6 +76,7 @@ module Data.MonoidMap
     , foldr'
     , foldlWithKey'
     , foldrWithKey'
+    , foldMapWithKey'
 
     -- * Monoidal operations
 
