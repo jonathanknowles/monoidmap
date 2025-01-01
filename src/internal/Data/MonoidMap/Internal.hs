@@ -1084,12 +1084,6 @@ foldMapWithKey =
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
 --
--- Satisfies the following property:
---
--- @
--- 'foldl'' f r m '==' 'Map'.'Map.foldl'' f r ('toMap' m)
--- @
---
 -- @since 0.0.1.7
 --
 foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
@@ -1105,12 +1099,6 @@ foldl' =
 --
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
---
--- Satisfies the following property:
---
--- @
--- 'foldr'' f r m '==' 'Map'.'Map.foldr'' f r ('toMap' m)
--- @
 --
 -- @since 0.0.1.7
 --
@@ -1128,12 +1116,6 @@ foldr' =
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
 --
--- Satisfies the following property:
---
--- @
--- 'foldlWithKey'' f r m '==' 'Map'.'Map.foldlWithKey'' f r ('toMap' m)
--- @
---
 -- @since 0.0.1.7
 --
 foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
@@ -1149,12 +1131,6 @@ foldlWithKey' =
 --
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
---
--- Satisfies the following property:
---
--- @
--- 'foldrWithKey'' f r m '==' 'Map'.'Map.foldrWithKey'' f r ('toMap' m)
--- @
 --
 -- @since 0.0.1.7
 --
