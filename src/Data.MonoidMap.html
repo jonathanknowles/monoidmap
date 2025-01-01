@@ -78,326 +78,329 @@
 </span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldrWithKey'</span></span><span>
 </span><span id="line-79"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldMapWithKey'</span></span><span>
 </span><span id="line-80"></span><span>
-</span><span id="line-81"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Monoidal operations</span></span><span>
-</span><span id="line-82"></span><span>
-</span><span id="line-83"></span><span>    </span><span class="hs-comment">-- | See the section on [monoidal operations](#_monoidal_operations) within</span><span>
-</span><span id="line-84"></span><span>    </span><span class="hs-comment">-- the [introduction](#_introduction).</span><span>
+</span><span id="line-81"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Traversal</span></span><span>
+</span><span id="line-82"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">traverseWithKey</span></span><span>
+</span><span id="line-83"></span><span>
+</span><span id="line-84"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Monoidal operations</span></span><span>
 </span><span id="line-85"></span><span>
-</span><span id="line-86"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Association</span></span><span>
-</span><span id="line-87"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">append</span></span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-comment">-- | See the section on [monoidal operations](#_monoidal_operations) within</span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-comment">-- the [introduction](#_introduction).</span><span>
 </span><span id="line-88"></span><span>
-</span><span id="line-89"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Subtraction</span></span><span>
-</span><span id="line-90"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">minus</span></span><span>
-</span><span id="line-91"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">minusMaybe</span></span><span>
-</span><span id="line-92"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">monus</span></span><span>
-</span><span id="line-93"></span><span>
-</span><span id="line-94"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Inversion</span></span><span>
-</span><span id="line-95"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">invert</span></span><span>
+</span><span id="line-89"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Association</span></span><span>
+</span><span id="line-90"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">append</span></span><span>
+</span><span id="line-91"></span><span>
+</span><span id="line-92"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Subtraction</span></span><span>
+</span><span id="line-93"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">minus</span></span><span>
+</span><span id="line-94"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">minusMaybe</span></span><span>
+</span><span id="line-95"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">monus</span></span><span>
 </span><span id="line-96"></span><span>
-</span><span id="line-97"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Exponentiation</span></span><span>
-</span><span id="line-98"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">power</span></span><span>
+</span><span id="line-97"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Inversion</span></span><span>
+</span><span id="line-98"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">invert</span></span><span>
 </span><span id="line-99"></span><span>
-</span><span id="line-100"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Comparison</span></span><span>
-</span><span id="line-101"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSubmapOf</span></span><span>
-</span><span id="line-102"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSubmapOfBy</span></span><span>
-</span><span id="line-103"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">disjoint</span></span><span>
-</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">disjointBy</span></span><span>
-</span><span id="line-105"></span><span>
-</span><span id="line-106"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Intersection</span></span><span>
-</span><span id="line-107"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersection</span></span><span>
-</span><span id="line-108"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersectionWith</span></span><span>
-</span><span id="line-109"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersectionWithA</span></span><span>
-</span><span id="line-110"></span><span>
-</span><span id="line-111"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Union</span></span><span>
-</span><span id="line-112"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">union</span></span><span>
-</span><span id="line-113"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">unionWith</span></span><span>
-</span><span id="line-114"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">unionWithA</span></span><span>
-</span><span id="line-115"></span><span>
-</span><span id="line-116"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Prefixes</span></span><span>
-</span><span id="line-117"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isPrefixOf</span></span><span>
-</span><span id="line-118"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripPrefix</span></span><span>
-</span><span id="line-119"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">commonPrefix</span></span><span>
-</span><span id="line-120"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripCommonPrefix</span></span><span>
-</span><span id="line-121"></span><span>
-</span><span id="line-122"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Suffixes</span></span><span>
-</span><span id="line-123"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSuffixOf</span></span><span>
-</span><span id="line-124"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripSuffix</span></span><span>
-</span><span id="line-125"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">commonSuffix</span></span><span>
-</span><span id="line-126"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripCommonSuffix</span></span><span>
-</span><span id="line-127"></span><span>
-</span><span id="line-128"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Overlap</span></span><span>
-</span><span id="line-129"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">overlap</span></span><span>
-</span><span id="line-130"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripPrefixOverlap</span></span><span>
-</span><span id="line-131"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripSuffixOverlap</span></span><span>
-</span><span id="line-132"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripOverlap</span></span><span>
-</span><span id="line-133"></span><span>    </span><span class="hs-special">)</span><span>
-</span><span id="line-134"></span><span>    </span><span class="hs-keyword">where</span><span>
-</span><span id="line-135"></span><span>
-</span><span id="line-136"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span>
-</span><span id="line-137"></span><span>
-</span><span id="line-138"></span><span class="hs-comment">-- Imports for module documentation:</span><span>
-</span><span id="line-139"></span><span>
-</span><span id="line-140"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Eq</span></span><span>
-</span><span id="line-141"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Eq</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-142"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Group</span></span><span>
-</span><span id="line-143"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Group</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(~~)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-144"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span>
-</span><span id="line-145"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-146"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span>
-</span><span id="line-147"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Just</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Nothing</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-148"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid</span></span><span>
-</span><span id="line-149"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Monoid</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">mempty</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-150"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.GCD</span></span><span>
-</span><span id="line-151"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">GCDMonoid</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-152"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.LCM</span></span><span>
-</span><span id="line-153"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">LCMMonoid</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-154"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Monus</span></span><span>
-</span><span id="line-155"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Monus</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;\&gt;)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-156"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span>
-</span><span id="line-157"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidNull</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-158"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Ord</span></span><span>
-</span><span id="line-159"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Ord</span></span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-160"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Semigroup</span></span><span>
-</span><span id="line-161"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Semigroup</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;&gt;)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
-</span><span id="line-162"></span><span>
-</span><span id="line-163"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SMap</span></span><span>
-</span><span id="line-164"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MMap</span></span><span>
+</span><span id="line-100"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Exponentiation</span></span><span>
+</span><span id="line-101"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">power</span></span><span>
+</span><span id="line-102"></span><span>
+</span><span id="line-103"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Comparison</span></span><span>
+</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSubmapOf</span></span><span>
+</span><span id="line-105"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSubmapOfBy</span></span><span>
+</span><span id="line-106"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">disjoint</span></span><span>
+</span><span id="line-107"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">disjointBy</span></span><span>
+</span><span id="line-108"></span><span>
+</span><span id="line-109"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Intersection</span></span><span>
+</span><span id="line-110"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersection</span></span><span>
+</span><span id="line-111"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersectionWith</span></span><span>
+</span><span id="line-112"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersectionWithA</span></span><span>
+</span><span id="line-113"></span><span>
+</span><span id="line-114"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Union</span></span><span>
+</span><span id="line-115"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">union</span></span><span>
+</span><span id="line-116"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">unionWith</span></span><span>
+</span><span id="line-117"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">unionWithA</span></span><span>
+</span><span id="line-118"></span><span>
+</span><span id="line-119"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Prefixes</span></span><span>
+</span><span id="line-120"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isPrefixOf</span></span><span>
+</span><span id="line-121"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripPrefix</span></span><span>
+</span><span id="line-122"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">commonPrefix</span></span><span>
+</span><span id="line-123"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripCommonPrefix</span></span><span>
+</span><span id="line-124"></span><span>
+</span><span id="line-125"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Suffixes</span></span><span>
+</span><span id="line-126"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSuffixOf</span></span><span>
+</span><span id="line-127"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripSuffix</span></span><span>
+</span><span id="line-128"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">commonSuffix</span></span><span>
+</span><span id="line-129"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripCommonSuffix</span></span><span>
+</span><span id="line-130"></span><span>
+</span><span id="line-131"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Overlap</span></span><span>
+</span><span id="line-132"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">overlap</span></span><span>
+</span><span id="line-133"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripPrefixOverlap</span></span><span>
+</span><span id="line-134"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripSuffixOverlap</span></span><span>
+</span><span id="line-135"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripOverlap</span></span><span>
+</span><span id="line-136"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-137"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-138"></span><span>
+</span><span id="line-139"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span>
+</span><span id="line-140"></span><span>
+</span><span id="line-141"></span><span class="hs-comment">-- Imports for module documentation:</span><span>
+</span><span id="line-142"></span><span>
+</span><span id="line-143"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Eq</span></span><span>
+</span><span id="line-144"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Eq</span></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-145"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Group</span></span><span>
+</span><span id="line-146"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Group</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(~~)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-147"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span>
+</span><span id="line-148"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-149"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Maybe</span></span><span>
+</span><span id="line-150"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">Just</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Nothing</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-151"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid</span></span><span>
+</span><span id="line-152"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Monoid</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">mempty</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-153"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.GCD</span></span><span>
+</span><span id="line-154"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">GCDMonoid</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-155"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.LCM</span></span><span>
+</span><span id="line-156"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">LCMMonoid</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-157"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Monus</span></span><span>
+</span><span id="line-158"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Monus</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;\&gt;)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-159"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span>
+</span><span id="line-160"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidNull</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-161"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Ord</span></span><span>
+</span><span id="line-162"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Ord</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-163"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Semigroup</span></span><span>
+</span><span id="line-164"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Semigroup</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;&gt;)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
 </span><span id="line-165"></span><span>
-</span><span id="line-166"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Group</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
-</span><span id="line-167"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.GCD</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
-</span><span id="line-168"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.LCM</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
-</span><span id="line-169"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
-</span><span id="line-170"></span><span>
-</span><span id="line-171"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-172"></span><span class="hs-comment">-- Introduction</span><span>
-</span><span id="line-173"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-174"></span><span>
-</span><span id="line-175"></span><span class="hs-comment">-- $_introduction</span><span>
-</span><span id="line-176"></span><span class="hs-comment">-- #_introduction#</span><span>
-</span><span id="line-177"></span><span class="hs-comment">--</span><span>
-</span><span id="line-178"></span><span class="hs-comment">-- This module provides the 'MonoidMap' type, which:</span><span>
-</span><span id="line-179"></span><span class="hs-comment">--</span><span>
-</span><span id="line-180"></span><span class="hs-comment">--  - models a [__total function__](#_totality) with</span><span>
-</span><span id="line-181"></span><span class="hs-comment">--    [__finite support__](https://wikipedia.org/wiki/Support_\(mathematics\))</span><span>
-</span><span id="line-182"></span><span class="hs-comment">--    from keys to [__monoidal values__](&quot;Data.Monoid&quot;), with a default value</span><span>
-</span><span id="line-183"></span><span class="hs-comment">--    of 'mempty'.</span><span>
-</span><span id="line-184"></span><span class="hs-comment">--</span><span>
-</span><span id="line-185"></span><span class="hs-comment">--  - encodes key-value mappings with a [__minimal encoding__](#_encoding) that</span><span>
-</span><span id="line-186"></span><span class="hs-comment">--    only includes values /not/ equal to 'mempty'.</span><span>
+</span><span id="line-166"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SMap</span></span><span>
+</span><span id="line-167"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MMap</span></span><span>
+</span><span id="line-168"></span><span>
+</span><span id="line-169"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Group</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
+</span><span id="line-170"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.GCD</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
+</span><span id="line-171"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.LCM</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
+</span><span id="line-172"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
+</span><span id="line-173"></span><span>
+</span><span id="line-174"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-175"></span><span class="hs-comment">-- Introduction</span><span>
+</span><span id="line-176"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-177"></span><span>
+</span><span id="line-178"></span><span class="hs-comment">-- $_introduction</span><span>
+</span><span id="line-179"></span><span class="hs-comment">-- #_introduction#</span><span>
+</span><span id="line-180"></span><span class="hs-comment">--</span><span>
+</span><span id="line-181"></span><span class="hs-comment">-- This module provides the 'MonoidMap' type, which:</span><span>
+</span><span id="line-182"></span><span class="hs-comment">--</span><span>
+</span><span id="line-183"></span><span class="hs-comment">--  - models a [__total function__](#_totality) with</span><span>
+</span><span id="line-184"></span><span class="hs-comment">--    [__finite support__](https://wikipedia.org/wiki/Support_\(mathematics\))</span><span>
+</span><span id="line-185"></span><span class="hs-comment">--    from keys to [__monoidal values__](&quot;Data.Monoid&quot;), with a default value</span><span>
+</span><span id="line-186"></span><span class="hs-comment">--    of 'mempty'.</span><span>
 </span><span id="line-187"></span><span class="hs-comment">--</span><span>
-</span><span id="line-188"></span><span class="hs-comment">--  - provides a comprehensive set of</span><span>
-</span><span id="line-189"></span><span class="hs-comment">--    [__monoidal operations__](#_monoidal_operations) for transforming,</span><span>
-</span><span id="line-190"></span><span class="hs-comment">--    combining, and comparing maps.</span><span>
-</span><span id="line-191"></span><span class="hs-comment">--</span><span>
-</span><span id="line-192"></span><span class="hs-comment">-- The documentation in this module serves as __reference guide__ to the</span><span>
-</span><span id="line-193"></span><span class="hs-comment">-- 'MonoidMap' type and its operations.</span><span>
+</span><span id="line-188"></span><span class="hs-comment">--  - encodes key-value mappings with a [__minimal encoding__](#_encoding) that</span><span>
+</span><span id="line-189"></span><span class="hs-comment">--    only includes values /not/ equal to 'mempty'.</span><span>
+</span><span id="line-190"></span><span class="hs-comment">--</span><span>
+</span><span id="line-191"></span><span class="hs-comment">--  - provides a comprehensive set of</span><span>
+</span><span id="line-192"></span><span class="hs-comment">--    [__monoidal operations__](#_monoidal_operations) for transforming,</span><span>
+</span><span id="line-193"></span><span class="hs-comment">--    combining, and comparing maps.</span><span>
 </span><span id="line-194"></span><span class="hs-comment">--</span><span>
-</span><span id="line-195"></span><span class="hs-comment">-- See the</span><span>
-</span><span id="line-196"></span><span class="hs-comment">-- [@README@](https://github.com/jonathanknowles/monoidmap/blob/main/README.md)</span><span>
-</span><span id="line-197"></span><span class="hs-comment">-- file for:</span><span>
-</span><span id="line-198"></span><span class="hs-comment">--</span><span>
-</span><span id="line-199"></span><span class="hs-comment">--  - a __deeper introduction__ to the design of the 'MonoidMap' type.</span><span>
-</span><span id="line-200"></span><span class="hs-comment">--</span><span>
-</span><span id="line-201"></span><span class="hs-comment">--  - worked examples of using 'MonoidMap' to implement more specialised</span><span>
-</span><span id="line-202"></span><span class="hs-comment">--    monoidal data structures.</span><span>
+</span><span id="line-195"></span><span class="hs-comment">-- The documentation in this module serves as __reference guide__ to the</span><span>
+</span><span id="line-196"></span><span class="hs-comment">-- 'MonoidMap' type and its operations.</span><span>
+</span><span id="line-197"></span><span class="hs-comment">--</span><span>
+</span><span id="line-198"></span><span class="hs-comment">-- See the</span><span>
+</span><span id="line-199"></span><span class="hs-comment">-- [@README@](https://github.com/jonathanknowles/monoidmap/blob/main/README.md)</span><span>
+</span><span id="line-200"></span><span class="hs-comment">-- file for:</span><span>
+</span><span id="line-201"></span><span class="hs-comment">--</span><span>
+</span><span id="line-202"></span><span class="hs-comment">--  - a __deeper introduction__ to the design of the 'MonoidMap' type.</span><span>
 </span><span id="line-203"></span><span class="hs-comment">--</span><span>
-</span><span id="line-204"></span><span class="hs-comment">--  - detailed comparisons between 'MonoidMap' and other map types.</span><span>
-</span><span id="line-205"></span><span>
-</span><span id="line-206"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-207"></span><span class="hs-comment">-- Totality</span><span>
-</span><span id="line-208"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-209"></span><span>
-</span><span id="line-210"></span><span class="hs-comment">-- $_totality</span><span>
-</span><span id="line-211"></span><span class="hs-comment">-- #_totality#</span><span>
-</span><span id="line-212"></span><span class="hs-comment">--</span><span>
-</span><span id="line-213"></span><span class="hs-comment">-- = Relationship between keys and values</span><span>
-</span><span id="line-214"></span><span class="hs-comment">--</span><span>
-</span><span id="line-215"></span><span class="hs-comment">-- A 'MonoidMap' of key type __@k@__ and value type __@v@__ associates /every/</span><span>
-</span><span id="line-216"></span><span class="hs-comment">-- possible key of type __@k@__ with a value of type __@v@__:</span><span>
+</span><span id="line-204"></span><span class="hs-comment">--  - worked examples of using 'MonoidMap' to implement more specialised</span><span>
+</span><span id="line-205"></span><span class="hs-comment">--    monoidal data structures.</span><span>
+</span><span id="line-206"></span><span class="hs-comment">--</span><span>
+</span><span id="line-207"></span><span class="hs-comment">--  - detailed comparisons between 'MonoidMap' and other map types.</span><span>
+</span><span id="line-208"></span><span>
+</span><span id="line-209"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-210"></span><span class="hs-comment">-- Totality</span><span>
+</span><span id="line-211"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-212"></span><span>
+</span><span id="line-213"></span><span class="hs-comment">-- $_totality</span><span>
+</span><span id="line-214"></span><span class="hs-comment">-- #_totality#</span><span>
+</span><span id="line-215"></span><span class="hs-comment">--</span><span>
+</span><span id="line-216"></span><span class="hs-comment">-- = Relationship between keys and values</span><span>
 </span><span id="line-217"></span><span class="hs-comment">--</span><span>
-</span><span id="line-218"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-219"></span><span class="hs-comment">-- 'get' :: ('Ord' k, 'Monoid' v) =&gt; k -&gt; 'MonoidMap' k v -&gt; v</span><span>
-</span><span id="line-220"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-221"></span><span class="hs-comment">--</span><span>
-</span><span id="line-222"></span><span class="hs-comment">-- The 'empty' map associates every key __@k@__ with a default value of</span><span>
-</span><span id="line-223"></span><span class="hs-comment">-- 'mempty':</span><span>
+</span><span id="line-218"></span><span class="hs-comment">-- A 'MonoidMap' of key type __@k@__ and value type __@v@__ associates /every/</span><span>
+</span><span id="line-219"></span><span class="hs-comment">-- possible key of type __@k@__ with a value of type __@v@__:</span><span>
+</span><span id="line-220"></span><span class="hs-comment">--</span><span>
+</span><span id="line-221"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-222"></span><span class="hs-comment">-- 'get' :: ('Ord' k, 'Monoid' v) =&gt; k -&gt; 'MonoidMap' k v -&gt; v</span><span>
+</span><span id="line-223"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-224"></span><span class="hs-comment">--</span><span>
-</span><span id="line-225"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-226"></span><span class="hs-comment">-- &#8704; k. 'get' k 'empty' '==' 'mempty'</span><span>
-</span><span id="line-227"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-228"></span><span class="hs-comment">--</span><span>
-</span><span id="line-229"></span><span class="hs-comment">-- == Comparison with standard 'Map' type</span><span>
-</span><span id="line-230"></span><span class="hs-comment">--</span><span>
-</span><span id="line-231"></span><span class="hs-comment">-- The 'MonoidMap' type differs from the standard 'Map' type in how it relates</span><span>
-</span><span id="line-232"></span><span class="hs-comment">-- keys to values:</span><span>
+</span><span id="line-225"></span><span class="hs-comment">-- The 'empty' map associates every key __@k@__ with a default value of</span><span>
+</span><span id="line-226"></span><span class="hs-comment">-- 'mempty':</span><span>
+</span><span id="line-227"></span><span class="hs-comment">--</span><span>
+</span><span id="line-228"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-229"></span><span class="hs-comment">-- &#8704; k. 'get' k 'empty' '==' 'mempty'</span><span>
+</span><span id="line-230"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-231"></span><span class="hs-comment">--</span><span>
+</span><span id="line-232"></span><span class="hs-comment">-- == Comparison with standard 'Map' type</span><span>
 </span><span id="line-233"></span><span class="hs-comment">--</span><span>
-</span><span id="line-234"></span><span class="hs-comment">-- +---------------------------+---------------------------------------------+</span><span>
-</span><span id="line-235"></span><span class="hs-comment">-- | Type                      | Models a total function with finite support |</span><span>
-</span><span id="line-236"></span><span class="hs-comment">-- +===========================+=============================================+</span><span>
-</span><span id="line-237"></span><span class="hs-comment">-- | @&#8192;&#8192;&#8192;&#8192;&#8192;&#8192;&#8192;'Map'@__@ k v&#8192;@__ | from keys of type __@k@__                   |</span><span>
-</span><span id="line-238"></span><span class="hs-comment">-- |                           | to values of type __@'Maybe' v@__.          |</span><span>
-</span><span id="line-239"></span><span class="hs-comment">-- +---------------------------+---------------------------------------------+</span><span>
-</span><span id="line-240"></span><span class="hs-comment">-- | @&#8192;'MonoidMap'@__@ k v&#8192;@__ | from keys of type __@k@__                   |</span><span>
-</span><span id="line-241"></span><span class="hs-comment">-- |                           | to values of type __@v@__.                  |</span><span>
+</span><span id="line-234"></span><span class="hs-comment">-- The 'MonoidMap' type differs from the standard 'Map' type in how it relates</span><span>
+</span><span id="line-235"></span><span class="hs-comment">-- keys to values:</span><span>
+</span><span id="line-236"></span><span class="hs-comment">--</span><span>
+</span><span id="line-237"></span><span class="hs-comment">-- +---------------------------+---------------------------------------------+</span><span>
+</span><span id="line-238"></span><span class="hs-comment">-- | Type                      | Models a total function with finite support |</span><span>
+</span><span id="line-239"></span><span class="hs-comment">-- +===========================+=============================================+</span><span>
+</span><span id="line-240"></span><span class="hs-comment">-- | @&#8192;&#8192;&#8192;&#8192;&#8192;&#8192;&#8192;'Map'@__@ k v&#8192;@__ | from keys of type __@k@__                   |</span><span>
+</span><span id="line-241"></span><span class="hs-comment">-- |                           | to values of type __@'Maybe' v@__.          |</span><span>
 </span><span id="line-242"></span><span class="hs-comment">-- +---------------------------+---------------------------------------------+</span><span>
-</span><span id="line-243"></span><span class="hs-comment">--</span><span>
-</span><span id="line-244"></span><span class="hs-comment">-- This difference can be illustrated by comparing the type signatures of</span><span>
-</span><span id="line-245"></span><span class="hs-comment">-- operations to query a key for its value, for both types:</span><span>
+</span><span id="line-243"></span><span class="hs-comment">-- | @&#8192;'MonoidMap'@__@ k v&#8192;@__ | from keys of type __@k@__                   |</span><span>
+</span><span id="line-244"></span><span class="hs-comment">-- |                           | to values of type __@v@__.                  |</span><span>
+</span><span id="line-245"></span><span class="hs-comment">-- +---------------------------+---------------------------------------------+</span><span>
 </span><span id="line-246"></span><span class="hs-comment">--</span><span>
-</span><span id="line-247"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-248"></span><span class="hs-comment">--       'Map'.'SMap.lookup' :: \      \      k -&gt;       'Map' k v -&gt; 'Maybe' v</span><span>
-</span><span id="line-249"></span><span class="hs-comment">-- 'MonoidMap'.'MMap.get'    :: 'Monoid' v =&gt; k -&gt; 'MonoidMap' k v -&gt; \     \ v</span><span>
+</span><span id="line-247"></span><span class="hs-comment">-- This difference can be illustrated by comparing the type signatures of</span><span>
+</span><span id="line-248"></span><span class="hs-comment">-- operations to query a key for its value, for both types:</span><span>
+</span><span id="line-249"></span><span class="hs-comment">--</span><span>
 </span><span id="line-250"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-251"></span><span class="hs-comment">--</span><span>
-</span><span id="line-252"></span><span class="hs-comment">-- Whereas a standard 'Map' has a default value of 'Nothing', a 'MonoidMap' has</span><span>
-</span><span id="line-253"></span><span class="hs-comment">-- a default value of 'mempty':</span><span>
+</span><span id="line-251"></span><span class="hs-comment">--       'Map'.'SMap.lookup' :: \      \      k -&gt;       'Map' k v -&gt; 'Maybe' v</span><span>
+</span><span id="line-252"></span><span class="hs-comment">-- 'MonoidMap'.'MMap.get'    :: 'Monoid' v =&gt; k -&gt; 'MonoidMap' k v -&gt; \     \ v</span><span>
+</span><span id="line-253"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-254"></span><span class="hs-comment">--</span><span>
-</span><span id="line-255"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-256"></span><span class="hs-comment">-- &#8704; k.       'Map'.'SMap.lookup' k       'Map'.'SMap.empty' '==' 'Nothing'</span><span>
-</span><span id="line-257"></span><span class="hs-comment">-- &#8704; k. 'MonoidMap'.'MMap.get'    k 'MonoidMap'.'MMap.empty' '==' 'mempty'</span><span>
+</span><span id="line-255"></span><span class="hs-comment">-- Whereas a standard 'Map' has a default value of 'Nothing', a 'MonoidMap' has</span><span>
+</span><span id="line-256"></span><span class="hs-comment">-- a default value of 'mempty':</span><span>
+</span><span id="line-257"></span><span class="hs-comment">--</span><span>
 </span><span id="line-258"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-259"></span><span class="hs-comment">--</span><span>
-</span><span id="line-260"></span><span class="hs-comment">-- In practice, the standard 'Map' type uses 'Maybe' to indicate the /presence/</span><span>
-</span><span id="line-261"></span><span class="hs-comment">-- or /absence/ of a value for a particular key. This representation is</span><span>
-</span><span id="line-262"></span><span class="hs-comment">-- necessary because the 'Map' type imposes no constraints on value types.</span><span>
-</span><span id="line-263"></span><span class="hs-comment">--</span><span>
-</span><span id="line-264"></span><span class="hs-comment">-- However, /monoidal/ types already have a natural way to represent null or</span><span>
-</span><span id="line-265"></span><span class="hs-comment">-- empty values: the 'mempty' constant, which represents the /neutral/ or</span><span>
-</span><span id="line-266"></span><span class="hs-comment">-- /identity/ element of a 'Monoid'.</span><span>
-</span><span id="line-267"></span><span class="hs-comment">--</span><span>
-</span><span id="line-268"></span><span class="hs-comment">-- Consequently, using a standard 'Map' with a /monoidal/ value type gives rise</span><span>
-</span><span id="line-269"></span><span class="hs-comment">-- to two distinct representations for null or empty values:</span><span>
+</span><span id="line-259"></span><span class="hs-comment">-- &#8704; k.       'Map'.'SMap.lookup' k       'Map'.'SMap.empty' '==' 'Nothing'</span><span>
+</span><span id="line-260"></span><span class="hs-comment">-- &#8704; k. 'MonoidMap'.'MMap.get'    k 'MonoidMap'.'MMap.empty' '==' 'mempty'</span><span>
+</span><span id="line-261"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-262"></span><span class="hs-comment">--</span><span>
+</span><span id="line-263"></span><span class="hs-comment">-- In practice, the standard 'Map' type uses 'Maybe' to indicate the /presence/</span><span>
+</span><span id="line-264"></span><span class="hs-comment">-- or /absence/ of a value for a particular key. This representation is</span><span>
+</span><span id="line-265"></span><span class="hs-comment">-- necessary because the 'Map' type imposes no constraints on value types.</span><span>
+</span><span id="line-266"></span><span class="hs-comment">--</span><span>
+</span><span id="line-267"></span><span class="hs-comment">-- However, /monoidal/ types already have a natural way to represent null or</span><span>
+</span><span id="line-268"></span><span class="hs-comment">-- empty values: the 'mempty' constant, which represents the /neutral/ or</span><span>
+</span><span id="line-269"></span><span class="hs-comment">-- /identity/ element of a 'Monoid'.</span><span>
 </span><span id="line-270"></span><span class="hs-comment">--</span><span>
-</span><span id="line-271"></span><span class="hs-comment">-- +-------------------------+--------------------------------------------+</span><span>
-</span><span id="line-272"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
-</span><span id="line-273"></span><span class="hs-comment">-- | 'Map'.'SMap.lookup' k m | Interpretation                             |</span><span>
-</span><span id="line-274"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
-</span><span id="line-275"></span><span class="hs-comment">-- +=========================+============================================+</span><span>
-</span><span id="line-276"></span><span class="hs-comment">-- | @                       | 'Map' __@m@__ has /no/ entry               |</span><span>
-</span><span id="line-277"></span><span class="hs-comment">-- | 'Nothing'               | for key __@k@__.                           |</span><span>
-</span><span id="line-278"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
-</span><span id="line-279"></span><span class="hs-comment">-- +-------------------------+--------------------------------------------+</span><span>
-</span><span id="line-280"></span><span class="hs-comment">-- | @                       | 'Map' __@m@__ has an entry                 |</span><span>
-</span><span id="line-281"></span><span class="hs-comment">-- | 'Just' 'mempty'         | for key __@k@__, but the value is /empty/. |</span><span>
-</span><span id="line-282"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
-</span><span id="line-283"></span><span class="hs-comment">-- +-------------------------+--------------------------------------------+</span><span>
-</span><span id="line-284"></span><span class="hs-comment">--</span><span>
-</span><span id="line-285"></span><span class="hs-comment">-- In constrast, the 'MonoidMap' type provides a single, /canonical/</span><span>
-</span><span id="line-286"></span><span class="hs-comment">-- representation for null or empty values, according to the following</span><span>
-</span><span id="line-287"></span><span class="hs-comment">-- conceptual mapping:</span><span>
-</span><span id="line-288"></span><span class="hs-comment">--</span><span>
-</span><span id="line-289"></span><span class="hs-comment">-- +------------------------------------+---+------------------------------+</span><span>
-</span><span id="line-290"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
-</span><span id="line-291"></span><span class="hs-comment">-- | 'Map'.'SMap.lookup' k m            |   | 'MonoidMap'.'MMap.get' k m   |</span><span>
-</span><span id="line-292"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
-</span><span id="line-293"></span><span class="hs-comment">-- +====================================+===+==============================+</span><span>
-</span><span id="line-294"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
-</span><span id="line-295"></span><span class="hs-comment">-- | 'Nothing'                          | &#10236; | 'mempty'                     |</span><span>
-</span><span id="line-296"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
-</span><span id="line-297"></span><span class="hs-comment">-- +--------------+---------------------+---+------------------------------+</span><span>
-</span><span id="line-298"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
-</span><span id="line-299"></span><span class="hs-comment">-- | 'Just' __v__ | __v__ '==' 'mempty' | &#10236; | 'mempty'                     |</span><span>
-</span><span id="line-300"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
-</span><span id="line-301"></span><span class="hs-comment">-- +--------------+---------------------+---+------------------------------+</span><span>
-</span><span id="line-302"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
-</span><span id="line-303"></span><span class="hs-comment">-- | 'Just' __v__ | __v__ '/=' 'mempty' | &#10236; | __v__                        |</span><span>
-</span><span id="line-304"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
-</span><span id="line-305"></span><span class="hs-comment">-- +--------------+---------------------+---+------------------------------+</span><span>
-</span><span id="line-306"></span><span>
-</span><span id="line-307"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-308"></span><span class="hs-comment">-- Encoding</span><span>
-</span><span id="line-309"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-310"></span><span>
-</span><span id="line-311"></span><span class="hs-comment">-- $_encoding</span><span>
-</span><span id="line-312"></span><span class="hs-comment">-- #_encoding#</span><span>
-</span><span id="line-313"></span><span class="hs-comment">--</span><span>
-</span><span id="line-314"></span><span class="hs-comment">-- = Encoding</span><span>
-</span><span id="line-315"></span><span class="hs-comment">--</span><span>
-</span><span id="line-316"></span><span class="hs-comment">-- A 'MonoidMap' only encodes mappings from keys to values that are /not/ equal</span><span>
-</span><span id="line-317"></span><span class="hs-comment">-- to 'mempty'.</span><span>
+</span><span id="line-271"></span><span class="hs-comment">-- Consequently, using a standard 'Map' with a /monoidal/ value type gives rise</span><span>
+</span><span id="line-272"></span><span class="hs-comment">-- to two distinct representations for null or empty values:</span><span>
+</span><span id="line-273"></span><span class="hs-comment">--</span><span>
+</span><span id="line-274"></span><span class="hs-comment">-- +-------------------------+--------------------------------------------+</span><span>
+</span><span id="line-275"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
+</span><span id="line-276"></span><span class="hs-comment">-- | 'Map'.'SMap.lookup' k m | Interpretation                             |</span><span>
+</span><span id="line-277"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
+</span><span id="line-278"></span><span class="hs-comment">-- +=========================+============================================+</span><span>
+</span><span id="line-279"></span><span class="hs-comment">-- | @                       | 'Map' __@m@__ has /no/ entry               |</span><span>
+</span><span id="line-280"></span><span class="hs-comment">-- | 'Nothing'               | for key __@k@__.                           |</span><span>
+</span><span id="line-281"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
+</span><span id="line-282"></span><span class="hs-comment">-- +-------------------------+--------------------------------------------+</span><span>
+</span><span id="line-283"></span><span class="hs-comment">-- | @                       | 'Map' __@m@__ has an entry                 |</span><span>
+</span><span id="line-284"></span><span class="hs-comment">-- | 'Just' 'mempty'         | for key __@k@__, but the value is /empty/. |</span><span>
+</span><span id="line-285"></span><span class="hs-comment">-- | @                       |                                            |</span><span>
+</span><span id="line-286"></span><span class="hs-comment">-- +-------------------------+--------------------------------------------+</span><span>
+</span><span id="line-287"></span><span class="hs-comment">--</span><span>
+</span><span id="line-288"></span><span class="hs-comment">-- In constrast, the 'MonoidMap' type provides a single, /canonical/</span><span>
+</span><span id="line-289"></span><span class="hs-comment">-- representation for null or empty values, according to the following</span><span>
+</span><span id="line-290"></span><span class="hs-comment">-- conceptual mapping:</span><span>
+</span><span id="line-291"></span><span class="hs-comment">--</span><span>
+</span><span id="line-292"></span><span class="hs-comment">-- +------------------------------------+---+------------------------------+</span><span>
+</span><span id="line-293"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
+</span><span id="line-294"></span><span class="hs-comment">-- | 'Map'.'SMap.lookup' k m            |   | 'MonoidMap'.'MMap.get' k m   |</span><span>
+</span><span id="line-295"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
+</span><span id="line-296"></span><span class="hs-comment">-- +====================================+===+==============================+</span><span>
+</span><span id="line-297"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
+</span><span id="line-298"></span><span class="hs-comment">-- | 'Nothing'                          | &#10236; | 'mempty'                     |</span><span>
+</span><span id="line-299"></span><span class="hs-comment">-- | @                                  |   | @                            |</span><span>
+</span><span id="line-300"></span><span class="hs-comment">-- +--------------+---------------------+---+------------------------------+</span><span>
+</span><span id="line-301"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
+</span><span id="line-302"></span><span class="hs-comment">-- | 'Just' __v__ | __v__ '==' 'mempty' | &#10236; | 'mempty'                     |</span><span>
+</span><span id="line-303"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
+</span><span id="line-304"></span><span class="hs-comment">-- +--------------+---------------------+---+------------------------------+</span><span>
+</span><span id="line-305"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
+</span><span id="line-306"></span><span class="hs-comment">-- | 'Just' __v__ | __v__ '/=' 'mempty' | &#10236; | __v__                        |</span><span>
+</span><span id="line-307"></span><span class="hs-comment">-- | @            | @                   |   | @                            |</span><span>
+</span><span id="line-308"></span><span class="hs-comment">-- +--------------+---------------------+---+------------------------------+</span><span>
+</span><span id="line-309"></span><span>
+</span><span id="line-310"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-311"></span><span class="hs-comment">-- Encoding</span><span>
+</span><span id="line-312"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-313"></span><span>
+</span><span id="line-314"></span><span class="hs-comment">-- $_encoding</span><span>
+</span><span id="line-315"></span><span class="hs-comment">-- #_encoding#</span><span>
+</span><span id="line-316"></span><span class="hs-comment">--</span><span>
+</span><span id="line-317"></span><span class="hs-comment">-- = Encoding</span><span>
 </span><span id="line-318"></span><span class="hs-comment">--</span><span>
-</span><span id="line-319"></span><span class="hs-comment">-- The total function \(T\) modelled by a 'MonoidMap' is encoded as a</span><span>
-</span><span id="line-320"></span><span class="hs-comment">-- __support__ __map__ \(S\), where \(S\) is the finite subset of key-value</span><span>
-</span><span id="line-321"></span><span class="hs-comment">-- mappings in \(T\) for which values are not equal to 'mempty' (denoted by</span><span>
-</span><span id="line-322"></span><span class="hs-comment">-- \(\varnothing\)):</span><span>
-</span><span id="line-323"></span><span class="hs-comment">--</span><span>
-</span><span id="line-324"></span><span class="hs-comment">-- \( \quad S = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)</span><span>
-</span><span id="line-325"></span><span class="hs-comment">--</span><span>
-</span><span id="line-326"></span><span class="hs-comment">-- == Automatic minimisation</span><span>
-</span><span id="line-327"></span><span class="hs-comment">--</span><span>
-</span><span id="line-328"></span><span class="hs-comment">-- All 'MonoidMap' operations perform __automatic minimisation__ of the support</span><span>
-</span><span id="line-329"></span><span class="hs-comment">-- map, so that 'mempty' values do not appear in:</span><span>
+</span><span id="line-319"></span><span class="hs-comment">-- A 'MonoidMap' only encodes mappings from keys to values that are /not/ equal</span><span>
+</span><span id="line-320"></span><span class="hs-comment">-- to 'mempty'.</span><span>
+</span><span id="line-321"></span><span class="hs-comment">--</span><span>
+</span><span id="line-322"></span><span class="hs-comment">-- The total function \(T\) modelled by a 'MonoidMap' is encoded as a</span><span>
+</span><span id="line-323"></span><span class="hs-comment">-- __support__ __map__ \(S\), where \(S\) is the finite subset of key-value</span><span>
+</span><span id="line-324"></span><span class="hs-comment">-- mappings in \(T\) for which values are not equal to 'mempty' (denoted by</span><span>
+</span><span id="line-325"></span><span class="hs-comment">-- \(\varnothing\)):</span><span>
+</span><span id="line-326"></span><span class="hs-comment">--</span><span>
+</span><span id="line-327"></span><span class="hs-comment">-- \( \quad S = \{ (k, v) \in T \ | \ v \ne \varnothing \} \)</span><span>
+</span><span id="line-328"></span><span class="hs-comment">--</span><span>
+</span><span id="line-329"></span><span class="hs-comment">-- == Automatic minimisation</span><span>
 </span><span id="line-330"></span><span class="hs-comment">--</span><span>
-</span><span id="line-331"></span><span class="hs-comment">--   - any encoding of a 'MonoidMap'</span><span>
-</span><span id="line-332"></span><span class="hs-comment">--   - any traversal of a 'MonoidMap'</span><span>
+</span><span id="line-331"></span><span class="hs-comment">-- All 'MonoidMap' operations perform __automatic minimisation__ of the support</span><span>
+</span><span id="line-332"></span><span class="hs-comment">-- map, so that 'mempty' values do not appear in:</span><span>
 </span><span id="line-333"></span><span class="hs-comment">--</span><span>
-</span><span id="line-334"></span><span class="hs-comment">-- == Constraints on values</span><span>
-</span><span id="line-335"></span><span class="hs-comment">--</span><span>
-</span><span id="line-336"></span><span class="hs-comment">-- 'MonoidMap' operations require the monoidal value type to be an instance of</span><span>
-</span><span id="line-337"></span><span class="hs-comment">-- 'MonoidNull'.</span><span>
+</span><span id="line-334"></span><span class="hs-comment">--   - any encoding of a 'MonoidMap'</span><span>
+</span><span id="line-335"></span><span class="hs-comment">--   - any traversal of a 'MonoidMap'</span><span>
+</span><span id="line-336"></span><span class="hs-comment">--</span><span>
+</span><span id="line-337"></span><span class="hs-comment">-- == Constraints on values</span><span>
 </span><span id="line-338"></span><span class="hs-comment">--</span><span>
-</span><span id="line-339"></span><span class="hs-comment">-- Instances of 'MonoidNull' must provide a 'C.null' indicator function that</span><span>
-</span><span id="line-340"></span><span class="hs-comment">-- satisfies the following law:</span><span>
+</span><span id="line-339"></span><span class="hs-comment">-- 'MonoidMap' operations require the monoidal value type to be an instance of</span><span>
+</span><span id="line-340"></span><span class="hs-comment">-- 'MonoidNull'.</span><span>
 </span><span id="line-341"></span><span class="hs-comment">--</span><span>
-</span><span id="line-342"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-343"></span><span class="hs-comment">-- &#8704; v. 'MonoidNull'.'C.null' v '==' (v '==' 'mempty')</span><span>
-</span><span id="line-344"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-345"></span><span class="hs-comment">--</span><span>
-</span><span id="line-346"></span><span class="hs-comment">-- 'MonoidMap' operations use the 'C.null' indicator function to detect and</span><span>
-</span><span id="line-347"></span><span class="hs-comment">-- exclude 'mempty' values from the support map.</span><span>
+</span><span id="line-342"></span><span class="hs-comment">-- Instances of 'MonoidNull' must provide a 'C.null' indicator function that</span><span>
+</span><span id="line-343"></span><span class="hs-comment">-- satisfies the following law:</span><span>
+</span><span id="line-344"></span><span class="hs-comment">--</span><span>
+</span><span id="line-345"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-346"></span><span class="hs-comment">-- &#8704; v. 'MonoidNull'.'C.null' v '==' (v '==' 'mempty')</span><span>
+</span><span id="line-347"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-348"></span><span class="hs-comment">--</span><span>
-</span><span id="line-349"></span><span class="hs-comment">-- Note that it is /not/ generally necessary for the value type to be an</span><span>
-</span><span id="line-350"></span><span class="hs-comment">-- instance of 'Eq'.</span><span>
-</span><span id="line-351"></span><span>
-</span><span id="line-352"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-353"></span><span class="hs-comment">-- Monoidal operations</span><span>
-</span><span id="line-354"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
-</span><span id="line-355"></span><span>
-</span><span id="line-356"></span><span class="hs-comment">-- $_monoidal_operations</span><span>
-</span><span id="line-357"></span><span class="hs-comment">-- #_monoidal_operations#</span><span>
-</span><span id="line-358"></span><span class="hs-comment">--</span><span>
-</span><span id="line-359"></span><span class="hs-comment">-- = Monoidal operations</span><span>
-</span><span id="line-360"></span><span class="hs-comment">--</span><span>
-</span><span id="line-361"></span><span class="hs-comment">-- The 'MonoidMap' type provides a comprehensive set of __monoidal operations__</span><span>
-</span><span id="line-362"></span><span class="hs-comment">-- for transforming, combining, and comparing maps.</span><span>
+</span><span id="line-349"></span><span class="hs-comment">-- 'MonoidMap' operations use the 'C.null' indicator function to detect and</span><span>
+</span><span id="line-350"></span><span class="hs-comment">-- exclude 'mempty' values from the support map.</span><span>
+</span><span id="line-351"></span><span class="hs-comment">--</span><span>
+</span><span id="line-352"></span><span class="hs-comment">-- Note that it is /not/ generally necessary for the value type to be an</span><span>
+</span><span id="line-353"></span><span class="hs-comment">-- instance of 'Eq'.</span><span>
+</span><span id="line-354"></span><span>
+</span><span id="line-355"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-356"></span><span class="hs-comment">-- Monoidal operations</span><span>
+</span><span id="line-357"></span><span class="hs-comment">--------------------------------------------------------------------------------</span><span>
+</span><span id="line-358"></span><span>
+</span><span id="line-359"></span><span class="hs-comment">-- $_monoidal_operations</span><span>
+</span><span id="line-360"></span><span class="hs-comment">-- #_monoidal_operations#</span><span>
+</span><span id="line-361"></span><span class="hs-comment">--</span><span>
+</span><span id="line-362"></span><span class="hs-comment">-- = Monoidal operations</span><span>
 </span><span id="line-363"></span><span class="hs-comment">--</span><span>
-</span><span id="line-364"></span><span class="hs-comment">-- Instances for several __subclasses__ of 'Semigroup' and 'Monoid' are</span><span>
-</span><span id="line-365"></span><span class="hs-comment">-- provided, including classes from the following libraries:</span><span>
+</span><span id="line-364"></span><span class="hs-comment">-- The 'MonoidMap' type provides a comprehensive set of __monoidal operations__</span><span>
+</span><span id="line-365"></span><span class="hs-comment">-- for transforming, combining, and comparing maps.</span><span>
 </span><span id="line-366"></span><span class="hs-comment">--</span><span>
-</span><span id="line-367"></span><span class="hs-comment">--  - [groups](https://hackage.haskell.org/package/groups)</span><span>
-</span><span id="line-368"></span><span class="hs-comment">--  - [monoid-subclasses](https://hackage.haskell.org/package/monoid-subclasses)</span><span>
+</span><span id="line-367"></span><span class="hs-comment">-- Instances for several __subclasses__ of 'Semigroup' and 'Monoid' are</span><span>
+</span><span id="line-368"></span><span class="hs-comment">-- provided, including classes from the following libraries:</span><span>
 </span><span id="line-369"></span><span class="hs-comment">--</span><span>
-</span><span id="line-370"></span><span class="hs-comment">-- At the root of this hierarchy of subclasses is the 'Semigroup' class, whose</span><span>
-</span><span id="line-371"></span><span class="hs-comment">-- instance for 'MonoidMap' is defined in terms of the /underlying value type/,</span><span>
-</span><span id="line-372"></span><span class="hs-comment">-- so that applying `(&lt;&gt;)` to a /pair of maps/ is equivalent to applying `(&lt;&gt;)`</span><span>
-</span><span id="line-373"></span><span class="hs-comment">-- to all /pairs of values/ for matching keys:</span><span>
-</span><span id="line-374"></span><span class="hs-comment">--</span><span>
-</span><span id="line-375"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-376"></span><span class="hs-comment">-- &#8704; k. 'get' k (m1 '&lt;&gt;' m2) '==' 'get' k m1 '&lt;&gt;' 'get' k m2</span><span>
-</span><span id="line-377"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-378"></span><span class="hs-comment">--</span><span>
-</span><span id="line-379"></span><span class="hs-comment">-- In general, operations for subclasses of 'Semigroup' and 'Monoid' are</span><span>
-</span><span id="line-380"></span><span class="hs-comment">-- defined /analogously/ to the 'Semigroup' instance, so that:</span><span>
+</span><span id="line-370"></span><span class="hs-comment">--  - [groups](https://hackage.haskell.org/package/groups)</span><span>
+</span><span id="line-371"></span><span class="hs-comment">--  - [monoid-subclasses](https://hackage.haskell.org/package/monoid-subclasses)</span><span>
+</span><span id="line-372"></span><span class="hs-comment">--</span><span>
+</span><span id="line-373"></span><span class="hs-comment">-- At the root of this hierarchy of subclasses is the 'Semigroup' class, whose</span><span>
+</span><span id="line-374"></span><span class="hs-comment">-- instance for 'MonoidMap' is defined in terms of the /underlying value type/,</span><span>
+</span><span id="line-375"></span><span class="hs-comment">-- so that applying `(&lt;&gt;)` to a /pair of maps/ is equivalent to applying `(&lt;&gt;)`</span><span>
+</span><span id="line-376"></span><span class="hs-comment">-- to all /pairs of values/ for matching keys:</span><span>
+</span><span id="line-377"></span><span class="hs-comment">--</span><span>
+</span><span id="line-378"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-379"></span><span class="hs-comment">-- &#8704; k. 'get' k (m1 '&lt;&gt;' m2) '==' 'get' k m1 '&lt;&gt;' 'get' k m2</span><span>
+</span><span id="line-380"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-381"></span><span class="hs-comment">--</span><span>
-</span><span id="line-382"></span><span class="hs-comment">-- - /unary/ operations on /individual maps/ are defined in terms of their</span><span>
-</span><span id="line-383"></span><span class="hs-comment">--   distributive application to all values.</span><span>
+</span><span id="line-382"></span><span class="hs-comment">-- In general, operations for subclasses of 'Semigroup' and 'Monoid' are</span><span>
+</span><span id="line-383"></span><span class="hs-comment">-- defined /analogously/ to the 'Semigroup' instance, so that:</span><span>
 </span><span id="line-384"></span><span class="hs-comment">--</span><span>
-</span><span id="line-385"></span><span class="hs-comment">-- - /binary/ operations on /pairs of maps/ are defined in terms of their</span><span>
-</span><span id="line-386"></span><span class="hs-comment">--   distributive application to all /pairs of values/ for matching keys.</span><span>
+</span><span id="line-385"></span><span class="hs-comment">-- - /unary/ operations on /individual maps/ are defined in terms of their</span><span>
+</span><span id="line-386"></span><span class="hs-comment">--   distributive application to all values.</span><span>
 </span><span id="line-387"></span><span class="hs-comment">--</span><span>
-</span><span id="line-388"></span><span class="hs-comment">-- Unary monoidal operations typically satisfy a property similar to:</span><span>
-</span><span id="line-389"></span><span class="hs-comment">--</span><span>
-</span><span id="line-390"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-391"></span><span class="hs-comment">-- &#8704; k. 'get' k (f m) '==' f ('get' k m)</span><span>
-</span><span id="line-392"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-393"></span><span class="hs-comment">--</span><span>
-</span><span id="line-394"></span><span class="hs-comment">-- Binary monoidal operations typically satisfy a property similar to:</span><span>
-</span><span id="line-395"></span><span class="hs-comment">--</span><span>
-</span><span id="line-396"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-397"></span><span class="hs-comment">-- &#8704; k. 'get' k (f m1 m2) '==' f ('get' k m1) ('get' k m2)</span><span>
-</span><span id="line-398"></span><span class="hs-comment">-- @</span><span>
-</span><span id="line-399"></span><span class="hs-comment">--</span><span>
-</span><span id="line-400"></span><span class="hs-comment">-- Defining monoidal operations in this way makes it possible to transform,</span><span>
-</span><span id="line-401"></span><span class="hs-comment">-- combine, and compare maps in ways that are consistent with the algebraic</span><span>
-</span><span id="line-402"></span><span class="hs-comment">-- properties of the underlying monoidal value type.</span><span>
-</span><span id="line-403"></span></pre></body></html>
+</span><span id="line-388"></span><span class="hs-comment">-- - /binary/ operations on /pairs of maps/ are defined in terms of their</span><span>
+</span><span id="line-389"></span><span class="hs-comment">--   distributive application to all /pairs of values/ for matching keys.</span><span>
+</span><span id="line-390"></span><span class="hs-comment">--</span><span>
+</span><span id="line-391"></span><span class="hs-comment">-- Unary monoidal operations typically satisfy a property similar to:</span><span>
+</span><span id="line-392"></span><span class="hs-comment">--</span><span>
+</span><span id="line-393"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-394"></span><span class="hs-comment">-- &#8704; k. 'get' k (f m) '==' f ('get' k m)</span><span>
+</span><span id="line-395"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-396"></span><span class="hs-comment">--</span><span>
+</span><span id="line-397"></span><span class="hs-comment">-- Binary monoidal operations typically satisfy a property similar to:</span><span>
+</span><span id="line-398"></span><span class="hs-comment">--</span><span>
+</span><span id="line-399"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-400"></span><span class="hs-comment">-- &#8704; k. 'get' k (f m1 m2) '==' f ('get' k m1) ('get' k m2)</span><span>
+</span><span id="line-401"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-402"></span><span class="hs-comment">--</span><span>
+</span><span id="line-403"></span><span class="hs-comment">-- Defining monoidal operations in this way makes it possible to transform,</span><span>
+</span><span id="line-404"></span><span class="hs-comment">-- combine, and compare maps in ways that are consistent with the algebraic</span><span>
+</span><span id="line-405"></span><span class="hs-comment">-- properties of the underlying monoidal value type.</span><span>
+</span><span id="line-406"></span></pre></body></html>
