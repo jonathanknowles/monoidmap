@@ -79,6 +79,9 @@ module Data.MonoidMap.Internal
     , foldrWithKey'
     , foldMapWithKey'
 
+    -- ** Traversal
+    , traverseWithKey
+
     -- * Monoidal operations
 
     -- ** Association
@@ -1153,6 +1156,34 @@ foldrWithKey' =
 foldMapWithKey' :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
 foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 {-# INLINE foldMapWithKey' #-}
+
+--------------------------------------------------------------------------------
+-- Traversal
+--------------------------------------------------------------------------------
+
+-- | \(O(n)\). Traverses over the keys and values of a map using the given
+--   function.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'traverseWithKey' f m '=='
+-- 'fmap' 'fromMap' ('Map'.'Map.traverseWithKey' f ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
+traverseWithKey
+    :: Applicative t
+    => MonoidNull v2
+    => (k -> v1 -> t v2)
+    -> MonoidMap k v1
+    -> t (MonoidMap k v2)
+traverseWithKey f (MonoidMap m) =
+    MonoidMap <$>
+    Map.traverseMaybeWithKey
+        (\k v -> maybeNonNull <$> applyNonNull (f k) v) m
+{-# INLINE traverseWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
