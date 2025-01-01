@@ -25,7 +25,7 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Arbitrary (..), Fun (..), Property, applyFun2, (===) )
+    ( Arbitrary (..), Fun (..), Property, applyFun, applyFun2, (===) )
 import Data.Semigroup
     ( First (..), Last (..) )
 
@@ -39,6 +39,21 @@ spec = describe "Traversal" $ do
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do
+
+    describe "traverse" $ do
+
+        it "prop_traverse_@Identity" $
+            prop_traverse @Identity
+                @k @v & property
+        it "prop_traverse_@Maybe" $
+            prop_traverse @Maybe
+                @k @v & property
+        it "prop_traverse_@First" $
+            prop_traverse @First
+                @k @v & property
+        it "prop_traverse_@Last" $
+            prop_traverse @Last
+                @k @v & property
 
     describe "traverseWithKey" $ do
 
@@ -54,6 +69,17 @@ specFor = makeSpec $ do
         it "prop_traverseWithKey_@Last" $
             prop_traverseWithKey @Last
                 @k @v & property
+
+prop_traverse
+    :: forall t k v. Test k v
+    => (Applicative t, Eq (t (MonoidMap k v)), Show (t (MonoidMap k v)))
+    => Fun v (t v)
+    -> MonoidMap k v
+    -> Property
+prop_traverse (applyFun -> f) m =
+    MonoidMap.traverse f m
+    ===
+    fmap MonoidMap.fromMap (Prelude.traverse f (MonoidMap.toMap m))
 
 prop_traverseWithKey
     :: forall t k v. Test k v
