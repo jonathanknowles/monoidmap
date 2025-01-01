@@ -1171,6 +1171,7 @@ traverseWithKey f (MonoidMap m) =
     MonoidMap <$>
     Map.traverseMaybeWithKey
         (\k v -> maybeNonNull <$> applyNonNull (f k) v) m
+{-# INLINE traverseWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
