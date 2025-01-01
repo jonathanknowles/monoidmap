@@ -1161,6 +1161,18 @@ foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 -- Traversal
 --------------------------------------------------------------------------------
 
+-- | \(O(n)\). Traverses over the keys and values of a map using the given
+--   function.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'traverseWithKey' f m '=='
+-- 'fmap' 'fromMap' ('Map'.'Map.traverseWithKey' f ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
 traverseWithKey
     :: Applicative t
     => MonoidNull v2
