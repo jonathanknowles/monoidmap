@@ -23,7 +23,7 @@ import Data.Ord
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
 import Prelude
-    ( Integer, Num, (^) )
+    ( Integer, Num, (^), (+) )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
@@ -109,6 +109,18 @@ main = do
             , bench "Data.MonoidMap" $
                 nf (stimes ten_power_24) rm_natural
             ]
+        , bgroup "mapAccumL"
+            [ bench "Data.Map.Strict" $
+                nf (mapAccumL (\s v -> (s + v, v)) 0) om_natural
+            , bench "Data.MonoidMap" $
+                nf (mapAccumL (\s v -> (s + v, v)) 0) rm_natural
+            ]
+        , bgroup "mapAccumR"
+            [ bench "Data.Map.Strict" $
+                nf (mapAccumR (\s v -> (s + v, v)) 0) om_natural
+            , bench "Data.MonoidMap" $
+                nf (mapAccumR (\s v -> (s + v, v)) 0) rm_natural
+            ]
         ]
   where
     bound :: Int
@@ -140,18 +152,24 @@ class Ord k => Map m k v where
     delete :: k -> m k v -> m k v
     insert :: k -> v -> m k v -> m k v
     lookup :: k -> m k v -> Maybe v
+    mapAccumL :: (s -> v -> (s, v)) -> s -> m k v -> (s, m k v)
+    mapAccumR :: (s -> v -> (s, v)) -> s -> m k v -> (s, m k v)
 
 instance Ord k => Map OMap.Map k v where
     fromList = OMap.fromList
     delete = OMap.delete
     insert = OMap.insert
     lookup = OMap.lookup
+    mapAccumL = OMap.mapAccum
+    mapAccumR f = OMap.mapAccumRWithKey (\s _ v -> f s v)
 
 instance (Ord k, Eq v) => Map RMap.Map k v where
     fromList = RMap.fromList
     delete = RMap.delete
     insert = RMap.insert
     lookup = RMap.lookup
+    mapAccumL = RMap.mapAccumL
+    mapAccumR = RMap.mapAccumR
 
 deleteMany :: (Map m k v, Num v) => [k] -> m k v -> m k v
 deleteMany xs m = foldl' (flip delete) m xs
