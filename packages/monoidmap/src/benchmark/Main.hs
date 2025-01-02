@@ -2,6 +2,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NumericUnderscores #-}
 
+-- Benchmark for the `MonoidMap` type.
+--
+-- Instead of benchmarking functions for the `MonoidMap` type directly, we
+-- benchmark functions for the `RecoveredMap` type, a newtype wrapper around
+-- the `MonoidMap` type designed to provide the same semantics as `Map`.
+--
 module Main where
 
 import Control.DeepSeq
