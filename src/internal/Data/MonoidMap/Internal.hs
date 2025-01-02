@@ -150,6 +150,8 @@ import Prelude hiding
     , traverse
     )
 
+import Control.Applicative
+    ( Applicative (..) )
 import Control.DeepSeq
     ( NFData )
 import Data.Bifoldable
@@ -3300,3 +3302,46 @@ withBothA f
     = Map.zipWithMaybeAMatched
     $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
 {-# INLINE withBothA #-}
+
+--------------------------------------------------------------------------------
+-- State
+--------------------------------------------------------------------------------
+
+newtype StateL s a = StateL (s -> (s, a))
+newtype StateR s a = StateR (s -> (s, a))
+
+instance Functor (StateL s) where
+    fmap f (StateL kx) =
+        StateL $ \s -> let (s', x) = kx s in (s', f x)
+
+instance Functor (StateR s) where
+    fmap f (StateR kx) =
+        StateR $ \s -> let (s', x) = kx s in (s', f x)
+
+instance Applicative (StateL s) where
+    pure a = StateL $
+        \s -> (s, a)
+    StateL kf <*> StateL kx = StateL $
+        \s ->
+            let (s' , f  ) = kf s
+                (s'',   x) = kx s'
+            in  (s'', f x)
+    liftA2 f (StateL kx) (StateL ky) = StateL $
+        \s ->
+            let (s' ,   x  ) = kx s
+                (s'',     y) = ky s'
+            in  (s'', f x y)
+
+instance Applicative (StateR s) where
+    pure a = StateR $
+        \s -> (s, a)
+    StateR kf <*> StateR kx = StateR $
+        \s ->
+            let (s',    x) = kx s
+                (s'', f  ) = kf s'
+            in  (s'', f x)
+    liftA2 f (StateR kx) (StateR ky) = StateR $
+        \s ->
+            let (s' ,     y) = ky s
+                (s'',   x  ) = kx s'
+            in  (s'', f x y)
