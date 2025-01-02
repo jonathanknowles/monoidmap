@@ -98,3 +98,27 @@ mapAccumR f s m = Map <$> MonoidMap.mapAccumR g s (unMap m)
     g s1 (First mv1) = case mv1 of
         Just v1 -> let (s2, v2) = f s1 v1 in (s2, First (Just v2))
         Nothing -> (s1, First Nothing)
+
+mapAccumWithKeyL
+    :: forall s k v1 v2. (s -> k -> v1 -> (s, v2))
+    -> s
+    -> Map k v1
+    -> (s, Map k v2)
+mapAccumWithKeyL f s m = Map <$> MonoidMap.mapAccumWithKeyL g s (unMap m)
+  where
+    g :: s -> k -> First v1 -> (s, First v2)
+    g s1 k (First mv1) = case mv1 of
+        Just v1 -> let (s2, v2) = f s1 k v1 in (s2, First (Just v2))
+        Nothing -> (s1, First Nothing)
+
+mapAccumWithKeyR
+    :: forall s k v1 v2. (s -> k -> v1 -> (s, v2))
+    -> s
+    -> Map k v1
+    -> (s, Map k v2)
+mapAccumWithKeyR f s m = Map <$> MonoidMap.mapAccumWithKeyR g s (unMap m)
+  where
+    g :: s -> k -> First v1 -> (s, First v2)
+    g s1 k (First mv1) = case mv1 of
+        Just v1 -> let (s2, v2) = f s1 k v1 in (s2, First (Just v2))
+        Nothing -> (s1, First Nothing)
