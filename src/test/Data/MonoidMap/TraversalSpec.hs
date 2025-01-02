@@ -25,7 +25,14 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Arbitrary (..), Fun (..), Property, applyFun, applyFun2, (===) )
+    ( Arbitrary (..)
+    , Fun (..)
+    , Property
+    , applyFun
+    , applyFun2
+    , applyFun3
+    , (===)
+    )
 import Data.Semigroup
     ( First (..), Last (..) )
 
@@ -89,6 +96,24 @@ specFor = makeSpec $ do
             prop_mapAccumR @String
                 @k @v & property
 
+    describe "mapAccumWithKeyL" $ do
+
+        it "prop_mapAccumWithKeyL_@Int" $
+            prop_mapAccumWithKeyL @Int
+                @k @v & property
+        it "prop_mapAccumWithKeyL_@String" $
+            prop_mapAccumWithKeyL @String
+                @k @v & property
+
+    describe "mapAccumWithKeyR" $ do
+
+        it "prop_mapAccumWithKeyR_@Int" $
+            prop_mapAccumWithKeyR @Int
+                @k @v & property
+        it "prop_mapAccumWithKeyR_@String" $
+            prop_mapAccumWithKeyR @String
+                @k @v & property
+
 prop_traverse
     :: forall t k v. Test k v
     => (Applicative t, Eq (t (MonoidMap k v)), Show (t (MonoidMap k v)))
@@ -132,6 +157,28 @@ prop_mapAccumR (applyFun2 -> f) s m =
     MonoidMap.mapAccumR f s m
     ===
     fmap MonoidMap.fromMap (Traversable.mapAccumR f s (MonoidMap.toMap m))
+
+prop_mapAccumWithKeyL
+    :: forall s k v. (Test k v, Eq s, Show s)
+    => Fun (s, k, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+prop_mapAccumWithKeyL (applyFun3 -> f) s m =
+    MonoidMap.mapAccumWithKeyL f s m
+    ===
+    fmap MonoidMap.fromMap (Map.mapAccumWithKey f s (MonoidMap.toMap m))
+
+prop_mapAccumWithKeyR
+    :: forall s k v. (Test k v, Eq s, Show s)
+    => Fun (s, k, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+prop_mapAccumWithKeyR (applyFun3 -> f) s m =
+    MonoidMap.mapAccumWithKeyR f s m
+    ===
+    fmap MonoidMap.fromMap (Map.mapAccumRWithKey f s (MonoidMap.toMap m))
 
 deriving newtype instance Arbitrary a => Arbitrary (First a)
 deriving newtype instance Arbitrary a => Arbitrary (Last a)
