@@ -42,6 +42,7 @@ import Test.QuickCheck
     , Property
     , Testable
     , applyFun
+    , applyFun2
     , checkCoverage
     , cover
     , listOf
@@ -184,6 +185,20 @@ specFor keyType valueType = do
                     @k @v @v & property
             it "prop_map_mempty" $
                 prop_map_mempty
+                    @k @v @v & property
+
+        describe "MapAccum" $ do
+            it "prop_mapAccumL @Int" $
+                prop_mapAccumL @Int
+                    @k @v @v & property
+            it "prop_mapAccumL @String" $
+                prop_mapAccumL @String
+                    @k @v @v & property
+            it "prop_mapAccumR @Int" $
+                prop_mapAccumR @Int
+                    @k @v @v & property
+            it "prop_mapAccumR @String" $
+                prop_mapAccumR @String
                     @k @v @v & property
 
 --------------------------------------------------------------------------------
@@ -461,6 +476,38 @@ prop_map_mempty kvs =
     (===)
         (RMap.toList (RMap.map (const (mempty @v2)) (RMap.fromList kvs)))
         (OMap.toList (OMap.map (const (mempty @v2)) (OMap.fromList kvs)))
+
+--------------------------------------------------------------------------------
+-- MapAccum
+--------------------------------------------------------------------------------
+
+prop_mapAccumL
+    :: forall s k v1 v2. (Eq s, Eq v2, Ord k, Show k, Show s, Show v2)
+    => Fun (s, v1) (s, v2)
+    -> s
+    -> [(k, v1)]
+    -> Property
+prop_mapAccumL (applyFun2 -> f) s0 kvs =
+    (===)
+        (RMap.toList <$> rmapAccumL f s0 (RMap.fromList kvs))
+        (OMap.toList <$> omapAccumL f s0 (OMap.fromList kvs))
+  where
+    rmapAccumL = RMap.mapAccumL
+    omapAccumL = OMap.mapAccum
+
+prop_mapAccumR
+    :: forall s k v1 v2. (Eq s, Eq v2, Ord k, Show k, Show s, Show v2)
+    => Fun (s, v1) (s, v2)
+    -> s
+    -> [(k, v1)]
+    -> Property
+prop_mapAccumR (applyFun2 -> f) s0 kvs =
+    (===)
+        (RMap.toList <$> rmapAccumR f s0 (RMap.fromList kvs))
+        (OMap.toList <$> omapAccumR f s0 (OMap.fromList kvs))
+  where
+    rmapAccumR   = RMap.mapAccumR
+    omapAccumR g = OMap.mapAccumRWithKey (\s _ v -> g s v)
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
