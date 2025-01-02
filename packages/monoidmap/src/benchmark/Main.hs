@@ -2,6 +2,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NumericUnderscores #-}
 
+-- Benchmark for the `MonoidMap` type.
+--
+-- Instead of benchmarking functions for the `MonoidMap` type directly, we
+-- benchmark functions for the `RecoveredMap` type, a newtype wrapper around
+-- the `MonoidMap` type designed to provide the same semantics as `Map`.
+--
 module Main where
 
 import Control.DeepSeq
@@ -23,7 +29,7 @@ import Data.Ord
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
 import Prelude
-    ( Integer, Num, (^) )
+    ( Integer, Num, (^), (+) )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
@@ -51,13 +57,13 @@ main = do
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
                     nf (deleteMany evens) om_odd
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (deleteMany evens) rm_odd
                 ]
             , bgroup "present"
                 [ bench "Data.Map.Strict" $
                     nf (deleteMany evens) om_even
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (deleteMany evens) rm_even
                 ]
             ]
@@ -65,13 +71,13 @@ main = do
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
                     nf (insertMany elems_even) om_odd
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (insertMany elems_even) rm_odd
                 ]
             , bgroup "present"
                 [ bench "Data.Map.Strict" $
                     nf (insertMany elems_even) om_even
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (insertMany elems_even) rm_even
                 ]
             ]
@@ -79,13 +85,13 @@ main = do
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
                     nf (lookupMany evens) om_odd
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (lookupMany evens) rm_odd
                 ]
             , bgroup "present"
                 [ bench "Data.Map.Strict" $
                     nf (lookupMany evens) om_even
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (lookupMany evens) rm_even
                 ]
             ]
@@ -93,21 +99,33 @@ main = do
             [ bgroup "disjoint"
                 [ bench "Data.Map.Strict" $
                     nf (<> om_even) om_odd
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (<> rm_even) rm_odd
                 ]
             , bgroup "identical"
                 [ bench "Data.Map.Strict" $
                     nf (<> om_even) om_even
-                , bench "Data.MonoidMap" $
+                , bench "RecoveredMap" $
                     nf (<> rm_even) rm_even
                 ]
             ]
         , bgroup "stimes"
             [ bench "Data.Map.Strict" $
                 nf (stimes ten_power_24) om_natural
-            , bench "Data.MonoidMap" $
+            , bench "RecoveredMap" $
                 nf (stimes ten_power_24) rm_natural
+            ]
+        , bgroup "mapAccumL"
+            [ bench "Data.Map.Strict" $
+                nf (mapAccumL (\s v -> (s + v, v)) 0) om_natural
+            , bench "RecoveredMap" $
+                nf (mapAccumL (\s v -> (s + v, v)) 0) rm_natural
+            ]
+        , bgroup "mapAccumR"
+            [ bench "Data.Map.Strict" $
+                nf (mapAccumR (\s v -> (s + v, v)) 0) om_natural
+            , bench "RecoveredMap" $
+                nf (mapAccumR (\s v -> (s + v, v)) 0) rm_natural
             ]
         ]
   where
@@ -140,18 +158,24 @@ class Ord k => Map m k v where
     delete :: k -> m k v -> m k v
     insert :: k -> v -> m k v -> m k v
     lookup :: k -> m k v -> Maybe v
+    mapAccumL :: (s -> v -> (s, v)) -> s -> m k v -> (s, m k v)
+    mapAccumR :: (s -> v -> (s, v)) -> s -> m k v -> (s, m k v)
 
 instance Ord k => Map OMap.Map k v where
     fromList = OMap.fromList
     delete = OMap.delete
     insert = OMap.insert
     lookup = OMap.lookup
+    mapAccumL = OMap.mapAccum
+    mapAccumR f = OMap.mapAccumRWithKey (\s _ v -> f s v)
 
 instance (Ord k, Eq v) => Map RMap.Map k v where
     fromList = RMap.fromList
     delete = RMap.delete
     insert = RMap.insert
     lookup = RMap.lookup
+    mapAccumL = RMap.mapAccumL
+    mapAccumR = RMap.mapAccumR
 
 deleteMany :: (Map m k v, Num v) => [k] -> m k v -> m k v
 deleteMany xs m = foldl' (flip delete) m xs

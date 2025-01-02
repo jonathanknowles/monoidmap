@@ -82,6 +82,8 @@ module Data.MonoidMap.Internal
     -- ** Traversal
     , traverse
     , traverseWithKey
+    , mapAccumL
+    , mapAccumR
 
     -- * Monoidal operations
 
@@ -150,6 +152,8 @@ import Prelude hiding
     , traverse
     )
 
+import Control.Applicative
+    ( Applicative (..) )
 import Control.DeepSeq
     ( NFData )
 import Data.Bifoldable
@@ -211,6 +215,7 @@ import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
+import qualified Data.Traversable as Traversable
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
@@ -1168,7 +1173,8 @@ foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 -- Satisfies the following property:
 --
 -- @
--- 'traverse' f m '==' 'fmap' 'fromMap' ('Prelude.traverse' f ('toMap' m))
+-- 'traverse' f m '=='
+-- 'fmap' 'fromMap' ('Traversable'.'Traversable.traverse' f ('toMap' m))
 -- @
 --
 -- @since 0.0.1.9
@@ -1205,6 +1211,58 @@ traverseWithKey f (MonoidMap m) =
     Map.traverseMaybeWithKey
         (\k v -> maybeNonNull <$> applyNonNull (f k) v) m
 {-# INLINE traverseWithKey #-}
+
+-- | \(O(n)\). Threads an accumulating argument through the map in ascending
+--   order of keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'mapAccumL' f s m '=='
+-- 'fmap' 'fromMap' ('Traversable'.'Traversable.mapAccumL' f s ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
+mapAccumL
+    :: MonoidNull v2
+    => (s -> v1 -> (s, v2))
+    -> s
+    -> MonoidMap k v1
+    -> (s, MonoidMap k v2)
+mapAccumL f s m =
+    (coerce
+        :: ((x -> StateL s  y ) -> MonoidMap k x -> StateL s (MonoidMap k y))
+        -> ((x -> s ->  (s, y)) -> MonoidMap k x -> s ->  (s, MonoidMap k y))
+    )
+    traverse (flip f) m s
+{-# INLINE mapAccumL #-}
+
+-- | \(O(n)\). Threads an accumulating argument through the map in descending
+--   order of keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'mapAccumR' f s m '=='
+-- 'fmap' 'fromMap' ('Traversable'.'Traversable.mapAccumR' f s ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
+mapAccumR
+    :: MonoidNull v2
+    => (s -> v1 -> (s, v2))
+    -> s
+    -> MonoidMap k v1
+    -> (s, MonoidMap k v2)
+mapAccumR f s m =
+    (coerce
+        :: ((x -> StateR s  y ) -> MonoidMap k x -> StateR s (MonoidMap k y))
+        -> ((x -> s ->  (s, y)) -> MonoidMap k x -> s ->  (s, MonoidMap k y))
+    )
+    traverse (flip f) m s
+{-# INLINE mapAccumR #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
@@ -3300,3 +3358,46 @@ withBothA f
     = Map.zipWithMaybeAMatched
     $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
 {-# INLINE withBothA #-}
+
+--------------------------------------------------------------------------------
+-- State
+--------------------------------------------------------------------------------
+
+newtype StateL s a = StateL (s -> (s, a))
+newtype StateR s a = StateR (s -> (s, a))
+
+instance Functor (StateL s) where
+    fmap f (StateL kx) =
+        StateL $ \s -> let (s', x) = kx s in (s', f x)
+
+instance Functor (StateR s) where
+    fmap f (StateR kx) =
+        StateR $ \s -> let (s', x) = kx s in (s', f x)
+
+instance Applicative (StateL s) where
+    pure a = StateL $
+        \s -> (s, a)
+    StateL kf <*> StateL kx = StateL $
+        \s ->
+            let (s' , f  ) = kf s
+                (s'',   x) = kx s'
+            in  (s'', f x)
+    liftA2 f (StateL kx) (StateL ky) = StateL $
+        \s ->
+            let (s' ,   x  ) = kx s
+                (s'',     y) = ky s'
+            in  (s'', f x y)
+
+instance Applicative (StateR s) where
+    pure a = StateR $
+        \s -> (s, a)
+    StateR kf <*> StateR kx = StateR $
+        \s ->
+            let (s',    x) = kx s
+                (s'', f  ) = kf s'
+            in  (s'', f x)
+    liftA2 f (StateR kx) (StateR ky) = StateR $
+        \s ->
+            let (s' ,     y) = ky s
+                (s'',   x  ) = kx s'
+            in  (s'', f x y)

@@ -74,3 +74,19 @@ member k = MonoidMap.nonNullKey k . unMap
 
 map :: (v1 -> v2) -> Map k v1 -> Map k v2
 map f = Map . MonoidMap.map (fmap f) . unMap
+
+mapAccumL
+    :: forall s k v1 v2. (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumL f s m = Map <$> MonoidMap.mapAccumL g s (unMap m)
+  where
+    g :: s -> First v1 -> (s, First v2)
+    g s1 (First (Just v1)) = let (s2, v2) = f s1 v1 in (s2, First (Just v2))
+    g _ (First Nothing) = error "RecoveredMap.mapAccumL: unexpected Nothing"
+
+mapAccumR
+    :: forall s k v1 v2. (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumR f s m = Map <$> MonoidMap.mapAccumR g s (unMap m)
+  where
+    g :: s -> First v1 -> (s, First v2)
+    g s1 (First (Just v1)) = let (s2, v2) = f s1 v1 in (s2, First (Just v2))
+    g _ (First Nothing) = error "RecoveredMap.mapAccumR: unexpected Nothing"

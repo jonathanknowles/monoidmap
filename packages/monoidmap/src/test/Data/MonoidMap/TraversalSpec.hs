@@ -31,6 +31,7 @@ import Data.Semigroup
 
 import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
+import qualified Data.Traversable as Traversable
 
 spec :: Spec
 spec = describe "Traversal" $ do
@@ -70,6 +71,20 @@ specFor = makeSpec $ do
             prop_traverseWithKey @Last
                 @k @v & property
 
+    describe "mapAccum" $ do
+        it "prop_mapAccumL_@Int" $
+            prop_mapAccumL @Int
+                @k @v & property
+        it "prop_mapAccumL_@String" $
+            prop_mapAccumL @String
+                @k @v & property
+        it "prop_mapAccumR_@Int" $
+            prop_mapAccumR @Int
+                @k @v & property
+        it "prop_mapAccumR_@String" $
+            prop_mapAccumR @String
+                @k @v & property
+
 prop_traverse
     :: forall t k v. Test k v
     => (Applicative t, Eq (t (MonoidMap k v)), Show (t (MonoidMap k v)))
@@ -79,7 +94,7 @@ prop_traverse
 prop_traverse (applyFun -> f) m =
     MonoidMap.traverse f m
     ===
-    fmap MonoidMap.fromMap (Prelude.traverse f (MonoidMap.toMap m))
+    fmap MonoidMap.fromMap (Traversable.traverse f (MonoidMap.toMap m))
 
 prop_traverseWithKey
     :: forall t k v. Test k v
@@ -91,6 +106,28 @@ prop_traverseWithKey (applyFun2 -> f) m =
     MonoidMap.traverseWithKey f m
     ===
     fmap MonoidMap.fromMap (Map.traverseWithKey f (MonoidMap.toMap m))
+
+prop_mapAccumL
+    :: forall s k v. (Test k v, Eq s, Show s)
+    => Fun (s, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+prop_mapAccumL (applyFun2 -> f) s m =
+    MonoidMap.mapAccumL f s m
+    ===
+    fmap MonoidMap.fromMap (Traversable.mapAccumL f s (MonoidMap.toMap m))
+
+prop_mapAccumR
+    :: forall s k v. (Test k v, Eq s, Show s)
+    => Fun (s, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+prop_mapAccumR (applyFun2 -> f) s m =
+    MonoidMap.mapAccumR f s m
+    ===
+    fmap MonoidMap.fromMap (Traversable.mapAccumR f s (MonoidMap.toMap m))
 
 deriving newtype instance Arbitrary a => Arbitrary (First a)
 deriving newtype instance Arbitrary a => Arbitrary (Last a)
