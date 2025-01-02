@@ -84,6 +84,8 @@ module Data.MonoidMap.Internal
     , traverseWithKey
     , mapAccumL
     , mapAccumR
+    , mapAccumWithKeyL
+    , mapAccumWithKeyR
 
     -- * Monoidal operations
 
@@ -1266,6 +1268,34 @@ mapAccumR f s m =
     )
     traverse (flip f) m s
 {-# INLINE mapAccumR #-}
+
+mapAccumWithKeyL
+    :: MonoidNull v2
+    => (s -> k -> v1 -> (s, v2))
+    -> s
+    -> MonoidMap k v1
+    -> (s, MonoidMap k v2)
+mapAccumWithKeyL f s0 m =
+    (coerce
+        :: ((k -> v1 -> StateL s  v2 ) -> MM k v1 -> StateL s (MM k v2))
+        -> ((k -> v1 -> s ->  (s, v2)) -> MM k v1 -> s ->  (s, MM k v2))
+    )
+    traverseWithKey (\k v1 s -> f s k v1) m s0
+{-# INLINE mapAccumWithKeyL #-}
+
+mapAccumWithKeyR
+    :: MonoidNull v2
+    => (s -> k -> v1 -> (s, v2))
+    -> s
+    -> MonoidMap k v1
+    -> (s, MonoidMap k v2)
+mapAccumWithKeyR f s0 m =
+    (coerce
+        :: ((k -> v1 -> StateR s  v2 ) -> MM k v1 -> StateR s (MM k v2))
+        -> ((k -> v1 -> s ->  (s, v2)) -> MM k v1 -> s ->  (s, MM k v2))
+    )
+    traverseWithKey (\k v1 s -> f s k v1) m s0
+{-# INLINE mapAccumWithKeyR #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
