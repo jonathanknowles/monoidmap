@@ -71,13 +71,17 @@ specFor = makeSpec $ do
             prop_traverseWithKey @Last
                 @k @v & property
 
-    describe "mapAccum" $ do
+    describe "mapAccumL" $ do
+
         it "prop_mapAccumL_@Int" $
             prop_mapAccumL @Int
                 @k @v & property
         it "prop_mapAccumL_@String" $
             prop_mapAccumL @String
                 @k @v & property
+
+    describe "mapAccumR" $ do
+
         it "prop_mapAccumR_@Int" $
             prop_mapAccumR @Int
                 @k @v & property

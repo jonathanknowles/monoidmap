@@ -187,13 +187,15 @@ specFor keyType valueType = do
                 prop_map_mempty
                     @k @v @v & property
 
-        describe "MapAccum" $ do
+        describe "MapAccumL" $ do
             it "prop_mapAccumL @Int" $
                 prop_mapAccumL @Int
                     @k @v @v & property
             it "prop_mapAccumL @String" $
                 prop_mapAccumL @String
                     @k @v @v & property
+
+        describe "MapAccumR" $ do
             it "prop_mapAccumR @Int" $
                 prop_mapAccumR @Int
                     @k @v @v & property
