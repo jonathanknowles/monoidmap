@@ -1269,6 +1269,18 @@ mapAccumR f s m =
     traverse (flip f) m s
 {-# INLINE mapAccumR #-}
 
+-- | \(O(n)\). Threads an accumulating argument through the map in ascending
+--   order of keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'mapAccumWithKeyL' f s m '=='
+-- 'fmap' 'fromMap' ('Map'.'Map.mapAccumWithKey' f s ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
 mapAccumWithKeyL
     :: MonoidNull v2
     => (s -> k -> v1 -> (s, v2))
@@ -1283,6 +1295,18 @@ mapAccumWithKeyL f s0 m =
     traverseWithKey (\k v1 s -> f s k v1) m s0
 {-# INLINE mapAccumWithKeyL #-}
 
+-- | \(O(n)\). Threads an accumulating argument through the map in descending
+--   order of keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'mapAccumWithKeyR' f s m '=='
+-- 'fmap' 'fromMap' ('Map'.'Map.mapAccumRWithKey' f s ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
 mapAccumWithKeyR
     :: MonoidNull v2
     => (s -> k -> v1 -> (s, v2))
