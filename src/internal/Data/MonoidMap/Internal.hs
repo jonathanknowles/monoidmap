@@ -215,6 +215,7 @@ import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
+import qualified Data.Traversable as Traversable
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
@@ -1172,7 +1173,8 @@ foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 -- Satisfies the following property:
 --
 -- @
--- 'traverse' f m '==' 'fmap' 'fromMap' ('Prelude.traverse' f ('toMap' m))
+-- 'traverse' f m '=='
+-- 'fmap' 'fromMap' ('Traversable'.'Traversable.traverse' f ('toMap' m))
 -- @
 --
 -- @since 0.0.1.9

@@ -94,7 +94,7 @@ prop_traverse
 prop_traverse (applyFun -> f) m =
     MonoidMap.traverse f m
     ===
-    fmap MonoidMap.fromMap (Prelude.traverse f (MonoidMap.toMap m))
+    fmap MonoidMap.fromMap (Traversable.traverse f (MonoidMap.toMap m))
 
 prop_traverseWithKey
     :: forall t k v. Test k v
