@@ -66,16 +66,14 @@ module Data.MonoidMap
 
     -- ** Folding
     , foldl
-    , foldr
-    , foldlWithKey
-    , foldrWithKey
-    , foldMapWithKey
-
-    -- *** Strict folding
     , foldl'
+    , foldr
     , foldr'
+    , foldlWithKey
     , foldlWithKey'
+    , foldrWithKey
     , foldrWithKey'
+    , foldMapWithKey
     , foldMapWithKey'
 
     -- ** Traversal
