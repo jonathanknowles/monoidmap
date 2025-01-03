@@ -83,6 +83,8 @@ module Data.MonoidMap
     , traverseWithKey
     , mapAccumL
     , mapAccumR
+    , mapAccumWithKeyL
+    , mapAccumWithKeyR
 
     -- * Monoidal operations
 
