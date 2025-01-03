@@ -8,10 +8,27 @@
 -- An ordinary left-biased map similar to 'Map', implemented in terms of
 -- 'MonoidMap'.
 --
-module Examples.RecoveredMap where
+module Examples.RecoveredMap
+    ( Map
+    , empty
+    , singleton
+    , fromList
+    , toList
+    , delete
+    , insert
+    , keysSet
+    , lookup
+    , member
+    , map
+    , mapAccumL
+    , mapAccumR
+    , mapAccumWithKeyL
+    , mapAccumWithKeyR
+    )
+    where
 
 import Prelude hiding
-    ( map )
+    ( lookup, map )
 
 import Control.DeepSeq
     ( NFData )
@@ -75,18 +92,30 @@ member k = MonoidMap.nonNullKey k . unMap
 map :: (v1 -> v2) -> Map k v1 -> Map k v2
 map f = Map . MonoidMap.map (fmap f) . unMap
 
-mapAccumL
-    :: forall s k v1 v2. (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumL f s m = Map <$> MonoidMap.mapAccumL g s (unMap m)
-  where
-    g :: s -> First v1 -> (s, First v2)
-    g s1 (First (Just v1)) = let (s2, v2) = f s1 v1 in (s2, First (Just v2))
-    g _ (First Nothing) = error "RecoveredMap.mapAccumL: unexpected Nothing"
+mapAccumL :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumL f s m = Map <$> MonoidMap.mapAccumL (accum f) s (unMap m)
 
-mapAccumR
-    :: forall s k v1 v2. (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumR f s m = Map <$> MonoidMap.mapAccumR g s (unMap m)
-  where
-    g :: s -> First v1 -> (s, First v2)
-    g s1 (First (Just v1)) = let (s2, v2) = f s1 v1 in (s2, First (Just v2))
-    g _ (First Nothing) = error "RecoveredMap.mapAccumR: unexpected Nothing"
+mapAccumR :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumR f s m = Map <$> MonoidMap.mapAccumR (accum f) s (unMap m)
+
+mapAccumWithKeyL :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumWithKeyL f s m =
+    Map <$> MonoidMap.mapAccumWithKeyL (accumWithKey f) s (unMap m)
+
+mapAccumWithKeyR :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumWithKeyR f s m =
+    Map <$> MonoidMap.mapAccumWithKeyR (accumWithKey f) s (unMap m)
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+accum :: (s -> v1 -> (s, v2)) -> s -> First v1 -> (s, First v2)
+accum f s1 (First mv1) = case mv1 of
+    Just v1 -> let (s2, v2) = f s1 v1 in (s2, First (Just v2))
+    Nothing -> (s1, First Nothing)
+
+accumWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> k -> First v1 -> (s, First v2)
+accumWithKey f s1 k (First mv1) = case mv1 of
+    Just v1 -> let (s2, v2) = f s1 k v1 in (s2, First (Just v2))
+    Nothing -> (s1, First Nothing)

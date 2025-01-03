@@ -43,6 +43,7 @@ import Test.QuickCheck
     , Testable
     , applyFun
     , applyFun2
+    , applyFun3
     , checkCoverage
     , cover
     , listOf
@@ -75,8 +76,10 @@ specFor
     :: forall k v. () =>
         ( Arbitrary k
         , Arbitrary v
+        , CoArbitrary k
         , CoArbitrary v
         , Eq v
+        , Function k
         , Function v
         , Monoid v
         , Ord k
@@ -187,18 +190,36 @@ specFor keyType valueType = do
                 prop_map_mempty
                     @k @v @v & property
 
-        describe "MapAccum" $ do
+        describe "MapAccumL" $ do
             it "prop_mapAccumL @Int" $
                 prop_mapAccumL @Int
                     @k @v @v & property
             it "prop_mapAccumL @String" $
                 prop_mapAccumL @String
                     @k @v @v & property
+
+        describe "MapAccumR" $ do
             it "prop_mapAccumR @Int" $
                 prop_mapAccumR @Int
                     @k @v @v & property
             it "prop_mapAccumR @String" $
                 prop_mapAccumR @String
+                    @k @v @v & property
+
+        describe "MapAccumWithKeyL" $ do
+            it "prop_mapAccumWithKeyL @Int" $
+                prop_mapAccumWithKeyL @Int
+                    @k @v @v & property
+            it "prop_mapAccumWithKeyL @String" $
+                prop_mapAccumWithKeyL @String
+                    @k @v @v & property
+
+        describe "MapAccumWithKeyR" $ do
+            it "prop_mapAccumWithKeyR @Int" $
+                prop_mapAccumWithKeyR @Int
+                    @k @v @v & property
+            it "prop_mapAccumWithKeyR @String" $
+                prop_mapAccumWithKeyR @String
                     @k @v @v & property
 
 --------------------------------------------------------------------------------
@@ -508,6 +529,38 @@ prop_mapAccumR (applyFun2 -> f) s0 kvs =
   where
     rmapAccumR   = RMap.mapAccumR
     omapAccumR g = OMap.mapAccumRWithKey (\s _ v -> g s v)
+
+--------------------------------------------------------------------------------
+-- MapAccumWithKey
+--------------------------------------------------------------------------------
+
+prop_mapAccumWithKeyL
+    :: forall s k v1 v2. (Eq s, Eq v2, Ord k, Show k, Show s, Show v2)
+    => Fun (s, k, v1) (s, v2)
+    -> s
+    -> [(k, v1)]
+    -> Property
+prop_mapAccumWithKeyL (applyFun3 -> f) s0 kvs =
+    (===)
+        (RMap.toList <$> rmapAccumWithKeyL f s0 (RMap.fromList kvs))
+        (OMap.toList <$> omapAccumWithKeyL f s0 (OMap.fromList kvs))
+  where
+    rmapAccumWithKeyL = RMap.mapAccumWithKeyL
+    omapAccumWithKeyL = OMap.mapAccumWithKey
+
+prop_mapAccumWithKeyR
+    :: forall s k v1 v2. (Eq s, Eq v2, Ord k, Show k, Show s, Show v2)
+    => Fun (s, k, v1) (s, v2)
+    -> s
+    -> [(k, v1)]
+    -> Property
+prop_mapAccumWithKeyR (applyFun3 -> f) s0 kvs =
+    (===)
+        (RMap.toList <$> rmapAccumWithKeyR f s0 (RMap.fromList kvs))
+        (OMap.toList <$> omapAccumWithKeyR f s0 (OMap.fromList kvs))
+  where
+    rmapAccumWithKeyR = RMap.mapAccumWithKeyR
+    omapAccumWithKeyR = OMap.mapAccumRWithKey
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances

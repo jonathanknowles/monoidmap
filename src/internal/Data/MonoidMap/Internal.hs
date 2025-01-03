@@ -84,6 +84,8 @@ module Data.MonoidMap.Internal
     , traverseWithKey
     , mapAccumL
     , mapAccumR
+    , mapAccumWithKeyL
+    , mapAccumWithKeyR
 
     -- * Monoidal operations
 
@@ -234,6 +236,9 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
         via Map k
     deriving (Eq2, Show2, Bifoldable)
         via Map
+
+-- Internal alias used when extra brevity is required.
+type MM = MonoidMap
 
 --------------------------------------------------------------------------------
 -- Non-null values
@@ -1232,8 +1237,8 @@ mapAccumL
     -> (s, MonoidMap k v2)
 mapAccumL f s m =
     (coerce
-        :: ((x -> StateL s  y ) -> MonoidMap k x -> StateL s (MonoidMap k y))
-        -> ((x -> s ->  (s, y)) -> MonoidMap k x -> s ->  (s, MonoidMap k y))
+        :: ((v1 -> StateL s  v2 ) -> MM k v1 -> StateL s (MM k v2))
+        -> ((v1 -> s ->  (s, v2)) -> MM k v1 -> s ->  (s, MM k v2))
     )
     traverse (flip f) m s
 {-# INLINE mapAccumL #-}
@@ -1258,11 +1263,63 @@ mapAccumR
     -> (s, MonoidMap k v2)
 mapAccumR f s m =
     (coerce
-        :: ((x -> StateR s  y ) -> MonoidMap k x -> StateR s (MonoidMap k y))
-        -> ((x -> s ->  (s, y)) -> MonoidMap k x -> s ->  (s, MonoidMap k y))
+        :: ((v1 -> StateR s  v2 ) -> MM k v1 -> StateR s (MM k v2))
+        -> ((v1 -> s ->  (s, v2)) -> MM k v1 -> s ->  (s, MM k v2))
     )
     traverse (flip f) m s
 {-# INLINE mapAccumR #-}
+
+-- | \(O(n)\). Threads an accumulating argument through the map in ascending
+--   order of keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'mapAccumWithKeyL' f s m '=='
+-- 'fmap' 'fromMap' ('Map'.'Map.mapAccumWithKey' f s ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
+mapAccumWithKeyL
+    :: MonoidNull v2
+    => (s -> k -> v1 -> (s, v2))
+    -> s
+    -> MonoidMap k v1
+    -> (s, MonoidMap k v2)
+mapAccumWithKeyL f s0 m =
+    (coerce
+        :: ((k -> v1 -> StateL s  v2 ) -> MM k v1 -> StateL s (MM k v2))
+        -> ((k -> v1 -> s ->  (s, v2)) -> MM k v1 -> s ->  (s, MM k v2))
+    )
+    traverseWithKey (\k v1 s -> f s k v1) m s0
+{-# INLINE mapAccumWithKeyL #-}
+
+-- | \(O(n)\). Threads an accumulating argument through the map in descending
+--   order of keys.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'mapAccumWithKeyR' f s m '=='
+-- 'fmap' 'fromMap' ('Map'.'Map.mapAccumRWithKey' f s ('toMap' m))
+-- @
+--
+-- @since 0.0.1.9
+--
+mapAccumWithKeyR
+    :: MonoidNull v2
+    => (s -> k -> v1 -> (s, v2))
+    -> s
+    -> MonoidMap k v1
+    -> (s, MonoidMap k v2)
+mapAccumWithKeyR f s0 m =
+    (coerce
+        :: ((k -> v1 -> StateR s  v2 ) -> MM k v1 -> StateR s (MM k v2))
+        -> ((k -> v1 -> s ->  (s, v2)) -> MM k v1 -> s ->  (s, MM k v2))
+    )
+    traverseWithKey (\k v1 s -> f s k v1) m s0
+{-# INLINE mapAccumWithKeyR #-}
 
 --------------------------------------------------------------------------------
 -- Comparison
