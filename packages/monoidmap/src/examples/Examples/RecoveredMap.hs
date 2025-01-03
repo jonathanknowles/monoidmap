@@ -21,9 +21,9 @@ module Examples.RecoveredMap
     , member
     , map
     , mapAccumL
+    , mapAccumLWithKey
     , mapAccumR
-    , mapAccumWithKeyL
-    , mapAccumWithKeyR
+    , mapAccumRWithKey
     )
     where
 
@@ -98,13 +98,13 @@ mapAccumL f s m = Map <$> MonoidMap.mapAccumL (accum f) s (unMap m)
 mapAccumR :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumR f s m = Map <$> MonoidMap.mapAccumR (accum f) s (unMap m)
 
-mapAccumWithKeyL :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumWithKeyL f s m =
-    Map <$> MonoidMap.mapAccumWithKeyL (accumWithKey f) s (unMap m)
+mapAccumLWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumLWithKey f s m =
+    Map <$> MonoidMap.mapAccumLWithKey (accumWithKey f) s (unMap m)
 
-mapAccumWithKeyR :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumWithKeyR f s m =
-    Map <$> MonoidMap.mapAccumWithKeyR (accumWithKey f) s (unMap m)
+mapAccumRWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
+mapAccumRWithKey f s m =
+    Map <$> MonoidMap.mapAccumRWithKey (accumWithKey f) s (unMap m)
 
 --------------------------------------------------------------------------------
 -- Utilities

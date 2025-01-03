@@ -96,22 +96,22 @@ specFor = makeSpec $ do
             prop_mapAccumR @String
                 @k @v & property
 
-    describe "mapAccumWithKeyL" $ do
+    describe "mapAccumLWithKey" $ do
 
-        it "prop_mapAccumWithKeyL_@Int" $
-            prop_mapAccumWithKeyL @Int
+        it "prop_mapAccumLWithKey_@Int" $
+            prop_mapAccumLWithKey @Int
                 @k @v & property
-        it "prop_mapAccumWithKeyL_@String" $
-            prop_mapAccumWithKeyL @String
+        it "prop_mapAccumLWithKey_@String" $
+            prop_mapAccumLWithKey @String
                 @k @v & property
 
-    describe "mapAccumWithKeyR" $ do
+    describe "mapAccumRWithKey" $ do
 
-        it "prop_mapAccumWithKeyR_@Int" $
-            prop_mapAccumWithKeyR @Int
+        it "prop_mapAccumRWithKey_@Int" $
+            prop_mapAccumRWithKey @Int
                 @k @v & property
-        it "prop_mapAccumWithKeyR_@String" $
-            prop_mapAccumWithKeyR @String
+        it "prop_mapAccumRWithKey_@String" $
+            prop_mapAccumRWithKey @String
                 @k @v & property
 
 prop_traverse
@@ -158,25 +158,25 @@ prop_mapAccumR (applyFun2 -> f) s m =
     ===
     fmap MonoidMap.fromMap (Traversable.mapAccumR f s (MonoidMap.toMap m))
 
-prop_mapAccumWithKeyL
+prop_mapAccumLWithKey
     :: forall s k v. (Test k v, Eq s, Show s)
     => Fun (s, k, v) (s, v)
     -> s
     -> MonoidMap k v
     -> Property
-prop_mapAccumWithKeyL (applyFun3 -> f) s m =
-    MonoidMap.mapAccumWithKeyL f s m
+prop_mapAccumLWithKey (applyFun3 -> f) s m =
+    MonoidMap.mapAccumLWithKey f s m
     ===
     fmap MonoidMap.fromMap (Map.mapAccumWithKey f s (MonoidMap.toMap m))
 
-prop_mapAccumWithKeyR
+prop_mapAccumRWithKey
     :: forall s k v. (Test k v, Eq s, Show s)
     => Fun (s, k, v) (s, v)
     -> s
     -> MonoidMap k v
     -> Property
-prop_mapAccumWithKeyR (applyFun3 -> f) s m =
-    MonoidMap.mapAccumWithKeyR f s m
+prop_mapAccumRWithKey (applyFun3 -> f) s m =
+    MonoidMap.mapAccumRWithKey f s m
     ===
     fmap MonoidMap.fromMap (Map.mapAccumRWithKey f s (MonoidMap.toMap m))
 
