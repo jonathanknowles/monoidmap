@@ -1522,14 +1522,17 @@ append = merge MergeStrategy
     , withNonNullP =
         withBoth (<>)
     }
-{-# NOINLINE append #-}
+{-# INLINABLE [1] append #-}
 
 appendPositive
-    :: (Ord k, PositiveMonoid v)
+    :: forall k v. (Ord k, PositiveMonoid v)
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-appendPositive m1 m2 = coerce (Map.unionWith (<>) (toMap m1) (toMap m2))
+appendPositive m1 m2 =
+    coerce @(Map k v) @(MonoidMap k v) $
+    Map.unionWith (<>) (coerce m1) (coerce m2)
+{-# INLINABLE [1] appendPositive #-}
 
 {-# RULES
 
