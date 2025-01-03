@@ -207,19 +207,19 @@ specFor keyType valueType = do
                     @k @v @v & property
 
         describe "MapAccumWithKeyL" $ do
-            it "prop_mapAccumWithKeyL @Int" $
-                prop_mapAccumWithKeyL @Int
+            it "prop_mapAccumLWithKey @Int" $
+                prop_mapAccumLWithKey @Int
                     @k @v @v & property
-            it "prop_mapAccumWithKeyL @String" $
-                prop_mapAccumWithKeyL @String
+            it "prop_mapAccumLWithKey @String" $
+                prop_mapAccumLWithKey @String
                     @k @v @v & property
 
         describe "MapAccumWithKeyR" $ do
-            it "prop_mapAccumWithKeyR @Int" $
-                prop_mapAccumWithKeyR @Int
+            it "prop_mapAccumRWithKey @Int" $
+                prop_mapAccumRWithKey @Int
                     @k @v @v & property
-            it "prop_mapAccumWithKeyR @String" $
-                prop_mapAccumWithKeyR @String
+            it "prop_mapAccumRWithKey @String" $
+                prop_mapAccumRWithKey @String
                     @k @v @v & property
 
 --------------------------------------------------------------------------------
@@ -534,33 +534,33 @@ prop_mapAccumR (applyFun2 -> f) s0 kvs =
 -- MapAccumWithKey
 --------------------------------------------------------------------------------
 
-prop_mapAccumWithKeyL
+prop_mapAccumLWithKey
     :: forall s k v1 v2. (Eq s, Eq v2, Ord k, Show k, Show s, Show v2)
     => Fun (s, k, v1) (s, v2)
     -> s
     -> [(k, v1)]
     -> Property
-prop_mapAccumWithKeyL (applyFun3 -> f) s0 kvs =
+prop_mapAccumLWithKey (applyFun3 -> f) s0 kvs =
     (===)
-        (RMap.toList <$> rmapAccumWithKeyL f s0 (RMap.fromList kvs))
-        (OMap.toList <$> omapAccumWithKeyL f s0 (OMap.fromList kvs))
+        (RMap.toList <$> rmapAccumLWithKey f s0 (RMap.fromList kvs))
+        (OMap.toList <$> omapAccumLWithKey f s0 (OMap.fromList kvs))
   where
-    rmapAccumWithKeyL = RMap.mapAccumWithKeyL
-    omapAccumWithKeyL = OMap.mapAccumWithKey
+    rmapAccumLWithKey = RMap.mapAccumLWithKey
+    omapAccumLWithKey = OMap.mapAccumWithKey
 
-prop_mapAccumWithKeyR
+prop_mapAccumRWithKey
     :: forall s k v1 v2. (Eq s, Eq v2, Ord k, Show k, Show s, Show v2)
     => Fun (s, k, v1) (s, v2)
     -> s
     -> [(k, v1)]
     -> Property
-prop_mapAccumWithKeyR (applyFun3 -> f) s0 kvs =
+prop_mapAccumRWithKey (applyFun3 -> f) s0 kvs =
     (===)
-        (RMap.toList <$> rmapAccumWithKeyR f s0 (RMap.fromList kvs))
-        (OMap.toList <$> omapAccumWithKeyR f s0 (OMap.fromList kvs))
+        (RMap.toList <$> rmapAccumRWithKey f s0 (RMap.fromList kvs))
+        (OMap.toList <$> omapAccumRWithKey f s0 (OMap.fromList kvs))
   where
-    rmapAccumWithKeyR = RMap.mapAccumWithKeyR
-    omapAccumWithKeyR = OMap.mapAccumRWithKey
+    rmapAccumRWithKey = RMap.mapAccumRWithKey
+    omapAccumRWithKey = OMap.mapAccumRWithKey
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
