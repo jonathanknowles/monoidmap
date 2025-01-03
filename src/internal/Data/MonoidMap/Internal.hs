@@ -187,6 +187,8 @@ import Data.Monoid.Monus
     ( Monus (..) )
 import Data.Monoid.Null
     ( MonoidNull, PositiveMonoid )
+import Data.Monoid
+    ( All, Any, First, Last, Product, Sum)
 import Data.Semigroup
     ( stimes )
 import Data.Semigroup.Cancellative
@@ -198,12 +200,16 @@ import Data.Semigroup.Cancellative
     , RightCancellative
     , RightReductive
     )
+import Data.Sequence
+    ( Seq )
 import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (Item) )
 import NoThunks.Class
     ( NoThunks )
+import Numeric.Natural
+    ( Natural )
 import Text.Read
     ( Read (..) )
 
@@ -1516,7 +1522,54 @@ append = merge MergeStrategy
     , withNonNullP =
         withBoth (<>)
     }
-{-# INLINE append #-}
+{-# NOINLINE append #-}
+
+appendPositive
+    :: (Ord k, PositiveMonoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+appendPositive m1 m2 = coerce (Map.unionWith (<>) (toMap m1) (toMap m2))
+
+{-# RULES
+
+"append/All" [2]
+    forall m1 (m2 :: MonoidMap k All)
+    . append m1 m2 = appendPositive m1 m2
+
+"append/Any" [2]
+    forall m1 (m2 :: MonoidMap k Any)
+    . append m1 m2 = appendPositive m1 m2
+
+"append/First" [2]
+    forall m1 (m2 :: MonoidMap k (First v))
+    . append m1 m2 = appendPositive m1 m2
+
+"append/Last" [2]
+    forall m1 (m2 :: MonoidMap k (Last v))
+    . append m1 m2 = appendPositive m1 m2
+
+"append/Product Natural" [2]
+    forall m1 (m2 :: MonoidMap k (Product Natural))
+    . append m1 m2 = appendPositive m1 m2
+
+"append/Sum Natural" [2]
+    forall m1 (m2 :: MonoidMap k (Sum Natural))
+    . append m1 m2 = appendPositive m1 m2
+
+"append/List" [2]
+    forall m1 (m2 :: MonoidMap k [a])
+    . append m1 m2 = appendPositive m1 m2
+
+"append/Seq" [2]
+    forall m1 (m2 :: MonoidMap k (Seq a))
+    . append m1 m2 = appendPositive m1 m2
+
+"append/Set" [2]
+    forall m1 (m2 :: Ord a => MonoidMap k (Set a))
+    . append m1 m2 = appendPositive m1 m2
+
+#-}
 
 --------------------------------------------------------------------------------
 -- Prefixes and suffixes

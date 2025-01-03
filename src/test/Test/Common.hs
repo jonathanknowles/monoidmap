@@ -35,7 +35,7 @@ import Data.Group
 import Data.Kind
     ( Constraint, Type )
 import Data.Monoid
-    ( Dual, Product, Sum )
+    ( All, Dual, Product, Sum )
 import Data.Monoid.GCD
     ( GCDMonoid, LeftGCDMonoid, OverlappingGCDMonoid, RightGCDMonoid )
 import Data.Monoid.LCM
@@ -165,7 +165,8 @@ data TestType (c :: Type -> Constraint) =
 
 testTypesMonoidNull :: [TestType MonoidNull]
 testTypesMonoidNull =
-    [ TestType (Proxy @(Dual Text))
+    [ TestType (Proxy @All)
+    , TestType (Proxy @(Dual Text))
     , TestType (Proxy @(Dual [Int]))
     , TestType (Proxy @(Dual [Natural]))
     , TestType (Proxy @(Set Int))
