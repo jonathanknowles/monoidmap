@@ -127,17 +127,17 @@ main = do
             , bench "RecoveredMap" $
                 nf (mapAccumR (\s v -> (s + v, v)) 0) rm_natural
             ]
-        , bgroup "mapAccumWithKeyL"
+        , bgroup "mapAccumLWithKey"
             [ bench "Data.Map.Strict" $
                 nf (mapAccumL (\s v -> (s + v, v)) 0) om_natural
             , bench "RecoveredMap" $
                 nf (mapAccumL (\s v -> (s + v, v)) 0) rm_natural
             ]
-        , bgroup "mapAccumWithKeyR"
+        , bgroup "mapAccumRWithKey"
             [ bench "Data.Map.Strict" $
-                nf (mapAccumWithKeyR (\s k v -> (s + k + v, v)) 0) om_natural
+                nf (mapAccumRWithKey (\s k v -> (s + k + v, v)) 0) om_natural
             , bench "RecoveredMap" $
-                nf (mapAccumWithKeyR (\s k v -> (s + k + v, v)) 0) rm_natural
+                nf (mapAccumRWithKey (\s k v -> (s + k + v, v)) 0) rm_natural
             ]
         ]
   where
@@ -172,8 +172,8 @@ class Ord k => Map m k v where
     lookup :: k -> m k v -> Maybe v
     mapAccumL :: (s -> v -> (s, v)) -> s -> m k v -> (s, m k v)
     mapAccumR :: (s -> v -> (s, v)) -> s -> m k v -> (s, m k v)
-    mapAccumWithKeyL :: (s -> k -> v -> (s, v)) -> s -> m k v -> (s, m k v)
-    mapAccumWithKeyR :: (s -> k -> v -> (s, v)) -> s -> m k v -> (s, m k v)
+    mapAccumLWithKey :: (s -> k -> v -> (s, v)) -> s -> m k v -> (s, m k v)
+    mapAccumRWithKey :: (s -> k -> v -> (s, v)) -> s -> m k v -> (s, m k v)
 
 instance Ord k => Map OMap.Map k v where
     fromList = OMap.fromList
@@ -182,8 +182,8 @@ instance Ord k => Map OMap.Map k v where
     lookup = OMap.lookup
     mapAccumL = OMap.mapAccum
     mapAccumR f = OMap.mapAccumRWithKey (\s _ v -> f s v)
-    mapAccumWithKeyL = OMap.mapAccumWithKey
-    mapAccumWithKeyR = OMap.mapAccumRWithKey
+    mapAccumLWithKey = OMap.mapAccumWithKey
+    mapAccumRWithKey = OMap.mapAccumRWithKey
 
 instance (Ord k, Eq v) => Map RMap.Map k v where
     fromList = RMap.fromList
@@ -192,8 +192,8 @@ instance (Ord k, Eq v) => Map RMap.Map k v where
     lookup = RMap.lookup
     mapAccumL = RMap.mapAccumL
     mapAccumR = RMap.mapAccumR
-    mapAccumWithKeyL = RMap.mapAccumWithKeyL
-    mapAccumWithKeyR = RMap.mapAccumWithKeyR
+    mapAccumLWithKey = RMap.mapAccumLWithKey
+    mapAccumRWithKey = RMap.mapAccumRWithKey
 
 deleteMany :: (Map m k v, Num v) => [k] -> m k v -> m k v
 deleteMany xs m = foldl' (flip delete) m xs
