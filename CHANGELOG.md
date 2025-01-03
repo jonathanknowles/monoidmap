@@ -1,3 +1,13 @@
+# 0.0.1.9
+
+- Added the following traversal functions to `MonoidMap`:
+  - `traverse`
+  - `traverseWithKey`
+  - `mapAccumL`
+  - `mapAccumLWithKey`
+  - `mapAccumR`
+  - `mapAccumRWithKey`
+
 # 0.0.1.8
 
 - Added strict variant of the `foldMapWithKey` function.
