@@ -8,10 +8,27 @@
 -- An ordinary left-biased map similar to 'Map', implemented in terms of
 -- 'MonoidMap'.
 --
-module Examples.RecoveredMap where
+module Examples.RecoveredMap
+    ( Map
+    , empty
+    , singleton
+    , fromList
+    , toList
+    , delete
+    , insert
+    , keysSet
+    , lookup
+    , member
+    , map
+    , mapAccumL
+    , mapAccumR
+    , mapAccumWithKeyL
+    , mapAccumWithKeyR
+    )
+    where
 
 import Prelude hiding
-    ( map )
+    ( lookup, map )
 
 import Control.DeepSeq
     ( NFData )
@@ -81,11 +98,6 @@ mapAccumL f s m = Map <$> MonoidMap.mapAccumL (accum f) s (unMap m)
 mapAccumR :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumR f s m = Map <$> MonoidMap.mapAccumR (accum f) s (unMap m)
 
-accum :: (s -> v1 -> (s, v2)) -> s -> First v1 -> (s, First v2)
-accum f s1 (First mv1) = case mv1 of
-    Just v1 -> let (s2, v2) = f s1 v1 in (s2, First (Just v2))
-    Nothing -> (s1, First Nothing)
-
 mapAccumWithKeyL :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumWithKeyL f s m =
     Map <$> MonoidMap.mapAccumWithKeyL (accumWithKey f) s (unMap m)
@@ -93,6 +105,15 @@ mapAccumWithKeyL f s m =
 mapAccumWithKeyR :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumWithKeyR f s m =
     Map <$> MonoidMap.mapAccumWithKeyR (accumWithKey f) s (unMap m)
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+accum :: (s -> v1 -> (s, v2)) -> s -> First v1 -> (s, First v2)
+accum f s1 (First mv1) = case mv1 of
+    Just v1 -> let (s2, v2) = f s1 v1 in (s2, First (Just v2))
+    Nothing -> (s1, First Nothing)
 
 accumWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> k -> First v1 -> (s, First v2)
 accumWithKey f s1 k (First mv1) = case mv1 of
