@@ -77,6 +77,12 @@ module Data.MonoidMap.Internal
     , foldMapWithKey
     , foldMapWithKey'
 
+    -- ** Zipping
+    , zipL
+    , zipLWithKey
+    , zipR
+    , zipRWithKey
+
     -- ** Traversal
     , traverse
     , traverseWithKey
@@ -161,7 +167,9 @@ import Data.Bifoldable
 import Data.Coerce
     ( coerce )
 import Data.Function
-    ( (&) )
+    ( (&)
+    , on
+    )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Functor.Identity
@@ -1172,6 +1180,58 @@ foldrWithKey' =
 foldMapWithKey' :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
 foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 {-# INLINE foldMapWithKey' #-}
+
+--------------------------------------------------------------------------------
+-- Zipping
+--------------------------------------------------------------------------------
+
+zipL
+    :: Ord k => Monoid v1 => Monoid v2
+    => (r -> v1 -> v2 -> r)
+    -> r
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> r
+zipL f r0 m1 m2 = F.foldl g r0 $ alignL m1 m2
+  where
+    g r (_, (c1, c2)) = f r c1 c2
+
+zipR
+    :: Ord k => Monoid v1 => Monoid v2
+    => (r -> v1 -> v2 -> r)
+    -> r
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> r
+zipR f r0 m1 m2 = F.foldl g r0 $ alignR m1 m2
+  where
+    g r (_, (c1, c2)) = f r c1 c2
+
+zipLWithKey
+    :: Ord k
+    => Monoid v1
+    => Monoid v2
+    => (r -> k -> v1 -> v2 -> r)
+    -> r
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> r
+zipLWithKey f r0 m1 m2 = F.foldl g r0 $ alignL m1 m2
+  where
+    g r (k, (c1, c2)) = f r k c1 c2
+
+zipRWithKey
+    :: Ord k
+    => Monoid v1
+    => Monoid v2
+    => (r -> k -> v1 -> v2 -> r)
+    -> r
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+    -> r
+zipRWithKey f r0 m1 m2 = F.foldl g r0 $ alignL m1 m2
+  where
+    g r (k, (c1, c2)) = f r k c1 c2
 
 --------------------------------------------------------------------------------
 -- Traversal
@@ -3469,6 +3529,55 @@ withBothA f
     = Map.zipWithMaybeAMatched
     $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
 {-# INLINE withBothA #-}
+
+--------------------------------------------------------------------------------
+-- Alignment
+--------------------------------------------------------------------------------
+
+alignL
+    :: forall k v1 v2. Ord k
+    => Monoid v1
+    => Monoid v2
+    => MonoidMap k v1
+    -> MonoidMap k v2
+    -> [(k, (v1, v2))]
+alignL m1 m2 =
+    alignKeyValueLists
+        (Map.toAscList (toMap m1))
+        (Map.toAscList (toMap m2))
+
+alignR
+    :: forall k v1 v2. Ord k
+    => Monoid v1
+    => Monoid v2
+    => MonoidMap k v1
+    -> MonoidMap k v2
+    -> [(k, (v1, v2))]
+alignR m1 m2 =
+    alignKeyValueLists
+        (Map.toAscList (toMap m1))
+        (Map.toAscList (toMap m2))
+
+alignKeyValueLists
+    :: forall k v1 v2. ()
+    => Ord k
+    => Monoid v1
+    => Monoid v2
+    => [(k, v1)]
+    -> [(k, v2)]
+    -> [(k, (v1, v2))]
+alignKeyValueLists = go
+  where
+    go            []            [] = []
+    go ((a, p) : xs)            [] = (a, (p, z)) : go xs []
+    go            [] ((b, q) : ys) = (b, (z, q)) : go [] ys
+    go ((a, p) : xs) ((b, q) : ys)
+        | a < b                    = (a, (p, z)) : go           xs ((b, q) : ys)
+        | a > b                    = (b, (z, q)) : go ((a, p) : xs)          ys
+        | otherwise                = (a, (p, q)) : go           xs           ys
+
+    z :: forall v. Monoid v => v
+    z = mempty
 
 --------------------------------------------------------------------------------
 -- State
