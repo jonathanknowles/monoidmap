@@ -184,6 +184,12 @@ specValidMonoidNull = makeSpec $ do
     it "propValid_mapKeysWith" $
         propValid_mapKeysWith
             @k @v & property
+    it "propValid_mapAccumL" $
+        propValid_mapAccumL
+            @k @v & property
+    it "propValid_mapAccumR" $
+        propValid_mapAccumR
+            @k @v & property
     it "propValid_traverse" $
         propValid_traverse
             @k @v & property
@@ -483,6 +489,26 @@ propValid_mapKeysWith
     :: Test k v => Fun (v, v) v -> Fun k k -> MonoidMap k v -> Property
 propValid_mapKeysWith (applyFun2 -> f) (applyFun -> g) m =
     propValid (MonoidMap.mapKeysWith f g m)
+
+propValid_mapAccumL
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumL (applyFun2 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumL f s m
+
+propValid_mapAccumR
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumR (applyFun2 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumR f s m
 
 propValid_traverse
     :: forall k v t. (Applicative t, Foldable t, Test k v)
