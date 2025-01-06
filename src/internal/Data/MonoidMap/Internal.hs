@@ -23,6 +23,7 @@ module Data.MonoidMap.Internal
     , fromList
     , fromListWith
     , fromMap
+    , fromSet
     , singleton
 
     -- ** Deconstruction
@@ -478,6 +479,26 @@ fromListWith f =
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.mapMaybe maybeNonNull
+
+-- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
+--   keys to values.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromSet' f ks) '=='
+--     if 'Set'.'Set.member' k ks
+--     then f k
+--     else 'mempty'
+-- @
+--
+-- This function performs canonicalisation of 'C.null' values, and has a time
+-- complexity that is linear in the 'Set.size' of the set.
+--
+-- @since 0.0.2.0
+--
+fromSet :: MonoidNull v => (k -> v) -> Set k -> MonoidMap k v
+fromSet f = fromMap . Map.fromSet f
 
 -- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
