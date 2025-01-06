@@ -17,6 +17,8 @@ import Data.Data
     ( Proxy (Proxy) )
 import Data.Function
     ( (&) )
+import Data.Functor.Identity
+    ( Identity )
 import Data.Group
     ( Group )
 import Data.Map.Strict
@@ -63,8 +65,17 @@ import Test.Common
 import Test.Hspec
     ( Spec, it )
 import Test.QuickCheck
-    ( Fun, Property, applyFun, applyFun2, conjoin, counterexample, cover )
+    ( Fun
+    , Property
+    , applyFun
+    , applyFun2
+    , applyFun3
+    , conjoin
+    , counterexample
+    , cover
+    )
 
+import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.MonoidMap as MonoidMap
@@ -180,6 +191,24 @@ specValidMonoidNull = makeSpec $ do
             @k @v & property
     it "propValid_mapKeysWith" $
         propValid_mapKeysWith
+            @k @v & property
+    it "propValid_mapAccumL" $
+        propValid_mapAccumL
+            @k @v & property
+    it "propValid_mapAccumR" $
+        propValid_mapAccumR
+            @k @v & property
+    it "propValid_mapAccumLWithKey" $
+        propValid_mapAccumLWithKey
+            @k @v & property
+    it "propValid_mapAccumRWithKey" $
+        propValid_mapAccumRWithKey
+            @k @v & property
+    it "propValid_traverse" $
+        propValid_traverse
+            @k @v & property
+    it "propValid_traverseWithKey" $
+        propValid_traverseWithKey
             @k @v & property
     it "propValid_intersectionWith" $
         propValid_intersectionWith
@@ -474,6 +503,70 @@ propValid_mapKeysWith
     :: Test k v => Fun (v, v) v -> Fun k k -> MonoidMap k v -> Property
 propValid_mapKeysWith (applyFun2 -> f) (applyFun -> g) m =
     propValid (MonoidMap.mapKeysWith f g m)
+
+propValid_mapAccumL
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumL (applyFun2 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumL f s m
+
+propValid_mapAccumR
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumR (applyFun2 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumR f s m
+
+propValid_mapAccumLWithKey
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, k, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumLWithKey (applyFun3 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumLWithKey f s m
+
+propValid_mapAccumRWithKey
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, k, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumRWithKey (applyFun3 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumRWithKey f s m
+
+propValid_traverse
+    :: forall k v t. (Applicative t, Foldable t, Test k v)
+    => t ~ Identity
+    => Fun v (t v)
+    -> MonoidMap k v
+    -> Property
+propValid_traverse (applyFun -> f) m
+    = conjoin
+    $ fmap propValid
+    $ F.toList @t
+    $ MonoidMap.traverse f m
+
+propValid_traverseWithKey
+    :: forall k v t. (Applicative t, Foldable t, Test k v)
+    => t ~ Identity
+    => Fun (k, v) (t v)
+    -> MonoidMap k v
+    -> Property
+propValid_traverseWithKey (applyFun2 -> f) m
+    = conjoin
+    $ fmap propValid
+    $ F.toList @t
+    $ MonoidMap.traverseWithKey f m
 
 propValid_intersection
     :: (Test k v, GCDMonoid v) => MonoidMap k v -> MonoidMap k v -> Property
