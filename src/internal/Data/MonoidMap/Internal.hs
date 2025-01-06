@@ -95,6 +95,7 @@ module Data.MonoidMap.Internal
     , minus
     , minusMaybe
     , monus
+    , symmetricDifference
 
     -- ** Inversion
     , invert
@@ -3079,6 +3080,21 @@ monus = merge MergeStrategy
         withBoth (<\>)
     }
 {-# INLINE monus #-}
+
+symmetricDifference
+    :: (Ord k, MonoidNull v, Monus v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+symmetricDifference = merge MergeStrategy
+    { withNonNullL =
+        keepNonNull
+    , withNonNullR =
+        keepNonNull
+    , withNonNullP =
+        withBoth (\v1 v2 -> (v1 <\> v2) <> (v2 <\> v1))
+    }
+{-# INLINE symmetricDifference #-}
 
 --------------------------------------------------------------------------------
 -- Inversion
