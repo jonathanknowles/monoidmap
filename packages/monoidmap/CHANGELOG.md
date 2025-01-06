@@ -1,3 +1,7 @@
+# 0.0.2.0
+
+- Added the `fromSet` function to `MonoidMap`.
+
 # 0.0.1.9
 
 - Added the following traversal functions to `MonoidMap`:
