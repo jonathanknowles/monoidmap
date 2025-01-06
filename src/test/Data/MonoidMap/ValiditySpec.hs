@@ -65,7 +65,15 @@ import Test.Common
 import Test.Hspec
     ( Spec, it )
 import Test.QuickCheck
-    ( Fun, Property, applyFun, applyFun2, conjoin, counterexample, cover )
+    ( Fun
+    , Property
+    , applyFun
+    , applyFun2
+    , applyFun3
+    , conjoin
+    , counterexample
+    , cover
+    )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
@@ -189,6 +197,12 @@ specValidMonoidNull = makeSpec $ do
             @k @v & property
     it "propValid_mapAccumR" $
         propValid_mapAccumR
+            @k @v & property
+    it "propValid_mapAccumLWithKey" $
+        propValid_mapAccumLWithKey
+            @k @v & property
+    it "propValid_mapAccumRWithKey" $
+        propValid_mapAccumRWithKey
             @k @v & property
     it "propValid_traverse" $
         propValid_traverse
@@ -509,6 +523,26 @@ propValid_mapAccumR
     -> Property
 propValid_mapAccumR (applyFun2 -> f) s m =
     propValid $ snd $ MonoidMap.mapAccumR f s m
+
+propValid_mapAccumLWithKey
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, k, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumLWithKey (applyFun3 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumLWithKey f s m
+
+propValid_mapAccumRWithKey
+    :: forall k v s. s ~ Int
+    => Test k v
+    => Fun (s, k, v) (s, v)
+    -> s
+    -> MonoidMap k v
+    -> Property
+propValid_mapAccumRWithKey (applyFun3 -> f) s m =
+    propValid $ snd $ MonoidMap.mapAccumRWithKey f s m
 
 propValid_traverse
     :: forall k v t. (Applicative t, Foldable t, Test k v)
