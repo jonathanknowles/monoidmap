@@ -352,8 +352,8 @@ propValid_fromMap
 propValid_fromMap m =
     propValid (MonoidMap.fromMap m)
     & cover 2
-        (Map.filter (Null.null) m /= mempty)
-        "Map.filter (Null.null) m /= mempty"
+        (Map.filter Null.null m /= mempty)
+        "Map.filter Null.null m /= mempty"
 
 propValid_fromSet
     :: Test k v => Fun k v -> Set k -> Property
