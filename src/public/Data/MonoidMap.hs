@@ -22,6 +22,7 @@ module Data.MonoidMap
     , fromList
     , fromListWith
     , fromMap
+    , fromSet
     , singleton
 
     -- ** Deconstruction
