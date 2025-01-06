@@ -17,6 +17,8 @@ import Data.Data
     ( Proxy (Proxy) )
 import Data.Function
     ( (&) )
+import Data.Functor.Identity
+    ( Identity )
 import Data.Group
     ( Group )
 import Data.Map.Strict
@@ -65,6 +67,7 @@ import Test.Hspec
 import Test.QuickCheck
     ( Fun, Property, applyFun, applyFun2, conjoin, counterexample, cover )
 
+import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 import qualified Data.MonoidMap as MonoidMap
@@ -180,6 +183,12 @@ specValidMonoidNull = makeSpec $ do
             @k @v & property
     it "propValid_mapKeysWith" $
         propValid_mapKeysWith
+            @k @v & property
+    it "propValid_traverse" $
+        propValid_traverse
+            @k @v & property
+    it "propValid_traverseWithKey" $
+        propValid_traverseWithKey
             @k @v & property
     it "propValid_intersectionWith" $
         propValid_intersectionWith
@@ -474,6 +483,30 @@ propValid_mapKeysWith
     :: Test k v => Fun (v, v) v -> Fun k k -> MonoidMap k v -> Property
 propValid_mapKeysWith (applyFun2 -> f) (applyFun -> g) m =
     propValid (MonoidMap.mapKeysWith f g m)
+
+propValid_traverse
+    :: forall k v t. (Applicative t, Foldable t, Test k v)
+    => t ~ Identity
+    => Fun v (t v)
+    -> MonoidMap k v
+    -> Property
+propValid_traverse (applyFun -> f) m
+    = conjoin
+    $ fmap propValid
+    $ F.toList @t
+    $ MonoidMap.traverse f m
+
+propValid_traverseWithKey
+    :: forall k v t. (Applicative t, Foldable t, Test k v)
+    => t ~ Identity
+    => Fun (k, v) (t v)
+    -> MonoidMap k v
+    -> Property
+propValid_traverseWithKey (applyFun2 -> f) m
+    = conjoin
+    $ fmap propValid
+    $ F.toList @t
+    $ MonoidMap.traverseWithKey f m
 
 propValid_intersection
     :: (Test k v, GCDMonoid v) => MonoidMap k v -> MonoidMap k v -> Property
