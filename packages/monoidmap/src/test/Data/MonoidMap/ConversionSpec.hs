@@ -22,18 +22,22 @@ import Data.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
+import Data.Set
+    ( Set )
 import Test.Common
     ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Fun (..), Property, applyFun2, cover, (===) )
+    ( Fun (..), Property, applyFun, applyFun2, cover, (===) )
 
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
+import qualified Data.Monoid.Null as Null
 import qualified Data.MonoidMap as MonoidMap
+import qualified Data.Set as Set
 
 spec :: Spec
 spec = describe "Conversions" $ do
@@ -69,6 +73,11 @@ specFor = makeSpec $ do
                 @k @v & property
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap
+                @k @v & property
+
+    describe "Conversion from sets" $ do
+        it "prop_fromSet_get" $
+            prop_fromSet_get
                 @k @v & property
 
 --------------------------------------------------------------------------------
@@ -186,3 +195,26 @@ prop_toMap_fromMap
     :: Test k v => MonoidMap k v -> Property
 prop_toMap_fromMap m =
     MonoidMap.fromMap (MonoidMap.toMap m) === m
+
+--------------------------------------------------------------------------------
+-- Conversion from sets
+--------------------------------------------------------------------------------
+
+prop_fromSet_get
+    :: Test k v => Fun k v -> Set k -> k -> Property
+prop_fromSet_get (applyFun -> f) ks k =
+    MonoidMap.get k (MonoidMap.fromSet f ks)
+        ===
+        (if Set.member k ks then f k else mempty)
+    & cover 0.2
+        (Set.member k ks && Null.null (f k))
+        "Set.member k ks && Null.null (f k)"
+    & cover 8.0
+        (Set.member k ks && not (Null.null (f k)))
+        "Set.member k ks && not (Null.null (f k))"
+    & cover 0.2
+        (not (Set.member k ks) && Null.null (f k))
+        "not (Set.member k ks) && Null.null (f k)"
+    & cover 8.0
+        (not (Set.member k ks) && not (Null.null (f k)))
+        "not (Set.member k ks) && not (Null.null (f k))"

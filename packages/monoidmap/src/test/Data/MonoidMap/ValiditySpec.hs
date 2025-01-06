@@ -40,6 +40,8 @@ import Data.MonoidMap
     ( MonoidMap )
 import Data.MonoidMap.SliceSpec
     ( Slice (..) )
+import Data.Set
+    ( Set )
 import Test.Common
     ( Key
     , Test
@@ -127,6 +129,9 @@ specValidMonoidNull = makeSpec $ do
             @k @v & property
     it "propValid_fromMap" $
         propValid_fromMap
+            @k @v & property
+    it "propValid_fromSet" $
+        propValid_fromSet
             @k @v & property
     it "propValid_singleton" $
         propValid_singleton
@@ -347,8 +352,16 @@ propValid_fromMap
 propValid_fromMap m =
     propValid (MonoidMap.fromMap m)
     & cover 2
-        (Map.filter (Null.null) m /= mempty)
-        "Map.filter (Null.null) m /= mempty"
+        (Map.filter Null.null m /= mempty)
+        "Map.filter Null.null m /= mempty"
+
+propValid_fromSet
+    :: Test k v => Fun k v -> Set k -> Property
+propValid_fromSet (applyFun -> f) ks =
+    propValid (MonoidMap.fromSet f ks)
+    & cover 2
+        (Map.filter Null.null (Map.fromSet f ks) /= mempty)
+        "Map.filter Null.null (Map.fromSet f ks) /= mempty"
 
 propValid_singleton
     :: Test k v => k -> v -> Property
