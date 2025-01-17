@@ -1,3 +1,7 @@
+# 0.0.2.1
+
+- Added support for GHC 9.12.
+
 # 0.0.2.0
 
 - Added the `fromSet` function to `MonoidMap`.
