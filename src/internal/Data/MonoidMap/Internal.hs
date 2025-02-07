@@ -2799,7 +2799,7 @@ minus = merge MergeStrategy
         -- a ~~ mempty ≡ a
 
     , withNonNullR =
-        withNonNull C.invert
+        withNonNull (const C.invert)
         -- Justification:
         --
         -- a      ~~ b ≡ a      <> invert b
@@ -3318,9 +3318,9 @@ unionWith
     -> MonoidMap k v3
 unionWith f = merge MergeStrategy
     { withNonNullL =
-        withNonNull (\v -> f v mempty)
+        withNonNull (\_k v -> f v mempty)
     , withNonNullR =
-        withNonNull (\v -> f mempty v)
+        withNonNull (\_k v -> f mempty v)
     , withNonNullP =
         withBoth f
     }
@@ -3403,12 +3403,12 @@ keepNonNull = WhenOneSideNull Map.preserveMissing
 
 withNonNull
     :: (Applicative f, MonoidNull v2)
-    => (v1 -> v2)
+    => (k -> v1 -> v2)
     -> WhenOneSideNull f k v1 v2
 withNonNull f
     = WhenOneSideNull
     $ Map.mapMaybeMissing
-    $ \_k v -> maybeNonNull $ applyNonNull f v
+    $ \k v -> maybeNonNull $ applyNonNull (f k) v
 {-# INLINE withNonNull #-}
 
 withNonNullA
