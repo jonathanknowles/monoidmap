@@ -1535,7 +1535,7 @@ append = merge MergeStrategy
         -- mempty <> v ≡ v
 
     , withNonNullP =
-        withBoth (<>)
+        withBoth (const (<>))
     }
 {-# INLINE append #-}
 
@@ -2010,7 +2010,7 @@ commonPrefix = merge MergeStrategy
         -- commonPrefix mempty a ≡ mempty
 
     , withNonNullP =
-        withBoth C.commonPrefix
+        withBoth (const C.commonPrefix)
     }
 {-# INLINE commonPrefix #-}
 
@@ -2071,7 +2071,7 @@ commonSuffix = merge MergeStrategy
         -- commonSuffix mempty a ≡ mempty
 
     , withNonNullP =
-        withBoth C.commonSuffix
+        withBoth (const C.commonSuffix)
     }
 {-# INLINE commonSuffix #-}
 
@@ -2321,7 +2321,7 @@ overlap = merge MergeStrategy
         -- overlap mempty a ≡ mempty
 
     , withNonNullP =
-        withBoth C.overlap
+        withBoth (const C.overlap)
     }
 {-# INLINE overlap #-}
 
@@ -2401,7 +2401,7 @@ stripPrefixOverlap = merge MergeStrategy
         --                     stripPrefixOverlap mempty b ≡ b
 
     , withNonNullP =
-        withBoth C.stripPrefixOverlap
+        withBoth (const C.stripPrefixOverlap)
     }
 {-# INLINE stripPrefixOverlap #-}
 
@@ -2481,7 +2481,7 @@ stripSuffixOverlap = merge MergeStrategy
         -- stripSuffixOverlap mempty a                     ≡ a
 
     , withNonNullP =
-        withBoth C.stripSuffixOverlap
+        withBoth (const C.stripSuffixOverlap)
     }
 {-# INLINE stripSuffixOverlap #-}
 
@@ -2636,7 +2636,7 @@ intersection = merge MergeStrategy
         -- gcd mempty b ≡ mempty
 
     , withNonNullP =
-        withBoth C.gcd
+        withBoth (const C.gcd)
     }
 {-# INLINE intersection #-}
 
@@ -2739,7 +2739,7 @@ union = merge MergeStrategy
         -- lcm mempty a ≡ a
 
     , withNonNullP =
-        withBoth C.lcm
+        withBoth (const C.lcm)
     }
 {-# INLINE union #-}
 
@@ -2807,7 +2807,7 @@ minus = merge MergeStrategy
         -- mempty ~~ b ≡           invert b
 
     , withNonNullP =
-        withBoth (C.~~)
+        withBoth (const (C.~~))
     }
 {-# INLINE minus #-}
 
@@ -3076,7 +3076,7 @@ monus = merge MergeStrategy
         -- mempty <\> a ≡ mempty
 
     , withNonNullP =
-        withBoth (<\>)
+        withBoth (const (<\>))
     }
 {-# INLINE monus #-}
 
@@ -3230,7 +3230,7 @@ intersectionWith f = merge MergeStrategy
     , withNonNullR =
         keepNull
     , withNonNullP =
-        withBoth f
+        withBoth (const f)
     }
 {-# INLINE intersectionWith #-}
 
@@ -3322,7 +3322,7 @@ unionWith f = merge MergeStrategy
     , withNonNullR =
         withNonNull (\_k v -> f mempty v)
     , withNonNullP =
-        withBoth f
+        withBoth (const f)
     }
 {-# INLINE unionWith #-}
 
@@ -3423,12 +3423,12 @@ withNonNullA f
 
 withBoth
     :: (Applicative f, MonoidNull v3)
-    => (v1 -> v2 -> v3)
+    => (k -> v1 -> v2 -> v3)
     -> WhenBothNonNull f k v1 v2 v3
 withBoth f
     = WhenBothNonNull
     $ Map.zipWithMaybeMatched
-    $ \_k v1 v2 -> maybeNonNull $ applyNonNull2 f v1 v2
+    $ \k v1 v2 -> maybeNonNull $ applyNonNull2 (f k) v1 v2
 {-# INLINE withBoth #-}
 
 withBothA
