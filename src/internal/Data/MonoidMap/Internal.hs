@@ -1858,7 +1858,7 @@ stripPrefix = mergeA MergeStrategy
         -- stripPrefix mempty a ≡ a
 
     , withNonNullP =
-        withBothA C.stripPrefix
+        withBothA (const C.stripPrefix)
     }
 {-# INLINE stripPrefix #-}
 
@@ -1949,7 +1949,7 @@ stripSuffix = mergeA MergeStrategy
         -- stripSuffix mempty a ≡ a
 
     , withNonNullP =
-        withBothA C.stripSuffix
+        withBothA (const C.stripSuffix)
     }
 {-# INLINE stripSuffix #-}
 
@@ -2953,7 +2953,7 @@ minusMaybe = mergeA MergeStrategy
         withNonNullA (\_k v -> mempty </> v)
 
     , withNonNullP =
-        withBothA (</>)
+        withBothA (const (</>))
     }
 {-# INLINE minusMaybe #-}
 
@@ -3256,7 +3256,7 @@ intersectionWithA f = mergeA MergeStrategy
     , withNonNullR =
         keepNull
     , withNonNullP =
-        withBothA f
+        withBothA (const f)
     }
 {-# INLINE intersectionWithA #-}
 
@@ -3348,7 +3348,7 @@ unionWithA f = mergeA MergeStrategy
     , withNonNullR =
         withNonNullA (\_k v -> f mempty v)
     , withNonNullP =
-        withBothA f
+        withBothA (const f)
     }
 {-# INLINE unionWithA #-}
 
@@ -3433,12 +3433,12 @@ withBoth f
 
 withBothA
     :: (Applicative f, MonoidNull v3)
-    => (v1 -> v2 -> f v3)
+    => (k -> v1 -> v2 -> f v3)
     -> WhenBothNonNull f k v1 v2 v3
 withBothA f
     = WhenBothNonNull
     $ Map.zipWithMaybeAMatched
-    $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
+    $ \k v1 v2 -> maybeNonNull <$> applyNonNull2 (f k) v1 v2
 {-# INLINE withBothA #-}
 
 --------------------------------------------------------------------------------
