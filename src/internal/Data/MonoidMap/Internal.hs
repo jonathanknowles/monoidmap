@@ -1849,7 +1849,7 @@ stripPrefix
     -> Maybe (MonoidMap k v)
 stripPrefix = mergeA MergeStrategy
     { withNonNullL =
-        withNonNullA (\v -> C.stripPrefix v mempty)
+        withNonNullA (\_k v -> C.stripPrefix v mempty)
 
     , withNonNullR =
         keepNonNull
@@ -1940,7 +1940,7 @@ stripSuffix
     -> Maybe (MonoidMap k v)
 stripSuffix = mergeA MergeStrategy
     { withNonNullL =
-        withNonNullA (\v -> C.stripSuffix v mempty)
+        withNonNullA (\_k v -> C.stripSuffix v mempty)
 
     , withNonNullR =
         keepNonNull
@@ -2950,7 +2950,7 @@ minusMaybe = mergeA MergeStrategy
         -- a </> mempty ≡ Just a
 
     , withNonNullR =
-        withNonNullA (\v -> mempty </> v)
+        withNonNullA (\_k v -> mempty </> v)
 
     , withNonNullP =
         withBothA (</>)
@@ -3344,9 +3344,9 @@ unionWithA
     -> f (MonoidMap k v3)
 unionWithA f = mergeA MergeStrategy
     { withNonNullL =
-        withNonNullA (\v -> f v mempty)
+        withNonNullA (\_k v -> f v mempty)
     , withNonNullR =
-        withNonNullA (\v -> f mempty v)
+        withNonNullA (\_k v -> f mempty v)
     , withNonNullP =
         withBothA f
     }
@@ -3413,12 +3413,12 @@ withNonNull f
 
 withNonNullA
     :: (Applicative f, MonoidNull v2)
-    => (v1 -> f v2)
+    => (k -> v1 -> f v2)
     -> WhenOneSideNull f k v1 v2
 withNonNullA f
     = WhenOneSideNull
     $ Map.traverseMaybeMissing
-    $ \_k v -> maybeNonNull <$> applyNonNull f v
+    $ \k v -> maybeNonNull <$> applyNonNull (f k) v
 {-# INLINE withNonNullA #-}
 
 withBoth
