@@ -77,6 +77,9 @@ specFor = makeSpec $ do
     it "prop_mapWithKey_get" $
         prop_mapWithKey_get
             @k @v & property
+    it "prop_mapWithKey_get_total" $
+        prop_mapWithKey_get_total
+            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -247,6 +250,23 @@ prop_mapWithKey_get (applyFun2 -> f) k m =
     & cover 2
         (MonoidMap.nonNullKey k m)
         "MonoidMap.nonNullKey k m"
+
+prop_mapWithKey_get_total
+    :: forall k v. Test k v
+    => Fun (k, v) v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_get_total (applyFun2 -> f0) k m =
+    MonoidMap.get k (MonoidMap.mapWithKey f m) === f k (MonoidMap.get k m)
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
+  where
+    f = toNullPreservingFn . f0
 
 --------------------------------------------------------------------------------
 -- Utilities
