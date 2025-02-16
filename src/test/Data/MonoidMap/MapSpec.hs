@@ -80,6 +80,9 @@ specFor = makeSpec $ do
     it "prop_mapWithKey_get_total" $
         prop_mapWithKey_get_total
             @k @v & property
+    it "prop_mapWithKey_get_total_failure" $
+        prop_mapWithKey_get_total_failure
+            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -267,6 +270,16 @@ prop_mapWithKey_get_total (applyFun2 -> f0) k m =
         "MonoidMap.nonNullKey k m"
   where
     f = toNullPreservingFn . f0
+
+prop_mapWithKey_get_total_failure
+    :: Test k v
+    => Fun (k, v) v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_get_total_failure (applyFun2 -> f) k m =
+    expectFailure $
+    MonoidMap.get k (MonoidMap.mapWithKey f m) === f k (MonoidMap.get k m)
 
 --------------------------------------------------------------------------------
 -- Utilities
