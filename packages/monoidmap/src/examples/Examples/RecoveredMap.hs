@@ -20,6 +20,7 @@ module Examples.RecoveredMap
     , lookup
     , member
     , map
+    , mapWithKey
     , mapAccumL
     , mapAccumLWithKey
     , mapAccumR
@@ -91,6 +92,9 @@ member k = MonoidMap.nonNullKey k . unMap
 
 map :: (v1 -> v2) -> Map k v1 -> Map k v2
 map f = Map . MonoidMap.map (fmap f) . unMap
+
+mapWithKey :: (k -> v1 -> v2) -> Map k v1 -> Map k v2
+mapWithKey f = Map . MonoidMap.mapWithKey (fmap . f) . unMap
 
 mapAccumL :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumL f s m = Map <$> MonoidMap.mapAccumL (accum f) s (unMap m)
