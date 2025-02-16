@@ -64,6 +64,7 @@ module Data.MonoidMap
     , map
     , mapKeys
     , mapKeysWith
+    , mapWithKey
 
     -- ** Folding
     , foldl

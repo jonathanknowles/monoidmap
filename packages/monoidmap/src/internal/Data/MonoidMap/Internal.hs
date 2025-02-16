@@ -65,6 +65,7 @@ module Data.MonoidMap.Internal
     , map
     , mapKeys
     , mapKeysWith
+    , mapWithKey
 
     -- ** Folding
     , foldl
@@ -1004,6 +1005,16 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
+
+mapWithKey
+    :: MonoidNull v2
+    => (k -> v1 -> v2)
+    -> MonoidMap k v1
+    -> MonoidMap k v2
+mapWithKey f (MonoidMap m) =
+    MonoidMap . runIdentity $
+    Map.traverseMaybeWithKey
+        (\k v -> Identity $ maybeNonNull $ applyNonNull (f k) v) m
 
 --------------------------------------------------------------------------------
 -- Lazy folding
