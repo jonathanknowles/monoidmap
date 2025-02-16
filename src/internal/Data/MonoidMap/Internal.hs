@@ -1016,7 +1016,7 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 -- (   'nullKey' k m) ==> ('get' k ('mapWithKey' f m) '==' 'mempty'       )
 -- @
 --
--- @since unreleased
+-- @since 0.0.3.0
 --
 mapWithKey
     :: MonoidNull v2
