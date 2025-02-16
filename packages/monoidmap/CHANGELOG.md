@@ -1,4 +1,4 @@
-# Unreleased
+# 0.0.3.0
 
 - Added the `mapWithKey` function to `MonoidMap`.
 
