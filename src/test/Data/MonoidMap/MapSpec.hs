@@ -71,6 +71,18 @@ specFor = makeSpec $ do
     it "prop_mapKeysWith_asList" $
         prop_mapKeysWith_asList
             @k @v & property
+    it "prop_mapWithKey_asList" $
+        prop_mapWithKey_asList
+            @k @v & property
+    it "prop_mapWithKey_get" $
+        prop_mapWithKey_get
+            @k @v & property
+    it "prop_mapWithKey_get_total" $
+        prop_mapWithKey_get_total
+            @k @v & property
+    it "prop_mapWithKey_get_total_failure" $
+        prop_mapWithKey_get_total_failure
+            @k @v & property
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -206,6 +218,68 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.mapKeysWith c f m
+
+prop_mapWithKey_asList
+    :: Test k v
+    => Fun (k, v) v
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_asList (applyFun2 -> f) m =
+    n ===
+        ( MonoidMap.fromList
+        . fmap (\(k, v) -> (k, (f k v)))
+        . MonoidMap.toList
+        $ m
+        )
+    & cover 2
+        (0 < nonNullCount n && nonNullCount n < nonNullCount m)
+        "0 < nonNullCount n && nonNullCount n < nonNullCount m"
+  where
+    n = MonoidMap.mapWithKey f m
+
+prop_mapWithKey_get
+    :: Test k v
+    => Fun (k, v) v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_get (applyFun2 -> f) k m =
+    MonoidMap.get k (MonoidMap.mapWithKey f m)
+    ===
+    (if MonoidMap.nullKey k m then mempty else f k (MonoidMap.get k m))
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
+
+prop_mapWithKey_get_total
+    :: forall k v. Test k v
+    => Fun (k, v) v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_get_total (applyFun2 -> f0) k m =
+    MonoidMap.get k (MonoidMap.mapWithKey f m) === f k (MonoidMap.get k m)
+    & cover 2
+        (MonoidMap.nullKey k m)
+        "MonoidMap.nullKey k m"
+    & cover 2
+        (MonoidMap.nonNullKey k m)
+        "MonoidMap.nonNullKey k m"
+  where
+    f = toNullPreservingFn . f0
+
+prop_mapWithKey_get_total_failure
+    :: Test k v
+    => Fun (k, v) v
+    -> k
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_get_total_failure (applyFun2 -> f) k m =
+    expectFailure $
+    MonoidMap.get k (MonoidMap.mapWithKey f m) === f k (MonoidMap.get k m)
 
 --------------------------------------------------------------------------------
 -- Utilities

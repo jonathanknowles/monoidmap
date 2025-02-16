@@ -189,6 +189,9 @@ specFor keyType valueType = do
             it "prop_map_mempty" $
                 prop_map_mempty
                     @k @v @v & property
+            it "prop_mapWithKey" $
+                prop_mapWithKey
+                    @k @v @v & property
 
         describe "MapAccumL" $ do
             it "prop_mapAccumL @Int" $
@@ -497,6 +500,16 @@ prop_map_mempty kvs =
     (===)
         (RMap.toList (RMap.map (const (mempty @v2)) (RMap.fromList kvs)))
         (OMap.toList (OMap.map (const (mempty @v2)) (OMap.fromList kvs)))
+
+prop_mapWithKey
+    :: (Ord k, Show k, Eq v2, Show v2)
+    => [(k, v1)]
+    -> Fun (k, v1) v2
+    -> Property
+prop_mapWithKey kvs (applyFun2 -> f) =
+    (===)
+        (RMap.toList (RMap.mapWithKey f (RMap.fromList kvs)))
+        (OMap.toList (OMap.mapWithKey f (OMap.fromList kvs)))
 
 --------------------------------------------------------------------------------
 -- MapAccum
