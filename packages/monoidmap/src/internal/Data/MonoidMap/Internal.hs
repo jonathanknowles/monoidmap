@@ -1006,6 +1006,18 @@ mapKeysWith
     -> MonoidMap k2 v
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 
+-- | \(O(n)\). Applies a key-dependent function to all non-'C.null' values of
+--   a 'MonoidMap'.
+--
+-- Satisfies the following properties for all functions __@f@__:
+--
+-- @
+-- ('nonNullKey' k m) ==> ('get' k ('mapWithKey' f m) '==' f k ('get' k m))
+-- (   'nullKey' k m) ==> ('get' k ('mapWithKey' f m) '==' 'mempty'       )
+-- @
+--
+-- @since unreleased
+--
 mapWithKey
     :: MonoidNull v2
     => (k -> v1 -> v2)
