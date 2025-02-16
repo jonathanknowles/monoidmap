@@ -71,6 +71,9 @@ specFor = makeSpec $ do
     it "prop_mapKeysWith_asList" $
         prop_mapKeysWith_asList
             @k @v & property
+    it "prop_mapWithKey_asList" $
+        prop_mapWithKey_asList
+            @k @v & property
     it "prop_mapWithKey_get" $
         prop_mapWithKey_get
             @k @v & property
@@ -209,6 +212,24 @@ prop_mapKeysWith_asList (applyFun2 -> c) (applyFun -> f) m =
         "0 < nonNullCount n && nonNullCount n < nonNullCount m"
   where
     n = MonoidMap.mapKeysWith c f m
+
+prop_mapWithKey_asList
+    :: Test k v
+    => Fun (k, v) v
+    -> MonoidMap k v
+    -> Property
+prop_mapWithKey_asList (applyFun2 -> f) m =
+    n ===
+        ( MonoidMap.fromList
+        . fmap (\(k, v) -> (k, (f k v)))
+        . MonoidMap.toList
+        $ m
+        )
+    & cover 2
+        (0 < nonNullCount n && nonNullCount n < nonNullCount m)
+        "0 < nonNullCount n && nonNullCount n < nonNullCount m"
+  where
+    n = MonoidMap.mapWithKey f m
 
 prop_mapWithKey_get
     :: Test k v
