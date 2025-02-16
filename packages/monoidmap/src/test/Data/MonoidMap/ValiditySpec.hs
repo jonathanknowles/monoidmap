@@ -192,6 +192,9 @@ specValidMonoidNull = makeSpec $ do
     it "propValid_mapKeysWith" $
         propValid_mapKeysWith
             @k @v & property
+    it "propValid_mapWithKey" $
+        propValid_mapWithKey
+            @k @v & property
     it "propValid_mapAccumL" $
         propValid_mapAccumL
             @k @v & property
@@ -503,6 +506,11 @@ propValid_mapKeysWith
     :: Test k v => Fun (v, v) v -> Fun k k -> MonoidMap k v -> Property
 propValid_mapKeysWith (applyFun2 -> f) (applyFun -> g) m =
     propValid (MonoidMap.mapKeysWith f g m)
+
+propValid_mapWithKey
+    :: Test k v => Fun (k, v) v -> MonoidMap k v -> Property
+propValid_mapWithKey (applyFun2 -> f) m =
+    propValid (MonoidMap.mapWithKey f m)
 
 propValid_mapAccumL
     :: forall k v s. s ~ Int

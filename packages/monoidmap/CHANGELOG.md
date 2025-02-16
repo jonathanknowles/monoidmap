@@ -1,3 +1,7 @@
+# Unreleased
+
+- Added the `mapWithKey` function to `MonoidMap`.
+
 # 0.0.2.1
 
 - Added support for GHC 9.12.
