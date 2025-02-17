@@ -82,7 +82,7 @@ library
       , dependency-monoid-subclasses
       , extensions
     hs-source-dirs:
-        src/monoidmap
+        components/monoidmap
     exposed-modules:
         Data.MonoidMap
     default-language:
@@ -99,7 +99,7 @@ library monoidmap-examples
       , dependency-nonempty-containers
       , extensions
     hs-source-dirs:
-        src/monoidmap-examples
+        components/monoidmap-examples
     exposed-modules:
         Examples.MultiMap
         Examples.MultiMap.Class
@@ -125,7 +125,7 @@ library monoidmap-internal
       , dependency-nothunks
       , extensions
     hs-source-dirs:
-        src/monoidmap-internal
+        components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
         Data.MonoidMap.Unsafe
@@ -152,7 +152,7 @@ test-suite monoidmap-test
     main-is:
         Spec.hs
     hs-source-dirs:
-        src/monoidmap-test
+        components/monoidmap-test
     other-modules:
         SpecHook
         Data.MonoidMap.ClassSpec
@@ -202,7 +202,7 @@ benchmark monoidmap-benchmark
     type:
         exitcode-stdio-1.0
     hs-source-dirs:
-        src/monoidmap-benchmark
+        components/monoidmap-benchmark
     main-is:
         Main.hs
     build-depends:
