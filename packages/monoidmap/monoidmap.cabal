@@ -88,7 +88,7 @@ library
     default-language:
         Haskell2010
     build-depends:
-      , internal
+      , monoidmap-internal
 
 library monoidmap-examples
     import:
@@ -115,7 +115,7 @@ library monoidmap-examples
     build-depends:
       , monoidmap
 
-library internal
+library monoidmap-internal
     import:
       , dependency-base
       , dependency-containers
@@ -125,7 +125,7 @@ library internal
       , dependency-nothunks
       , extensions
     hs-source-dirs:
-        src/internal
+        src/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
         Data.MonoidMap.Unsafe
