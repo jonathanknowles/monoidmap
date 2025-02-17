@@ -1124,7 +1124,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
 [`MultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey
 [`MultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
-[`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/src/examples/Examples/NestedMonoidMap.hs
+[`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/src/monoidmap-examples/Examples/NestedMonoidMap.hs
 [`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup

@@ -90,7 +90,7 @@ library
     build-depends:
       , internal
 
-library examples
+library monoidmap-examples
     import:
       , dependency-base
       , dependency-containers
@@ -99,7 +99,7 @@ library examples
       , dependency-nonempty-containers
       , extensions
     hs-source-dirs:
-        src/examples
+        src/monoidmap-examples
     exposed-modules:
         Examples.MultiMap
         Examples.MultiMap.Class
@@ -187,8 +187,8 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-      , examples
       , monoidmap
+      , monoidmap-examples
 
 benchmark benchmark
     import:
@@ -206,5 +206,5 @@ benchmark benchmark
     main-is:
         Main.hs
     build-depends:
-      , examples
       , monoidmap
+      , monoidmap-examples
