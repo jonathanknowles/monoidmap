@@ -82,7 +82,7 @@ library
       , dependency-monoid-subclasses
       , extensions
     hs-source-dirs:
-        src/public
+        src/monoidmap
     exposed-modules:
         Data.MonoidMap
     default-language:
