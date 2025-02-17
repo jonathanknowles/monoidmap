@@ -190,7 +190,7 @@ test-suite monoidmap-test
       , monoidmap
       , monoidmap-examples
 
-benchmark benchmark
+benchmark monoidmap-benchmark
     import:
       , dependency-base
       , dependency-containers
@@ -202,7 +202,7 @@ benchmark benchmark
     type:
         exitcode-stdio-1.0
     hs-source-dirs:
-        src/benchmark
+        src/monoidmap-benchmark
     main-is:
         Main.hs
     build-depends:
