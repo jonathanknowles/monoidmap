@@ -82,15 +82,15 @@ library
       , dependency-monoid-subclasses
       , extensions
     hs-source-dirs:
-        src/public
+        components/monoidmap
     exposed-modules:
         Data.MonoidMap
     default-language:
         Haskell2010
     build-depends:
-      , internal
+      , monoidmap-internal
 
-library examples
+library monoidmap-examples
     import:
       , dependency-base
       , dependency-containers
@@ -99,7 +99,7 @@ library examples
       , dependency-nonempty-containers
       , extensions
     hs-source-dirs:
-        src/examples
+        components/monoidmap-examples
     exposed-modules:
         Examples.MultiMap
         Examples.MultiMap.Class
@@ -115,7 +115,7 @@ library examples
     build-depends:
       , monoidmap
 
-library internal
+library monoidmap-internal
     import:
       , dependency-base
       , dependency-containers
@@ -125,14 +125,14 @@ library internal
       , dependency-nothunks
       , extensions
     hs-source-dirs:
-        src/internal
+        components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
         Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
 
-test-suite test
+test-suite monoidmap-test
     import:
       , dependency-base
       , dependency-containers
@@ -152,7 +152,7 @@ test-suite test
     main-is:
         Spec.hs
     hs-source-dirs:
-        src/test
+        components/monoidmap-test
     other-modules:
         SpecHook
         Data.MonoidMap.ClassSpec
@@ -187,10 +187,10 @@ test-suite test
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
     build-depends:
-      , examples
       , monoidmap
+      , monoidmap-examples
 
-benchmark benchmark
+benchmark monoidmap-benchmark
     import:
       , dependency-base
       , dependency-containers
@@ -202,9 +202,9 @@ benchmark benchmark
     type:
         exitcode-stdio-1.0
     hs-source-dirs:
-        src/benchmark
+        components/monoidmap-benchmark
     main-is:
         Main.hs
     build-depends:
-      , examples
       , monoidmap
+      , monoidmap-examples
