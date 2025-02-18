@@ -27,7 +27,7 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
     , testValueTypesLCMMonoid
@@ -46,10 +46,10 @@ spec :: Spec
 spec = describe "Union" $ do
 
     forM_ testValueTypesMonoidNull $
-        \(TestType p) -> specMonoidNull
+        \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
     forM_ testValueTypesLCMMonoid $
-        \(TestType p) -> specLCMMonoid
+        \(TestValueType p) -> specLCMMonoid
             (Proxy @Key) p
 
 specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec

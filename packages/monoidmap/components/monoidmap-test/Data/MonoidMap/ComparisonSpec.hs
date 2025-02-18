@@ -29,7 +29,7 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
     , testValueTypesGCDMonoid
@@ -52,15 +52,15 @@ spec :: Spec
 spec = describe "Comparison" $ do
 
     forM_ testValueTypesGCDMonoid $
-        \(TestType p) -> specGCDMonoid
+        \(TestValueType p) -> specGCDMonoid
             (Proxy @Key) p
 
     forM_ testValueTypesReductive $
-        \(TestType p) -> specReductive
+        \(TestValueType p) -> specReductive
             (Proxy @Key) p
 
     forM_ testValueTypesMonoidNull $
-        \(TestType p) -> specMonoidNull
+        \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
 
 specGCDMonoid

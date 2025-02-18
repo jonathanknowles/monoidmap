@@ -28,7 +28,7 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (..)
+    , TestValueType (..)
     , TestValue
     , property
     , testValueTypesGCDMonoid
@@ -120,7 +120,7 @@ specDistributiveGet = do
         (Monus.<\>)
   where
     specForAll
-        :: [TestType c]
+        :: [TestValueType c]
         -> String
         -> (forall k v m. (Test k v, c v, m ~ MonoidMap k v) => (m -> m -> m))
         -> (forall v. (TestValue v, c v) => (v -> v -> v))
@@ -133,9 +133,9 @@ specDistributiveGet = do
     specFor
         :: (forall k v m. (Test k v, c v, m ~ MonoidMap k v) => (m -> m -> m))
         -> (forall v. (TestValue v, c v) => (v -> v -> v))
-        -> TestType c
+        -> TestValueType c
         -> Spec
-    specFor f g (TestType (_ :: Proxy v)) =
+    specFor f g (TestValueType (_ :: Proxy v)) =
         it description $ property $ propDistributiveGet @Key @v f g
       where
         description = show $ typeRep $ Proxy @(MonoidMap Key v)
@@ -159,7 +159,7 @@ specDistributiveGetMaybe = do
         (Reductive.</>)
   where
     specForAll
-        :: [TestType c]
+        :: [TestValueType c]
         -> String
         -> (forall k v m. (Test k v, c v, m ~ MonoidMap k v)
             => (m -> m -> Maybe m))
@@ -176,9 +176,9 @@ specDistributiveGetMaybe = do
             => (m -> m -> Maybe m))
         -> (forall v. (TestValue v, c v)
             => (v -> v -> Maybe v))
-        -> TestType c
+        -> TestValueType c
         -> Spec
-    specFor f g (TestType (_ :: Proxy v)) =
+    specFor f g (TestValueType (_ :: Proxy v)) =
         it description $ property $ propDistributiveGetMaybe @Key @v f g
       where
         description = show $ typeRep $ Proxy @(MonoidMap Key v)

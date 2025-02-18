@@ -27,7 +27,7 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
     , testValueTypesMonoidNull
@@ -45,7 +45,8 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Mapping" $ do
 
-    forM_ testValueTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
+    forM_ testValueTypesMonoidNull $
+        \(TestValueType p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do

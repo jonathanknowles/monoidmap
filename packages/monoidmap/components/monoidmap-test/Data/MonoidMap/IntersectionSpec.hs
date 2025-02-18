@@ -27,7 +27,7 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
     , testValueTypesGCDMonoid
@@ -46,10 +46,10 @@ spec :: Spec
 spec = describe "Intersection" $ do
 
     forM_ testValueTypesMonoidNull $
-        \(TestType p) -> specMonoidNull
+        \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
     forM_ testValueTypesGCDMonoid $
-        \(TestType p) -> specGCDMonoid
+        \(TestValueType p) -> specGCDMonoid
             (Proxy @Key) p
 
 specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec

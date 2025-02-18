@@ -47,7 +47,7 @@ import Data.Set
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
     , testValueTypesGCDMonoid
@@ -117,16 +117,16 @@ spec = do
         specValidGroup
   where
     specForAll
-        :: [TestType c]
+        :: [TestValueType c]
         -> (forall k v. (Test k v, c v) => Proxy k -> Proxy v -> Spec)
         -> Spec
     specForAll testValueTypes specFn = forM_ testValueTypes (specFor specFn)
 
     specFor
         :: (forall k v. (Test k v, c v) => Proxy k -> Proxy v -> Spec)
-        -> TestType c
+        -> TestValueType c
         -> Spec
-    specFor specFn (TestType (v :: Proxy v)) =
+    specFor specFn (TestValueType (v :: Proxy v)) =
         specFn (Proxy @Key) v
 
 specValidMonoidNull
