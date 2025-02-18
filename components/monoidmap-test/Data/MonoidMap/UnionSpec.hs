@@ -30,8 +30,8 @@ import Test.Common
     , TestType (TestType)
     , makeSpec
     , property
-    , testTypesLCMMonoid
-    , testTypesMonoidNull
+    , testValueTypesLCMMonoid
+    , testValueTypesMonoidNull
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -45,10 +45,10 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Union" $ do
 
-    forM_ testTypesMonoidNull $
+    forM_ testValueTypesMonoidNull $
         \(TestType p) -> specMonoidNull
             (Proxy @Key) p
-    forM_ testTypesLCMMonoid $
+    forM_ testValueTypesLCMMonoid $
         \(TestType p) -> specLCMMonoid
             (Proxy @Key) p
 

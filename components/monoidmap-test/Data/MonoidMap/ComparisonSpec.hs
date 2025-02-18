@@ -32,9 +32,9 @@ import Test.Common
     , TestType (TestType)
     , makeSpec
     , property
-    , testTypesGCDMonoid
-    , testTypesMonoidNull
-    , testTypesReductive
+    , testValueTypesGCDMonoid
+    , testValueTypesMonoidNull
+    , testValueTypesReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -51,15 +51,15 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Comparison" $ do
 
-    forM_ testTypesGCDMonoid $
+    forM_ testValueTypesGCDMonoid $
         \(TestType p) -> specGCDMonoid
             (Proxy @Key) p
 
-    forM_ testTypesReductive $
+    forM_ testValueTypesReductive $
         \(TestType p) -> specReductive
             (Proxy @Key) p
 
-    forM_ testTypesMonoidNull $
+    forM_ testValueTypesMonoidNull $
         \(TestType p) -> specMonoidNull
             (Proxy @Key) p
 

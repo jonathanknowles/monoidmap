@@ -30,7 +30,7 @@ import Test.Common
     , TestType (TestType)
     , makeSpec
     , property
-    , testTypesLeftReductive
+    , testValueTypesLeftReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -42,7 +42,7 @@ import qualified Test.QuickCheck as QC
 spec :: Spec
 spec = describe "Prefixes" $ do
 
-    forM_ testTypesLeftReductive $
+    forM_ testValueTypesLeftReductive $
         \(TestType p) -> specFor (Proxy @Key) p
 
 specFor

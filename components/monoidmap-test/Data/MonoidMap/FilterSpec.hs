@@ -23,7 +23,13 @@ import Data.Proxy
 import GHC.Exts
     ( IsList (..) )
 import Test.Common
-    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+    ( Key
+    , Test
+    , TestType (TestType)
+    , makeSpec
+    , property
+    , testValueTypesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -35,7 +41,7 @@ import qualified Data.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Filtering" $ do
 
-    forM_ testTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
+    forM_ testValueTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do
