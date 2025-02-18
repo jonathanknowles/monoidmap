@@ -90,6 +90,25 @@ library
     build-depends:
       , monoidmap-internal
 
+benchmark monoidmap-benchmark
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-tasty-bench
+      , dependency-tasty-hunit
+    default-language:
+        Haskell2010
+    type:
+        exitcode-stdio-1.0
+    hs-source-dirs:
+        components/monoidmap-benchmark
+    main-is:
+        Main.hs
+    build-depends:
+      , monoidmap
+      , monoidmap-examples
+
 library monoidmap-examples
     import:
       , dependency-base
@@ -186,25 +205,6 @@ test-suite monoidmap-test
         Haskell2010
     build-tool-depends:
         hspec-discover:hspec-discover ==2.*
-    build-depends:
-      , monoidmap
-      , monoidmap-examples
-
-benchmark monoidmap-benchmark
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-tasty-bench
-      , dependency-tasty-hunit
-    default-language:
-        Haskell2010
-    type:
-        exitcode-stdio-1.0
-    hs-source-dirs:
-        components/monoidmap-benchmark
-    main-is:
-        Main.hs
     build-depends:
       , monoidmap
       , monoidmap-examples
