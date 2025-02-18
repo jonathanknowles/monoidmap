@@ -55,7 +55,7 @@ import Test.Common
     , testValueTypesLCMMonoid
     , testValueTypesLeftGCDMonoid
     , testValueTypesLeftReductive
-    , testValueTypesMonoidNull
+    , testValueTypesAll
     , testValueTypesMonus
     , testValueTypesOverlappingGCDMonoid
     , testValueTypesReductive
@@ -83,7 +83,7 @@ import qualified Data.MonoidMap as MonoidMap
 spec :: Spec
 spec = do
     specForAll
-        testValueTypesMonoidNull
+        testValueTypesAll
         specValidMonoidNull
     specForAll
         testValueTypesLeftReductive

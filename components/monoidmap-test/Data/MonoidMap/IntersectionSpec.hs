@@ -31,7 +31,7 @@ import Test.Common
     , makeSpec
     , property
     , testValueTypesGCDMonoid
-    , testValueTypesMonoidNull
+    , testValueTypesAll
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -45,7 +45,7 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Intersection" $ do
 
-    forM_ testValueTypesMonoidNull $
+    forM_ testValueTypesAll $
         \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
     forM_ testValueTypesGCDMonoid $

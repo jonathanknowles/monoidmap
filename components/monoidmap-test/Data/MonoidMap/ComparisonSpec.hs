@@ -33,7 +33,7 @@ import Test.Common
     , makeSpec
     , property
     , testValueTypesGCDMonoid
-    , testValueTypesMonoidNull
+    , testValueTypesAll
     , testValueTypesReductive
     )
 import Test.Hspec
@@ -59,7 +59,7 @@ spec = describe "Comparison" $ do
         \(TestValueType p) -> specReductive
             (Proxy @Key) p
 
-    forM_ testValueTypesMonoidNull $
+    forM_ testValueTypesAll $
         \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
 
