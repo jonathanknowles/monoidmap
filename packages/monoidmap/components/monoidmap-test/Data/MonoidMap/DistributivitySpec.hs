@@ -36,7 +36,7 @@ import Test.Common
     , testValueTypesLCMMonoid
     , testValueTypesLeftGCDMonoid
     , testValueTypesLeftReductive
-    , testValueTypesMonoidNull
+    , testValueTypesAll
     , testValueTypesMonus
     , testValueTypesOverlappingGCDMonoid
     , testValueTypesReductive
@@ -79,7 +79,7 @@ spec = do
 specDistributiveGet :: Spec
 specDistributiveGet = do
     specForAll
-        testValueTypesMonoidNull
+        testValueTypesAll
         "Semigroup.<>"
         (Semigroup.<>)
         (Semigroup.<>)

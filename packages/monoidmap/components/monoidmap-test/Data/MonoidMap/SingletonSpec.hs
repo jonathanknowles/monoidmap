@@ -24,7 +24,7 @@ import Test.Common
     , TestValueType (TestValueType)
     , makeSpec
     , property
-    , testValueTypesMonoidNull
+    , testValueTypesAll
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -39,7 +39,7 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Singletons" $ do
 
-    forM_ testValueTypesMonoidNull $
+    forM_ testValueTypesAll $
         \(TestValueType p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec

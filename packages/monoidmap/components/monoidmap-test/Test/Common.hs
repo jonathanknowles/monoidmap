@@ -12,7 +12,7 @@ module Test.Common
     ( Key
     , Test
     , TestValueType (..)
-    , testValueTypesMonoidNull
+    , testValueTypesAll
     , testValueTypesGroup
     , testValueTypesMonus
     , testValueTypesLeftReductive
@@ -163,8 +163,8 @@ type TestValue v =
 data TestValueType (c :: Type -> Constraint) =
     forall v. (TestValue v, c v) => TestValueType (Proxy v)
 
-testValueTypesMonoidNull :: [TestValueType MonoidNull]
-testValueTypesMonoidNull =
+testValueTypesAll :: [TestValueType MonoidNull]
+testValueTypesAll =
     [ TestValueType (Proxy @(Dual Text))
     , TestValueType (Proxy @(Dual [Int]))
     , TestValueType (Proxy @(Dual [Natural]))
