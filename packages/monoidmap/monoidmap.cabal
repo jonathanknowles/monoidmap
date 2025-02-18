@@ -119,6 +119,8 @@ library monoidmap-examples
       , extensions
     build-depends:
       , monoidmap
+    visibility:
+        private
     hs-source-dirs:
         components/monoidmap-examples
     exposed-modules:
@@ -143,6 +145,8 @@ library monoidmap-internal
       , dependency-monoid-subclasses
       , dependency-nothunks
       , extensions
+    visibility:
+        private
     hs-source-dirs:
         components/monoidmap-internal
     exposed-modules:
