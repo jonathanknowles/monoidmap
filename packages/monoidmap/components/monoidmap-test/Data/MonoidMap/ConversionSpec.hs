@@ -25,7 +25,13 @@ import Data.Proxy
 import Data.Set
     ( Set )
 import Test.Common
-    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+    ( Key
+    , Test
+    , TestType (TestType)
+    , makeSpec
+    , property
+    , testValueTypesMonoidNull
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -42,7 +48,7 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Conversions" $ do
 
-    forM_ testTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
+    forM_ testValueTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do

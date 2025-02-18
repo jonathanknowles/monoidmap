@@ -30,7 +30,7 @@ import Test.Common
     , TestType (TestType)
     , makeSpec
     , property
-    , testTypesRightReductive
+    , testValueTypesRightReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -42,7 +42,7 @@ import qualified Test.QuickCheck as QC
 spec :: Spec
 spec = describe "Suffixes" $ do
 
-    forM_ testTypesRightReductive $
+    forM_ testValueTypesRightReductive $
         \(TestType p) -> specFor (Proxy @Key) p
 
 specFor

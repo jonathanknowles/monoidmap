@@ -12,17 +12,17 @@ module Test.Common
     ( Key
     , Test
     , TestType (..)
-    , testTypesMonoidNull
-    , testTypesGroup
-    , testTypesMonus
-    , testTypesLeftReductive
-    , testTypesRightReductive
-    , testTypesReductive
-    , testTypesLeftGCDMonoid
-    , testTypesRightGCDMonoid
-    , testTypesOverlappingGCDMonoid
-    , testTypesGCDMonoid
-    , testTypesLCMMonoid
+    , testValueTypesMonoidNull
+    , testValueTypesGroup
+    , testValueTypesMonus
+    , testValueTypesLeftReductive
+    , testValueTypesRightReductive
+    , testValueTypesReductive
+    , testValueTypesLeftGCDMonoid
+    , testValueTypesRightGCDMonoid
+    , testValueTypesOverlappingGCDMonoid
+    , testValueTypesGCDMonoid
+    , testValueTypesLCMMonoid
     , TestValue
     , makeSpec
     , property
@@ -163,8 +163,8 @@ type TestValue v =
 data TestType (c :: Type -> Constraint) =
     forall v. (TestValue v, c v) => TestType (Proxy v)
 
-testTypesMonoidNull :: [TestType MonoidNull]
-testTypesMonoidNull =
+testValueTypesMonoidNull :: [TestType MonoidNull]
+testValueTypesMonoidNull =
     [ TestType (Proxy @(Dual Text))
     , TestType (Proxy @(Dual [Int]))
     , TestType (Proxy @(Dual [Natural]))
@@ -179,37 +179,21 @@ testTypesMonoidNull =
     , TestType (Proxy @[Natural])
     ]
 
-testTypesGroup :: [TestType Group]
-testTypesGroup =
+testValueTypesGroup :: [TestType Group]
+testValueTypesGroup =
     [ TestType (Proxy @(Sum Int))
     ]
 
-testTypesMonus :: [TestType Monus]
-testTypesMonus =
+testValueTypesMonus :: [TestType Monus]
+testValueTypesMonus =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
     , TestType (Proxy @(Product Natural))
     ]
 
-testTypesLeftReductive :: [TestType LeftReductive]
-testTypesLeftReductive =
-    [ TestType (Proxy @(Set Int))
-    , TestType (Proxy @(Set Natural))
-    , TestType (Proxy @(Sum Int))
-    , TestType (Proxy @(Sum Natural))
-    , TestType (Proxy @(Product Int))
-    , TestType (Proxy @(Product Natural))
-    , TestType (Proxy @[Int])
-    , TestType (Proxy @[Natural])
-    , TestType (Proxy @(Text))
-    , TestType (Proxy @(Dual [Int]))
-    , TestType (Proxy @(Dual [Natural]))
-    , TestType (Proxy @(Dual Text))
-    ]
-
-testTypesRightReductive :: [TestType RightReductive]
-testTypesRightReductive =
+testValueTypesLeftReductive :: [TestType LeftReductive]
+testValueTypesLeftReductive =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Int))
@@ -224,8 +208,24 @@ testTypesRightReductive =
     , TestType (Proxy @(Dual Text))
     ]
 
-testTypesReductive :: [TestType Reductive]
-testTypesReductive =
+testValueTypesRightReductive :: [TestType RightReductive]
+testValueTypesRightReductive =
+    [ TestType (Proxy @(Set Int))
+    , TestType (Proxy @(Set Natural))
+    , TestType (Proxy @(Sum Int))
+    , TestType (Proxy @(Sum Natural))
+    , TestType (Proxy @(Product Int))
+    , TestType (Proxy @(Product Natural))
+    , TestType (Proxy @[Int])
+    , TestType (Proxy @[Natural])
+    , TestType (Proxy @(Text))
+    , TestType (Proxy @(Dual [Int]))
+    , TestType (Proxy @(Dual [Natural]))
+    , TestType (Proxy @(Dual Text))
+    ]
+
+testValueTypesReductive :: [TestType Reductive]
+testValueTypesReductive =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Int))
@@ -234,8 +234,8 @@ testTypesReductive =
     , TestType (Proxy @(Product Natural))
     ]
 
-testTypesLeftGCDMonoid :: [TestType LeftGCDMonoid]
-testTypesLeftGCDMonoid =
+testValueTypesLeftGCDMonoid :: [TestType LeftGCDMonoid]
+testValueTypesLeftGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
@@ -244,8 +244,8 @@ testTypesLeftGCDMonoid =
     , TestType (Proxy @(Dual Text))
     ]
 
-testTypesRightGCDMonoid :: [TestType RightGCDMonoid]
-testTypesRightGCDMonoid =
+testValueTypesRightGCDMonoid :: [TestType RightGCDMonoid]
+testValueTypesRightGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
@@ -254,8 +254,8 @@ testTypesRightGCDMonoid =
     , TestType (Proxy @(Dual Text))
     ]
 
-testTypesOverlappingGCDMonoid :: [TestType OverlappingGCDMonoid]
-testTypesOverlappingGCDMonoid =
+testValueTypesOverlappingGCDMonoid :: [TestType OverlappingGCDMonoid]
+testValueTypesOverlappingGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
@@ -264,16 +264,16 @@ testTypesOverlappingGCDMonoid =
     , TestType (Proxy @(Dual Text))
     ]
 
-testTypesGCDMonoid :: [TestType GCDMonoid]
-testTypesGCDMonoid =
+testValueTypesGCDMonoid :: [TestType GCDMonoid]
+testValueTypesGCDMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
     , TestType (Proxy @(Product Natural))
     ]
 
-testTypesLCMMonoid :: [TestType LCMMonoid]
-testTypesLCMMonoid =
+testValueTypesLCMMonoid :: [TestType LCMMonoid]
+testValueTypesLCMMonoid =
     [ TestType (Proxy @(Set Int))
     , TestType (Proxy @(Set Natural))
     , TestType (Proxy @(Sum Natural))
