@@ -68,19 +68,20 @@ import Test.QuickCheck
     , Function (..)
     , Property
     , Testable
+    , arbitrarySizedIntegral
     , checkCoverage
     , choose
     , coarbitraryIntegral
     , coarbitraryShow
     , frequency
     , functionIntegral
+    , functionMap
     , functionShow
     , listOf
     , scale
+    , shrinkIntegral
     , shrinkMapBy
     )
-import Test.QuickCheck.Instances.Natural
-    ()
 
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Text as Text
@@ -97,6 +98,26 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
         fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
+
+instance (CoArbitrary k, CoArbitrary v) =>
+    CoArbitrary (MonoidMap k v)
+  where
+    coarbitrary = coarbitrary . MonoidMap.toMap
+
+instance (Function k, Function v, Ord k, MonoidNull v) =>
+    Function (MonoidMap k v)
+  where
+    function = functionMap MonoidMap.toMap MonoidMap.fromMap
+
+instance Arbitrary Natural where
+    arbitrary = arbitrarySizedIntegral
+    shrink = shrinkIntegral
+
+instance CoArbitrary Natural where
+    coarbitrary = coarbitraryIntegral
+
+instance Function Natural where
+    function = functionIntegral
 
 instance Arbitrary Text where
     arbitrary = Text.pack <$> listOf genChar
@@ -177,11 +198,14 @@ testValueTypesAll =
     , TestValueType (Proxy @(Text))
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Int)))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesGroup :: [TestValueType Group]
 testValueTypesGroup =
     [ TestValueType (Proxy @(Sum Int))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Int)))
     ]
 
 testValueTypesMonus :: [TestValueType Monus]
@@ -190,6 +214,7 @@ testValueTypesMonus =
     , TestValueType (Proxy @(Set Int))
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesLeftReductive :: [TestValueType LeftReductive]
@@ -206,6 +231,7 @@ testValueTypesLeftReductive =
     , TestValueType (Proxy @(Text))
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesRightReductive :: [TestValueType RightReductive]
@@ -222,6 +248,7 @@ testValueTypesRightReductive =
     , TestValueType (Proxy @(Text))
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesReductive :: [TestValueType Reductive]
@@ -232,6 +259,7 @@ testValueTypesReductive =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Int))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesLeftGCDMonoid :: [TestValueType LeftGCDMonoid]
@@ -242,6 +270,7 @@ testValueTypesLeftGCDMonoid =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
     , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesRightGCDMonoid :: [TestValueType RightGCDMonoid]
@@ -252,6 +281,7 @@ testValueTypesRightGCDMonoid =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
     , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesOverlappingGCDMonoid :: [TestValueType OverlappingGCDMonoid]
@@ -262,6 +292,7 @@ testValueTypesOverlappingGCDMonoid =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
     , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesGCDMonoid :: [TestValueType GCDMonoid]
@@ -270,6 +301,7 @@ testValueTypesGCDMonoid =
     , TestValueType (Proxy @(Set Int))
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesLCMMonoid :: [TestValueType LCMMonoid]
@@ -278,6 +310,7 @@ testValueTypesLCMMonoid =
     , TestValueType (Proxy @(Set Int))
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 --------------------------------------------------------------------------------
