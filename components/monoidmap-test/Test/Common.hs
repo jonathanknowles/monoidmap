@@ -188,11 +188,14 @@ testValueTypesAll =
     , TestValueType (Proxy @(Text))
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Int)))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesGroup :: [TestValueType Group]
 testValueTypesGroup =
     [ TestValueType (Proxy @(Sum Int))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Int)))
     ]
 
 testValueTypesMonus :: [TestValueType Monus]
@@ -201,6 +204,7 @@ testValueTypesMonus =
     , TestValueType (Proxy @(Set Int))
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesLeftReductive :: [TestValueType LeftReductive]
@@ -217,6 +221,7 @@ testValueTypesLeftReductive =
     , TestValueType (Proxy @(Text))
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesRightReductive :: [TestValueType RightReductive]
@@ -233,6 +238,7 @@ testValueTypesRightReductive =
     , TestValueType (Proxy @(Text))
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesReductive :: [TestValueType Reductive]
@@ -243,6 +249,7 @@ testValueTypesReductive =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Int))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesLeftGCDMonoid :: [TestValueType LeftGCDMonoid]
@@ -253,6 +260,7 @@ testValueTypesLeftGCDMonoid =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
     , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesRightGCDMonoid :: [TestValueType RightGCDMonoid]
@@ -263,6 +271,7 @@ testValueTypesRightGCDMonoid =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
     , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesOverlappingGCDMonoid :: [TestValueType OverlappingGCDMonoid]
@@ -273,6 +282,7 @@ testValueTypesOverlappingGCDMonoid =
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
     , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesGCDMonoid :: [TestValueType GCDMonoid]
@@ -281,6 +291,7 @@ testValueTypesGCDMonoid =
     , TestValueType (Proxy @(Set Int))
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 testValueTypesLCMMonoid :: [TestValueType LCMMonoid]
@@ -289,6 +300,7 @@ testValueTypesLCMMonoid =
     , TestValueType (Proxy @(Set Int))
     , TestValueType (Proxy @(Set Natural))
     , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap Ordering (Sum Natural)))
     ]
 
 --------------------------------------------------------------------------------
