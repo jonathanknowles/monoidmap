@@ -74,6 +74,7 @@ import Test.QuickCheck
     , coarbitraryShow
     , frequency
     , functionIntegral
+    , functionMap
     , functionShow
     , listOf
     , scale
@@ -102,6 +103,11 @@ instance (CoArbitrary k, CoArbitrary v) =>
     CoArbitrary (MonoidMap k v)
   where
     coarbitrary = coarbitrary . MonoidMap.toMap
+
+instance (Function k, Function v, Ord k, MonoidNull v) =>
+    Function (MonoidMap k v)
+  where
+    function = functionMap MonoidMap.toMap MonoidMap.fromMap
 
 instance Arbitrary Text where
     arbitrary = Text.pack <$> listOf genChar
