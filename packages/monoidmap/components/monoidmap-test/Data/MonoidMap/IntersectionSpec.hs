@@ -27,11 +27,11 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
-    , testTypesGCDMonoid
-    , testTypesMonoidNull
+    , testValueTypesGCDMonoid
+    , testValueTypesAll
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -45,11 +45,11 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Intersection" $ do
 
-    forM_ testTypesMonoidNull $
-        \(TestType p) -> specMonoidNull
+    forM_ testValueTypesAll $
+        \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
-    forM_ testTypesGCDMonoid $
-        \(TestType p) -> specGCDMonoid
+    forM_ testValueTypesGCDMonoid $
+        \(TestValueType p) -> specGCDMonoid
             (Proxy @Key) p
 
 specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
