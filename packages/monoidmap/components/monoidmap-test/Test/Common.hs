@@ -68,6 +68,7 @@ import Test.QuickCheck
     , Function (..)
     , Property
     , Testable
+    , arbitrarySizedIntegral
     , checkCoverage
     , choose
     , coarbitraryIntegral
@@ -78,10 +79,9 @@ import Test.QuickCheck
     , functionShow
     , listOf
     , scale
+    , shrinkIntegral
     , shrinkMapBy
     )
-import Test.QuickCheck.Instances.Natural
-    ()
 
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Text as Text
@@ -108,6 +108,16 @@ instance (Function k, Function v, Ord k, MonoidNull v) =>
     Function (MonoidMap k v)
   where
     function = functionMap MonoidMap.toMap MonoidMap.fromMap
+
+instance Arbitrary Natural where
+    arbitrary = arbitrarySizedIntegral
+    shrink = shrinkIntegral
+
+instance CoArbitrary Natural where
+    coarbitrary = coarbitraryIntegral
+
+instance Function Natural where
+    function = functionIntegral
 
 instance Arbitrary Text where
     arbitrary = Text.pack <$> listOf genChar
