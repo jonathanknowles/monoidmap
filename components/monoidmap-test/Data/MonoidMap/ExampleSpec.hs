@@ -36,6 +36,8 @@ import Data.Set
     ( Set )
 import Numeric.Natural
     ( Natural )
+import Test.Common
+    ()
 import Test.Hspec
     ( Spec, describe )
 import Test.Hspec.Unit
@@ -45,10 +47,6 @@ import Test.Hspec.Unit
     , unitTestData2
     , unitTestSpec
     )
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
 
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
