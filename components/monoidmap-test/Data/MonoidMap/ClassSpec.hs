@@ -11,8 +11,6 @@ import Prelude
 
 import Data.Monoid
     ( Product (..), Sum (..) )
-import Data.Monoid.Null
-    ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
@@ -21,16 +19,15 @@ import Data.Set
     ( Set )
 import Data.Typeable
     ( Typeable, typeRep )
-import GHC.Exts
-    ( IsList (..) )
 import Numeric.Natural
     ( Natural )
 import Test.Combinators.NonZero
     ( NonZero, genNonZero, shrinkNonZero )
+import Test.Common ()
 import Test.Hspec
     ( Spec, describe )
 import Test.QuickCheck
-    ( Arbitrary (..), listOf, scale, shrinkMapBy )
+    ( Arbitrary (..) )
 import Test.QuickCheck.Classes
     ( eqLaws
     , isListLaws
@@ -67,12 +64,6 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
     , rightCancellativeLaws
     , rightReductiveLaws
     )
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
-
-import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = do
@@ -342,11 +333,3 @@ specLawsFor keyType = do
 instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
     arbitrary = genNonZero arbitrary
     shrink = shrinkNonZero shrink
-
-instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
-    Arbitrary (MonoidMap k v)
-  where
-    arbitrary =
-        fromList <$> scale (`mod` 16) (listOf ((,) <$> arbitrary <*> arbitrary))
-    shrink =
-        shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
