@@ -62,6 +62,8 @@ import Numeric.Natural
     ( Natural )
 import Test.Hspec
     ( Spec, describe )
+import Test.Key
+    ( Key4 )
 import Test.QuickCheck
     ( Arbitrary (..)
     , CoArbitrary (..)
@@ -70,7 +72,6 @@ import Test.QuickCheck
     , Testable
     , arbitrarySizedIntegral
     , checkCoverage
-    , choose
     , coarbitraryIntegral
     , coarbitraryShow
     , frequency
@@ -139,18 +140,7 @@ instance Function Text where
 -- Test keys
 --------------------------------------------------------------------------------
 
-newtype Key = Key Int
-    deriving (Enum, Eq, Integral, Num, Ord, Real, Show)
-
-instance Arbitrary Key where
-    arbitrary = Key <$> choose (0, 15)
-    shrink (Key k) = Key <$> shrink k
-
-instance CoArbitrary Key where
-    coarbitrary = coarbitraryIntegral
-
-instance Function Key where
-    function = functionIntegral
+type Key = Key4
 
 --------------------------------------------------------------------------------
 -- Test constraints
