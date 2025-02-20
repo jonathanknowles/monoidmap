@@ -206,6 +206,7 @@ test-suite monoidmap-test
         Test.Common
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
+        Test.Key
     type:
         exitcode-stdio-1.0
     default-language:
