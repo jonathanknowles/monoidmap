@@ -26,6 +26,8 @@ import Test.Combinators.NonZero
 import Test.Common ()
 import Test.Hspec
     ( Spec, describe )
+import Test.Key
+    ( Key1, Key2, Key4, Key8 )
 import Test.QuickCheck
     ( Arbitrary (..) )
 import Test.QuickCheck.Classes
@@ -68,12 +70,11 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
 spec :: Spec
 spec = do
     describe "Class laws" $ do
-        -- Test against a variety of key types, in ascending order of
-        -- cardinality:
-        specLawsFor (Proxy @Bool)
-        specLawsFor (Proxy @Ordering)
-        specLawsFor (Proxy @Int)
-        specLawsFor (Proxy @Integer)
+        -- Test against a variety of key sizes:
+        specLawsFor (Proxy @Key1)
+        specLawsFor (Proxy @Key2)
+        specLawsFor (Proxy @Key4)
+        specLawsFor (Proxy @Key8)
 
 specLawsFor
     :: forall k. () =>
