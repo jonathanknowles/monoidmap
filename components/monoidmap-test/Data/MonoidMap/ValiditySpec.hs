@@ -47,20 +47,20 @@ import Data.Set
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
-    , testTypesGCDMonoid
-    , testTypesGroup
-    , testTypesLCMMonoid
-    , testTypesLeftGCDMonoid
-    , testTypesLeftReductive
-    , testTypesMonoidNull
-    , testTypesMonus
-    , testTypesOverlappingGCDMonoid
-    , testTypesReductive
-    , testTypesRightGCDMonoid
-    , testTypesRightReductive
+    , testValueTypesGCDMonoid
+    , testValueTypesGroup
+    , testValueTypesLCMMonoid
+    , testValueTypesLeftGCDMonoid
+    , testValueTypesLeftReductive
+    , testValueTypesAll
+    , testValueTypesMonus
+    , testValueTypesOverlappingGCDMonoid
+    , testValueTypesReductive
+    , testValueTypesRightGCDMonoid
+    , testValueTypesRightReductive
     )
 import Test.Hspec
     ( Spec, it )
@@ -83,50 +83,50 @@ import qualified Data.MonoidMap as MonoidMap
 spec :: Spec
 spec = do
     specForAll
-        testTypesMonoidNull
+        testValueTypesAll
         specValidMonoidNull
     specForAll
-        testTypesLeftReductive
+        testValueTypesLeftReductive
         specValidLeftReductive
     specForAll
-        testTypesRightReductive
+        testValueTypesRightReductive
         specValidRightReductive
     specForAll
-        testTypesReductive
+        testValueTypesReductive
         specValidReductive
     specForAll
-        testTypesLeftGCDMonoid
+        testValueTypesLeftGCDMonoid
         specValidLeftGCDMonoid
     specForAll
-        testTypesRightGCDMonoid
+        testValueTypesRightGCDMonoid
         specValidRightGCDMonoid
     specForAll
-        testTypesOverlappingGCDMonoid
+        testValueTypesOverlappingGCDMonoid
         specValidOverlappingGCDMonoid
     specForAll
-        testTypesGCDMonoid
+        testValueTypesGCDMonoid
         specValidGCDMonoid
     specForAll
-        testTypesLCMMonoid
+        testValueTypesLCMMonoid
         specValidLCMMonoid
     specForAll
-        testTypesMonus
+        testValueTypesMonus
         specValidMonus
     specForAll
-        testTypesGroup
+        testValueTypesGroup
         specValidGroup
   where
     specForAll
-        :: [TestType c]
+        :: [TestValueType c]
         -> (forall k v. (Test k v, c v) => Proxy k -> Proxy v -> Spec)
         -> Spec
-    specForAll testTypes specFn = forM_ testTypes (specFor specFn)
+    specForAll testValueTypes specFn = forM_ testValueTypes (specFor specFn)
 
     specFor
         :: (forall k v. (Test k v, c v) => Proxy k -> Proxy v -> Spec)
-        -> TestType c
+        -> TestValueType c
         -> Spec
-    specFor specFn (TestType (v :: Proxy v)) =
+    specFor specFn (TestValueType (v :: Proxy v)) =
         specFn (Proxy @Key) v
 
 specValidMonoidNull

@@ -27,10 +27,10 @@ import Data.Semigroup.Cancellative
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
-    , testTypesLeftReductive
+    , testValueTypesLeftReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -42,8 +42,8 @@ import qualified Test.QuickCheck as QC
 spec :: Spec
 spec = describe "Prefixes" $ do
 
-    forM_ testTypesLeftReductive $
-        \(TestType p) -> specFor (Proxy @Key) p
+    forM_ testValueTypesLeftReductive $
+        \(TestValueType p) -> specFor (Proxy @Key) p
 
 specFor
     :: forall k v. (Test k v, LeftReductive v) => Proxy k -> Proxy v -> Spec

@@ -17,7 +17,13 @@ import Data.MonoidMap
 import Data.Proxy
     ( Proxy (..) )
 import Test.Common
-    ( Key, Test, TestType (TestType), makeSpec, property, testTypesMonoidNull )
+    ( Key
+    , Test
+    , TestValueType (TestValueType)
+    , makeSpec
+    , property
+    , testValueTypesAll
+    )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -29,7 +35,8 @@ import qualified Data.MonoidMap as MonoidMap
 spec :: Spec
 spec = describe "Folding" $ do
 
-    forM_ testTypesMonoidNull $ \(TestType p) -> specFor (Proxy @Key) p
+    forM_ testValueTypesAll $
+        \(TestValueType p) -> specFor (Proxy @Key) p
 
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do

@@ -27,11 +27,11 @@ import Data.Proxy
 import Test.Common
     ( Key
     , Test
-    , TestType (TestType)
+    , TestValueType (TestValueType)
     , makeSpec
     , property
-    , testTypesLCMMonoid
-    , testTypesMonoidNull
+    , testValueTypesLCMMonoid
+    , testValueTypesAll
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -45,11 +45,11 @@ import qualified Data.Set as Set
 spec :: Spec
 spec = describe "Union" $ do
 
-    forM_ testTypesMonoidNull $
-        \(TestType p) -> specMonoidNull
+    forM_ testValueTypesAll $
+        \(TestValueType p) -> specMonoidNull
             (Proxy @Key) p
-    forM_ testTypesLCMMonoid $
-        \(TestType p) -> specLCMMonoid
+    forM_ testValueTypesLCMMonoid $
+        \(TestValueType p) -> specLCMMonoid
             (Proxy @Key) p
 
 specMonoidNull :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
