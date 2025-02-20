@@ -18,6 +18,16 @@ where
 
 import Prelude
 
+import Data.Aeson.Types
+    ( FromJSON (parseJSON)
+    , FromJSONKey (fromJSONKey)
+    , ToJSON (toEncoding, toJSON)
+    , ToJSONKey (toJSONKey)
+    , toJSONKeyText
+    )
+import Data.Text
+    ( Text
+    )
 import GHC.Generics
     ( Generic
     )
@@ -35,9 +45,11 @@ import Test.QuickCheck.Quid
     , Size (Size)
     )
 
-newtype Key (size :: Nat) = Key (Latin Quid)
+import qualified Data.Text as Text
+
+newtype Key (size :: Nat) = Key Quid
     deriving stock (Eq, Generic, Ord)
-    deriving newtype (Read, Show)
+    deriving (Read, Show) via Latin Quid
     deriving (Arbitrary) via Size size Quid
     deriving (CoArbitrary) via Quid
     deriving anyclass (Function)
@@ -46,3 +58,22 @@ type Key1 = Key 1
 type Key2 = Key 2
 type Key4 = Key 4
 type Key8 = Key 8
+
+instance ToJSON (Key size) where
+    toEncoding = toEncoding . toUnquotedText
+    toJSON = toJSON . toUnquotedText
+
+instance ToJSONKey (Key size) where
+    toJSONKey = toJSONKeyText toUnquotedText
+
+instance FromJSON (Key size) where
+    parseJSON = fmap (fmap unsafeFromUnquotedText) parseJSON
+
+instance FromJSONKey (Key size) where
+    fromJSONKey = fmap unsafeFromUnquotedText fromJSONKey
+
+toUnquotedText :: Key size -> Text
+toUnquotedText = Text.dropAround (== '\"') . Text.pack . show
+
+unsafeFromUnquotedText :: Text -> Key size
+unsafeFromUnquotedText = read . show . Text.unpack
