@@ -33,6 +33,8 @@ import Examples.MultiMap.Instances.MultiMap3
     ( MultiMap3 )
 import Examples.MultiMap.Instances.MultiMap4
     ( MultiMap4 )
+import Test.Common
+    ()
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -45,10 +47,6 @@ import Test.QuickCheck
     , (.||.)
     , (===)
     )
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
 
 import qualified Data.Foldable as F
 import qualified Data.Set as Set
