@@ -1,0 +1,162 @@
+{
+    "samples": [
+        {
+            "-1": "caaaca",
+            "-10": "aaaabaaabaabaa",
+            "-14": "aaaabaaaaaa",
+            "-2": "aaaaababbaaa",
+            "1": "aacbaaab",
+            "14": "cbbaaaaaaaadaaaaab",
+            "8": "aaaabaabaaaaaaba"
+        },
+        {
+            "-11": "aabaacdbaaaa",
+            "-12": "abaaaaaaaaa",
+            "-14": "abcaaa",
+            "-2": "aaaaaaaa",
+            "-4": "aaaadb",
+            "-5": "aababaaaaaaa",
+            "-6": "baaaaabaab",
+            "-7": "caaaaaba",
+            "12": "aaaaaa",
+            "13": "baa",
+            "4": "cbabababa",
+            "7": "baaaabaa"
+        },
+        {
+            "-13": "cadcaaaaa",
+            "-5": "aabbbcaaaaa",
+            "-9": "aaacaaacb",
+            "0": "baba",
+            "12": "aabaaab",
+            "4": "ada",
+            "5": "aaaaabaaa",
+            "9": "aaaaaaaaabca"
+        },
+        {
+            "-13": "cbaaaaaaaaaaaaaa",
+            "-7": "aa",
+            "0": "aaabaaabaaaaa",
+            "10": "aaaab",
+            "13": "baa",
+            "14": "baca"
+        },
+        {
+            "-13": "aaaaabaaaaabcaacaacaaaaaaaa",
+            "-2": "aaaabbbbaa",
+            "-3": "cba",
+            "-9": "aaababbacbaa",
+            "12": "bab",
+            "13": "abaaaaa",
+            "14": "aaacbbbaabaaaa",
+            "2": "aabaaa",
+            "4": "aabaaab"
+        },
+        {
+            "3": "aaaaaaaaaaaaa",
+            "9": "aaaa"
+        },
+        {
+            "-1": "bbacaaaa",
+            "-13": "aaaaab",
+            "-5": "ab",
+            "-8": "aaaaccaaaabca",
+            "1": "aabaababaabab",
+            "11": "aa",
+            "6": "cabadaaabaaa",
+            "7": "bcabaaaad"
+        },
+        {},
+        {
+            "-14": "babcb",
+            "10": "aaabaaa",
+            "5": "a"
+        },
+        {
+            "-1": "a",
+            "-12": "aaaaabba",
+            "-13": "aaaaaaabaa",
+            "10": "abaaaaaaaabaaa",
+            "9": "aaaaaaaa"
+        },
+        {
+            "-3": "aa",
+            "-4": "aabaaaacaaa",
+            "-9": "cac",
+            "0": "bacbaabb",
+            "8": "a",
+            "9": "abaaaaaaaa"
+        },
+        {},
+        {
+            "-1": "aaa",
+            "-14": "aaaaa",
+            "-7": "aaaabaabbbaabaaaaa",
+            "-8": "acaaabaa",
+            "10": "baaaaacaaa",
+            "11": "baa",
+            "13": "baaaaaaaaaa",
+            "14": "aaababa",
+            "2": "aaaacb",
+            "4": "baaaaaababaaaa",
+            "6": "baaaabdbaaa"
+        },
+        {
+            "-1": "aa",
+            "-11": "aaab",
+            "-14": "aabb",
+            "-3": "abaaba",
+            "-5": "aaaaaaabbacabaaaaaaaaa",
+            "-6": "aaaaaaaaaaaabaabaa",
+            "-9": "baa",
+            "1": "aaaaa",
+            "13": "aaabbabcbbaa",
+            "8": "baca",
+            "9": "aaabbcccaaad"
+        },
+        {
+            "-14": "aacaa",
+            "-2": "aabaaabba",
+            "-6": "babaacaabab",
+            "1": "a",
+            "11": "a",
+            "12": "aaaaa",
+            "14": "acaaaaaaaaabab",
+            "2": "a",
+            "9": "abaaaaabbaaa"
+        },
+        {
+            "-10": "ababb",
+            "1": "baabaaabbb",
+            "6": "aabaaaababaabb",
+            "7": "a"
+        },
+        {
+            "-1": "aaa",
+            "-12": "a",
+            "11": "a"
+        },
+        {
+            "-9": "baabacaaabab"
+        },
+        {
+            "-11": "babaaaaaaaaa",
+            "-4": "aaabaa",
+            "-5": "aabaaaabaaaaaa",
+            "-9": "b",
+            "11": "aaadbbcb",
+            "2": "aaba",
+            "3": "aaaaaaccbaa",
+            "7": "aaaaaabaaaaa"
+        },
+        {
+            "-11": "aa",
+            "-3": "abaaac",
+            "0": "cbaaabaaaaaac",
+            "11": "bababababbaaa",
+            "12": "aabacaaaaaa",
+            "4": "aaaaabaaaaaaaaba"
+        }
+    ],
+    "seed": 656233387
+}

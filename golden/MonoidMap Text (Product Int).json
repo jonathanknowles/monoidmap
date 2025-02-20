@@ -1,0 +1,132 @@
+{
+    "samples": [
+        {
+            "aaab": 5,
+            "aaabbac": 9,
+            "daaabaaa": -9
+        },
+        {
+            "aa": -12,
+            "aaaaaaba": -7,
+            "aaaaabaaaacba": -4,
+            "aaaba": -12,
+            "aabacaaaaaba": 5,
+            "aba": -7,
+            "abdaaaacaa": -4,
+            "ac": -14
+        },
+        {
+            "": 126,
+            "aaabaaaa": 0,
+            "aabaaaaadaaaab": -3,
+            "ab": 9,
+            "abaaaaaa": 6,
+            "ababaa": 9,
+            "abbaaaaaaac": -6
+        },
+        {
+            "a": 169,
+            "aaaaaaaa": -1,
+            "aaaaaaaabaa": -12,
+            "aaaaaaabba": -6,
+            "aaaaacaabaaaaa": -8,
+            "aaaabcabaaaa": -14,
+            "abaa": 8,
+            "ababa": 10,
+            "aca": 13,
+            "baaaaaaad": -10,
+            "bcaaaabcaaa": 11
+        },
+        {
+            "": 4,
+            "aabcaaaabaa": 10
+        },
+        {
+            "": 14,
+            "a": 9,
+            "aaaaaaaaa": 11,
+            "aaaaaaab": 13,
+            "aaaaabaaaab": 5,
+            "aabaabab": 0,
+            "ababaaaaaaaab": -7,
+            "acaaaaaaaad": -4,
+            "daabaa": -13
+        },
+        {},
+        {
+            "": 8,
+            "aaa": 16,
+            "aaabb": 10
+        },
+        {
+            "": -77,
+            "aaaaaaaca": -11,
+            "aaaaaabaa": 3,
+            "aaaababb": -13,
+            "aabaaaaaaaaa": 6,
+            "abaaaaaaacaaaa": 5,
+            "abaaaabaaab": 4
+        },
+        {
+            "aa": 12,
+            "ba": -12,
+            "baaaaacaaaaa": -10,
+            "caabaababa": -9
+        },
+        {
+            "aaaaababaaaa": 10,
+            "aaaaabbaba": -11,
+            "aaaab": 3,
+            "aaaacaababba": -10,
+            "aaabaaaacabaa": -1,
+            "aadaaaba": 6,
+            "abaaaaaa": -1,
+            "baa": -4,
+            "baaaaba": -13
+        },
+        {
+            "aa": -4,
+            "aaaa": -7,
+            "aaabaa": 13,
+            "aabaaababb": 10,
+            "aabab": -10,
+            "abaaa": -14,
+            "baaaaaabaaaa": -10,
+            "bbbbaaaaaca": 7,
+            "bca": 14
+        },
+        {
+            "a": -6,
+            "b": 12,
+            "ba": 11,
+            "bcabaaba": -9,
+            "cbbaaaaaaaaaa": 6
+        },
+        {},
+        {
+            "aaa": 11,
+            "aaaa": 9,
+            "aaaaaaaaaba": -12,
+            "aaaaaaaababaaa": 6,
+            "aaaaac": -9,
+            "aaaabaa": 10,
+            "aaabaaaaaa": -11,
+            "baaaaaba": 12,
+            "bc": -11
+        },
+        {
+            "aa": -4,
+            "bbabaaa": 13
+        },
+        {
+            "acbaaaa": 14
+        },
+        {
+            "aaaaaaa": -6,
+            "aabaaaaab": 13
+        },
+        {},
+        {}
+    ],
+    "seed": 1036301
+}

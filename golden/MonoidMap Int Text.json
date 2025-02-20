@@ -1,0 +1,146 @@
+{
+    "samples": [
+        {},
+        {
+            "-1": "aaabcaaaaaba",
+            "-10": "aabaaaa",
+            "10": "aaaaaa",
+            "12": "aaaabbaabaaaa",
+            "14": "aaaaaaaabab",
+            "4": "aaaaaa"
+        },
+        {
+            "-10": "aaaa",
+            "-14": "aaaaaababaabaaaa",
+            "-8": "aaaaaabaa",
+            "-9": "babaaabbabaaaaa",
+            "14": "a",
+            "8": "acbabaaabaaaaa"
+        },
+        {
+            "-6": "aaaa",
+            "-7": "baaaaaabaaa",
+            "11": "ba"
+        },
+        {
+            "-1": "babaaaaabdbca",
+            "2": "babbabaaaaaa"
+        },
+        {
+            "-11": "a"
+        },
+        {
+            "-2": "aaa",
+            "-3": "aabacaabaaaaaa",
+            "-6": "aabaaa",
+            "-7": "aaa",
+            "-9": "ab",
+            "2": "cabaaa",
+            "4": "aaaaaabaaaa",
+            "7": "aaaaaaab"
+        },
+        {
+            "-1": "baaaa",
+            "-10": "bccaab",
+            "-11": "aaaaaabba",
+            "-12": "aab",
+            "-14": "a",
+            "-5": "aacaca",
+            "-7": "aaaaaaaa",
+            "0": "a",
+            "12": "aaabaa",
+            "14": "a",
+            "9": "aaaaaaaca"
+        },
+        {
+            "-10": "acaaaaac",
+            "-11": "ba",
+            "-13": "aaaaaaaaaaa",
+            "-2": "abaaaaaaaabaa",
+            "-3": "aacaaaa",
+            "-4": "aababaaaaacbaa",
+            "-8": "cabaacaaabaa",
+            "0": "adaaaaacaaa",
+            "10": "aaadbbaaab",
+            "11": "ababbdacb"
+        },
+        {
+            "-1": "aaaaaabbca",
+            "-4": "aaba",
+            "-5": "ababaaaa",
+            "-7": "abb",
+            "0": "aaaabbbacaaaaa",
+            "10": "aaaaaaacab",
+            "11": "aaaaaabaaaaaa",
+            "12": "aaba",
+            "5": "aaabaaa",
+            "6": "aaabaabaadaaa",
+            "7": "aaaaaaaabdaaa",
+            "8": "aaaaab"
+        },
+        {
+            "-1": "dbaaaabca",
+            "-3": "aaaaabaabbbaa",
+            "-5": "baaaaaabaaaaba",
+            "-6": "bbbababa",
+            "0": "ababa",
+            "8": "baaaaabaaaaaaa"
+        },
+        {
+            "-1": "baaaabaaaaaab",
+            "-10": "baaabaababaaaaaa",
+            "-13": "aaaacaaabababababa",
+            "-2": "aaaaabaaaba",
+            "11": "baaa",
+            "12": "aaaaaaaaa",
+            "5": "a",
+            "6": "aad",
+            "7": "dbaabaabaaadaaaaaacbabaaaabaaaaaa"
+        },
+        {
+            "-14": "abaaaaaa",
+            "1": "ababaaaaacaa"
+        },
+        {
+            "-11": "aaaaaaab",
+            "-6": "bbaaaaaaaa",
+            "0": "a",
+            "1": "bbbaaaaaabaaba"
+        },
+        {
+            "-1": "ab",
+            "-13": "abdaba",
+            "-14": "acaaaabbaaaab",
+            "-3": "aabbab",
+            "-9": "aaaaaacaa",
+            "10": "ba",
+            "9": "ababaa"
+        },
+        {
+            "10": "aaaaabaabaa",
+            "2": "a"
+        },
+        {
+            "14": "aabcaaaacaaaaa"
+        },
+        {
+            "0": "baab",
+            "7": "aacaaaaaaaa"
+        },
+        {
+            "-10": "ab",
+            "-2": "baa",
+            "1": "badaaacaa",
+            "11": "aa",
+            "14": "a"
+        },
+        {
+            "-1": "aacab",
+            "-11": "baaaaaaaaa",
+            "-12": "baaabcb",
+            "-7": "a",
+            "-9": "acaaaaab"
+        }
+    ],
+    "seed": -664391975
+}
