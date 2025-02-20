@@ -98,6 +98,11 @@ instance (Arbitrary k, Ord k, Arbitrary v, MonoidNull v) =>
     shrink =
         shrinkMapBy MonoidMap.fromMap MonoidMap.toMap shrink
 
+instance (CoArbitrary k, CoArbitrary v) =>
+    CoArbitrary (MonoidMap k v)
+  where
+    coarbitrary = coarbitrary . MonoidMap.toMap
+
 instance Arbitrary Text where
     arbitrary = Text.pack <$> listOf genChar
       where
