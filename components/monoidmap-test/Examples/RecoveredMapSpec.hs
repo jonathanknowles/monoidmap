@@ -31,6 +31,8 @@ import Data.Typeable
     ( Typeable, typeRep )
 import Numeric.Natural
     ( Natural )
+import Test.Common
+    ()
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
@@ -54,10 +56,6 @@ import Test.QuickCheck.Classes
     ( eqLaws, functorLaws, monoidLaws, semigroupLaws, semigroupMonoidLaws )
 import Test.QuickCheck.Classes.Hspec
     ( testLawsMany )
-import Test.QuickCheck.Instances.Natural
-    ()
-import Test.QuickCheck.Instances.Text
-    ()
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.Set as Set
