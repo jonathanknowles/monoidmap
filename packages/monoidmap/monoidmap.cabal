@@ -40,8 +40,6 @@ common dependency-quickcheck-classes
     build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
 common dependency-quickcheck-groups
     build-depends:quickcheck-groups             >= 0.0.0.0    && < 0.1
-common dependency-quickcheck-instances
-    build-depends:quickcheck-instances          >= 0.3.28     && < 0.4
 common dependency-quickcheck-monoid-subclasses
     build-depends:quickcheck-monoid-subclasses  >= 0.3.0.0    && < 0.4
 common dependency-tasty-bench
@@ -166,7 +164,6 @@ test-suite monoidmap-test
       , dependency-QuickCheck
       , dependency-quickcheck-classes
       , dependency-quickcheck-groups
-      , dependency-quickcheck-instances
       , dependency-quickcheck-monoid-subclasses
       , dependency-text
       , extensions
