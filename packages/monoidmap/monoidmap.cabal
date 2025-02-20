@@ -42,6 +42,8 @@ common dependency-quickcheck-groups
     build-depends:quickcheck-groups             >= 0.0.0.0    && < 0.1
 common dependency-quickcheck-monoid-subclasses
     build-depends:quickcheck-monoid-subclasses  >= 0.3.0.0    && < 0.4
+common dependency-quickcheck-quid
+    build-depends:quickcheck-quid               >= 0.0.1.7    && < 0.1
 common dependency-tasty-bench
     build-depends:tasty-bench                   >= 0.3.2      && < 0.5
 common dependency-tasty-hunit
@@ -165,6 +167,7 @@ test-suite monoidmap-test
       , dependency-quickcheck-classes
       , dependency-quickcheck-groups
       , dependency-quickcheck-monoid-subclasses
+      , dependency-quickcheck-quid
       , dependency-text
       , extensions
     build-depends:
@@ -203,6 +206,7 @@ test-suite monoidmap-test
         Test.Common
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
+        Test.Key
     type:
         exitcode-stdio-1.0
     default-language:
