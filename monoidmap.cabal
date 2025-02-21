@@ -96,12 +96,16 @@ library
 
 library monoidmap-aeson
     import:
+      , dependency-aeson
+      , dependency-base
+      , dependency-monoid-subclasses
       , extensions
     visibility:
         public
     hs-source-dirs:
         components/monoidmap-aeson
     exposed-modules:
+        Data.MonoidMap.JSON
     default-language:
         Haskell2010
     build-depends:
