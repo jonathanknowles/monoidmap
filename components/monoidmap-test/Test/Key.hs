@@ -35,9 +35,9 @@ import Test.QuickCheck.Quid
     , Size (Size)
     )
 
-newtype Key (size :: Nat) = Key (Latin Quid)
+newtype Key (size :: Nat) = Key Quid
     deriving stock (Eq, Generic, Ord)
-    deriving newtype (Read, Show)
+    deriving (Read, Show) via Latin Quid
     deriving (Arbitrary) via Size size Quid
     deriving (CoArbitrary) via Quid
     deriving anyclass (Function)
