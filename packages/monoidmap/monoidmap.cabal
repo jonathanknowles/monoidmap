@@ -194,6 +194,7 @@ test-suite monoidmap-test
       , extensions
     build-depends:
       , monoidmap
+      , monoidmap-aeson
       , monoidmap-examples
     ghc-options:
         -threaded -with-rtsopts=-N
