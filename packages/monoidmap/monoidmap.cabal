@@ -183,6 +183,7 @@ test-suite monoidmap-test
       , dependency-containers
       , dependency-groups
       , dependency-hspec
+      , dependency-hspec-golden-aeson
       , dependency-monoid-subclasses
       , dependency-pretty-show
       , dependency-QuickCheck
@@ -210,6 +211,7 @@ test-suite monoidmap-test
         Data.MonoidMap.ComparisonSpec
         Data.MonoidMap.ConversionSpec
         Data.MonoidMap.DistributivitySpec
+        Data.MonoidMap.JSONSpec
         Data.MonoidMap.MapSpec
         Data.MonoidMap.FilterSpec
         Data.MonoidMap.FoldSpec

@@ -11,6 +11,7 @@
 module Test.Common
     ( Key
     , Test
+    , TestKey
     , TestValueType (..)
     , testValueTypesAll
     , testValueTypesGroup
