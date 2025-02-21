@@ -1,0 +1,76 @@
+{
+    "samples": [
+        {
+            "aaba": 7,
+            "babaacabba": 3,
+            "caaaaabbbb": 12
+        },
+        {
+            "": 6,
+            "a": 2,
+            "aaaa": 9,
+            "aaaaaa": 11,
+            "aaaabbaaabaa": 6,
+            "aab": 5,
+            "abbbaaaa": 3,
+            "aca": 5,
+            "baaabaaa": 8,
+            "babbaa": 1,
+            "bbabcaaa": 5
+        },
+        {
+            "": 12,
+            "aa": 10,
+            "aaaaaaaa": 1,
+            "aabba": 11,
+            "abaacaaaabab": 13,
+            "ababaaaabbaaa": 14,
+            "b": 13,
+            "ba": 9,
+            "babab": 5,
+            "babbaaaaab": 1
+        },
+        {},
+        {
+            "a": 3,
+            "aaaaaaaaa": 7,
+            "aaacaaabaaa": 9,
+            "abaaaaaaa": 2,
+            "abab": 4,
+            "ababaaaaaaaaab": 10,
+            "abb": 11,
+            "abcabcaaa": 2,
+            "bbaaababbabaaa": 8
+        },
+        {
+            "": 6,
+            "a": 8,
+            "aaaaa": 8,
+            "aaacaca": 11,
+            "aaacacacaa": 9,
+            "acacaaabaaaa": 10,
+            "baabaaabaa": 7
+        },
+        {
+            "aaa": 6,
+            "aaaaabaab": 4,
+            "aaaabaa": 10,
+            "aaaba": 6,
+            "aabaaaabbbaab": 10,
+            "abaaaaaaaaa": 6,
+            "ada": 7,
+            "b": 4
+        },
+        {
+            "aaaabaaaadaab": 1,
+            "aaaababbba": 10,
+            "aaabcaaaa": 9,
+            "baabaaabaabada": 2
+        },
+        {},
+        {
+            "aaabbcaaabba": 4
+        }
+    ],
+    "seed": 411464378
+}
