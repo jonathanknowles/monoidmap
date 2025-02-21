@@ -178,6 +178,7 @@ library monoidmap-internal
 
 test-suite monoidmap-test
     import:
+      , dependency-aeson
       , dependency-base
       , dependency-containers
       , dependency-groups
