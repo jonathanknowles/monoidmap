@@ -59,15 +59,40 @@ import Data.Aeson
     , FromJSONKey
     , ToJSON (toEncoding, toJSON)
     , ToJSONKey
+    , encode
+    )
+import Data.Map.Strict
+    ( Map
+    )
+import Data.Monoid
+    ( Sum
     )
 import Data.Monoid.Null
     ( MonoidNull
     )
 import Data.MonoidMap
     ( MonoidMap
+    , fromList
+    , fromMap
+    , toMap
     )
 
-import qualified Data.MonoidMap as MonoidMap
+_importsRequiredForDocumentation :: ()
+_importsRequiredForDocumentation = ()
+  where
+    _encode = encode ()
+
+    _fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
+    _fromList = fromList
+
+    _fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
+    _fromMap = fromMap
+
+    _toMap :: (Ord k, MonoidNull v) => MonoidMap k v -> Map k v
+    _toMap = toMap
+
+    _Sum :: Sum ()
+    _Sum = undefined
 
 instance
     ( ToJSONKey k
@@ -75,8 +100,8 @@ instance
     )
     => ToJSON (MonoidMap k v)
   where
-    toEncoding = toEncoding . MonoidMap.toMap
-    toJSON = toJSON . MonoidMap.toMap
+    toEncoding = toEncoding . toMap
+    toJSON = toJSON . toMap
 
 instance
     ( FromJSONKey k
@@ -86,4 +111,4 @@ instance
     )
     => FromJSON (MonoidMap k v)
   where
-    parseJSON = fmap (fmap MonoidMap.fromMap) parseJSON
+    parseJSON = fmap (fmap fromMap) parseJSON
