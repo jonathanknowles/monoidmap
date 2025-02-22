@@ -67,6 +67,7 @@ common extensions
         LambdaCase
         MultiParamTypeClasses
         NoImplicitPrelude
+        NumericUnderscores
         ScopedTypeVariables
         TupleSections
         TypeApplications
@@ -119,6 +120,7 @@ benchmark monoidmap-benchmark
       , dependency-deepseq
       , dependency-tasty-bench
       , dependency-tasty-hunit
+      , extensions
     build-depends:
       , monoidmap
       , monoidmap-examples
