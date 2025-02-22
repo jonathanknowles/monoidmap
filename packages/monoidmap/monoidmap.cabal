@@ -98,6 +98,7 @@ library monoidmap-aeson
     import:
       , dependency-aeson
       , dependency-base
+      , dependency-containers
       , dependency-monoid-subclasses
       , extensions
     visibility:
