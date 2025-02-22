@@ -67,6 +67,7 @@ common extensions
         LambdaCase
         MultiParamTypeClasses
         NoImplicitPrelude
+        NumericUnderscores
         ScopedTypeVariables
         TupleSections
         TypeApplications
