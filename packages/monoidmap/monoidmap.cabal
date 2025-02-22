@@ -119,6 +119,7 @@ benchmark monoidmap-benchmark
       , dependency-deepseq
       , dependency-tasty-bench
       , dependency-tasty-hunit
+      , extensions
     build-depends:
       , monoidmap
       , monoidmap-examples
