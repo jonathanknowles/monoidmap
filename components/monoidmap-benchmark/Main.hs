@@ -2,6 +2,10 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NumericUnderscores #-}
 
+-- |
+-- Copyright: © 2022–2025 Jonathan Knowles
+-- License: Apache-2.0
+--
 -- Benchmark for the `MonoidMap` type.
 --
 -- Instead of benchmarking functions for the `MonoidMap` type directly, we
