@@ -1,5 +1,6 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 -- |
 -- Copyright: © 2022–2025 Jonathan Knowles
@@ -41,6 +42,8 @@ import Data.Monoid
     ( First (..) )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.MonoidMapF
+    ( MonoidMapF (MonoidMapF) )
 import Data.Semigroup
     ( Semigroup (stimes), stimesIdempotentMonoid )
 import Data.Set
@@ -60,8 +63,7 @@ instance Ord k => Semigroup (Map k v) where
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
 
-instance Functor (Map k) where
-    fmap = map
+deriving via MonoidMapF k First instance Functor (Map k)
 
 empty :: Map k v
 empty = Map MonoidMap.empty
@@ -91,7 +93,7 @@ member :: Ord k => k -> Map k v -> Bool
 member k = MonoidMap.nonNullKey k . unMap
 
 map :: (v1 -> v2) -> Map k v1 -> Map k v2
-map f = Map . MonoidMap.map (fmap f) . unMap
+map = fmap
 
 mapWithKey :: (k -> v1 -> v2) -> Map k v1 -> Map k v2
 mapWithKey f = Map . MonoidMap.mapWithKey (fmap . f) . unMap

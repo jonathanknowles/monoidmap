@@ -88,6 +88,7 @@ library
         components/monoidmap
     exposed-modules:
         Data.MonoidMap
+        Data.MonoidMapF
     default-language:
         Haskell2010
 
