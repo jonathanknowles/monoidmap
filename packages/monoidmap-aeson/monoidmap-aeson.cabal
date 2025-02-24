@@ -90,7 +90,7 @@ library
     default-language:
         Haskell2010
 
-test-suite monoidmap-test
+test-suite monoidmap-aeson-test
     import:
       , dependency-aeson
       , dependency-base
@@ -115,7 +115,7 @@ test-suite monoidmap-test
     main-is:
         Spec.hs
     hs-source-dirs:
-        components/monoidmap-test
+        components/monoidmap-aeson-test
     other-modules:
         SpecHook
         Data.MonoidMap.ClassSpec
