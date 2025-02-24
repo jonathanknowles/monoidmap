@@ -119,7 +119,6 @@ test-suite monoidmap-aeson-test
     other-modules:
         SpecHook
         Data.MonoidMap.JSONSpec
-        Test.Combinators.NonZero
         Test.Common
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
