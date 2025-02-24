@@ -1,7 +1,7 @@
 cabal-version:  3.0
-name:           monoidmap
+name:           monoidmap-aeson
 version:        0.0.3.0
-bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
+bug-reports:    https://github.com/jonathanknowles/monoidmap-aeson/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
@@ -77,9 +77,9 @@ common extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/monoidmap
+    location: https://github.com/jonathanknowles/monoidmap-aeson
 
-library
+library monoidmap
     import:
       , dependency-base
       , dependency-containers
@@ -88,6 +88,8 @@ library
       , extensions
     build-depends:
       , monoidmap-internal
+    visibility:
+        public
     hs-source-dirs:
         components/monoidmap
     exposed-modules:
@@ -95,15 +97,13 @@ library
     default-language:
         Haskell2010
 
-library monoidmap-aeson
+library
     import:
       , dependency-aeson
       , dependency-base
       , dependency-containers
       , dependency-monoid-subclasses
       , extensions
-    visibility:
-        public
     hs-source-dirs:
         components/monoidmap-aeson
     exposed-modules:
