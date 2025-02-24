@@ -121,7 +121,6 @@ test-suite monoidmap-aeson-test
         Data.MonoidMap.JSONSpec
         Test.Common
         Test.QuickCheck.Classes.Hspec
-        Test.Hspec.Unit
         Test.Key
     type:
         exitcode-stdio-1.0
