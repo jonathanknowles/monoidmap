@@ -32,6 +32,8 @@ common dependency-hspec-golden-aeson
     build-depends:hspec-golden-aeson            >= 0.9.0.0    && < 0.10
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
+common dependency-monoidmap
+    build-depends:monoidmap                     >= 0.0.3.0    && < 0.1
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
 common dependency-pretty-show
@@ -73,56 +75,18 @@ source-repository head
     type: git
     location: https://github.com/jonathanknowles/monoidmap-aeson
 
-library monoidmap
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-groups
-      , dependency-monoid-subclasses
-      , extensions
-    build-depends:
-      , monoidmap-internal
-    visibility:
-        public
-    hs-source-dirs:
-        components/monoidmap
-    exposed-modules:
-        Data.MonoidMap
-    default-language:
-        Haskell2010
-
 library
     import:
       , dependency-aeson
       , dependency-base
       , dependency-containers
       , dependency-monoid-subclasses
+      , dependency-monoidmap
       , extensions
     hs-source-dirs:
         components/monoidmap-aeson
     exposed-modules:
         Data.MonoidMap.JSON
-    default-language:
-        Haskell2010
-    build-depends:
-      , monoidmap
-
-library monoidmap-internal
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-groups
-      , dependency-monoid-subclasses
-      , dependency-nothunks
-      , extensions
-    visibility:
-        private
-    hs-source-dirs:
-        components/monoidmap-internal
-    exposed-modules:
-        Data.MonoidMap.Internal
-        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
 
@@ -135,6 +99,7 @@ test-suite monoidmap-test
       , dependency-hspec
       , dependency-hspec-golden-aeson
       , dependency-monoid-subclasses
+      , dependency-monoidmap
       , dependency-pretty-show
       , dependency-QuickCheck
       , dependency-quickcheck-classes
@@ -144,7 +109,6 @@ test-suite monoidmap-test
       , dependency-text
       , extensions
     build-depends:
-      , monoidmap
       , monoidmap-aeson
     ghc-options:
         -threaded -with-rtsopts=-N
