@@ -8,9 +8,8 @@ author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2025 Jonathan Knowles
 category:       Data Structures
-synopsis:       Monoidal map type
-description:
-    Monoidal map type with support for semigroup and monoid subclasses.
+synopsis:       JSON support for monoidmap, compatible with aeson.
+description:    JSON support for monoidmap, compatible with aeson.
 
 extra-doc-files:
     CHANGELOG.md
