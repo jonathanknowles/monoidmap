@@ -1,0 +1,3 @@
+build-documentation.sh
+cabal.project.local
+dist-newstyle
