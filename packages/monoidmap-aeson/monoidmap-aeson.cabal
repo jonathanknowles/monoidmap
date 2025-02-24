@@ -32,8 +32,6 @@ common dependency-hspec-golden-aeson
     build-depends:hspec-golden-aeson            >= 0.9.0.0    && < 0.10
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
-common dependency-nonempty-containers
-    build-depends:nonempty-containers           >= 0.3.4.4    && < 0.4
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
 common dependency-pretty-show
@@ -109,33 +107,6 @@ library
     build-depends:
       , monoidmap
 
-library monoidmap-examples
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-monoid-subclasses
-      , dependency-nonempty-containers
-      , extensions
-    build-depends:
-      , monoidmap
-    visibility:
-        private
-    hs-source-dirs:
-        components/monoidmap-examples
-    exposed-modules:
-        Examples.MultiMap
-        Examples.MultiMap.Class
-        Examples.MultiMap.Instances.MultiMap1
-        Examples.MultiMap.Instances.MultiMap2
-        Examples.MultiMap.Instances.MultiMap3
-        Examples.MultiMap.Instances.MultiMap4
-        Examples.MultiSet
-        Examples.NestedMonoidMap
-        Examples.RecoveredMap
-    default-language:
-        Haskell2010
-
 library monoidmap-internal
     import:
       , dependency-base
@@ -175,7 +146,6 @@ test-suite monoidmap-test
     build-depends:
       , monoidmap
       , monoidmap-aeson
-      , monoidmap-examples
     ghc-options:
         -threaded -with-rtsopts=-N
     main-is:
@@ -204,8 +174,6 @@ test-suite monoidmap-test
         Data.MonoidMap.IntersectionSpec
         Data.MonoidMap.UnionSpec
         Data.MonoidMap.ValiditySpec
-        Examples.MultiMapSpec
-        Examples.RecoveredMapSpec
         Test.Combinators.NonZero
         Test.Common
         Test.QuickCheck.Classes.Hspec
