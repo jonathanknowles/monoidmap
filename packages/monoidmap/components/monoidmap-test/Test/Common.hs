@@ -31,12 +31,6 @@ module Test.Common
 
 import Prelude
 
-import Data.Aeson
-    ( FromJSON
-    , FromJSONKey
-    , ToJSON
-    , ToJSONKey
-    )
 import Data.Group
     ( Group )
 import Data.Kind
@@ -53,8 +47,6 @@ import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap
     ( MonoidMap )
-import Data.MonoidMap.JSON
-    ()
 import Data.Proxy
     ( Proxy (Proxy) )
 import Data.Semigroup.Cancellative
@@ -165,8 +157,6 @@ type TestKey k =
     , Ord k
     , Show k
     , Typeable k
-    , ToJSONKey k
-    , FromJSONKey k
     )
 
 type TestValue v =
@@ -177,8 +167,6 @@ type TestValue v =
     , MonoidNull v
     , Show v
     , Typeable v
-    , ToJSON v
-    , FromJSON v
     )
 
 --------------------------------------------------------------------------------

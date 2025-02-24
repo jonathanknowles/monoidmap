@@ -18,19 +18,6 @@ where
 
 import Prelude
 
-import Data.Aeson.Types
-    ( FromJSON (parseJSON)
-    , FromJSONKey (fromJSONKey)
-    , FromJSONKeyFunction (FromJSONKeyTextParser)
-    , Parser
-    , ToJSON (toEncoding, toJSON)
-    , ToJSONKey (toJSONKey)
-    , toJSONKeyText
-    , withText
-    )
-import Data.Text
-    ( Text
-    )
 import GHC.Generics
     ( Generic
     )
@@ -47,11 +34,6 @@ import Test.QuickCheck.Quid
     , Quid
     , Size (Size)
     )
-import Text.Read
-    ( readMaybe
-    )
-
-import qualified Data.Text as Text
 
 newtype Key (size :: Nat) = Key Quid
     deriving stock (Eq, Generic, Ord)
@@ -64,28 +46,3 @@ type Key1 = Key 1
 type Key2 = Key 2
 type Key4 = Key 4
 type Key8 = Key 8
-
-instance ToJSON (Key size) where
-    toEncoding = toEncoding . toText
-    toJSON = toJSON . toText
-
-instance ToJSONKey (Key size) where
-    toJSONKey = toJSONKeyText toText
-
-instance FromJSON (Key size) where
-    parseJSON = withText "Key" parseFromText
-
-instance FromJSONKey (Key size) where
-    fromJSONKey = FromJSONKeyTextParser parseFromText
-
-toText :: Key size -> Text
-toText = Text.dropAround (== '\"') . Text.pack . show
-
-maybeFromText :: Text -> Maybe (Key size)
-maybeFromText = readMaybe . show . Text.unpack
-
-parseFromText :: Text -> Parser (Key size)
-parseFromText =
-    maybe (fail failureMessage) pure . maybeFromText
-  where
-    failureMessage = "Failed to parse key from JSON"
