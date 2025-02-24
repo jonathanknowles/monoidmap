@@ -11,6 +11,7 @@ import Data.Monoid
     )
 import Data.Monoid.Null
     ( MonoidNull
+    , PositiveMonoid
     )
 import Data.MonoidMap
     ( MonoidMap
@@ -34,9 +35,17 @@ instance MonoidNullStableFunctor []
 instance MonoidNullStableFunctor Seq
 instance MonoidNullStableFunctor First
 instance MonoidNullStableFunctor Last
-instance (forall a. MonoidNull (Maybe a)) => MonoidNullStableFunctor Maybe
 
 newtype MonoidMapF k f v = MonoidMapF (MonoidMap k (f v))
+    deriving newtype
+        ( Eq
+        , Read
+        , Show
+        , Semigroup
+        , Monoid
+        , MonoidNull
+        , PositiveMonoid
+        )
 
 instance (Foldable f) => Foldable (MonoidMapF k f) where
     foldMap f (MonoidMapF m) = foldMap (foldMap f) m
@@ -45,7 +54,10 @@ instance (MonoidNullStableFunctor f) => Functor (MonoidMapF k f) where
     fmap f (MonoidMapF m) = MonoidMapF $ MonoidMap.map (fmap f) m
 
 instance
-    (MonoidNullStableFunctor f, Traversable f)
+    ( MonoidNullStableFunctor f
+    , Traversable f
+    )
     => Traversable (MonoidMapF k f)
-  where
-    traverse f (MonoidMapF m) = MonoidMapF <$> MonoidMap.traverse (traverse f) m
+    where
+    traverse f (MonoidMapF m) =
+        MonoidMapF <$> MonoidMap.traverse (traverse f) m

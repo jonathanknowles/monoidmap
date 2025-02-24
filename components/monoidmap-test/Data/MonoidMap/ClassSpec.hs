@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 -- |
 -- Copyright: © 2022–2025 Jonathan Knowles
@@ -36,7 +37,7 @@ import Test.QuickCheck.Classes
     , monoidLaws
     , semigroupLaws
     , semigroupMonoidLaws
-    , showReadLaws
+    , showReadLaws, foldableLaws, functorLaws, traversableLaws
     )
 import Test.QuickCheck.Classes.Group
     ( groupLaws )
@@ -66,6 +67,9 @@ import Test.QuickCheck.Classes.Semigroup.Cancellative
     , rightCancellativeLaws
     , rightReductiveLaws
     )
+import Examples.SeqMap (SeqMap (SeqMap))
+import Data.MonoidMapF (MonoidMapF (MonoidMapF))
+import Data.Monoid.Null (MonoidNull)
 
 spec :: Spec
 spec = do
@@ -326,10 +330,23 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
+        testLawsMany @(SeqMap k)
+            [ foldableLaws
+            , functorLaws
+            , traversableLaws
+            ]
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances
 --------------------------------------------------------------------------------
+
+deriving newtype instance
+    (Arbitrary k, Arbitrary v, Ord k)
+        => Arbitrary (SeqMap k v)
+
+deriving newtype instance
+    (Arbitrary k, Arbitrary (f v), MonoidNull (f v), Ord k)
+        => Arbitrary (MonoidMapF k f v)
 
 instance (Arbitrary a, Eq a, Num a) => Arbitrary (NonZero a) where
     arbitrary = genNonZero arbitrary
