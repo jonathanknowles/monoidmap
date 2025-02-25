@@ -58,14 +58,16 @@ import Data.MonoidMap
 -- === Encoding as JSON objects
 --
 -- @
--- >>> 'encode' '$' 'fromList' [("abc", 'Sum' 1), ("def", 'Sum' 2)]
+-- >>> 'encode' '$' 'MonoidMap'.'fromList' [("abc", 'Sum' 1), ("def", 'Sum' 2)]
+--
 -- "{\\"abc\\":1,\\"def\\":2}"
 -- @
 --
 -- === Encoding as JSON arrays
 --
 -- @
--- >>> 'encode' '$' 'fromList' [((1,2), 'Sum' 3), ((2,3), 'Sum' 5)]
+-- >>> 'encode' '$' 'MonoidMap'.'fromList' [((1,2), 'Sum' 3), ((2,3), 'Sum' 5)]
+--
 -- "[[[1,2],3],[[2,3],5]]"
 -- @
 
