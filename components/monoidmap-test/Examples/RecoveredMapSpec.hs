@@ -61,6 +61,8 @@ import qualified Data.Map.Strict as OMap
 import qualified Data.Set as Set
 import qualified Examples.RecoveredMap as RMap
 import qualified Test.QuickCheck as QC
+import Data.Monoid (First)
+import Data.Monoid (Last)
 
 spec :: Spec
 spec = do
@@ -221,6 +223,17 @@ specFor keyType valueType = do
                     @k @v @v & property
             it "prop_mapAccumRWithKey @Text" $
                 prop_mapAccumRWithKey @Text
+                    @k @v @v & property
+
+        describe "Traverse" $ do
+            it "prop_traverse_@Maybe" $
+                prop_traverse @Maybe
+                    @k @v @v & property
+            it "prop_traverse_@First" $
+                prop_traverse @First
+                    @k @v @v & property
+            it "prop_traverse_@Last" $
+                prop_traverse @Last
                     @k @v @v & property
 
 --------------------------------------------------------------------------------
@@ -572,6 +585,28 @@ prop_mapAccumRWithKey (applyFun3 -> f) s0 kvs =
   where
     rmapAccumRWithKey = RMap.mapAccumRWithKey
     omapAccumRWithKey = OMap.mapAccumRWithKey
+
+--------------------------------------------------------------------------------
+-- Traverse
+--------------------------------------------------------------------------------
+
+prop_traverse
+    :: forall f k v1 v2.
+        ( Applicative f
+        , Eq (f [(k, v2)])
+        , Eq v2
+        , Ord k
+        , Show (f [(k, v2)])
+        , Show k
+        , Show v2
+        )
+    => Fun v1 (f v2)
+    -> [(k, v1)]
+    -> Property
+prop_traverse (applyFun -> f) kvs =
+    (===)
+        (fmap RMap.toList (traverse f (RMap.fromList kvs)))
+        (fmap OMap.toList (traverse f (OMap.fromList kvs)))
 
 --------------------------------------------------------------------------------
 -- Arbitrary instances

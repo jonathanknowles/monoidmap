@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -26,11 +27,12 @@ module Examples.RecoveredMap
     , mapAccumLWithKey
     , mapAccumR
     , mapAccumRWithKey
+    , traverse
     )
     where
 
 import Prelude hiding
-    ( lookup, map )
+    ( lookup, map, traverse )
 
 import Control.DeepSeq
     ( NFData )
@@ -50,11 +52,13 @@ import Data.Set
     ( Set )
 
 import qualified Data.MonoidMap as MonoidMap
+import qualified Data.Traversable as Traversable
 
 newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':
     (MonoidMapF k First v)
     deriving newtype (Eq, NFData, Monoid)
+    deriving stock (Foldable, Functor, Traversable)
 
 instance Ord k => Semigroup (Map k v) where
     (<>) = coerce @(MonoidMap k (First v) -> _ -> _) (<>)
@@ -62,8 +66,6 @@ instance Ord k => Semigroup (Map k v) where
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
-
-deriving via MonoidMapF k First instance Functor (Map k)
 
 toMap :: MonoidMap k (First v) -> Map k v
 toMap = coerce
@@ -105,10 +107,10 @@ mapWithKey :: (k -> v1 -> v2) -> Map k v1 -> Map k v2
 mapWithKey f = toMap . MonoidMap.mapWithKey (fmap . f) . unMap
 
 mapAccumL :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumL f s m = toMap <$> MonoidMap.mapAccumL (accum f) s (unMap m)
+mapAccumL = Traversable.mapAccumL
 
 mapAccumR :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumR f s m = toMap <$> MonoidMap.mapAccumR (accum f) s (unMap m)
+mapAccumR = Traversable.mapAccumR
 
 mapAccumLWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumLWithKey f s m =
@@ -118,14 +120,12 @@ mapAccumRWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumRWithKey f s m =
     toMap <$> MonoidMap.mapAccumRWithKey (accumWithKey f) s (unMap m)
 
+traverse :: Applicative f => (v1 -> f v2) -> Map k v1 -> f (Map k v2)
+traverse = Traversable.traverse
+
 --------------------------------------------------------------------------------
 -- Utilities
 --------------------------------------------------------------------------------
-
-accum :: (s -> v1 -> (s, v2)) -> s -> First v1 -> (s, First v2)
-accum f s1 (First mv1) = case mv1 of
-    Just v1 -> let (s2, v2) = f s1 v1 in (s2, First (Just v2))
-    Nothing -> (s1, First Nothing)
 
 accumWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> k -> First v1 -> (s, First v2)
 accumWithKey f s1 k (First mv1) = case mv1 of
