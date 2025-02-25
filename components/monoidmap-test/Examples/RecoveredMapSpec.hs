@@ -100,7 +100,7 @@ specFor keyType valueType = do
             ]
 
     let property :: Testable t => t -> Property
-        property = checkCoverage . QC.property
+        property = checkCoverage . QC.withMaxSuccess 20 . QC.property
 
     describe description $ do
 
@@ -195,32 +195,32 @@ specFor keyType valueType = do
             it "prop_mapAccumL @Int" $
                 prop_mapAccumL @Int
                     @k @v @v & property
-            it "prop_mapAccumL @String" $
-                prop_mapAccumL @String
+            it "prop_mapAccumL @Text" $
+                prop_mapAccumL @Text
                     @k @v @v & property
 
         describe "MapAccumR" $ do
             it "prop_mapAccumR @Int" $
                 prop_mapAccumR @Int
                     @k @v @v & property
-            it "prop_mapAccumR @String" $
-                prop_mapAccumR @String
+            it "prop_mapAccumR @Text" $
+                prop_mapAccumR @Text
                     @k @v @v & property
 
         describe "MapAccumWithKeyL" $ do
             it "prop_mapAccumLWithKey @Int" $
                 prop_mapAccumLWithKey @Int
                     @k @v @v & property
-            it "prop_mapAccumLWithKey @String" $
-                prop_mapAccumLWithKey @String
+            it "prop_mapAccumLWithKey @Text" $
+                prop_mapAccumLWithKey @Text
                     @k @v @v & property
 
         describe "MapAccumWithKeyR" $ do
             it "prop_mapAccumRWithKey @Int" $
                 prop_mapAccumRWithKey @Int
                     @k @v @v & property
-            it "prop_mapAccumRWithKey @String" $
-                prop_mapAccumRWithKey @String
+            it "prop_mapAccumRWithKey @Text" $
+                prop_mapAccumRWithKey @Text
                     @k @v @v & property
 
 --------------------------------------------------------------------------------

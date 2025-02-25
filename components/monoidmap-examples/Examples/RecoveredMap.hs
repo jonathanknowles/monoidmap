@@ -53,7 +53,7 @@ import qualified Data.MonoidMap as MonoidMap
 
 newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':
-    {unMap :: MonoidMap k (First v)}
+    (MonoidMapF k First v)
     deriving newtype (Eq, NFData, Monoid)
 
 instance Ord k => Semigroup (Map k v) where
@@ -65,23 +65,29 @@ instance (Show k, Show v) => Show (Map k v) where
 
 deriving via MonoidMapF k First instance Functor (Map k)
 
+toMap :: MonoidMap k (First v) -> Map k v
+toMap = coerce
+
+unMap :: Map k v -> MonoidMap k (First v)
+unMap = coerce
+
 empty :: Map k v
-empty = Map MonoidMap.empty
+empty = toMap MonoidMap.empty
 
 singleton :: Ord k => k -> v -> Map k v
-singleton k = Map . MonoidMap.singleton k . pure
+singleton k = toMap . MonoidMap.singleton k . pure
 
 fromList :: Ord k => [(k, v)] -> Map k v
-fromList = Map . MonoidMap.fromListWith (const id) . fmap (fmap pure)
+fromList = toMap . MonoidMap.fromListWith (const id) . fmap (fmap pure)
 
 toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
 
 delete :: Ord k => k -> Map k v -> Map k v
-delete k = Map . MonoidMap.nullify k . unMap
+delete k = toMap . MonoidMap.nullify k . unMap
 
 insert :: Ord k => k -> v -> Map k v -> Map k v
-insert k v = Map . MonoidMap.set k (pure v) . unMap
+insert k v = toMap . MonoidMap.set k (pure v) . unMap
 
 keysSet :: Map k v -> Set k
 keysSet = MonoidMap.nonNullKeys . unMap
@@ -96,21 +102,21 @@ map :: (v1 -> v2) -> Map k v1 -> Map k v2
 map = fmap
 
 mapWithKey :: (k -> v1 -> v2) -> Map k v1 -> Map k v2
-mapWithKey f = Map . MonoidMap.mapWithKey (fmap . f) . unMap
+mapWithKey f = toMap . MonoidMap.mapWithKey (fmap . f) . unMap
 
 mapAccumL :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumL f s m = Map <$> MonoidMap.mapAccumL (accum f) s (unMap m)
+mapAccumL f s m = toMap <$> MonoidMap.mapAccumL (accum f) s (unMap m)
 
 mapAccumR :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
-mapAccumR f s m = Map <$> MonoidMap.mapAccumR (accum f) s (unMap m)
+mapAccumR f s m = toMap <$> MonoidMap.mapAccumR (accum f) s (unMap m)
 
 mapAccumLWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumLWithKey f s m =
-    Map <$> MonoidMap.mapAccumLWithKey (accumWithKey f) s (unMap m)
+    toMap <$> MonoidMap.mapAccumLWithKey (accumWithKey f) s (unMap m)
 
 mapAccumRWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumRWithKey f s m =
-    Map <$> MonoidMap.mapAccumRWithKey (accumWithKey f) s (unMap m)
+    toMap <$> MonoidMap.mapAccumRWithKey (accumWithKey f) s (unMap m)
 
 --------------------------------------------------------------------------------
 -- Utilities

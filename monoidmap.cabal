@@ -79,6 +79,7 @@ library
     import:
       , dependency-base
       , dependency-containers
+      , dependency-deepseq
       , dependency-groups
       , dependency-monoid-subclasses
       , extensions

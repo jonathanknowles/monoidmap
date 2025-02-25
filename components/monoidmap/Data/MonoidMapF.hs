@@ -5,6 +5,9 @@ module Data.MonoidMapF where
 
 import Prelude
 
+import Control.DeepSeq
+    ( NFData
+    )
 import Data.Monoid
     ( First
     , Last
@@ -39,6 +42,7 @@ instance MonoidNullStableFunctor Last
 newtype MonoidMapF k f v = MonoidMapF (MonoidMap k (f v))
     deriving newtype
         ( Eq
+        , NFData
         , Read
         , Show
         , Semigroup
