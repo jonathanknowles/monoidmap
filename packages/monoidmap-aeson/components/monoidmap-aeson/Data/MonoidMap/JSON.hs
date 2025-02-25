@@ -4,52 +4,17 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
--- This module provides instances of 'ToJSON' and 'FromJSON' for 'MonoidMap'.
---
--- These instances provide objects of type 'MonoidMap' __@k@__ __@v@__ with a
--- JSON encoding identical to that of 'Map' __@k@__ __@v@__, serialised as
--- either JSON /objects/ or /arrays/ depending on the key type __@k@__.
---
--- = Examples
---
--- === Encoding as JSON objects
---
--- @
--- >>> 'encode' '$' 'fromList' [("abc", 'Sum' 1), ("def", 'Sum' 2)]
--- "{\\"abc\\":1,\\"def\\":2}"
--- @
---
--- === Encoding as JSON arrays
---
--- @
--- >>> 'encode' '$' 'fromList' [((1,2), 'Sum' 3), ((2,3), 'Sum' 5)]
--- "[[[1,2],3],[[2,3],5]]"
--- @
---
--- = Laws
---
--- == Decoding from JSON
---
--- The 'FromJSON' instance satisfies the following law:
---
--- @
--- 'parseJSON' '==' 'fmap' ('fmap' 'MonoidMap'.'fromMap') 'parseJSON'
--- @
---
--- Mappings from keys to values that decode to 'mempty' are __not__ included in
--- decoded 'MonoidMap' objects.
---
--- == Encoding to JSON
---
--- The 'ToJSON' instance satisfies the following laws:
---
--- @
--- 'toEncoding' '==' 'toEncoding' '.' 'MonoidMap'.'toMap'
--- 'toJSON'     '==' 'toJSON'     '.' 'MonoidMap'.'toMap'
--- @
---
 module Data.MonoidMap.JSON
-    ()
+    (
+    -- * Introduction
+    -- $_introduction
+
+    -- * Examples
+    -- $_examples
+
+    -- * Laws
+    -- $_laws
+    )
     where
 
 import Prelude
@@ -76,6 +41,56 @@ import Data.MonoidMap
     , fromMap
     , toMap
     )
+
+-- $_introduction
+-- #_introduction#
+--
+-- This module provides instances of 'ToJSON' and 'FromJSON' for 'MonoidMap'.
+--
+-- These instances provide objects of type 'MonoidMap' __@k@__ __@v@__ with a
+-- JSON encoding that is /identical/ to objects of type 'Map' __@k@__ __@v@__,
+-- which are serialised as either JSON /objects/ or /arrays/ depending on the
+-- key type __@k@__.
+
+-- $_examples
+-- #_examples#
+--
+-- === Encoding as JSON objects
+--
+-- @
+-- >>> 'encode' '$' 'fromList' [("abc", 'Sum' 1), ("def", 'Sum' 2)]
+-- "{\\"abc\\":1,\\"def\\":2}"
+-- @
+--
+-- === Encoding as JSON arrays
+--
+-- @
+-- >>> 'encode' '$' 'fromList' [((1,2), 'Sum' 3), ((2,3), 'Sum' 5)]
+-- "[[[1,2],3],[[2,3],5]]"
+-- @
+
+-- $_laws
+-- #_laws#
+--
+-- === Encoding to JSON
+--
+-- The 'ToJSON' instance satisfies the following laws:
+--
+-- @
+-- 'toEncoding' '==' 'toEncoding' '.' 'MonoidMap'.'toMap'
+-- 'toJSON'     '==' 'toJSON'     '.' 'MonoidMap'.'toMap'
+-- @
+--
+-- === Decoding from JSON
+--
+-- The 'FromJSON' instance satisfies the following law:
+--
+-- @
+-- 'parseJSON' '==' 'fmap' ('fmap' 'MonoidMap'.'fromMap') 'parseJSON'
+-- @
+--
+-- Mappings from keys to values that decode to 'mempty' are __not__ included in
+-- decoded 'MonoidMap' objects.
 
 _importsRequiredForDocumentation :: ()
 _importsRequiredForDocumentation = ()
