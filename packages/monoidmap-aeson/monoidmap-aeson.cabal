@@ -15,6 +15,9 @@ extra-doc-files:
     CHANGELOG.md
     README.md
 
+extra-source-files:
+    golden/*.json
+
 common dependency-aeson
     build-depends:aeson                         >= 2.2.3.0    && < 2.3
 common dependency-base
