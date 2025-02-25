@@ -8,8 +8,8 @@ author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2025 Jonathan Knowles
 category:       Data Structures
-synopsis:       JSON support for monoidmap, compatible with aeson.
-description:    JSON support for monoidmap, compatible with aeson.
+synopsis:       JSON support for monoidmap.
+description:    JSON support for the monoidmap package, compatible with aeson.
 
 extra-doc-files:
     CHANGELOG.md
