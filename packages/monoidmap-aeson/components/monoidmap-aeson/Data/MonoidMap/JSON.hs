@@ -17,20 +17,32 @@ module Data.MonoidMap.JSON
     )
     where
 
-import Prelude
-
 import Data.Aeson
     ( FromJSON (parseJSON)
     , FromJSONKey
     , ToJSON (toEncoding, toJSON)
     , ToJSONKey
+    , decode
     , encode
+    )
+import Data.Bool
+    ( Bool
+    )
+import Data.Eq
+    ( Eq ((==))
+    )
+import Data.Functor
+    ( Functor (fmap)
     )
 import Data.Map.Strict
     ( Map
     )
+import Data.Maybe
+    ( Maybe
+    )
 import Data.Monoid
-    ( Sum
+    ( Monoid (mempty)
+    , Sum
     )
 import Data.Monoid.Null
     ( MonoidNull
@@ -40,6 +52,14 @@ import Data.MonoidMap
     , fromList
     , fromMap
     , toMap
+    )
+import Data.Ord
+    ( Ord
+    )
+import Prelude
+    ( undefined
+    , ($)
+    , (.)
     )
 
 -- $_introduction
@@ -97,13 +117,20 @@ import Data.MonoidMap
 _importsRequiredForDocumentation :: ()
 _importsRequiredForDocumentation = ()
   where
-    _encode = encode ()
+    _decodeEncode :: Maybe ()
+    _decodeEncode = decode $ encode ()
+
+    _equals :: (Eq a) => a -> a -> Bool
+    _equals = (==)
 
     _fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
     _fromList = fromList
 
     _fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
     _fromMap = fromMap
+
+    _mempty :: (Monoid a) => a
+    _mempty = mempty
 
     _toMap :: (Ord k, MonoidNull v) => MonoidMap k v -> Map k v
     _toMap = toMap
