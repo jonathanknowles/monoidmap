@@ -1,3 +1,7 @@
+# 0.0.0.2
+
+- Adjusted module `Data.MonoidMap.JSON` to only use explicit imports.
+
 # 0.0.0.1
 
 - Added JSON golden test files to source distribution.
