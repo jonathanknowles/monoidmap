@@ -75,6 +75,9 @@ specFor = makeSpec $ do
                 @k @v & property
 
     describe "Conversion to and from ordinary maps" $ do
+        it "prop_fromMap_get" $
+            prop_fromMap_get
+                @k @v & property
         it "prop_fromMap_toMap" $
             prop_fromMap_toMap
                 @k @v & property
@@ -184,6 +187,17 @@ prop_fromListWith_get (applyFun2 -> f) kvs k =
 --------------------------------------------------------------------------------
 -- Conversion to and from ordinary maps
 --------------------------------------------------------------------------------
+
+prop_fromMap_get
+    :: Test k v => Map k v -> k -> Property
+prop_fromMap_get m k =
+    MonoidMap.get k (MonoidMap.fromMap m) === Map.findWithDefault mempty k m
+    & cover 2
+        (MonoidMap.get k (MonoidMap.fromMap m) /= mempty)
+        "MonoidMap.get k (MonoidMap.fromMap m) /= mempty"
+    & cover 0.1
+        (MonoidMap.get k (MonoidMap.fromMap m) == mempty && Map.member k m)
+        "MonoidMap.get k (MonoidMap.fromMap m) == mempty && Map.member k m"
 
 prop_fromMap_toMap
     :: Test k v => Map k v -> Property
