@@ -472,7 +472,7 @@ fromListWith f =
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' 'k' m
+-- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' k m
 -- @
 --
 -- This function performs canonicalisation of 'C.null' values, and has a time
@@ -506,13 +506,13 @@ fromSet f = fromMap . Map.fromSet f
 -- Satisfies the following property:
 --
 -- @
--- 'get' 'k' ('singleton' k v) '==' v
+-- 'get' k ('singleton' k v) '==' v
 -- @
 --
 -- Nullifying the value for key __@k@__ produces an 'empty' map:
 --
 -- @
--- 'nullify' 'k' ('singleton' k v) '==' 'empty'
+-- 'nullify' k ('singleton' k v) '==' 'empty'
 -- @
 --
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
