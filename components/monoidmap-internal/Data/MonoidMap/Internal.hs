@@ -476,7 +476,7 @@ fromListWith f =
 -- @
 --
 -- This function performs canonicalisation of 'C.null' values, and has a time
--- complexity that is linear in the length of the list.
+-- complexity that is linear in the size of the map.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.mapMaybe maybeNonNull
