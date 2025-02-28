@@ -23,6 +23,7 @@ module Data.MonoidMap.Internal
     , fromList
     , fromListWith
     , fromMap
+    , fromMapWith
     , fromSet
     , singleton
 
@@ -472,14 +473,29 @@ fromListWith f =
 -- Satisfies the following property for all possible keys __@k@__:
 --
 -- @
--- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' 'k' m
+-- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' k m
 -- @
 --
 -- This function performs canonicalisation of 'C.null' values, and has a time
--- complexity that is linear in the length of the list.
+-- complexity that is linear in the size of the map.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = MonoidMap . Map.mapMaybe maybeNonNull
+
+-- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
+--   the given function to all values.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromMapWith' f m) '==' 'maybe' 'mempty' f ('Map'.'Map.lookup' k m)
+-- @
+--
+-- This function performs canonicalisation of 'C.null' values, and has a time
+-- complexity that is linear in the size of the map.
+--
+fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
@@ -506,13 +522,13 @@ fromSet f = fromMap . Map.fromSet f
 -- Satisfies the following property:
 --
 -- @
--- 'get' 'k' ('singleton' k v) '==' v
+-- 'get' k ('singleton' k v) '==' v
 -- @
 --
 -- Nullifying the value for key __@k@__ produces an 'empty' map:
 --
 -- @
--- 'nullify' 'k' ('singleton' k v) '==' 'empty'
+-- 'nullify' k ('singleton' k v) '==' 'empty'
 -- @
 --
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
