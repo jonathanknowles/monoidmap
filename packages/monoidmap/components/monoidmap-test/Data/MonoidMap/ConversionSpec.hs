@@ -81,6 +81,9 @@ specFor = makeSpec $ do
         it "prop_fromMap_toMap" $
             prop_fromMap_toMap
                 @k @v & property
+        it "prop_fromMapWith_fromMap" $
+            prop_fromMapWith_fromMap
+                @k @v & property
         it "prop_fromMapWith_get" $
             prop_fromMapWith_get
                 @k @v & property
@@ -214,6 +217,14 @@ prop_fromMap_toMap o =
         "MonoidMap.nonNull m && nonNullCount m == Map.size o"
   where
     m = MonoidMap.fromMap o
+
+prop_fromMapWith_fromMap
+    :: Test k v => Map k v -> Property
+prop_fromMapWith_fromMap m =
+    MonoidMap.fromMapWith id m === MonoidMap.fromMap m
+    & cover 2
+        (MonoidMap.nonNull (MonoidMap.fromMap m))
+        "MonoidMap.nonNull (MonoidMap.fromMap m)"
 
 prop_fromMapWith_get
     :: Test k v => Fun v v -> Map k v -> k -> Property
