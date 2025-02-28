@@ -75,8 +75,17 @@ specFor = makeSpec $ do
                 @k @v & property
 
     describe "Conversion to and from ordinary maps" $ do
+        it "prop_fromMap_get" $
+            prop_fromMap_get
+                @k @v & property
         it "prop_fromMap_toMap" $
             prop_fromMap_toMap
+                @k @v & property
+        it "prop_fromMapWith_fromMap" $
+            prop_fromMapWith_fromMap
+                @k @v & property
+        it "prop_fromMapWith_get" $
+            prop_fromMapWith_get
                 @k @v & property
         it "prop_toMap_fromMap" $
             prop_toMap_fromMap
@@ -185,6 +194,17 @@ prop_fromListWith_get (applyFun2 -> f) kvs k =
 -- Conversion to and from ordinary maps
 --------------------------------------------------------------------------------
 
+prop_fromMap_get
+    :: Test k v => Map k v -> k -> Property
+prop_fromMap_get m k =
+    MonoidMap.get k (MonoidMap.fromMap m) === Map.findWithDefault mempty k m
+    & cover 2
+        (MonoidMap.get k (MonoidMap.fromMap m) /= mempty)
+        "MonoidMap.get k (MonoidMap.fromMap m) /= mempty"
+    & cover 0.1
+        (MonoidMap.get k (MonoidMap.fromMap m) == mempty && Map.member k m)
+        "MonoidMap.get k (MonoidMap.fromMap m) == mempty && Map.member k m"
+
 prop_fromMap_toMap
     :: Test k v => Map k v -> Property
 prop_fromMap_toMap o =
@@ -197,6 +217,26 @@ prop_fromMap_toMap o =
         "MonoidMap.nonNull m && nonNullCount m == Map.size o"
   where
     m = MonoidMap.fromMap o
+
+prop_fromMapWith_fromMap
+    :: Test k v => Map k v -> Property
+prop_fromMapWith_fromMap m =
+    MonoidMap.fromMapWith id m === MonoidMap.fromMap m
+    & cover 2
+        (MonoidMap.nonNull (MonoidMap.fromMap m))
+        "MonoidMap.nonNull (MonoidMap.fromMap m)"
+
+prop_fromMapWith_get
+    :: Test k v => Fun v v -> Map k v -> k -> Property
+prop_fromMapWith_get (applyFun -> f) m k =
+    MonoidMap.get k (MonoidMap.fromMapWith f m)
+        === maybe mempty f (Map.lookup k m)
+    & cover 2
+        (MonoidMap.nonNullKey k (MonoidMap.fromMapWith f m))
+        "MonoidMap.nonNullKey k (MonoidMap.fromMapWith f m)"
+    & cover 0.01
+        (MonoidMap.nullKey k (MonoidMap.fromMapWith f m) && Map.member k m)
+        "MonoidMap.nullKey k (MonoidMap.fromMapWith f m) && Map.member k m"
 
 prop_toMap_fromMap
     :: Test k v => MonoidMap k v -> Property
