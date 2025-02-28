@@ -51,6 +51,7 @@ import Data.MonoidMap
     ( MonoidMap
     , fromList
     , fromMap
+    , toList
     , toMap
     )
 import Data.Ord
@@ -117,26 +118,23 @@ import Prelude
 _importsRequiredForDocumentation :: ()
 _importsRequiredForDocumentation = ()
   where
-    _decodeEncode :: Maybe ()
-    _decodeEncode = decode $ encode ()
-
-    _equals :: (Eq a) => a -> a -> Bool
-    _equals = (==)
-
-    _fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
-    _fromList = fromList
-
-    _fromMap :: (Ord k, MonoidNull v) => Map k v -> MonoidMap k v
-    _fromMap = fromMap
-
-    _mempty :: (Monoid a) => a
-    _mempty = mempty
-
-    _toMap :: (Ord k, MonoidNull v) => MonoidMap k v -> Map k v
-    _toMap = toMap
+    _Map :: Map () ()
+    _Map = undefined
 
     _Sum :: Sum ()
     _Sum = undefined
+
+    _decodeEncode :: Maybe ()
+    _decodeEncode = decode $ encode ()
+
+    _equals :: () -> () -> Bool
+    _equals = (==)
+
+    _fromListToList :: [((), ())]
+    _fromListToList = toList $ fromList []
+
+    _mempty :: ()
+    _mempty = mempty
 
 instance
     ( ToJSONKey k
