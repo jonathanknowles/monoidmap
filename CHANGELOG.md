@@ -1,3 +1,7 @@
+# 0.0.4.0
+
+- Added the `fromMapWith` function to `MonoidMap`.
+
 # 0.0.3.0
 
 - Added the `mapWithKey` function to `MonoidMap`.
