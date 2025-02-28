@@ -494,6 +494,8 @@ fromMap = MonoidMap . Map.mapMaybe maybeNonNull
 -- This function performs canonicalisation of 'C.null' values, and has a time
 -- complexity that is linear in the size of the map.
 --
+-- @since 0.0.4.0
+--
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
 
