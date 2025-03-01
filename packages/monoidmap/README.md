@@ -59,7 +59,7 @@ Consequently, using a standard [`Map`] with a _monoidal_ value type gives rise t
 | `Nothing`        | Map `m` has _no_ entry for key `k`.                         |
 | `Just mempty`    | Map `m` has an entry for key `k`, but the value is _empty_. |
 
-In constrast, the [`MonoidMap`] type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
+In contrast, the [`MonoidMap`] type provides a single, _canonical_ representation for null or empty values, according to the following conceptual mapping:
 
 | `Map.lookup k m`        | ⟼ | `MonoidMap.get k m`     |
 |:------------------------|---|:------------------------|
