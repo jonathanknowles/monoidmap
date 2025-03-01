@@ -291,7 +291,7 @@ import qualified Data.Monoid.Null as C
 -- | @                       |                                            |
 -- +-------------------------+--------------------------------------------+
 --
--- In constrast, the 'MonoidMap' type provides a single, /canonical/
+-- In contrast, the 'MonoidMap' type provides a single, /canonical/
 -- representation for null or empty values, according to the following
 -- conceptual mapping:
 --
