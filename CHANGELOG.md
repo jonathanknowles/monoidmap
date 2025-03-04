@@ -1,3 +1,7 @@
+# 0.0.0.3
+
+- Simplified imports required for documentation.
+
 # 0.0.0.2
 
 - Adjusted module `Data.MonoidMap.JSON` to only use explicit imports.
