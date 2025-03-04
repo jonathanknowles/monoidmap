@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# OPTIONS_HADDOCK not-home #-}
 {- HLINT ignore "Avoid lambda" -}
 {- HLINT ignore "Avoid lambda using `infix`" -}
 {- HLINT ignore "Redundant bracket" -}
