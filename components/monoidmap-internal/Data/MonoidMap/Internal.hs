@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {- HLINT ignore "Avoid lambda" -}
@@ -499,6 +500,11 @@ fromMap = MonoidMap . Map.mapMaybe maybeNonNull
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
 
+withMapKeys
+    :: (forall x. Map k1 x -> Map k2 x)
+    -> (MonoidMap k1 v -> MonoidMap k2 v)
+withMapKeys f (MonoidMap m) = MonoidMap (f m)
+
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
 --
@@ -632,7 +638,7 @@ adjust f k (MonoidMap m) = MonoidMap $
 -- @
 --
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
-nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
+nullify k = withMapKeys (Map.delete k)
 
 --------------------------------------------------------------------------------
 -- Membership
@@ -730,7 +736,7 @@ nonNullKeys = Map.keysSet . toMap
 -- @
 --
 take :: Int -> MonoidMap k v -> MonoidMap k v
-take i (MonoidMap m) = MonoidMap (Map.take i m)
+take i = withMapKeys (Map.take i)
 
 -- | \(O(\log n)\). /Drops/ a slice from a map.
 --
@@ -746,7 +752,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 -- @
 --
 drop :: Int -> MonoidMap k v -> MonoidMap k v
-drop i (MonoidMap m) = MonoidMap (Map.drop i m)
+drop i = withMapKeys (Map.drop i)
 
 -- | \(O(\log n)\). /Splits/ a map into /two/ slices.
 --
@@ -817,7 +823,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 -- @
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
-filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
+filterKeys f = withMapKeys $ Map.filterWithKey (\k _ -> f k)
 
 -- | \(O(n)\). Filters a map according to a predicate on /keys and values/.
 --
