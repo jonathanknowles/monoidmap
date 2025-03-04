@@ -1,3 +1,8 @@
+# 0.0.4.1
+
+- Fixed spelling error in documentation.
+- Added the haddock `not-home` marker to `Data.MonoidMap.Internal`.
+
 # 0.0.4.0
 
 - Added the `fromMapWith` function to `MonoidMap`.
