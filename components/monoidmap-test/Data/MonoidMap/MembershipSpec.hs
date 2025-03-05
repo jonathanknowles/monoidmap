@@ -20,6 +20,8 @@ import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
+import Data.Set
+    ( Set )
 import Test.Common
     ( Key
     , Test
@@ -56,6 +58,12 @@ specFor = makeSpec $ do
             @k @v & property
     it "prop_nullify_nonNullKeys" $
         prop_nullify_nonNullKeys
+            @k @v & property
+    it "prop_nullifyKeysIn_get" $
+        prop_nullifyKeysIn_get
+            @k @v & property
+    it "prop_nullifyKeysNotIn_get" $
+        prop_nullifyKeysNotIn_get
             @k @v & property
 
 prop_nonNullKeys_get
@@ -104,3 +112,39 @@ prop_nullify_nonNullKeys m k =
     & cover 2
         (not (MonoidMap.nonNullKey k m))
         "not (MonoidMap.nonNullKey k m)"
+
+prop_nullifyKeysIn_get
+    :: Test k v => MonoidMap k v -> Set k -> k -> Property
+prop_nullifyKeysIn_get m ks k =
+    MonoidMap.get k (MonoidMap.nullifyKeysIn ks m) ===
+        (if Set.member k ks then mempty else MonoidMap.get k m)
+    & cover 2
+        (Set.member k ks && MonoidMap.nullKey k m)
+        "Set.member k ks && MonoidMap.nullKey k m"
+    & cover 2
+        (Set.member k ks && MonoidMap.nonNullKey k m)
+        "Set.member k ks && MonoidMap.nonNullKey k m"
+    & cover 2
+        (Set.notMember k ks && MonoidMap.nullKey k m)
+        "Set.notMember k ks && MonoidMap.nullKey k m"
+    & cover 2
+        (Set.notMember k ks && MonoidMap.nonNullKey k m)
+        "Set.notMember k ks && MonoidMap.nonNullKey k m"
+
+prop_nullifyKeysNotIn_get
+    :: Test k v => MonoidMap k v -> Set k -> k -> Property
+prop_nullifyKeysNotIn_get m ks k =
+    MonoidMap.get k (MonoidMap.nullifyKeysNotIn ks m) ===
+        (if Set.notMember k ks then mempty else MonoidMap.get k m)
+    & cover 2
+        (Set.member k ks && MonoidMap.nullKey k m)
+        "Set.member k ks && MonoidMap.nullKey k m"
+    & cover 2
+        (Set.member k ks && MonoidMap.nonNullKey k m)
+        "Set.member k ks && MonoidMap.nonNullKey k m"
+    & cover 2
+        (Set.notMember k ks && MonoidMap.nullKey k m)
+        "Set.notMember k ks && MonoidMap.nullKey k m"
+    & cover 2
+        (Set.notMember k ks && MonoidMap.nonNullKey k m)
+        "Set.notMember k ks && MonoidMap.nonNullKey k m"

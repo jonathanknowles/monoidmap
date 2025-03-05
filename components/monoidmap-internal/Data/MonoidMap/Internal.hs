@@ -646,11 +646,29 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 -- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
 --   Sets the values associated with all keys in the given set to 'mempty'.
 --
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('nullifyKeysIn' ks m) '=='
+--     if 'Set'.'Set.member' k ks
+--     then 'mempty'
+--     else 'get' k m
+-- @
+--
 nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 
 -- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
 --   Sets the values associated with all keys not in the given set to 'mempty'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'get' k ('nullifyKeysNotIn' ks m) '=='
+--     if 'Set'.'Set.notMember' k ks
+--     then 'mempty'
+--     else 'get' k m
+-- @
 --
 nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
