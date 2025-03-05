@@ -655,6 +655,13 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 --     else 'get' k m
 -- @
 --
+-- Additionally:
+--
+-- @
+-- 'nullifyKeysNotIn' ks m '=='
+--     'fromMap' ('Map'.'Map.withoutKeys' ('toMap' m) ks)
+-- @
+--
 nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 
@@ -668,6 +675,13 @@ nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 --     if 'Set'.'Set.notMember' k ks
 --     then 'mempty'
 --     else 'get' k m
+-- @
+--
+-- Additionally:
+--
+-- @
+-- 'nullifyKeysNotIn' ks m '=='
+--     'fromMap' ('Map'.'Map.restrictKeys' ('toMap' m) ks)
 -- @
 --
 nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v

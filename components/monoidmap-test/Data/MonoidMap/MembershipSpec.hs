@@ -35,6 +35,7 @@ import Test.Hspec
 import Test.QuickCheck
     ( Property, cover, (===) )
 
+import qualified Data.Map.Strict as Map
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
@@ -62,8 +63,14 @@ specFor = makeSpec $ do
     it "prop_nullifyKeysIn_get" $
         prop_nullifyKeysIn_get
             @k @v & property
+    it "prop_nullifyKeysIn_toMap_fromMap" $
+        prop_nullifyKeysIn_toMap_fromMap
+            @k @v & property
     it "prop_nullifyKeysNotIn_get" $
         prop_nullifyKeysNotIn_get
+            @k @v & property
+    it "prop_nullifyKeysNotIn_toMap_fromMap" $
+        prop_nullifyKeysNotIn_toMap_fromMap
             @k @v & property
 
 prop_nonNullKeys_get
@@ -131,6 +138,15 @@ prop_nullifyKeysIn_get m ks k =
         (Set.notMember k ks && MonoidMap.nonNullKey k m)
         "Set.notMember k ks && MonoidMap.nonNullKey k m"
 
+prop_nullifyKeysIn_toMap_fromMap
+    :: Test k v => MonoidMap k v -> Set k -> Property
+prop_nullifyKeysIn_toMap_fromMap m ks =
+    MonoidMap.nullifyKeysIn ks m ===
+        MonoidMap.fromMap (Map.withoutKeys (MonoidMap.toMap m) ks)
+    & cover 2
+        ((not . Set.null) (ks `Set.intersection` MonoidMap.nonNullKeys m))
+        "(not . Set.null) (ks `Set.intersection` MonoidMap.nonNullKeys m)"
+
 prop_nullifyKeysNotIn_get
     :: Test k v => MonoidMap k v -> Set k -> k -> Property
 prop_nullifyKeysNotIn_get m ks k =
@@ -148,3 +164,12 @@ prop_nullifyKeysNotIn_get m ks k =
     & cover 2
         (Set.notMember k ks && MonoidMap.nonNullKey k m)
         "Set.notMember k ks && MonoidMap.nonNullKey k m"
+
+prop_nullifyKeysNotIn_toMap_fromMap
+    :: Test k v => MonoidMap k v -> Set k -> Property
+prop_nullifyKeysNotIn_toMap_fromMap m ks =
+    MonoidMap.nullifyKeysNotIn ks m ===
+        MonoidMap.fromMap (Map.restrictKeys (MonoidMap.toMap m) ks)
+    & cover 2
+        ((not . Set.null) (ks `Set.intersection` MonoidMap.nonNullKeys m))
+        "(not . Set.null) (ks `Set.intersection` MonoidMap.nonNullKeys m)"
