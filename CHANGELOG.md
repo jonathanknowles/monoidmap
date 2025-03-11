@@ -1,3 +1,7 @@
+# 0.0.4.2
+
+- Removed the dependency on `nonempty-containers`.
+
 # 0.0.4.1
 
 - Fixed spelling error in documentation.
