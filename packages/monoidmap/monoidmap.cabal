@@ -77,15 +77,18 @@ library
     import:
       , dependency-base
       , dependency-containers
+      , dependency-deepseq
       , dependency-groups
       , dependency-monoid-subclasses
+      , dependency-nothunks
       , extensions
-    build-depends:
-      , monoidmap-internal
     hs-source-dirs:
         components/monoidmap
     exposed-modules:
         Data.MonoidMap
+    other-modules:
+        Data.MonoidMap.Internal
+        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
 
@@ -133,25 +136,6 @@ library monoidmap-examples
         Examples.MultiSet
         Examples.NestedMonoidMap
         Examples.RecoveredMap
-    default-language:
-        Haskell2010
-
-library monoidmap-internal
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-groups
-      , dependency-monoid-subclasses
-      , dependency-nothunks
-      , extensions
-    visibility:
-        private
-    hs-source-dirs:
-        components/monoidmap-internal
-    exposed-modules:
-        Data.MonoidMap.Internal
-        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
 
