@@ -1,3 +1,7 @@
+# 0.0.0.4
+
+- Refreshed documentation.
+
 # 0.0.0.3
 
 - Simplified imports required for documentation.
