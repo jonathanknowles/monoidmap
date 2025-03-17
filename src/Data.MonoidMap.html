@@ -13,79 +13,79 @@
 </span><span id="line-13"></span><span>    </span><span class="annot"><span class="hs-comment">-- $_monoidal_operations</span></span><span>
 </span><span id="line-14"></span><span>
 </span><span id="line-15"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Type</span></span><span>
-</span><span id="line-16"></span><span>      </span><span class="annot"><span class="hs-identifier">MonoidMap</span></span><span>
+</span><span id="line-16"></span><span>      </span><span class="annot"><a href="Data.MonoidMap.Internal.html#MonoidMap"><span class="hs-identifier">MonoidMap</span></a></span><span>
 </span><span id="line-17"></span><span>
 </span><span id="line-18"></span><span>    </span><span class="annot"><span class="hs-comment">-- * General operations</span></span><span>
 </span><span id="line-19"></span><span>
 </span><span id="line-20"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Construction</span></span><span>
-</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">empty</span></span><span>
-</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromList</span></span><span>
-</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromListWith</span></span><span>
-</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromMap</span></span><span>
-</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromMapWith</span></span><span>
-</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">fromSet</span></span><span>
-</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">singleton</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#empty"><span class="hs-identifier">empty</span></a></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#fromList"><span class="hs-identifier">fromList</span></a></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#fromListWith"><span class="hs-identifier">fromListWith</span></a></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#fromMap"><span class="hs-identifier">fromMap</span></a></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#fromMapWith"><span class="hs-identifier">fromMapWith</span></a></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#fromSet"><span class="hs-identifier">fromSet</span></a></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#singleton"><span class="hs-identifier">singleton</span></a></span><span>
 </span><span id="line-28"></span><span>
 </span><span id="line-29"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Deconstruction</span></span><span>
-</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">toList</span></span><span>
-</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">toMap</span></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#toList"><span class="hs-identifier">toList</span></a></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#toMap"><span class="hs-identifier">toMap</span></a></span><span>
 </span><span id="line-32"></span><span>
 </span><span id="line-33"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Lookup</span></span><span>
-</span><span id="line-34"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">get</span></span><span>
+</span><span id="line-34"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#get"><span class="hs-identifier">get</span></a></span><span>
 </span><span id="line-35"></span><span>
 </span><span id="line-36"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Modification</span></span><span>
-</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">set</span></span><span>
-</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">adjust</span></span><span>
-</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">nullify</span></span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#set"><span class="hs-identifier">set</span></a></span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#adjust"><span class="hs-identifier">adjust</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#nullify"><span class="hs-identifier">nullify</span></a></span><span>
 </span><span id="line-40"></span><span>
 </span><span id="line-41"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Membership</span></span><span>
-</span><span id="line-42"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">null</span></span><span>
-</span><span id="line-43"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">nullKey</span></span><span>
-</span><span id="line-44"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">nonNull</span></span><span>
-</span><span id="line-45"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">nonNullCount</span></span><span>
-</span><span id="line-46"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">nonNullKey</span></span><span>
-</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">nonNullKeys</span></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#null"><span class="hs-identifier">null</span></a></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#nullKey"><span class="hs-identifier">nullKey</span></a></span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#nonNull"><span class="hs-identifier">nonNull</span></a></span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#nonNullCount"><span class="hs-identifier">nonNullCount</span></a></span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#nonNullKey"><span class="hs-identifier">nonNullKey</span></a></span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#nonNullKeys"><span class="hs-identifier">nonNullKeys</span></a></span><span>
 </span><span id="line-48"></span><span>
 </span><span id="line-49"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Slicing</span></span><span>
-</span><span id="line-50"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">take</span></span><span>
-</span><span id="line-51"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">drop</span></span><span>
-</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">splitAt</span></span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#take"><span class="hs-identifier">take</span></a></span><span>
+</span><span id="line-51"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#drop"><span class="hs-identifier">drop</span></a></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#splitAt"><span class="hs-identifier">splitAt</span></a></span><span>
 </span><span id="line-53"></span><span>
 </span><span id="line-54"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Filtering</span></span><span>
-</span><span id="line-55"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">filter</span></span><span>
-</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">filterKeys</span></span><span>
-</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">filterWithKey</span></span><span>
+</span><span id="line-55"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#filter"><span class="hs-identifier">filter</span></a></span><span>
+</span><span id="line-56"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#filterKeys"><span class="hs-identifier">filterKeys</span></a></span><span>
+</span><span id="line-57"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#filterWithKey"><span class="hs-identifier">filterWithKey</span></a></span><span>
 </span><span id="line-58"></span><span>
 </span><span id="line-59"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Partitioning</span></span><span>
-</span><span id="line-60"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">partition</span></span><span>
-</span><span id="line-61"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">partitionKeys</span></span><span>
-</span><span id="line-62"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">partitionWithKey</span></span><span>
+</span><span id="line-60"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#partition"><span class="hs-identifier">partition</span></a></span><span>
+</span><span id="line-61"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#partitionKeys"><span class="hs-identifier">partitionKeys</span></a></span><span>
+</span><span id="line-62"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#partitionWithKey"><span class="hs-identifier">partitionWithKey</span></a></span><span>
 </span><span id="line-63"></span><span>
 </span><span id="line-64"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Mapping</span></span><span>
-</span><span id="line-65"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">map</span></span><span>
-</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapKeys</span></span><span>
-</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapKeysWith</span></span><span>
-</span><span id="line-68"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapWithKey</span></span><span>
+</span><span id="line-65"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#map"><span class="hs-identifier">map</span></a></span><span>
+</span><span id="line-66"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapKeys"><span class="hs-identifier">mapKeys</span></a></span><span>
+</span><span id="line-67"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapKeysWith"><span class="hs-identifier">mapKeysWith</span></a></span><span>
+</span><span id="line-68"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapWithKey"><span class="hs-identifier">mapWithKey</span></a></span><span>
 </span><span id="line-69"></span><span>
 </span><span id="line-70"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Folding</span></span><span>
-</span><span id="line-71"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldl</span></span><span>
-</span><span id="line-72"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldl'</span></span><span>
-</span><span id="line-73"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldr</span></span><span>
-</span><span id="line-74"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldr'</span></span><span>
-</span><span id="line-75"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldlWithKey</span></span><span>
-</span><span id="line-76"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldlWithKey'</span></span><span>
-</span><span id="line-77"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldrWithKey</span></span><span>
-</span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldrWithKey'</span></span><span>
-</span><span id="line-79"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldMapWithKey</span></span><span>
-</span><span id="line-80"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">foldMapWithKey'</span></span><span>
+</span><span id="line-71"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldl"><span class="hs-identifier">foldl</span></a></span><span>
+</span><span id="line-72"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldl%27"><span class="hs-identifier">foldl'</span></a></span><span>
+</span><span id="line-73"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldr"><span class="hs-identifier">foldr</span></a></span><span>
+</span><span id="line-74"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldr%27"><span class="hs-identifier">foldr'</span></a></span><span>
+</span><span id="line-75"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldlWithKey"><span class="hs-identifier">foldlWithKey</span></a></span><span>
+</span><span id="line-76"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldlWithKey%27"><span class="hs-identifier">foldlWithKey'</span></a></span><span>
+</span><span id="line-77"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldrWithKey"><span class="hs-identifier">foldrWithKey</span></a></span><span>
+</span><span id="line-78"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldrWithKey%27"><span class="hs-identifier">foldrWithKey'</span></a></span><span>
+</span><span id="line-79"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldMapWithKey"><span class="hs-identifier">foldMapWithKey</span></a></span><span>
+</span><span id="line-80"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#foldMapWithKey%27"><span class="hs-identifier">foldMapWithKey'</span></a></span><span>
 </span><span id="line-81"></span><span>
 </span><span id="line-82"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Traversal</span></span><span>
-</span><span id="line-83"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">traverse</span></span><span>
-</span><span id="line-84"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">traverseWithKey</span></span><span>
-</span><span id="line-85"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapAccumL</span></span><span>
-</span><span id="line-86"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapAccumLWithKey</span></span><span>
-</span><span id="line-87"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapAccumR</span></span><span>
-</span><span id="line-88"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">mapAccumRWithKey</span></span><span>
+</span><span id="line-83"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#traverse"><span class="hs-identifier">traverse</span></a></span><span>
+</span><span id="line-84"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#traverseWithKey"><span class="hs-identifier">traverseWithKey</span></a></span><span>
+</span><span id="line-85"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapAccumL"><span class="hs-identifier">mapAccumL</span></a></span><span>
+</span><span id="line-86"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapAccumLWithKey"><span class="hs-identifier">mapAccumLWithKey</span></a></span><span>
+</span><span id="line-87"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapAccumR"><span class="hs-identifier">mapAccumR</span></a></span><span>
+</span><span id="line-88"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#mapAccumRWithKey"><span class="hs-identifier">mapAccumRWithKey</span></a></span><span>
 </span><span id="line-89"></span><span>
 </span><span id="line-90"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Monoidal operations</span></span><span>
 </span><span id="line-91"></span><span>
@@ -93,56 +93,56 @@
 </span><span id="line-93"></span><span>    </span><span class="hs-comment">-- the [introduction](#_introduction).</span><span>
 </span><span id="line-94"></span><span>
 </span><span id="line-95"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Association</span></span><span>
-</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">append</span></span><span>
+</span><span id="line-96"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#append"><span class="hs-identifier">append</span></a></span><span>
 </span><span id="line-97"></span><span>
 </span><span id="line-98"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Subtraction</span></span><span>
-</span><span id="line-99"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">minus</span></span><span>
-</span><span id="line-100"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">minusMaybe</span></span><span>
-</span><span id="line-101"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">monus</span></span><span>
+</span><span id="line-99"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#minus"><span class="hs-identifier">minus</span></a></span><span>
+</span><span id="line-100"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#minusMaybe"><span class="hs-identifier">minusMaybe</span></a></span><span>
+</span><span id="line-101"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#monus"><span class="hs-identifier">monus</span></a></span><span>
 </span><span id="line-102"></span><span>
 </span><span id="line-103"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Inversion</span></span><span>
-</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">invert</span></span><span>
+</span><span id="line-104"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#invert"><span class="hs-identifier">invert</span></a></span><span>
 </span><span id="line-105"></span><span>
 </span><span id="line-106"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Exponentiation</span></span><span>
-</span><span id="line-107"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">power</span></span><span>
+</span><span id="line-107"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#power"><span class="hs-identifier">power</span></a></span><span>
 </span><span id="line-108"></span><span>
 </span><span id="line-109"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Comparison</span></span><span>
-</span><span id="line-110"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSubmapOf</span></span><span>
-</span><span id="line-111"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSubmapOfBy</span></span><span>
-</span><span id="line-112"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">disjoint</span></span><span>
-</span><span id="line-113"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">disjointBy</span></span><span>
+</span><span id="line-110"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#isSubmapOf"><span class="hs-identifier">isSubmapOf</span></a></span><span>
+</span><span id="line-111"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#isSubmapOfBy"><span class="hs-identifier">isSubmapOfBy</span></a></span><span>
+</span><span id="line-112"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#disjoint"><span class="hs-identifier">disjoint</span></a></span><span>
+</span><span id="line-113"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#disjointBy"><span class="hs-identifier">disjointBy</span></a></span><span>
 </span><span id="line-114"></span><span>
 </span><span id="line-115"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Intersection</span></span><span>
-</span><span id="line-116"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersection</span></span><span>
-</span><span id="line-117"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersectionWith</span></span><span>
-</span><span id="line-118"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">intersectionWithA</span></span><span>
+</span><span id="line-116"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#intersection"><span class="hs-identifier">intersection</span></a></span><span>
+</span><span id="line-117"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#intersectionWith"><span class="hs-identifier">intersectionWith</span></a></span><span>
+</span><span id="line-118"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#intersectionWithA"><span class="hs-identifier">intersectionWithA</span></a></span><span>
 </span><span id="line-119"></span><span>
 </span><span id="line-120"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Union</span></span><span>
-</span><span id="line-121"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">union</span></span><span>
-</span><span id="line-122"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">unionWith</span></span><span>
-</span><span id="line-123"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">unionWithA</span></span><span>
+</span><span id="line-121"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#union"><span class="hs-identifier">union</span></a></span><span>
+</span><span id="line-122"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#unionWith"><span class="hs-identifier">unionWith</span></a></span><span>
+</span><span id="line-123"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#unionWithA"><span class="hs-identifier">unionWithA</span></a></span><span>
 </span><span id="line-124"></span><span>
 </span><span id="line-125"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Prefixes</span></span><span>
-</span><span id="line-126"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isPrefixOf</span></span><span>
-</span><span id="line-127"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripPrefix</span></span><span>
-</span><span id="line-128"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">commonPrefix</span></span><span>
-</span><span id="line-129"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripCommonPrefix</span></span><span>
+</span><span id="line-126"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#isPrefixOf"><span class="hs-identifier">isPrefixOf</span></a></span><span>
+</span><span id="line-127"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripPrefix"><span class="hs-identifier">stripPrefix</span></a></span><span>
+</span><span id="line-128"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#commonPrefix"><span class="hs-identifier">commonPrefix</span></a></span><span>
+</span><span id="line-129"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripCommonPrefix"><span class="hs-identifier">stripCommonPrefix</span></a></span><span>
 </span><span id="line-130"></span><span>
 </span><span id="line-131"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Suffixes</span></span><span>
-</span><span id="line-132"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">isSuffixOf</span></span><span>
-</span><span id="line-133"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripSuffix</span></span><span>
-</span><span id="line-134"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">commonSuffix</span></span><span>
-</span><span id="line-135"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripCommonSuffix</span></span><span>
+</span><span id="line-132"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#isSuffixOf"><span class="hs-identifier">isSuffixOf</span></a></span><span>
+</span><span id="line-133"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripSuffix"><span class="hs-identifier">stripSuffix</span></a></span><span>
+</span><span id="line-134"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#commonSuffix"><span class="hs-identifier">commonSuffix</span></a></span><span>
+</span><span id="line-135"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripCommonSuffix"><span class="hs-identifier">stripCommonSuffix</span></a></span><span>
 </span><span id="line-136"></span><span>
 </span><span id="line-137"></span><span>    </span><span class="annot"><span class="hs-comment">-- ** Overlap</span></span><span>
-</span><span id="line-138"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">overlap</span></span><span>
-</span><span id="line-139"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripPrefixOverlap</span></span><span>
-</span><span id="line-140"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripSuffixOverlap</span></span><span>
-</span><span id="line-141"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">stripOverlap</span></span><span>
+</span><span id="line-138"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#overlap"><span class="hs-identifier">overlap</span></a></span><span>
+</span><span id="line-139"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripPrefixOverlap"><span class="hs-identifier">stripPrefixOverlap</span></a></span><span>
+</span><span id="line-140"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripSuffixOverlap"><span class="hs-identifier">stripSuffixOverlap</span></a></span><span>
+</span><span id="line-141"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html#stripOverlap"><span class="hs-identifier">stripOverlap</span></a></span><span>
 </span><span id="line-142"></span><span>    </span><span class="hs-special">)</span><span>
 </span><span id="line-143"></span><span>    </span><span class="hs-keyword">where</span><span>
 </span><span id="line-144"></span><span>
-</span><span id="line-145"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span>
+</span><span id="line-145"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html"><span class="hs-identifier">Data.MonoidMap.Internal</span></a></span><span>
 </span><span id="line-146"></span><span>
 </span><span id="line-147"></span><span class="hs-comment">-- Imports for module documentation:</span><span>
 </span><span id="line-148"></span><span>
@@ -170,7 +170,7 @@
 </span><span id="line-170"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Semigroup</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(&lt;&gt;)</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
 </span><span id="line-171"></span><span>
 </span><span id="line-172"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">SMap</span></span><span>
-</span><span id="line-173"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap.Internal</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MMap</span></span><span>
+</span><span id="line-173"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.html"><span class="hs-identifier">Data.MonoidMap.Internal</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">MMap</span></span><span>
 </span><span id="line-174"></span><span>
 </span><span id="line-175"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Group</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
 </span><span id="line-176"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.GCD</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">C</span></span><span>
