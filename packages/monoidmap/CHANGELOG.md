@@ -1,3 +1,7 @@
+# 0.0.4.3
+
+- Moved all modules from `monoidmap-internal` to main library.
+
 # 0.0.4.2
 
 - Removed the dependency on `nonempty-containers`.
