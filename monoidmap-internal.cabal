@@ -85,7 +85,6 @@ library
         components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap
-    other-modules:
         Data.MonoidMap.Internal
         Data.MonoidMap.Unsafe
     default-language:
