@@ -6,7 +6,7 @@
 --
 -- Provides /unsafe/ operations for the 'MonoidMap' type.
 --
-module Data.MonoidMap.Unsafe
+module Data.MonoidMap.Internal.Unsafe
     (
     -- * Construction
       unsafeFromMap
