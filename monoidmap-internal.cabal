@@ -85,7 +85,7 @@ library
         components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
-        Data.MonoidMap.Unsafe
+        Data.MonoidMap.Internal.Unsafe
     default-language:
         Haskell2010
 
