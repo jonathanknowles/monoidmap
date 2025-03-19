@@ -22,7 +22,7 @@
 -- | 'MultiMap4'    | 'MonoidMap' | 'Set'    | ✅ Yes   |
 -- +----------------+-------------+----------+---------+
 --
-module Examples.MultiMap
+module Data.MonoidMap.Internal.Examples.MultiMap
     ( MultiMap (..)
     ) where
 
@@ -32,15 +32,15 @@ import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Set
     ( Set )
-import Data.Set.NonEmpty
+import Data.MonoidMap.Internal.Examples.Set.NonEmpty
     ( NESet )
-import Examples.MultiMap.Class
+import Data.MonoidMap.Internal.Examples.MultiMap.Class
     ( MultiMap (..) )
-import Examples.MultiMap.Instances.MultiMap1
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1
     ( MultiMap1 )
-import Examples.MultiMap.Instances.MultiMap2
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap2
     ( MultiMap2 )
-import Examples.MultiMap.Instances.MultiMap3
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3
     ( MultiMap3 )
-import Examples.MultiMap.Instances.MultiMap4
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4
     ( MultiMap4 )

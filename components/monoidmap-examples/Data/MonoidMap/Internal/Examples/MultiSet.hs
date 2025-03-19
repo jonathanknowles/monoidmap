@@ -6,7 +6,7 @@
 --
 -- See: https://en.wikipedia.org/wiki/Multiset
 --
-module Examples.MultiSet
+module Data.MonoidMap.Internal.Examples.MultiSet
     ( fromList
     , toList
     , null
