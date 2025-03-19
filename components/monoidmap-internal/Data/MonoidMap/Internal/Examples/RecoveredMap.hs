@@ -8,7 +8,7 @@
 -- An ordinary left-biased map similar to 'Map', implemented in terms of
 -- 'MonoidMap'.
 --
-module Examples.RecoveredMap
+module Data.MonoidMap.Internal.Examples.RecoveredMap
     ( Map
     , empty
     , singleton
@@ -39,14 +39,14 @@ import Data.Maybe
     ( mapMaybe )
 import Data.Monoid
     ( First (..) )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Semigroup
     ( Semigroup (stimes), stimesIdempotentMonoid )
 import Data.Set
     ( Set )
 
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 
 newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':

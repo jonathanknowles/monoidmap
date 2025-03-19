@@ -59,7 +59,7 @@ import Test.QuickCheck.Classes.Hspec
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.Set as Set
-import qualified Examples.RecoveredMap as RMap
+import qualified Data.MonoidMap.Internal.Examples.RecoveredMap as RMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec

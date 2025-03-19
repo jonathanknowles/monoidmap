@@ -23,15 +23,15 @@ import Data.Set
     ( Set )
 import Data.Typeable
     ( Typeable, typeRep )
-import Examples.MultiMap.Class
+import Data.MonoidMap.Internal.Examples.MultiMap.Class
     ( MultiMap )
-import Examples.MultiMap.Instances.MultiMap1
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1
     ( MultiMap1 )
-import Examples.MultiMap.Instances.MultiMap2
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap2
     ( MultiMap2 )
-import Examples.MultiMap.Instances.MultiMap3
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3
     ( MultiMap3 )
-import Examples.MultiMap.Instances.MultiMap4
+import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4
     ( MultiMap4 )
 import Test.Common
     ()
@@ -50,7 +50,7 @@ import Test.QuickCheck
 
 import qualified Data.Foldable as F
 import qualified Data.Set as Set
-import qualified Examples.MultiMap.Class as M
+import qualified Data.MonoidMap.Internal.Examples.MultiMap.Class as M
 import qualified Test.QuickCheck as QC
 
 spec :: Spec

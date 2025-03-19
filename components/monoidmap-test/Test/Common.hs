@@ -45,7 +45,7 @@ import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
     ( MonoidNull )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (Proxy) )
@@ -85,7 +85,7 @@ import Test.QuickCheck
     , shrinkMapBy
     )
 
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 import qualified Data.Text as Text
 import qualified Test.QuickCheck as QC
 

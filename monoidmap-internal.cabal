@@ -1,16 +1,15 @@
 cabal-version:  3.0
-name:           monoidmap
-version:        0.0.4.3
-bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
+name:           monoidmap-internal
+version:        0.0.0.0
+bug-reports:    https://github.com/jonathanknowles/monoidmap-internal/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2025 Jonathan Knowles
 category:       Data Structures
-synopsis:       Monoidal map type
-description:
-    Monoidal map type with support for semigroup and monoid subclasses.
+synopsis:       Internal support for monoidmap.
+description:    Internal support for the monoidmap package.
 
 extra-doc-files:
     CHANGELOG.md
@@ -83,12 +82,20 @@ library
       , dependency-nothunks
       , extensions
     hs-source-dirs:
-        components/monoidmap
+        components/monoidmap-internal
     exposed-modules:
-        Data.MonoidMap
-    other-modules:
         Data.MonoidMap.Internal
-        Data.MonoidMap.Unsafe
+        Data.MonoidMap.Internal.Examples.MultiMap
+        Data.MonoidMap.Internal.Examples.MultiMap.Class
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap2
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4
+        Data.MonoidMap.Internal.Examples.MultiSet
+        Data.MonoidMap.Internal.Examples.NestedMonoidMap
+        Data.MonoidMap.Internal.Examples.RecoveredMap
+        Data.MonoidMap.Internal.Examples.Set.NonEmpty
+        Data.MonoidMap.Internal.Unsafe
     default-language:
         Haskell2010
 
@@ -101,8 +108,7 @@ benchmark monoidmap-benchmark
       , dependency-tasty-hunit
       , extensions
     build-depends:
-      , monoidmap
-      , monoidmap-examples
+      , monoidmap-internal
     default-language:
         Haskell2010
     type:
@@ -111,33 +117,6 @@ benchmark monoidmap-benchmark
         components/monoidmap-benchmark
     main-is:
         Main.hs
-
-library monoidmap-examples
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-monoid-subclasses
-      , extensions
-    build-depends:
-      , monoidmap
-    visibility:
-        private
-    hs-source-dirs:
-        components/monoidmap-examples
-    exposed-modules:
-        Data.Set.NonEmpty
-        Examples.MultiMap
-        Examples.MultiMap.Class
-        Examples.MultiMap.Instances.MultiMap1
-        Examples.MultiMap.Instances.MultiMap2
-        Examples.MultiMap.Instances.MultiMap3
-        Examples.MultiMap.Instances.MultiMap4
-        Examples.MultiSet
-        Examples.NestedMonoidMap
-        Examples.RecoveredMap
-    default-language:
-        Haskell2010
 
 test-suite monoidmap-test
     import:
@@ -155,8 +134,7 @@ test-suite monoidmap-test
       , dependency-text
       , extensions
     build-depends:
-      , monoidmap
-      , monoidmap-examples
+      , monoidmap-internal
     ghc-options:
         -threaded -with-rtsopts=-N
     main-is:
