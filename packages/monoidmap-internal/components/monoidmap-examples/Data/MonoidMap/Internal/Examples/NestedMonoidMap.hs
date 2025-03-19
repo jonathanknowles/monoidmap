@@ -6,7 +6,7 @@
 --
 -- A nested map with compound keys, implemented in terms of 'MonoidMap'.
 --
-module Examples.NestedMonoidMap
+module Data.MonoidMap.Internal.Examples.NestedMonoidMap
     (
     -- * Type
       NestedMonoidMap

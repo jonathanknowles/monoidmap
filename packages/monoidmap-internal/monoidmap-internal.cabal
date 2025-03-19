@@ -123,16 +123,16 @@ library monoidmap-examples
     hs-source-dirs:
         components/monoidmap-examples
     exposed-modules:
-        Data.Set.NonEmpty
-        Examples.MultiMap
-        Examples.MultiMap.Class
-        Examples.MultiMap.Instances.MultiMap1
-        Examples.MultiMap.Instances.MultiMap2
-        Examples.MultiMap.Instances.MultiMap3
-        Examples.MultiMap.Instances.MultiMap4
-        Examples.MultiSet
-        Examples.NestedMonoidMap
-        Examples.RecoveredMap
+        Data.MonoidMap.Internal.Examples.MultiMap
+        Data.MonoidMap.Internal.Examples.MultiMap.Class
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap2
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3
+        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4
+        Data.MonoidMap.Internal.Examples.MultiSet
+        Data.MonoidMap.Internal.Examples.NestedMonoidMap
+        Data.MonoidMap.Internal.Examples.RecoveredMap
+        Data.MonoidMap.Internal.Examples.Set.NonEmpty
     default-language:
         Haskell2010
 
