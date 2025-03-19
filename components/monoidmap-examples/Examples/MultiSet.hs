@@ -48,7 +48,7 @@ import Data.Monoid.Monus
     ( Monus ((<\>)) )
 import Data.Monoid.Null
     ( MonoidNull, PositiveMonoid )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Semigroup.Cancellative
     ( Cancellative
@@ -67,7 +67,7 @@ import Text.Read
     ( Read (..) )
 
 import qualified Data.Foldable as F
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 
 newtype MultiSet a = MultiSet
     { unMultiSet :: MonoidMap a (Sum Natural)

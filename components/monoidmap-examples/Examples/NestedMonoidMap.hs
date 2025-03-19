@@ -64,7 +64,7 @@ import Data.Monoid.Monus
     ( Monus )
 import Data.Monoid.Null
     ( MonoidNull, PositiveMonoid )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Semigroup.Cancellative
     ( Cancellative
@@ -82,7 +82,7 @@ import GHC.Exts
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 import qualified Data.Set as Set
 
 --------------------------------------------------------------------------------
