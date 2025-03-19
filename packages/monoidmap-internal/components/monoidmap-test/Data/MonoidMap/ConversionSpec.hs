@@ -18,7 +18,7 @@ import Data.Function
     ( (&) )
 import Data.Map.Strict
     ( Map )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
@@ -42,7 +42,7 @@ import qualified Data.List as List
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 import qualified Data.Set as Set
 
 spec :: Spec

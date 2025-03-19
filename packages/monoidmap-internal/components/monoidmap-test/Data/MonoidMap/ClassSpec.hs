@@ -11,7 +11,7 @@ import Prelude
 
 import Data.Monoid
     ( Product (..), Sum (..) )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )

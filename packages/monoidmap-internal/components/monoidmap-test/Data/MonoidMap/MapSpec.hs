@@ -20,7 +20,7 @@ import Data.Function
     ( (&) )
 import Data.Monoid.Null
     ( MonoidNull )
-import Data.MonoidMap
+import Data.MonoidMap.Internal
     ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
@@ -39,7 +39,7 @@ import Test.QuickCheck
 
 import qualified Data.Foldable as F
 import qualified Data.Monoid.Null as Null
-import qualified Data.MonoidMap as MonoidMap
+import qualified Data.MonoidMap.Internal as MonoidMap
 import qualified Data.Set as Set
 
 spec :: Spec
