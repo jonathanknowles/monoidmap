@@ -84,7 +84,6 @@ library
     hs-source-dirs:
         components/monoidmap-internal
     exposed-modules:
-        Data.MonoidMap
         Data.MonoidMap.Internal
         Data.MonoidMap.Unsafe
     default-language:
