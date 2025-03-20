@@ -5,7 +5,7 @@
 -- A __lawful__ implementation of 'MultiMap', implemented in terms of 'Map' and
 -- 'NESet'.
 --
-module Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3 where
+module Data.MonoidMap.Examples.MultiMap.Instances.MultiMap3 where
 
 import Prelude
 
@@ -13,14 +13,14 @@ import Data.Map.Strict
     ( Map )
 import Data.Maybe
     ( mapMaybe )
-import Data.MonoidMap.Internal.Examples.Set.NonEmpty
+import Data.MonoidMap.Examples.Set.NonEmpty
     ( NESet )
 
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
-import qualified Data.MonoidMap.Internal.Examples.Set.NonEmpty as NESet
-import qualified Data.MonoidMap.Internal.Examples.MultiMap.Class as Class
+import qualified Data.MonoidMap.Examples.Set.NonEmpty as NESet
+import qualified Data.MonoidMap.Examples.MultiMap.Class as Class
 
 newtype MultiMap3 k v = MultiMap (Map k (NESet v))
     deriving stock (Eq, Show)

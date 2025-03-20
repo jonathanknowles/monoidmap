@@ -7,7 +7,7 @@
 --
 -- This implementation has several subtle bugs. 💥
 --
-module Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1 where
+module Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1 where
 
 import Prelude
 
@@ -18,7 +18,7 @@ import Data.Set
 
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
-import qualified Data.MonoidMap.Internal.Examples.MultiMap.Class as Class
+import qualified Data.MonoidMap.Examples.MultiMap.Class as Class
 
 newtype MultiMap1 k v = MultiMap (Map k (Set v))
     deriving stock (Eq, Show)
