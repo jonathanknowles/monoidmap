@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           monoidmap-aeson
-version:        0.0.0.4
+version:        0.0.0.5
 bug-reports:    https://github.com/jonathanknowles/monoidmap-aeson/issues
 license:        Apache-2.0
 license-file:   LICENSE
