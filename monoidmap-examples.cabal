@@ -122,7 +122,6 @@ test-suite monoidmap-test
     other-modules:
         SpecHook
         Examples.MultiMapSpec
-        Test.Combinators.NonZero
         Test.Common
         Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
