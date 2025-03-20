@@ -1,3 +1,7 @@
+# 0.0.0.5
+
+- Bumped lower bound on `monoidmap`.
+
 # 0.0.0.4
 
 - Refreshed documentation.
