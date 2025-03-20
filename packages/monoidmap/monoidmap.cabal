@@ -28,6 +28,8 @@ common dependency-hspec
     build-depends:hspec                         >= 2.10.9     && < 2.12
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
+common dependency-monoidmap-internal
+    build-depends:monoidmap-internal            >= 0.0.0.0    && < 0.1
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
 common dependency-pretty-show
@@ -80,15 +82,13 @@ library
       , dependency-deepseq
       , dependency-groups
       , dependency-monoid-subclasses
+      , dependency-monoidmap-internal
       , dependency-nothunks
       , extensions
     hs-source-dirs:
         components/monoidmap
     exposed-modules:
         Data.MonoidMap
-    other-modules:
-        Data.MonoidMap.Internal
-        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
 
