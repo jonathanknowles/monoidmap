@@ -71,30 +71,3 @@ library
         Data.MonoidMap
     default-language:
         Haskell2010
-
-library monoidmap-examples
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-monoid-subclasses
-      , extensions
-    build-depends:
-      , monoidmap
-    visibility:
-        private
-    hs-source-dirs:
-        components/monoidmap-examples
-    exposed-modules:
-        Data.Set.NonEmpty
-        Examples.MultiMap
-        Examples.MultiMap.Class
-        Examples.MultiMap.Instances.MultiMap1
-        Examples.MultiMap.Instances.MultiMap2
-        Examples.MultiMap.Instances.MultiMap3
-        Examples.MultiMap.Instances.MultiMap4
-        Examples.MultiSet
-        Examples.NestedMonoidMap
-        Examples.RecoveredMap
-    default-language:
-        Haskell2010
