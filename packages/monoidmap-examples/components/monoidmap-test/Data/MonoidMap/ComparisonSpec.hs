@@ -22,7 +22,7 @@ import Data.Monoid.Cancellative
     ( Reductive (..) )
 import Data.Monoid.GCD
     ( GCDMonoid )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
@@ -45,7 +45,7 @@ import qualified Data.Monoid.GCD as GCDMonoid
     ( GCDMonoid (..) )
 import qualified Data.Monoid.Null as Null
     ( MonoidNull (..) )
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
 spec :: Spec

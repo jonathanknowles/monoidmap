@@ -16,7 +16,7 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
@@ -33,7 +33,7 @@ import Test.Hspec
 import Test.QuickCheck
     ( Property, cover, (===) )
 
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
 spec :: Spec

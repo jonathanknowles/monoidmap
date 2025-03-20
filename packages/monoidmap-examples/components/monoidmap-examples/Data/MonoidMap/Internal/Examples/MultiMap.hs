@@ -28,7 +28,7 @@ module Data.MonoidMap.Internal.Examples.MultiMap
 
 import Data.Map.Strict
     ( Map )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Set
     ( Set )

@@ -9,12 +9,12 @@ module Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude
 
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Set
     ( Set )
 
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 import qualified Data.MonoidMap.Internal.Examples.MultiMap.Class as Class
 

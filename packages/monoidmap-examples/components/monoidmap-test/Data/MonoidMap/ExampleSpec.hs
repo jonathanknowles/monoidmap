@@ -26,7 +26,7 @@ import Data.Monoid.LCM
     ( LCMMonoid (..) )
 import Data.Monoid.Monus
     ( OverlappingGCDMonoid (..), (<\>) )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Ratio
     ( (%) )
@@ -48,7 +48,7 @@ import Test.Hspec.Unit
     , unitTestSpec
     )
 
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
 spec :: Spec

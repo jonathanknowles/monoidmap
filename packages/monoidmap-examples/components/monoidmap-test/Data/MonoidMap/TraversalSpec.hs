@@ -16,7 +16,7 @@ import Data.Function
     ( (&) )
 import Data.Functor.Identity
     ( Identity (..) )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
@@ -43,7 +43,7 @@ import Data.Semigroup
     ( First (..), Last (..) )
 
 import qualified Data.Map.Strict as Map
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Traversable as Traversable
 
 spec :: Spec

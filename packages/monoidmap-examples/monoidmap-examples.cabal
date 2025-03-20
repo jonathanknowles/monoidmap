@@ -27,6 +27,8 @@ common dependency-hspec
     build-depends:hspec                         >= 2.10.9     && < 2.12
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
+common dependency-monoidmap
+    build-depends:monoidmap                     >= 0.0.4.3    && < 0.1
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
 common dependency-pretty-show
@@ -79,12 +81,12 @@ library
       , dependency-deepseq
       , dependency-groups
       , dependency-monoid-subclasses
+      , dependency-monoidmap
       , dependency-nothunks
       , extensions
     hs-source-dirs:
         components/monoidmap-examples
     exposed-modules:
-        Data.MonoidMap.Internal
         Data.MonoidMap.Internal.Examples.MultiMap
         Data.MonoidMap.Internal.Examples.MultiMap.Class
         Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1
@@ -95,7 +97,6 @@ library
         Data.MonoidMap.Internal.Examples.NestedMonoidMap
         Data.MonoidMap.Internal.Examples.RecoveredMap
         Data.MonoidMap.Internal.Examples.Set.NonEmpty
-        Data.MonoidMap.Internal.Unsafe
     default-language:
         Haskell2010
 
@@ -125,6 +126,7 @@ test-suite monoidmap-test
       , dependency-groups
       , dependency-hspec
       , dependency-monoid-subclasses
+      , dependency-monoidmap
       , dependency-pretty-show
       , dependency-QuickCheck
       , dependency-quickcheck-classes
