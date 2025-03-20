@@ -20,7 +20,7 @@ import Data.Functor.Identity
     ( Identity (..) )
 import Data.Monoid.LCM
     ( LCMMonoid )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
@@ -39,7 +39,7 @@ import Test.QuickCheck
     ( Fun (..), Property, applyFun2, conjoin, cover, expectFailure, (===) )
 
 import qualified Data.Monoid.Null as Null
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
 
 spec :: Spec

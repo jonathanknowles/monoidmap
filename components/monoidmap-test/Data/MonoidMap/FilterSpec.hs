@@ -16,7 +16,7 @@ import Control.Monad
     ( forM_ )
 import Data.Function
     ( (&) )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
@@ -36,7 +36,7 @@ import Test.QuickCheck
     ( Fun (..), Property, applyFun, applyFun2, cover, (===) )
 
 import qualified Data.List as List
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Filtering" $ do

@@ -18,7 +18,7 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )

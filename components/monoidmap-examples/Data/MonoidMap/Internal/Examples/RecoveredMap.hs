@@ -39,14 +39,14 @@ import Data.Maybe
     ( mapMaybe )
 import Data.Monoid
     ( First (..) )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Semigroup
     ( Semigroup (stimes), stimesIdempotentMonoid )
 import Data.Set
     ( Set )
 
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 newtype Map k v = Map
     --  'First' is used to mimic the left-biased nature of 'Data.Map':
