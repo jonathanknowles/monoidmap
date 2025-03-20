@@ -5,7 +5,7 @@
 -- Provides the 'MultiMap' class, which models a total relation from unique
 -- keys to sets of values.
 --
-module Data.MonoidMap.Internal.Examples.MultiMap.Class where
+module Data.MonoidMap.Examples.MultiMap.Class where
 
 import Data.Set
     ( Set )

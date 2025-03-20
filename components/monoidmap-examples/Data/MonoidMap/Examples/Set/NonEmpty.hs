@@ -4,7 +4,7 @@
 --
 -- A minimal non-empty variant of the 'Set' data type.
 --
-module Data.MonoidMap.Internal.Examples.Set.NonEmpty
+module Data.MonoidMap.Examples.Set.NonEmpty
     ( NESet
     , nonEmptySet
     , toSet

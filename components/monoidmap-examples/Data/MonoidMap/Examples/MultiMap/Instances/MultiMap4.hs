@@ -5,7 +5,7 @@
 -- A __lawful__ implementation of 'MultiMap', implemented in terms of
 -- 'MonoidMap' and 'Set'.
 --
-module Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4 where
+module Data.MonoidMap.Examples.MultiMap.Instances.MultiMap4 where
 
 import Prelude
 
@@ -16,7 +16,7 @@ import Data.Set
 
 import qualified Data.MonoidMap as MonoidMap
 import qualified Data.Set as Set
-import qualified Data.MonoidMap.Internal.Examples.MultiMap.Class as Class
+import qualified Data.MonoidMap.Examples.MultiMap.Class as Class
 
 newtype MultiMap4 k v = MultiMap (MonoidMap k (Set v))
     deriving stock (Eq, Show)
