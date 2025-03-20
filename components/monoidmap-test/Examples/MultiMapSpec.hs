@@ -33,8 +33,6 @@ import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3
     ( MultiMap3 )
 import Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4
     ( MultiMap4 )
-import Test.Common
-    ()
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
