@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.MapSpec
+module Data.MonoidMap.Internal.MapSpec
     ( spec
     ) where
 
