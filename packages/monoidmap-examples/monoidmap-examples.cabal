@@ -122,7 +122,6 @@ test-suite monoidmap-test
     other-modules:
         SpecHook
         Examples.MultiMapSpec
-        Test.Key
     type:
         exitcode-stdio-1.0
     default-language:
