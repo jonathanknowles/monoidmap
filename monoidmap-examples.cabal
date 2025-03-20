@@ -1,15 +1,15 @@
 cabal-version:  3.0
-name:           monoidmap-internal
+name:           monoidmap-examples
 version:        0.0.0.0
-bug-reports:    https://github.com/jonathanknowles/monoidmap-internal/issues
+bug-reports:    https://github.com/jonathanknowles/monoidmap-examples/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
 copyright:      2022–2025 Jonathan Knowles
 category:       Data Structures
-synopsis:       Internal support for monoidmap.
-description:    Internal support for the monoidmap package.
+synopsis:       Examples for monoidmap.
+description:    Examples for the monoidmap package.
 
 extra-doc-files:
     CHANGELOG.md
@@ -82,7 +82,7 @@ library
       , dependency-nothunks
       , extensions
     hs-source-dirs:
-        components/monoidmap-internal
+        components/monoidmap-examples
     exposed-modules:
         Data.MonoidMap.Internal
         Data.MonoidMap.Internal.Examples.MultiMap
@@ -108,7 +108,7 @@ benchmark monoidmap-benchmark
       , dependency-tasty-hunit
       , extensions
     build-depends:
-      , monoidmap-internal
+      , monoidmap-examples
     default-language:
         Haskell2010
     type:
@@ -134,7 +134,7 @@ test-suite monoidmap-test
       , dependency-text
       , extensions
     build-depends:
-      , monoidmap-internal
+      , monoidmap-examples
     ghc-options:
         -threaded -with-rtsopts=-N
     main-is:
