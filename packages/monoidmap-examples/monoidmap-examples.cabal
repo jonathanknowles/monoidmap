@@ -121,25 +121,6 @@ test-suite monoidmap-test
         components/monoidmap-test
     other-modules:
         SpecHook
-        Data.MonoidMap.ClassSpec
-        Data.MonoidMap.ExampleSpec
-        Data.MonoidMap.AccessSpec
-        Data.MonoidMap.ComparisonSpec
-        Data.MonoidMap.ConversionSpec
-        Data.MonoidMap.DistributivitySpec
-        Data.MonoidMap.MapSpec
-        Data.MonoidMap.FilterSpec
-        Data.MonoidMap.FoldSpec
-        Data.MonoidMap.PartitionSpec
-        Data.MonoidMap.MembershipSpec
-        Data.MonoidMap.SingletonSpec
-        Data.MonoidMap.SliceSpec
-        Data.MonoidMap.TraversalSpec
-        Data.MonoidMap.PrefixSpec
-        Data.MonoidMap.SuffixSpec
-        Data.MonoidMap.IntersectionSpec
-        Data.MonoidMap.UnionSpec
-        Data.MonoidMap.ValiditySpec
         Examples.MultiMapSpec
         Test.Combinators.NonZero
         Test.Common
