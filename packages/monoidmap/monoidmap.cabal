@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           monoidmap
-version:        0.0.4.3
+version:        0.0.4.4
 bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
 license-file:   LICENSE
@@ -24,30 +24,12 @@ common dependency-deepseq
     build-depends:deepseq                       >= 1.4.4.0    && < 1.6
 common dependency-groups
     build-depends:groups                        >= 0.5.3      && < 0.6
-common dependency-hspec
-    build-depends:hspec                         >= 2.10.9     && < 2.12
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
+common dependency-monoidmap-internal
+    build-depends:monoidmap-internal            >= 0.0.0.0    && < 0.1
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
-common dependency-pretty-show
-    build-depends:pretty-show                   >= 1.10       && < 1.11
-common dependency-QuickCheck
-    build-depends:QuickCheck                    >= 2.14.2     && < 2.16
-common dependency-quickcheck-classes
-    build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
-common dependency-quickcheck-groups
-    build-depends:quickcheck-groups             >= 0.0.0.0    && < 0.1
-common dependency-quickcheck-monoid-subclasses
-    build-depends:quickcheck-monoid-subclasses  >= 0.3.0.0    && < 0.4
-common dependency-quickcheck-quid
-    build-depends:quickcheck-quid               >= 0.0.1.7    && < 0.1
-common dependency-tasty-bench
-    build-depends:tasty-bench                   >= 0.3.2      && < 0.5
-common dependency-tasty-hunit
-    build-depends:tasty-hunit                   >= 0.10.0.3   && < 0.11
-common dependency-text
-    build-depends:text                          >= 1.2.4.1    && < 2.2
 
 common extensions
     default-extensions:
@@ -80,120 +62,12 @@ library
       , dependency-deepseq
       , dependency-groups
       , dependency-monoid-subclasses
+      , dependency-monoidmap-internal
       , dependency-nothunks
       , extensions
     hs-source-dirs:
         components/monoidmap
     exposed-modules:
         Data.MonoidMap
-    other-modules:
-        Data.MonoidMap.Internal
-        Data.MonoidMap.Unsafe
     default-language:
         Haskell2010
-
-benchmark monoidmap-benchmark
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-tasty-bench
-      , dependency-tasty-hunit
-      , extensions
-    build-depends:
-      , monoidmap
-      , monoidmap-examples
-    default-language:
-        Haskell2010
-    type:
-        exitcode-stdio-1.0
-    hs-source-dirs:
-        components/monoidmap-benchmark
-    main-is:
-        Main.hs
-
-library monoidmap-examples
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-monoid-subclasses
-      , extensions
-    build-depends:
-      , monoidmap
-    visibility:
-        private
-    hs-source-dirs:
-        components/monoidmap-examples
-    exposed-modules:
-        Data.Set.NonEmpty
-        Examples.MultiMap
-        Examples.MultiMap.Class
-        Examples.MultiMap.Instances.MultiMap1
-        Examples.MultiMap.Instances.MultiMap2
-        Examples.MultiMap.Instances.MultiMap3
-        Examples.MultiMap.Instances.MultiMap4
-        Examples.MultiSet
-        Examples.NestedMonoidMap
-        Examples.RecoveredMap
-    default-language:
-        Haskell2010
-
-test-suite monoidmap-test
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-groups
-      , dependency-hspec
-      , dependency-monoid-subclasses
-      , dependency-pretty-show
-      , dependency-QuickCheck
-      , dependency-quickcheck-classes
-      , dependency-quickcheck-groups
-      , dependency-quickcheck-monoid-subclasses
-      , dependency-quickcheck-quid
-      , dependency-text
-      , extensions
-    build-depends:
-      , monoidmap
-      , monoidmap-examples
-    ghc-options:
-        -threaded -with-rtsopts=-N
-    main-is:
-        Spec.hs
-    hs-source-dirs:
-        components/monoidmap-test
-    other-modules:
-        SpecHook
-        Data.MonoidMap.ClassSpec
-        Data.MonoidMap.ExampleSpec
-        Data.MonoidMap.AccessSpec
-        Data.MonoidMap.ComparisonSpec
-        Data.MonoidMap.ConversionSpec
-        Data.MonoidMap.DistributivitySpec
-        Data.MonoidMap.MapSpec
-        Data.MonoidMap.FilterSpec
-        Data.MonoidMap.FoldSpec
-        Data.MonoidMap.PartitionSpec
-        Data.MonoidMap.MembershipSpec
-        Data.MonoidMap.SingletonSpec
-        Data.MonoidMap.SliceSpec
-        Data.MonoidMap.TraversalSpec
-        Data.MonoidMap.PrefixSpec
-        Data.MonoidMap.SuffixSpec
-        Data.MonoidMap.IntersectionSpec
-        Data.MonoidMap.UnionSpec
-        Data.MonoidMap.ValiditySpec
-        Examples.MultiMapSpec
-        Examples.RecoveredMapSpec
-        Test.Combinators.NonZero
-        Test.Common
-        Test.QuickCheck.Classes.Hspec
-        Test.Hspec.Unit
-        Test.Key
-    type:
-        exitcode-stdio-1.0
-    default-language:
-        Haskell2010
-    build-tool-depends:
-        hspec-discover:hspec-discover ==2.*
