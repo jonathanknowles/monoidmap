@@ -43,10 +43,6 @@ common dependency-quickcheck-monoid-subclasses
     build-depends:quickcheck-monoid-subclasses  >= 0.3.0.0    && < 0.4
 common dependency-quickcheck-quid
     build-depends:quickcheck-quid               >= 0.0.1.7    && < 0.1
-common dependency-tasty-bench
-    build-depends:tasty-bench                   >= 0.3.2      && < 0.5
-common dependency-tasty-hunit
-    build-depends:tasty-hunit                   >= 0.10.0.3   && < 0.11
 common dependency-text
     build-depends:text                          >= 1.2.4.1    && < 2.2
 
@@ -99,25 +95,6 @@ library
         Data.MonoidMap.Internal.Examples.Set.NonEmpty
     default-language:
         Haskell2010
-
-benchmark monoidmap-benchmark
-    import:
-      , dependency-base
-      , dependency-containers
-      , dependency-deepseq
-      , dependency-tasty-bench
-      , dependency-tasty-hunit
-      , extensions
-    build-depends:
-      , monoidmap-examples
-    default-language:
-        Haskell2010
-    type:
-        exitcode-stdio-1.0
-    hs-source-dirs:
-        components/monoidmap-benchmark
-    main-is:
-        Main.hs
 
 test-suite monoidmap-test
     import:
