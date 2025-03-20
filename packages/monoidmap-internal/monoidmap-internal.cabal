@@ -134,31 +134,31 @@ test-suite monoidmap-test
         components/monoidmap-test
     other-modules:
         SpecHook
-        Data.MonoidMap.ClassSpec
-        Data.MonoidMap.ExampleSpec
-        Data.MonoidMap.AccessSpec
-        Data.MonoidMap.ComparisonSpec
-        Data.MonoidMap.ConversionSpec
-        Data.MonoidMap.DistributivitySpec
-        Data.MonoidMap.MapSpec
-        Data.MonoidMap.FilterSpec
-        Data.MonoidMap.FoldSpec
-        Data.MonoidMap.PartitionSpec
-        Data.MonoidMap.MembershipSpec
-        Data.MonoidMap.SingletonSpec
-        Data.MonoidMap.SliceSpec
-        Data.MonoidMap.TraversalSpec
-        Data.MonoidMap.PrefixSpec
-        Data.MonoidMap.SuffixSpec
-        Data.MonoidMap.IntersectionSpec
-        Data.MonoidMap.UnionSpec
-        Data.MonoidMap.ValiditySpec
-        Data.MonoidMap.RecoveredMapSpec
+        Data.MonoidMap.Internal.AccessSpec
+        Data.MonoidMap.Internal.ClassSpec
+        Data.MonoidMap.Internal.ComparisonSpec
+        Data.MonoidMap.Internal.ConversionSpec
+        Data.MonoidMap.Internal.DistributivitySpec
+        Data.MonoidMap.Internal.ExampleSpec
+        Data.MonoidMap.Internal.FilterSpec
+        Data.MonoidMap.Internal.FoldSpec
+        Data.MonoidMap.Internal.IntersectionSpec
+        Data.MonoidMap.Internal.MapSpec
+        Data.MonoidMap.Internal.MembershipSpec
+        Data.MonoidMap.Internal.PartitionSpec
+        Data.MonoidMap.Internal.PrefixSpec
+        Data.MonoidMap.Internal.RecoveredMapSpec
+        Data.MonoidMap.Internal.SingletonSpec
+        Data.MonoidMap.Internal.SliceSpec
+        Data.MonoidMap.Internal.SuffixSpec
+        Data.MonoidMap.Internal.TraversalSpec
+        Data.MonoidMap.Internal.UnionSpec
+        Data.MonoidMap.Internal.ValiditySpec
         Test.Combinators.NonZero
         Test.Common
-        Test.QuickCheck.Classes.Hspec
         Test.Hspec.Unit
         Test.Key
+        Test.QuickCheck.Classes.Hspec
     type:
         exitcode-stdio-1.0
     default-language:
