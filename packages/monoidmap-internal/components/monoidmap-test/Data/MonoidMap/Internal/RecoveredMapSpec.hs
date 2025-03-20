@@ -8,7 +8,7 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Examples.RecoveredMapSpec
+module Data.MonoidMap.Internal.RecoveredMapSpec
     where
 
 import Prelude
@@ -59,7 +59,7 @@ import Test.QuickCheck.Classes.Hspec
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.Set as Set
-import qualified Data.MonoidMap.Internal.Examples.RecoveredMap as RMap
+import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
 import qualified Test.QuickCheck as QC
 
 spec :: Spec

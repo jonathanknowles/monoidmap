@@ -5,7 +5,7 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.ValiditySpec
+module Data.MonoidMap.Internal.ValiditySpec
     ( spec
     ) where
 
@@ -40,7 +40,7 @@ import Data.Monoid.Monus
     ( Monus )
 import Data.MonoidMap.Internal
     ( MonoidMap )
-import Data.MonoidMap.SliceSpec
+import Data.MonoidMap.Internal.SliceSpec
     ( Slice (..) )
 import Data.Set
     ( Set )
