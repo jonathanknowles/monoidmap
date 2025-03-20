@@ -8,7 +8,7 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Examples.MultiMapSpec
+module Data.MonoidMap.Examples.MultiMapSpec
     where
 
 import Prelude

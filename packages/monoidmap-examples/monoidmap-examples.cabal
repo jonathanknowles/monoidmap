@@ -90,8 +90,8 @@ test-suite monoidmap-examples-test
     hs-source-dirs:
         components/monoidmap-examples-test
     other-modules:
+        Data.MonoidMap.Examples.MultiMapSpec
         SpecHook
-        Examples.MultiMapSpec
     type:
         exitcode-stdio-1.0
     default-language:
