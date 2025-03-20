@@ -4,7 +4,7 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.TraversalSpec
+module Data.MonoidMap.Internal.TraversalSpec
     ( spec
     ) where
 

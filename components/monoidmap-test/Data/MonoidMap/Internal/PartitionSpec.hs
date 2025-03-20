@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2025 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.PartitionSpec
+module Data.MonoidMap.Internal.PartitionSpec
     ( spec
     ) where
 
