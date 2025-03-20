@@ -1,3 +1,8 @@
+# 0.0.4.4
+
+- Moved implementation, tests, and benchmark to the `monoidmap-internal`
+  package.
+
 # 0.0.4.3
 
 - Moved all modules from `monoidmap-internal` to main library.
