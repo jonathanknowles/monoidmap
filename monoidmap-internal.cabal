@@ -85,15 +85,6 @@ library
         components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
-        Data.MonoidMap.Internal.Examples.MultiMap
-        Data.MonoidMap.Internal.Examples.MultiMap.Class
-        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap1
-        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap2
-        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap3
-        Data.MonoidMap.Internal.Examples.MultiMap.Instances.MultiMap4
-        Data.MonoidMap.Internal.Examples.MultiSet
-        Data.MonoidMap.Internal.Examples.NestedMonoidMap
-        Data.MonoidMap.Internal.Examples.Set.NonEmpty
         Data.MonoidMap.Internal.RecoveredMap
         Data.MonoidMap.Internal.Unsafe
     default-language:
@@ -163,7 +154,6 @@ test-suite monoidmap-test
         Data.MonoidMap.UnionSpec
         Data.MonoidMap.ValiditySpec
         Data.MonoidMap.RecoveredMapSpec
-        Examples.MultiMapSpec
         Test.Combinators.NonZero
         Test.Common
         Test.QuickCheck.Classes.Hspec
