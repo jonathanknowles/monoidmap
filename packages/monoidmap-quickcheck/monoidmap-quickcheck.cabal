@@ -1,0 +1,66 @@
+cabal-version:  3.0
+name:           monoidmap-quickcheck
+version:        0.0.0.2
+bug-reports:    https://github.com/jonathanknowles/monoidmap-quickcheck/issues
+license:        Apache-2.0
+license-file:   LICENSE
+author:         Jonathan Knowles
+maintainer:     mail@jonathanknowles.net
+copyright:      2025 Jonathan Knowles
+category:       Data Structures
+synopsis:       QuickCheck support for monoidmap.
+description:    QuickCheck support for the monoidmap package.
+
+extra-doc-files:
+    CHANGELOG.md
+    README.md
+
+common dependency-base
+    build-depends:base                          >= 4.14.3.0   && < 4.22
+common dependency-containers
+    build-depends:containers                    >= 0.6.5.1    && < 0.8
+common dependency-monoid-subclasses
+    build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
+common dependency-monoidmap
+    build-depends:monoidmap                     >= 0.0.4.4    && < 0.1
+common dependency-QuickCheck
+    build-depends:QuickCheck                    >= 2.14.2     && < 2.16
+
+common extensions
+    default-extensions:
+        BangPatterns
+        DerivingStrategies
+        DerivingVia
+        FlexibleContexts
+        FlexibleInstances
+        GeneralizedNewtypeDeriving
+        LambdaCase
+        NoImplicitPrelude
+        NumericUnderscores
+        ScopedTypeVariables
+        TupleSections
+        TypeApplications
+        TypeFamilies
+        TypeOperators
+
+source-repository head
+    type: git
+    location: https://github.com/jonathanknowles/monoidmap-quickcheck
+
+library
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-monoid-subclasses
+      , dependency-monoidmap
+      , dependency-QuickCheck
+      , extensions
+    hs-source-dirs:
+        components/monoidmap-quickcheck
+    exposed-modules:
+        Data.MonoidMap.QuickCheck.Instances
+        Data.MonoidMap.QuickCheck.Instances.Arbitrary
+        Data.MonoidMap.QuickCheck.Instances.CoArbitrary
+        Data.MonoidMap.QuickCheck.Instances.Function
+    default-language:
+        Haskell2010
