@@ -1,0 +1,96 @@
+{
+    "samples": [
+        {
+            "": "a",
+            "aaaa": "aaaaaaaaababaa",
+            "aaaaacaa": "aac",
+            "aabaaabdabaab": "aaaaaaaaaa",
+            "abaaacabaabaa": "abbaabaa",
+            "abba": "aacacaaaaaba",
+            "baaa": "aba",
+            "bada": "ab",
+            "bbacaaabba": "baaaaaaaaaaa"
+        },
+        {
+            "aaaaba": "aa",
+            "baaa": "aaabaa"
+        },
+        {
+            "": "adbaabbbaaaa",
+            "aaa": "abaaaaba",
+            "aaaaaa": "aabaaaababaaa",
+            "aaaaaaa": "baaabaaaaaa",
+            "aaabaaaaaaaaaa": "aaabaaaabaca",
+            "abaaaaabbaa": "adb",
+            "acaaaaaabaaa": "abacabab",
+            "b": "aaaaaaaa",
+            "baaaa": "baababa",
+            "bab": "aaaaaacabab",
+            "bb": "baaabaaaaabaaa",
+            "caaa": "abdbaaabbaaa"
+        },
+        {
+            "": "acaaabaaaaabb",
+            "a": "aaab",
+            "aa": "aadbabbabb",
+            "aaaaaaaaaab": "aaaaaaaaa",
+            "aaaabaad": "abacaabaacbac",
+            "abaaabaaa": "aaaabacacbaaaa",
+            "abababaabaaaa": "aacaababbaa"
+        },
+        {
+            "aaaaaaacba": "baaba",
+            "aaaaaabc": "cabcaabaaa",
+            "aaaabbaaababab": "aaaaa",
+            "abbabadaa": "baacababaaaa"
+        },
+        {
+            "": "aaaaaa",
+            "aa": "aaaaaababaaaa",
+            "aaaaaacaab": "abbaa",
+            "aaaaabaabaaab": "aabcabaaaaa",
+            "aaaaacaaaa": "aaa",
+            "aaabacaabaab": "aaabcaaaa",
+            "aaabbaaa": "aababaaaa",
+            "aaabbaaaa": "aacbbaaaaaaab",
+            "aababbbbba": "aabaaaaaaaccbc",
+            "abaaa": "abaabaaaaaabaa",
+            "b": "baaaaaaabaca",
+            "baaacaaaaaaaaa": "baaacaaabbadaa"
+        },
+        {
+            "aaaaaaac": "abaabaa",
+            "aaabaa": "abaaaa",
+            "aaabaaabaaa": "aaaaaaaa",
+            "aadbbbabaaa": "aabab",
+            "abaaaabaa": "bbbaaaaaaa",
+            "abaaaabbab": "aa",
+            "b": "aab",
+            "daaaaaaa": "aabaaaaa"
+        },
+        {
+            "aa": "acbaaaaa",
+            "aaabaaabaaaabb": "aaaaaa",
+            "aabaaabaaaa": "baaaa",
+            "ba": "aacaaaaaba",
+            "bbaaaaabbaa": "abcabaacb"
+        },
+        {
+            "abadaaaaaaa": "aabaaccaa",
+            "baaba": "aaaacbb"
+        },
+        {
+            "aaaaaa": "aaaaabcabaca",
+            "aaaac": "baaaac",
+            "aabaaabccaca": "abaaaaaaaaa",
+            "aabaacbb": "aaab",
+            "aabbbaaaabaa": "aaaaaaa",
+            "abcaaaaa": "aacaaaca",
+            "baa": "aabaaaaabaaaab",
+            "bab": "aaaaaa",
+            "bababaaaaab": "acaaabbcb",
+            "daaaaabb": "abaaaaaaaaaa"
+        }
+    ],
+    "seed": -637739861
+}
