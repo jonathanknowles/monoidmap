@@ -1,1 +1,2 @@
-packages: monoidmap.cabal
+packages:
+  packages/*
