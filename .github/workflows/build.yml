@@ -17,7 +17,7 @@ jobs:
     name: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     env:
-      cabal-build-dir: b
+      cabal-build-dir: dist-newstyle
     strategy:
       matrix:
         os:
