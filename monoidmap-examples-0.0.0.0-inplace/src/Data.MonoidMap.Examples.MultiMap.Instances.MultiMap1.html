@@ -20,8 +20,8 @@
 </span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Set</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Set</span></span><span>
 </span><span id="line-21"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Class.html"><span class="hs-identifier">Data.MonoidMap.Examples.MultiMap.Class</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Class</span></span><span>
 </span><span id="line-22"></span><span>
-</span><span id="line-23"></span><span class="hs-keyword">newtype</span><span> </span><span id="MultiMap1"><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap1"><span class="hs-identifier hs-var">MultiMap1</span></a></span></span><span> </span><span id="local-6989586621679073497"><span class="annot"><a href="#local-6989586621679073497"><span class="hs-identifier hs-type">k</span></a></span></span><span> </span><span id="local-6989586621679073498"><span class="annot"><a href="#local-6989586621679073498"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="MultiMap"><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679073497"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="#local-6989586621679073498"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><span id="line-24"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="annot"><span class="hs-keyword">stock</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679073540"><span id="local-6989586621679073545"><span class="annot"><span class="annottext">MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
+</span><span id="line-23"></span><span class="hs-keyword">newtype</span><span> </span><span id="MultiMap1"><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap1"><span class="hs-identifier hs-var">MultiMap1</span></a></span></span><span> </span><span id="local-6989586621679073506"><span class="annot"><a href="#local-6989586621679073506"><span class="hs-identifier hs-type">k</span></a></span></span><span> </span><span id="local-6989586621679073507"><span class="annot"><a href="#local-6989586621679073507"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="MultiMap"><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679073506"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="#local-6989586621679073507"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="annot"><span class="hs-keyword">stock</span></span><span> </span><span class="hs-special">(</span><span id="local-6989586621679073549"><span id="local-6989586621679073554"><span class="annot"><span class="annottext">MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
 (MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool)
 -&gt; (MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool) -&gt; Eq (MultiMap1 k v)
 forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
@@ -30,7 +30,7 @@ $c== :: forall k v. (Eq k, Eq v) =&gt; MultiMap1 k v -&gt; MultiMap1 k v -&gt; B
 == :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
 $c/= :: forall k v. (Eq k, Eq v) =&gt; MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
 /= :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
-</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679073553"><span id="local-6989586621679073560"><span id="local-6989586621679073564"><span class="annot"><span class="annottext">Int -&gt; MultiMap1 k v -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679073562"><span id="local-6989586621679073569"><span id="local-6989586621679073573"><span class="annot"><span class="annottext">Int -&gt; MultiMap1 k v -&gt; ShowS
 [MultiMap1 k v] -&gt; ShowS
 MultiMap1 k v -&gt; String
 (Int -&gt; MultiMap1 k v -&gt; ShowS)
@@ -50,10 +50,10 @@ $cshowList :: forall k v. (Show k, Show v) =&gt; [MultiMap1 k v] -&gt; ShowS
 showList :: [MultiMap1 k v] -&gt; ShowS
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">)</span><span>
 </span><span id="line-25"></span><span>
-</span><span id="line-26"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679073495"><span id="local-6989586621679073496"><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073495"><span class="hs-identifier hs-type">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073496"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Class.html#MultiMap"><span class="hs-identifier hs-type">Class.MultiMap</span></a></span><span> </span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap1"><span class="hs-identifier hs-type">MultiMap1</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073495"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073496"><span class="hs-identifier hs-type">v</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679073504"><span id="local-6989586621679073505"><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073504"><span class="hs-identifier hs-type">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679073505"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Class.html#MultiMap"><span class="hs-identifier hs-type">Class.MultiMap</span></a></span><span> </span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap1"><span class="hs-identifier hs-type">MultiMap1</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073504"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679073505"><span class="hs-identifier hs-type">v</span></a></span></span></span><span> </span><span class="hs-keyword">where</span><span>
 </span><span id="line-27"></span><span>
-</span><span id="line-28"></span><span>    </span><span id="local-6989586621679073598"><span class="annot"><span class="annottext">fromList :: [(k, Set v)] -&gt; MultiMap1 k v
-</span><a href="#local-6989586621679073598"><span class="hs-identifier hs-var hs-var hs-var">fromList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
+</span><span id="line-28"></span><span>    </span><span id="local-6989586621679073607"><span class="annot"><span class="annottext">fromList :: [(k, Set v)] -&gt; MultiMap1 k v
+</span><a href="#local-6989586621679073607"><span class="hs-identifier hs-var hs-var hs-var">fromList</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
 forall k v. Map k (Set v) -&gt; MultiMap1 k v
 </span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (Set v) -&gt; MultiMap1 k v)
 -&gt; ([(k, Set v)] -&gt; Map k (Set v)) -&gt; [(k, Set v)] -&gt; MultiMap1 k v
@@ -62,73 +62,73 @@ forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 forall k a. Ord k =&gt; [(k, a)] -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.fromList</span></span><span>
 </span><span id="line-29"></span><span>
-</span><span id="line-30"></span><span>    </span><span id="local-6989586621679073602"><span class="annot"><span class="annottext">toList :: MultiMap1 k v -&gt; [(k, Set v)]
-</span><a href="#local-6989586621679073602"><span class="hs-identifier hs-var hs-var hs-var">toList</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073604"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073604"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; [(k, Set v)]
+</span><span id="line-30"></span><span>    </span><span id="local-6989586621679073611"><span class="annot"><span class="annottext">toList :: MultiMap1 k v -&gt; [(k, Set v)]
+</span><a href="#local-6989586621679073611"><span class="hs-identifier hs-var hs-var hs-var">toList</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073613"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073613"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; [(k, Set v)]
 forall k a. Map k a -&gt; [(k, a)]
 </span><span class="hs-identifier hs-var">Map.toList</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073604"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679073613"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-31"></span><span>
-</span><span id="line-32"></span><span>    </span><span id="local-6989586621679073606"><span class="annot"><span class="annottext">empty :: MultiMap1 k v
-</span><a href="#local-6989586621679073606"><span class="hs-identifier hs-var hs-var hs-var">empty</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
+</span><span id="line-32"></span><span>    </span><span id="local-6989586621679073615"><span class="annot"><span class="annottext">empty :: MultiMap1 k v
+</span><a href="#local-6989586621679073615"><span class="hs-identifier hs-var hs-var hs-var">empty</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
 forall k v. Map k (Set v) -&gt; MultiMap1 k v
 </span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
 forall k a. Map k a
 </span><span class="hs-identifier hs-var">Map.empty</span></span><span>
 </span><span id="line-33"></span><span>
-</span><span id="line-34"></span><span>    </span><span id="local-6989586621679073610"><span class="annot"><span class="annottext">lookup :: k -&gt; MultiMap1 k v -&gt; Set v
-</span><a href="#local-6989586621679073610"><span class="hs-identifier hs-var hs-var hs-var">lookup</span></a></span></span><span> </span><span id="local-6989586621679073612"><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073612"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073613"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073613"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set v -&gt; k -&gt; Map k (Set v) -&gt; Set v
+</span><span id="line-34"></span><span>    </span><span id="local-6989586621679073619"><span class="annot"><span class="annottext">lookup :: k -&gt; MultiMap1 k v -&gt; Set v
+</span><a href="#local-6989586621679073619"><span class="hs-identifier hs-var hs-var hs-var">lookup</span></a></span></span><span> </span><span id="local-6989586621679073621"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679073621"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073622"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073622"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Set v -&gt; k -&gt; Map k (Set v) -&gt; Set v
 forall k a. Ord k =&gt; a -&gt; k -&gt; Map k a -&gt; a
 </span><span class="hs-identifier hs-var">Map.findWithDefault</span></span><span> </span><span class="annot"><span class="annottext">Set v
 forall a. Set a
 </span><span class="hs-identifier hs-var">Set.empty</span></span><span> </span><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073612"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073613"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679073621"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073622"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-35"></span><span>
-</span><span id="line-36"></span><span>    </span><span id="local-6989586621679073616"><span class="annot"><span class="annottext">null :: MultiMap1 k v -&gt; Bool
-</span><a href="#local-6989586621679073616"><span class="hs-identifier hs-var hs-var hs-var">null</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073618"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073618"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Bool
+</span><span id="line-36"></span><span>    </span><span id="local-6989586621679073625"><span class="annot"><span class="annottext">null :: MultiMap1 k v -&gt; Bool
+</span><a href="#local-6989586621679073625"><span class="hs-identifier hs-var hs-var hs-var">null</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073627"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073627"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Bool
 forall k a. Map k a -&gt; Bool
 </span><span class="hs-identifier hs-var">Map.null</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073618"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679073627"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-37"></span><span>
-</span><span id="line-38"></span><span>    </span><span id="local-6989586621679073620"><span class="annot"><span class="annottext">nonNull :: MultiMap1 k v -&gt; Bool
-</span><a href="#local-6989586621679073620"><span class="hs-identifier hs-var hs-var hs-var">nonNull</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073622"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073622"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
+</span><span id="line-38"></span><span>    </span><span id="local-6989586621679073629"><span class="annot"><span class="annottext">nonNull :: MultiMap1 k v -&gt; Bool
+</span><a href="#local-6989586621679073629"><span class="hs-identifier hs-var hs-var hs-var">nonNull</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073631"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073631"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Bool -&gt; Bool
 </span><span class="hs-identifier hs-var">not</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Bool
 forall k a. Map k a -&gt; Bool
 </span><span class="hs-identifier hs-var">Map.null</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073622"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679073631"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-39"></span><span>
-</span><span id="line-40"></span><span>    </span><span id="local-6989586621679073625"><span class="annot"><span class="annottext">nonNullKey :: k -&gt; MultiMap1 k v -&gt; Bool
-</span><a href="#local-6989586621679073625"><span class="hs-identifier hs-var hs-var hs-var">nonNullKey</span></a></span></span><span> </span><span id="local-6989586621679073627"><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073627"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073628"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073628"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">k -&gt; Map k (Set v) -&gt; Bool
+</span><span id="line-40"></span><span>    </span><span id="local-6989586621679073634"><span class="annot"><span class="annottext">nonNullKey :: k -&gt; MultiMap1 k v -&gt; Bool
+</span><a href="#local-6989586621679073634"><span class="hs-identifier hs-var hs-var hs-var">nonNullKey</span></a></span></span><span> </span><span id="local-6989586621679073636"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679073636"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073637"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073637"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">k -&gt; Map k (Set v) -&gt; Bool
 forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Bool
 </span><span class="hs-identifier hs-var">Map.member</span></span><span> </span><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073627"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073628"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679073636"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073637"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-41"></span><span>
-</span><span id="line-42"></span><span>    </span><span id="local-6989586621679073630"><span class="annot"><span class="annottext">nonNullKeys :: MultiMap1 k v -&gt; Set k
-</span><a href="#local-6989586621679073630"><span class="hs-identifier hs-var hs-var hs-var">nonNullKeys</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073632"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073632"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Set k
+</span><span id="line-42"></span><span>    </span><span id="local-6989586621679073639"><span class="annot"><span class="annottext">nonNullKeys :: MultiMap1 k v -&gt; Set k
+</span><a href="#local-6989586621679073639"><span class="hs-identifier hs-var hs-var hs-var">nonNullKeys</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073641"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073641"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Set k
 forall k a. Map k a -&gt; Set k
 </span><span class="hs-identifier hs-var">Map.keysSet</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073632"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679073641"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-43"></span><span>
-</span><span id="line-44"></span><span>    </span><span id="local-6989586621679073634"><span class="annot"><span class="annottext">nonNullCount :: MultiMap1 k v -&gt; Int
-</span><a href="#local-6989586621679073634"><span class="hs-identifier hs-var hs-var hs-var">nonNullCount</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073636"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073636"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Int
+</span><span id="line-44"></span><span>    </span><span id="local-6989586621679073643"><span class="annot"><span class="annottext">nonNullCount :: MultiMap1 k v -&gt; Int
+</span><a href="#local-6989586621679073643"><span class="hs-identifier hs-var hs-var hs-var">nonNullCount</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073645"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073645"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; Int
 forall k a. Map k a -&gt; Int
 </span><span class="hs-identifier hs-var">Map.size</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073636"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><a href="#local-6989586621679073645"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-45"></span><span>
-</span><span id="line-46"></span><span>    </span><span id="local-6989586621679073640"><span class="annot"><span class="annottext">isSubmapOf :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
-</span><a href="#local-6989586621679073640"><span class="hs-identifier hs-var hs-var hs-var">isSubmapOf</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073642"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073642"><span class="hs-identifier hs-var">m1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073643"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073643"><span class="hs-identifier hs-var">m2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
+</span><span id="line-46"></span><span>    </span><span id="local-6989586621679073649"><span class="annot"><span class="annottext">isSubmapOf :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; Bool
+</span><a href="#local-6989586621679073649"><span class="hs-identifier hs-var hs-var hs-var">isSubmapOf</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073651"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073651"><span class="hs-identifier hs-var">m1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073652"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073652"><span class="hs-identifier hs-var">m2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-47"></span><span>        </span><span class="annot"><span class="annottext">(Set v -&gt; Set v -&gt; Bool) -&gt; Map k (Set v) -&gt; Map k (Set v) -&gt; Bool
 forall k a b.
 Ord k =&gt;
@@ -136,48 +136,24 @@ Ord k =&gt;
 </span><span class="hs-identifier hs-var">Map.isSubmapOfBy</span></span><span> </span><span class="annot"><span class="annottext">Set v -&gt; Set v -&gt; Bool
 forall a. Ord a =&gt; Set a -&gt; Set a -&gt; Bool
 </span><span class="hs-identifier hs-var">Set.isSubsetOf</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073642"><span class="hs-identifier hs-var">m1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073643"><span class="hs-identifier hs-var">m2</span></a></span><span>
+</span><a href="#local-6989586621679073651"><span class="hs-identifier hs-var">m1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073652"><span class="hs-identifier hs-var">m2</span></a></span><span>
 </span><span id="line-48"></span><span>
-</span><span id="line-49"></span><span>    </span><span id="local-6989586621679073647"><span class="annot"><span class="annottext">update :: k -&gt; Set v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
-</span><a href="#local-6989586621679073647"><span class="hs-identifier hs-var hs-var hs-var">update</span></a></span></span><span> </span><span id="local-6989586621679073649"><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073649"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679073650"><span class="annot"><span class="annottext">Set v
-</span><a href="#local-6989586621679073650"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073651"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073651"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
-forall k v. Map k (Set v) -&gt; MultiMap1 k v
-</span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">k -&gt; Set v -&gt; Map k (Set v) -&gt; Map k (Set v)
-forall k a. Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
-</span><span class="hs-identifier hs-var">Map.insert</span></span><span> </span><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073649"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Set v
-</span><a href="#local-6989586621679073650"><span class="hs-identifier hs-var">vs</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073651"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
-</span><span id="line-50"></span><span>
-</span><span id="line-51"></span><span>    </span><span id="local-6989586621679073656"><span class="annot"><span class="annottext">insert :: k -&gt; Set v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
-</span><a href="#local-6989586621679073656"><span class="hs-identifier hs-var hs-var hs-var">insert</span></a></span></span><span> </span><span id="local-6989586621679073658"><span class="annot"><span class="annottext">k
+</span><span id="line-49"></span><span>    </span><span id="local-6989586621679073656"><span class="annot"><span class="annottext">update :: k -&gt; Set v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
+</span><a href="#local-6989586621679073656"><span class="hs-identifier hs-var hs-var hs-var">update</span></a></span></span><span> </span><span id="local-6989586621679073658"><span class="annot"><span class="annottext">k
 </span><a href="#local-6989586621679073658"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679073659"><span class="annot"><span class="annottext">Set v
 </span><a href="#local-6989586621679073659"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073660"><span class="annot"><span class="annottext">Map k (Set v)
 </span><a href="#local-6989586621679073660"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
 forall k v. Map k (Set v) -&gt; MultiMap1 k v
-</span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (Set v) -&gt; MultiMap1 k v) -&gt; Map k (Set v) -&gt; MultiMap1 k v
-forall a b. (a -&gt; b) -&gt; a -&gt; b
-</span><span class="hs-operator hs-var">$</span></span><span>
-</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">k -&gt; Set v -&gt; Map k (Set v) -&gt; Map k (Set v)
+</span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">k -&gt; Set v -&gt; Map k (Set v) -&gt; Map k (Set v)
 forall k a. Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.insert</span></span><span> </span><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073658"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set v -&gt; k -&gt; Map k (Set v) -&gt; Set v
-forall k a. Ord k =&gt; a -&gt; k -&gt; Map k a -&gt; a
-</span><span class="hs-identifier hs-var">Map.findWithDefault</span></span><span> </span><span class="annot"><span class="annottext">Set v
-forall a. Set a
-</span><span class="hs-identifier hs-var">Set.empty</span></span><span> </span><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679073658"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073660"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Set v -&gt; Set v -&gt; Set v
-forall a. Ord a =&gt; Set a -&gt; Set a -&gt; Set a
-</span><span class="hs-operator hs-var">`Set.union`</span></span><span> </span><span class="annot"><span class="annottext">Set v
-</span><a href="#local-6989586621679073659"><span class="hs-identifier hs-var">vs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073660"><span class="hs-identifier hs-var">m</span></a></span><span>
-</span><span id="line-53"></span><span>
-</span><span id="line-54"></span><span>    </span><span id="local-6989586621679073665"><span class="annot"><span class="annottext">remove :: k -&gt; Set v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
-</span><a href="#local-6989586621679073665"><span class="hs-identifier hs-var hs-var hs-var">remove</span></a></span></span><span> </span><span id="local-6989586621679073667"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679073658"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Set v
+</span><a href="#local-6989586621679073659"><span class="hs-identifier hs-var">vs</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073660"><span class="hs-identifier hs-var">m</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-50"></span><span>
+</span><span id="line-51"></span><span>    </span><span id="local-6989586621679073665"><span class="annot"><span class="annottext">insert :: k -&gt; Set v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
+</span><a href="#local-6989586621679073665"><span class="hs-identifier hs-var hs-var hs-var">insert</span></a></span></span><span> </span><span id="local-6989586621679073667"><span class="annot"><span class="annottext">k
 </span><a href="#local-6989586621679073667"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679073668"><span class="annot"><span class="annottext">Set v
 </span><a href="#local-6989586621679073668"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073669"><span class="annot"><span class="annottext">Map k (Set v)
 </span><a href="#local-6989586621679073669"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
@@ -185,7 +161,7 @@ forall k v. Map k (Set v) -&gt; MultiMap1 k v
 </span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (Set v) -&gt; MultiMap1 k v) -&gt; Map k (Set v) -&gt; MultiMap1 k v
 forall a b. (a -&gt; b) -&gt; a -&gt; b
 </span><span class="hs-operator hs-var">$</span></span><span>
-</span><span id="line-55"></span><span>        </span><span class="annot"><span class="annottext">k -&gt; Set v -&gt; Map k (Set v) -&gt; Map k (Set v)
+</span><span id="line-52"></span><span>        </span><span class="annot"><span class="annottext">k -&gt; Set v -&gt; Map k (Set v) -&gt; Map k (Set v)
 forall k a. Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.insert</span></span><span> </span><span class="annot"><span class="annottext">k
 </span><a href="#local-6989586621679073667"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set v -&gt; k -&gt; Map k (Set v) -&gt; Set v
@@ -196,14 +172,38 @@ forall a. Set a
 </span><a href="#local-6989586621679073667"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
 </span><a href="#local-6989586621679073669"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Set v -&gt; Set v -&gt; Set v
 forall a. Ord a =&gt; Set a -&gt; Set a -&gt; Set a
-</span><span class="hs-operator hs-var">`Set.difference`</span></span><span> </span><span class="annot"><span class="annottext">Set v
+</span><span class="hs-operator hs-var">`Set.union`</span></span><span> </span><span class="annot"><span class="annottext">Set v
 </span><a href="#local-6989586621679073668"><span class="hs-identifier hs-var">vs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
 </span><a href="#local-6989586621679073669"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span>    </span><span id="local-6989586621679073674"><span class="annot"><span class="annottext">remove :: k -&gt; Set v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
+</span><a href="#local-6989586621679073674"><span class="hs-identifier hs-var hs-var hs-var">remove</span></a></span></span><span> </span><span id="local-6989586621679073676"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679073676"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679073677"><span class="annot"><span class="annottext">Set v
+</span><a href="#local-6989586621679073677"><span class="hs-identifier hs-var">vs</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073678"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073678"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
+forall k v. Map k (Set v) -&gt; MultiMap1 k v
+</span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (Set v) -&gt; MultiMap1 k v) -&gt; Map k (Set v) -&gt; MultiMap1 k v
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-55"></span><span>        </span><span class="annot"><span class="annottext">k -&gt; Set v -&gt; Map k (Set v) -&gt; Map k (Set v)
+forall k a. Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.insert</span></span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679073676"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">Set v -&gt; k -&gt; Map k (Set v) -&gt; Set v
+forall k a. Ord k =&gt; a -&gt; k -&gt; Map k a -&gt; a
+</span><span class="hs-identifier hs-var">Map.findWithDefault</span></span><span> </span><span class="annot"><span class="annottext">Set v
+forall a. Set a
+</span><span class="hs-identifier hs-var">Set.empty</span></span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679073676"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073678"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="annot"><span class="annottext">Set v -&gt; Set v -&gt; Set v
+forall a. Ord a =&gt; Set a -&gt; Set a -&gt; Set a
+</span><span class="hs-operator hs-var">`Set.difference`</span></span><span> </span><span class="annot"><span class="annottext">Set v
+</span><a href="#local-6989586621679073677"><span class="hs-identifier hs-var">vs</span></a></span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073678"><span class="hs-identifier hs-var">m</span></a></span><span>
 </span><span id="line-56"></span><span>
-</span><span id="line-57"></span><span>    </span><span id="local-6989586621679073673"><span class="annot"><span class="annottext">union :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
-</span><a href="#local-6989586621679073673"><span class="hs-identifier hs-var hs-var hs-var">union</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073675"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073675"><span class="hs-identifier hs-var">m1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073676"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073676"><span class="hs-identifier hs-var">m2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
+</span><span id="line-57"></span><span>    </span><span id="local-6989586621679073682"><span class="annot"><span class="annottext">union :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
+</span><a href="#local-6989586621679073682"><span class="hs-identifier hs-var hs-var hs-var">union</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073684"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073684"><span class="hs-identifier hs-var">m1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073685"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073685"><span class="hs-identifier hs-var">m2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
 forall k v. Map k (Set v) -&gt; MultiMap1 k v
 </span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (Set v) -&gt; MultiMap1 k v) -&gt; Map k (Set v) -&gt; MultiMap1 k v
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -214,13 +214,13 @@ forall k a. Ord k =&gt; (a -&gt; a -&gt; a) -&gt; Map k a -&gt; Map k a -&gt; Ma
 </span><span class="hs-identifier hs-var">Map.unionWith</span></span><span> </span><span class="annot"><span class="annottext">Set v -&gt; Set v -&gt; Set v
 forall a. Ord a =&gt; Set a -&gt; Set a -&gt; Set a
 </span><span class="hs-identifier hs-var">Set.union</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073675"><span class="hs-identifier hs-var">m1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073676"><span class="hs-identifier hs-var">m2</span></a></span><span>
+</span><a href="#local-6989586621679073684"><span class="hs-identifier hs-var">m1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073685"><span class="hs-identifier hs-var">m2</span></a></span><span>
 </span><span id="line-59"></span><span>
-</span><span id="line-60"></span><span>    </span><span id="local-6989586621679073680"><span class="annot"><span class="annottext">intersection :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
-</span><a href="#local-6989586621679073680"><span class="hs-identifier hs-var hs-var hs-var">intersection</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073682"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073682"><span class="hs-identifier hs-var">m1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073683"><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073683"><span class="hs-identifier hs-var">m2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
+</span><span id="line-60"></span><span>    </span><span id="local-6989586621679073689"><span class="annot"><span class="annottext">intersection :: MultiMap1 k v -&gt; MultiMap1 k v -&gt; MultiMap1 k v
+</span><a href="#local-6989586621679073689"><span class="hs-identifier hs-var hs-var hs-var">intersection</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073691"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073691"><span class="hs-identifier hs-var">m1</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-type">MultiMap</span></a></span><span> </span><span id="local-6989586621679073692"><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073692"><span class="hs-identifier hs-var">m2</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (Set v) -&gt; MultiMap1 k v
 forall k v. Map k (Set v) -&gt; MultiMap1 k v
 </span><a href="Data.MonoidMap.Examples.MultiMap.Instances.MultiMap1.html#MultiMap"><span class="hs-identifier hs-var">MultiMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (Set v) -&gt; MultiMap1 k v) -&gt; Map k (Set v) -&gt; MultiMap1 k v
 forall a b. (a -&gt; b) -&gt; a -&gt; b
@@ -233,6 +233,6 @@ Ord k =&gt;
 </span><span class="hs-identifier hs-var">Map.intersectionWith</span></span><span> </span><span class="annot"><span class="annottext">Set v -&gt; Set v -&gt; Set v
 forall a. Ord a =&gt; Set a -&gt; Set a -&gt; Set a
 </span><span class="hs-identifier hs-var">Set.intersection</span></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073682"><span class="hs-identifier hs-var">m1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
-</span><a href="#local-6989586621679073683"><span class="hs-identifier hs-var">m2</span></a></span><span>
+</span><a href="#local-6989586621679073691"><span class="hs-identifier hs-var">m1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (Set v)
+</span><a href="#local-6989586621679073692"><span class="hs-identifier hs-var">m2</span></a></span><span>
 </span><span id="line-62"></span></pre></body></html>
