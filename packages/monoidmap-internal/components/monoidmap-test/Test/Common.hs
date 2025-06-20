@@ -71,7 +71,7 @@ import Test.QuickCheck
     , Function (..)
     , Property
     , Testable
-    , arbitrarySizedIntegral
+    , arbitrarySizedNatural
     , checkCoverage
     , coarbitraryIntegral
     , coarbitraryShow
@@ -112,7 +112,7 @@ instance (Function k, Function v, Ord k, MonoidNull v) =>
     function = functionMap MonoidMap.toMap MonoidMap.fromMap
 
 instance Arbitrary Natural where
-    arbitrary = arbitrarySizedIntegral
+    arbitrary = arbitrarySizedNatural
     shrink = shrinkIntegral
 
 instance CoArbitrary Natural where
