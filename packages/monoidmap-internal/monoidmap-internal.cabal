@@ -32,7 +32,7 @@ common dependency-nothunks
 common dependency-pretty-show
     build-depends:pretty-show                   >= 1.10       && < 1.11
 common dependency-QuickCheck
-    build-depends:QuickCheck                    >= 2.14.2     && < 2.16
+    build-depends:QuickCheck                    >= 2.14.2     && < 2.17
 common dependency-quickcheck-classes
     build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
 common dependency-quickcheck-groups
