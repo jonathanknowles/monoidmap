@@ -26,7 +26,7 @@ common dependency-monoid-subclasses
 common dependency-monoidmap
     build-depends:monoidmap                     >= 0.0.4.4    && < 0.1
 common dependency-QuickCheck
-    build-depends:QuickCheck                    >= 2.14.2     && < 2.16
+    build-depends:QuickCheck                    >= 2.14.2     && < 2.17
 
 common extensions
     default-extensions:
