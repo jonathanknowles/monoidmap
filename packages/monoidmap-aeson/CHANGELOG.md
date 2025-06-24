@@ -1,3 +1,7 @@
+# 0.0.0.6
+
+- Revised version bounds for dependencies.
+
 # 0.0.0.5
 
 - Bumped lower bound on `monoidmap`.
