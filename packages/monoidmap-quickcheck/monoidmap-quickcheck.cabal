@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           monoidmap-quickcheck
-version:        0.0.0.2
+version:        0.0.0.3
 bug-reports:    https://github.com/jonathanknowles/monoidmap-quickcheck/issues
 license:        Apache-2.0
 license-file:   LICENSE
@@ -24,7 +24,7 @@ common dependency-monoid-subclasses
 common dependency-monoidmap
     build-depends:monoidmap                     >= 0.0.4.4    && < 0.1
 common dependency-QuickCheck
-    build-depends:QuickCheck                    >= 2.14.2     && < 2.16
+    build-depends:QuickCheck                    >= 2.14.2     && < 2.17
 
 common extensions
     default-extensions:
