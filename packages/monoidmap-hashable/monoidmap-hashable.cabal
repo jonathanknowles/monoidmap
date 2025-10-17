@@ -1,0 +1,63 @@
+cabal-version:  3.0
+name:           monoidmap-hashable
+version:        0.0.0.0
+bug-reports:    https://github.com/jonathanknowles/monoidmap-hashable/issues
+license:        Apache-2.0
+license-file:   LICENSE
+author:         Jonathan Knowles
+maintainer:     mail@jonathanknowles.net
+copyright:      2025 Jonathan Knowles
+category:       Data Structures
+synopsis:       Hashing support for monoidmap.
+description:    Hashing support for the monoidmap package, compatible with the hashable package.
+
+extra-doc-files:
+    CHANGELOG.md
+    README.md
+
+common dependency-base
+    build-depends:base                          >= 4.14.3.0   && < 4.22
+common dependency-containers
+    build-depends:containers                    >= 0.6.5.1    && < 0.8
+common dependency-hashable
+    build-depends:hashable                      >= 1.4.0.0    && < 1.6
+common dependency-monoidmap
+    build-depends:monoidmap                     >= 0.0.4.4    && < 0.1
+
+common extensions
+    default-extensions:
+        BangPatterns
+        ConstraintKinds
+        DerivingStrategies
+        DerivingVia
+        FlexibleContexts
+        FlexibleInstances
+        GeneralizedNewtypeDeriving
+        LambdaCase
+        MultiParamTypeClasses
+        NoImplicitPrelude
+        NumericUnderscores
+        ScopedTypeVariables
+        TupleSections
+        TypeApplications
+        TypeFamilies
+        TypeOperators
+        ViewPatterns
+
+source-repository head
+    type: git
+    location: https://github.com/jonathanknowles/monoidmap-hashable
+
+library
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-hashable
+      , dependency-monoidmap
+      , extensions
+    hs-source-dirs:
+        components/monoidmap-hashable
+    exposed-modules:
+        Data.MonoidMap.Hashable
+    default-language:
+        Haskell2010
