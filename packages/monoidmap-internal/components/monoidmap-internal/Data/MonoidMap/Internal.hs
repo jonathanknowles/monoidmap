@@ -164,6 +164,15 @@ import Data.Bifoldable
     ( Bifoldable )
 import Data.Coerce
     ( coerce )
+import Data.Data
+    ( Constr
+    , Data (dataCast2, dataTypeOf, gfoldl, gunfold, toConstr)
+    , DataType
+    , Fixity (Prefix)
+    , gcast2
+    , mkConstr
+    , mkDataType
+    )
 import Data.Function
     ( (&) )
 import Data.Functor.Classes
@@ -279,6 +288,28 @@ instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
+
+--------------------------------------------------------------------------------
+-- Instances: Data
+--------------------------------------------------------------------------------
+
+-- This implementation is closely based on the 'Data' instance for 'Map'
+-- provided by the 'containers' package (version 0.8).
+--
+instance (Data k, Data v, Ord k, MonoidNull v) => Data (MonoidMap k v) where
+    dataTypeOf _ = dataType
+    dataCast2 f = gcast2 f
+    gfoldl f z m = z fromList `f` toList m
+    gunfold k z c
+        | c == fromListConstr = k (z fromList)
+        | otherwise = error "gunfold MonoidMap: unexpected constructor"
+    toConstr _ = fromListConstr
+
+dataType :: DataType
+dataType = mkDataType "Data.MonoidMap.Internal.MonoidMap" [fromListConstr]
+
+fromListConstr :: Constr
+fromListConstr = mkConstr dataType "fromList" [] Prefix
 
 --------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
