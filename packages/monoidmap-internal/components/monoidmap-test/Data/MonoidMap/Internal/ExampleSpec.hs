@@ -1,4 +1,6 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
 {- HLINT ignore "Use camelCase" -}
@@ -14,10 +16,14 @@ module Data.MonoidMap.Internal.ExampleSpec
 import Prelude hiding
     ( gcd, lcm )
 
+import Data.Data
+    ( Data, cast, gmapT )
 import Data.Function
     ( (&) )
 import Data.Group
     ( Group (..) )
+import Data.Maybe
+    ( fromMaybe )
 import Data.Monoid
     ( Product (..), Sum (..) )
 import Data.Monoid.GCD
@@ -65,6 +71,18 @@ spec = describe "Examples" $ do
         exampleSpec_disjoint_Product_Natural
         exampleSpec_disjoint_Sum_Natural
         exampleSpec_disjoint_Set_Natural
+
+    describe "Data" $ do
+
+        exampleSpec_gmapT_keys_id
+        exampleSpec_gmapT_keys_div_2
+        exampleSpec_gmapT_keys_mod_2
+        exampleSpec_gmapT_keys_mul_2
+
+        exampleSpec_gmapT_values_id
+        exampleSpec_gmapT_values_div_2
+        exampleSpec_gmapT_values_mod_2
+        exampleSpec_gmapT_values_mul_2
 
     describe "Intersection" $ do
 
@@ -326,6 +344,111 @@ exampleData_disjoint_Set_Natural = unitTestData2
     ]
   where
     m = MonoidMap.fromList . zip [A ..] . fmap Set.fromList
+
+--------------------------------------------------------------------------------
+-- Data
+--------------------------------------------------------------------------------
+
+exampleSpec_gmapT_keys_id :: Spec
+exampleSpec_gmapT_keys_id =
+    unitTestSpec "gmapT_keys" "id"
+    (mapNaturals id)
+    (unitTestData1
+      [ ( [(1, "a"), (2, "b"), (3, "c"), (4, "d")] :: MonoidMap Natural String
+        , [(1, "a"), (2, "b"), (3, "c"), (4, "d")] :: MonoidMap Natural String
+        )
+      ]
+    )
+
+exampleSpec_gmapT_keys_div_2 :: Spec
+exampleSpec_gmapT_keys_div_2 =
+    unitTestSpec "gmapT_keys" "div_2"
+    (mapNaturals (`div` 2))
+    (unitTestData1
+      [ ( [(2, "a"), (4, "b"), (6, "c"), (8, "d")] :: MonoidMap Natural String
+        , [(1, "a"), (2, "b"), (3, "c"), (4, "d")] :: MonoidMap Natural String
+        )
+      ]
+    )
+
+exampleSpec_gmapT_keys_mod_2 :: Spec
+exampleSpec_gmapT_keys_mod_2 =
+    unitTestSpec "gmapT_keys" "mod_2"
+    (mapNaturals (`mod` 2))
+    (unitTestData1
+      [ ( [(0, "a"), (2, "b"), (1, "c"), (3, "d")] :: MonoidMap Natural String
+        , [(0, "a"    <> "b"), (1, "c"    <> "d")] :: MonoidMap Natural String
+        )
+      ]
+    )
+
+exampleSpec_gmapT_keys_mul_2 :: Spec
+exampleSpec_gmapT_keys_mul_2 =
+    unitTestSpec "gmapT_keys" "mul_2"
+    (mapNaturals (* 2))
+    (unitTestData1
+      [ ( [(1, "a"), (2, "b"), (3, "c"), (4, "d")] :: MonoidMap Natural String
+        , [(2, "a"), (4, "b"), (6, "c"), (8, "d")] :: MonoidMap Natural String
+        )
+      ]
+    )
+
+exampleSpec_gmapT_values_id :: Spec
+exampleSpec_gmapT_values_id =
+    unitTestSpec "gmapT_values" "id"
+    (mapNaturals id)
+    (unitTestData1
+      [ ( [(A, 1), (B, 2), (C, 3), (D, 4)] :: MonoidMap LatinChar (Sum Natural)
+        , [(A, 1), (B, 2), (C, 3), (D, 4)] :: MonoidMap LatinChar (Sum Natural)
+        )
+      ]
+    )
+
+exampleSpec_gmapT_values_div_2 :: Spec
+exampleSpec_gmapT_values_div_2 =
+    unitTestSpec "gmapT_values" "div_2"
+    (mapNaturals (`div` 2))
+    (unitTestData1
+      [ ( [(A, 2), (B, 4), (C, 6), (D, 8)] :: MonoidMap LatinChar (Sum Natural)
+        , [(A, 1), (B, 2), (C, 3), (D, 4)] :: MonoidMap LatinChar (Sum Natural)
+        )
+      ]
+    )
+
+exampleSpec_gmapT_values_mod_2 :: Spec
+exampleSpec_gmapT_values_mod_2 =
+    unitTestSpec "gmapT_values" "mod_2"
+    (mapNaturals (`mod` 2))
+    (unitTestData1
+      [ ( [(A, 1), (B, 2), (C, 3), (D, 4)] :: MonoidMap LatinChar (Sum Natural)
+        , [(A, 1),         (C, 1)        ] :: MonoidMap LatinChar (Sum Natural)
+        )
+      ]
+    )
+
+exampleSpec_gmapT_values_mul_2 :: Spec
+exampleSpec_gmapT_values_mul_2 =
+    unitTestSpec "gmapT_values" "mul_2"
+    (mapNaturals (* 2))
+    (unitTestData1
+      [ ( [(A, 1), (B, 2), (C, 3), (D, 4)] :: MonoidMap LatinChar (Sum Natural)
+        , [(A, 2), (B, 4), (C, 6), (D, 8)] :: MonoidMap LatinChar (Sum Natural)
+        )
+      ]
+    )
+
+mapNaturals :: Data a => (Natural -> Natural) -> a -> a
+mapNaturals f =
+    everywhereT $ \x ->
+        case (cast x) of
+            Just (n :: Natural) ->
+                fromMaybe
+                    (error "mapNaturals")
+                    (cast (f n))
+            Nothing -> x
+
+everywhereT :: Data a => (forall b. Data b => b -> b) -> a -> a
+everywhereT f x = f (gmapT (everywhereT f) x)
 
 --------------------------------------------------------------------------------
 -- Intersection
@@ -1735,4 +1858,4 @@ exampleData_Monus_monus_Sum_Natural = unitTestData2
 data LatinChar
     = A | B | C | D | E | F | G | H | I | J | K | L | M
     | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
-    deriving (Bounded, Enum, Eq, Ord, Show)
+    deriving (Bounded, Enum, Eq, Ord, Show, Data)
