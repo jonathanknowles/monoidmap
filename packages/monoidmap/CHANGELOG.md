@@ -1,3 +1,7 @@
+# 0.0.5.0
+
+- Made `MonoidMap` an instance of both `Typeable` and `Data`.
+
 # 0.0.4.4
 
 - Moved implementation, tests, and benchmark to the `monoidmap-internal`
