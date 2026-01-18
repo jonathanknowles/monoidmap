@@ -1,5 +1,10 @@
 # `monoidmap-examples`
 
-Examples for the [`monoidmap`](https://github.com/jonathanknowles/monoidmap) package.
+[![Latest Release](
+  https://img.shields.io/hackage/v/monoidmap-examples?label=Latest%20Release&color=227755
+)](https://hackage.haskell.org/package/monoidmap-examples)
+[![Development Branch](
+  https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
+)](https://jonathanknowles.github.io/monoidmap-examples/)
 
-<a href="https://jonathanknowles.github.io/monoidmap-examples/"><img src="https://img.shields.io/badge/Examples-Documentation-227755" /></a>
+Examples for the [`monoidmap`](https://github.com/jonathanknowles/monoidmap) package.
