@@ -1,5 +1,11 @@
 # `monoidmap`
-<a href="https://jonathanknowles.github.io/monoidmap/"><img src="https://img.shields.io/badge/API-Documentation-227755" /></a>
+
+[![Latest Release](
+  https://img.shields.io/hackage/v/monoidmap?label=Latest%20Release&color=227755
+)](https://hackage.haskell.org/package/monoidmap)
+[![Development Branch](
+  https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
+)](https://jonathanknowles.github.io/monoidmap/)
 
 # Overview
 
