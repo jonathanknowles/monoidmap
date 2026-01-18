@@ -1,5 +1,11 @@
 # `monoidmap-quickcheck`
-<a href="https://jonathanknowles.github.io/monoidmap-quickcheck/"><img src="https://img.shields.io/badge/API-Documentation-227755" /></a>
+
+[![Latest Release](
+  https://img.shields.io/hackage/v/monoidmap-quickcheck?label=Latest%20Release&color=227755
+)](https://hackage.haskell.org/package/monoidmap-quickcheck)
+[![Development Branch](
+  https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
+)](https://jonathanknowles.github.io/monoidmap-quickcheck/)
 
 ## Overview
 
