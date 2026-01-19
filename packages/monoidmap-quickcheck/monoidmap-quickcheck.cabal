@@ -6,7 +6,7 @@ license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
-copyright:      2025 Jonathan Knowles
+copyright:      2025–2026 Jonathan Knowles
 category:       Data Structures
 synopsis:       QuickCheck support for monoidmap.
 description:    QuickCheck support for the monoidmap package.
