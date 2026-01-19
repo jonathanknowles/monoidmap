@@ -1,7 +1,7 @@
 {-# LANGUAGE PolyKinds #-}
 
 -- |
--- Copyright: © 2022–2025 Jonathan Knowles
+-- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
 -- Provides testing functions to check that type class instances obey laws.
