@@ -6,7 +6,7 @@ license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
 maintainer:     mail@jonathanknowles.net
-copyright:      2022–2025 Jonathan Knowles
+copyright:      2022–2026 Jonathan Knowles
 category:       Data Structures
 synopsis:       Internal support for monoidmap.
 description:    Internal support for the monoidmap package.
