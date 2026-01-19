@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 -- |
--- Copyright: © 2025 Jonathan Knowles
+-- Copyright: © 2025–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
 module Data.MonoidMap.Hashable
