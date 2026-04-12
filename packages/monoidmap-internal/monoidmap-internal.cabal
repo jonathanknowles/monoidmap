@@ -25,6 +25,8 @@ common dependency-groups
     build-depends:groups                        >= 0.5.3      && < 0.6
 common dependency-hspec
     build-depends:hspec                         >= 2.10.9     && < 2.12
+common dependency-hspec-quickcheck-classes
+    build-depends:hspec-quickcheck-classes      >= 0.0.0.0    && < 0.1
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
 common dependency-nothunks
@@ -115,6 +117,7 @@ test-suite monoidmap-test
       , dependency-containers
       , dependency-groups
       , dependency-hspec
+      , dependency-hspec-quickcheck-classes
       , dependency-monoid-subclasses
       , dependency-pretty-show
       , dependency-QuickCheck
