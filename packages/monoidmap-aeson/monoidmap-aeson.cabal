@@ -109,7 +109,6 @@ test-suite monoidmap-aeson-test
         SpecHook
         Data.MonoidMap.JSONSpec
         Test.Common
-        Test.QuickCheck.Classes.Hspec
         Test.Key
     type:
         exitcode-stdio-1.0
