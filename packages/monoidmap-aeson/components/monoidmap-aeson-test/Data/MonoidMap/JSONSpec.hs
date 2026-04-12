@@ -44,7 +44,7 @@ import Test.Hspec
 import Test.QuickCheck.Classes
     ( jsonLaws
     )
-import Test.QuickCheck.Classes.Hspec
+import Test.Hspec.QuickCheck.Classes
     ( testLaws
     )
 
@@ -61,7 +61,7 @@ spec = do
 
 specForTypes :: forall k v. (Test k v) => Proxy k -> Proxy v -> Spec
 specForTypes = makeSpec $ do
-    testLaws @(MonoidMap k v) jsonLaws
+    testLaws @(MonoidMap k v) [jsonLaws]
     goldenSpecs goldenSettings (Proxy @(MonoidMap k v))
 
 goldenSettings :: Golden.Settings
