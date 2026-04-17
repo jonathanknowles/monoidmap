@@ -28,6 +28,8 @@ common dependency-hspec
     build-depends:hspec                         >= 2.10.9     && < 2.12
 common dependency-hspec-golden-aeson
     build-depends:hspec-golden-aeson            >= 0.9.0.0    && < 0.10
+common dependency-hspec-quickcheck-classes
+    build-depends:hspec-quickcheck-classes      >= 0.0.0.0    && < 0.1
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
 common dependency-monoidmap
@@ -87,6 +89,7 @@ test-suite monoidmap-aeson-test
       , dependency-containers
       , dependency-hspec
       , dependency-hspec-golden-aeson
+      , dependency-hspec-quickcheck-classes
       , dependency-monoid-subclasses
       , dependency-monoidmap
       , dependency-QuickCheck
@@ -106,7 +109,6 @@ test-suite monoidmap-aeson-test
         SpecHook
         Data.MonoidMap.JSONSpec
         Test.Common
-        Test.QuickCheck.Classes.Hspec
         Test.Key
     type:
         exitcode-stdio-1.0
