@@ -54,8 +54,8 @@ import Test.QuickCheck
     )
 import Test.QuickCheck.Classes
     ( eqLaws, functorLaws, monoidLaws, semigroupLaws, semigroupMonoidLaws )
-import Test.QuickCheck.Classes.Hspec
-    ( testLawsMany )
+import Test.Hspec.QuickCheck.Classes
+    ( testLaws )
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.Set as Set
@@ -105,13 +105,13 @@ specFor keyType valueType = do
     describe description $ do
 
         describe "Class laws" $ do
-            testLawsMany @(RMap.Map k v)
+            testLaws @(RMap.Map k v)
                 [ eqLaws
                 , monoidLaws
                 , semigroupLaws
                 , semigroupMonoidLaws
                 ]
-            testLawsMany @(RMap.Map k)
+            testLaws @(RMap.Map k)
                 [ functorLaws
                 ]
 

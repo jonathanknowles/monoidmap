@@ -40,8 +40,8 @@ import Test.QuickCheck.Classes
     )
 import Test.QuickCheck.Classes.Group
     ( groupLaws )
-import Test.QuickCheck.Classes.Hspec
-    ( testLawsMany )
+import Test.Hspec.QuickCheck.Classes
+    ( testLaws )
 import Test.QuickCheck.Classes.Monoid.GCD
     ( distributiveGCDMonoidLaws
     , gcdMonoidLaws
@@ -89,7 +89,7 @@ specLawsFor
 specLawsFor keyType = do
     let description = "Class laws for key type " <> show (typeRep keyType)
     describe description $ do
-        testLawsMany @(MonoidMap k String)
+        testLaws @(MonoidMap k String)
             [ eqLaws
             , isListLaws
             , leftCancellativeLaws
@@ -108,7 +108,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Product Integer))
+        testLaws @(MonoidMap k (Product Integer))
             [ commutativeLaws
             , eqLaws
             , isListLaws
@@ -121,7 +121,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Product Natural))
+        testLaws @(MonoidMap k (Product Natural))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
             , distributiveLCMMonoidLaws
@@ -148,7 +148,7 @@ specLawsFor keyType = do
         -- Here we restrict the generator and shrinker so that they can never
         -- produce zero values, to avoid running into cases of ArithException
         -- caused by operations that may produce zero demoninators:
-        testLawsMany @(MonoidMap k (NonZero (Product Rational)))
+        testLaws @(MonoidMap k (NonZero (Product Rational)))
             [ commutativeLaws
             , eqLaws
             , groupLaws
@@ -159,7 +159,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Sum Integer))
+        testLaws @(MonoidMap k (Sum Integer))
             [ cancellativeLaws
             , commutativeLaws
             , eqLaws
@@ -176,7 +176,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Sum Natural))
+        testLaws @(MonoidMap k (Sum Natural))
             [ cancellativeLaws
             , commutativeLaws
             , distributiveGCDMonoidLaws
@@ -203,7 +203,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Set ()))
+        testLaws @(MonoidMap k (Set ()))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
             , distributiveLCMMonoidLaws
@@ -227,7 +227,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Set k))
+        testLaws @(MonoidMap k (Set k))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
             , distributiveLCMMonoidLaws
@@ -251,7 +251,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Set Ordering))
+        testLaws @(MonoidMap k (Set Ordering))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
             , distributiveLCMMonoidLaws
@@ -275,7 +275,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (Set Int))
+        testLaws @(MonoidMap k (Set Int))
             [ commutativeLaws
             , distributiveGCDMonoidLaws
             , distributiveLCMMonoidLaws
@@ -299,7 +299,7 @@ specLawsFor keyType = do
             , semigroupMonoidLaws
             , showReadLaws
             ]
-        testLawsMany @(MonoidMap k (MonoidMap k (Sum Natural)))
+        testLaws @(MonoidMap k (MonoidMap k (Sum Natural)))
             [ cancellativeLaws
             , commutativeLaws
             , distributiveGCDMonoidLaws
