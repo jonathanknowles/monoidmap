@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           monoidmap-hashable
-version:        0.0.0.0
+version:        0.0.0.1
 bug-reports:    https://github.com/jonathanknowles/monoidmap-hashable/issues
 license:        Apache-2.0
 license-file:   LICENSE
@@ -16,9 +16,9 @@ extra-doc-files:
     README.md
 
 common dependency-base
-    build-depends:base                          >= 4.14.3.0   && < 4.22
+    build-depends:base                          >= 4.14.3.0   && < 4.23
 common dependency-containers
-    build-depends:containers                    >= 0.6.5.1    && < 0.8
+    build-depends:containers                    >= 0.6.5.1    && < 0.9
 common dependency-hashable
     build-depends:hashable                      >= 1.4.0.0    && < 1.6
 common dependency-monoidmap
