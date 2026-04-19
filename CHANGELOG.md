@@ -1,3 +1,8 @@
+# 0.0.5.1
+
+- Added support for GHC version `9.14`.
+- Updated version bounds for dependencies.
+
 # 0.0.5.0
 
 - Made `MonoidMap` an instance of both `Typeable` and `Data`.
