@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 -- |
@@ -187,5 +188,7 @@ prop_mapAccumRWithKey (applyFun3 -> f) s m =
     ===
     fmap MonoidMap.fromMap (Map.mapAccumRWithKey f s (MonoidMap.toMap m))
 
+#if !MIN_VERSION_QuickCheck(2,17,0)
 deriving newtype instance Arbitrary a => Arbitrary (First a)
 deriving newtype instance Arbitrary a => Arbitrary (Last a)
+#endif
