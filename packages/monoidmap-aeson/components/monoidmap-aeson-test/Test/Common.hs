@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {- HLINT ignore "Redundant bracket" -}
@@ -99,15 +100,21 @@ instance (Function k, Function v, Ord k, MonoidNull v) =>
   where
     function = functionMap MonoidMap.toMap MonoidMap.fromMap
 
+#if !MIN_VERSION_QuickCheck(2,17,0)
 instance Arbitrary Natural where
     arbitrary = arbitrarySizedIntegral
     shrink = shrinkIntegral
+#endif
 
+#if !MIN_VERSION_QuickCheck(2,18,0)
 instance CoArbitrary Natural where
     coarbitrary = coarbitraryIntegral
+#endif
 
+#if !MIN_VERSION_QuickCheck(2,18,0)
 instance Function Natural where
     function = functionIntegral
+#endif
 
 instance Arbitrary Text where
     arbitrary = Text.pack <$> listOf genChar
