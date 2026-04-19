@@ -18,7 +18,7 @@ extra-doc-files:
 common dependency-base
     build-depends:base                          >= 4.14.3.0   && < 4.22
 common dependency-containers
-    build-depends:containers                    >= 0.6.5.1    && < 0.8
+    build-depends:containers                    >= 0.6.5.1    && < 0.9
 common dependency-hspec
     build-depends:hspec                         >= 2.10.9     && < 2.12
 common dependency-monoid-subclasses
