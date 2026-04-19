@@ -21,7 +21,7 @@ extra-source-files:
 common dependency-aeson
     build-depends:aeson                         >= 2.2.3.0    && < 2.3
 common dependency-base
-    build-depends:base                          >= 4.14.3.0   && < 4.22
+    build-depends:base                          >= 4.14.3.0   && < 4.23
 common dependency-containers
     build-depends:containers                    >= 0.6.5.1    && < 0.9
 common dependency-hspec
