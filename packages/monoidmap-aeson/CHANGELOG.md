@@ -1,3 +1,7 @@
+# 0.0.0.8
+
+- Revised version bounds for dependencies.
+
 # 0.0.0.7
 
 - Added support for GHC version `9.14`.

@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           monoidmap-aeson
-version:        0.0.0.7
+version:        0.0.0.8
 bug-reports:    https://github.com/jonathanknowles/monoidmap-aeson/issues
 license:        Apache-2.0
 license-file:   LICENSE
@@ -19,7 +19,7 @@ extra-source-files:
     golden/*.json
 
 common dependency-aeson
-    build-depends:aeson                         >= 2.2.3.0    && < 2.3
+    build-depends:aeson                         >= 2.2.3.0    && < 2.4
 common dependency-base
     build-depends:base                          >= 4.14.3.0   && < 4.23
 common dependency-containers
