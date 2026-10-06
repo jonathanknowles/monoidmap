@@ -97,6 +97,9 @@ jobs:
           || true
 
       - name: Documentation (Generation)
+        if: |
+            matrix.os == 'ubuntu-latest'
+            && matrix.ghc == '9.14'
         run: >
           cabal haddock-project
           --hackage
