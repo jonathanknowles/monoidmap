@@ -13,8 +13,82 @@ on:
     # Run once per day (at UTC 18:00) to maintain cache:
     - cron: 0 18 * * *
 jobs:
+
+  # Decides whether the build is needed.
+  #
+  # For pull requests and pushes to `main` (including merges of pull
+  # requests), the build is not needed if only Markdown have changed.
+  #
+  # For the nightly build and manual runs, the build always runs.
+  #
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.detect.outputs.code }}
+    steps:
+      # The full history is fetched, so that the commit that a push replaced
+      # is available for comparison.
+      - name: Checkout
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      # What the changes are compared against:
+      #
+      # - For a pull request, GitHub checks out a merge commit whose first
+      #   parent is the tip of the base branch, so the comparison gives
+      #   exactly the changes that merging the pull request would introduce.
+      #
+      # - For a push, the comparison is with the commit that the push
+      #   replaced. If that commit is unavailable (for example, after a
+      #   force push), the build runs unconditionally.
+      #
+      # The list of changed files is captured before it is inspected, so
+      # that if `git` fails, this step fails (rather than concluding that
+      # nothing changed). `--no-renames` lists both sides of every rename.
+      #
+      - name: Detect changes
+        id: detect
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          build() {
+            echo "$1: building unconditionally."
+            echo "code=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          case "$EVENT" in
+            pull_request)
+              base=HEAD^1 ;;
+            push)
+              if [ -z "$BEFORE" ] \
+                || [ "$BEFORE" = 0000000000000000000000000000000000000000 ] \
+                || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null
+              then
+                build "Previous commit '$BEFORE' is unavailable"
+              fi
+              base=$BEFORE ;;
+            *)
+              build "Event '$EVENT'" ;;
+          esac
+          files=$(git diff --name-only --no-renames "$base" HEAD)
+          echo "Files changed since $base:"
+          printf '%s\n' "$files" | sed 's/^/  /'
+          if grep -qvE '^$|\.md$' <<< "$files"; then
+            echo "Code changes found: building."
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Only Markdown files changed: skipping the build."
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
     name: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ${{ matrix.os }}
     env:
       cabal-build-dir: dist-newstyle
@@ -122,3 +196,28 @@ jobs:
         with:
           branch: gh-pages
           folder: gh-pages
+
+  result:
+    name: Build result
+    needs: [changes, build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check result
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          CODE: ${{ needs.changes.outputs.code }}
+          BUILD: ${{ needs.build.result }}
+        run: |
+          echo "Detect changes: $CHANGES (code changed: $CODE)"
+          echo "Build:          $BUILD"
+          if [ "$CHANGES" != success ]; then
+            echo "Change detection did not succeed."; exit 1
+          fi
+          if [ "$CODE" = true ] && [ "$BUILD" != success ]; then
+            echo "The build was needed but did not succeed."; exit 1
+          fi
+          if [ "$CODE" != true ] && [ "$BUILD" != skipped ]; then
+            echo "The build was not needed but did not skip."; exit 1
+          fi
+          echo "All good."
