@@ -1,5 +1,9 @@
 # `monoidmap`
 
+[![Development Branch](
+  https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
+)](https://jonathanknowles.github.io/monoidmap/)
+
 This repository contains the [`monoidmap`][monoidmap-hackage] family of Haskell packages, built around the [`MonoidMap`] type:
 
 > A [`MonoidMap`] represents a **total** function with **finite** support from keys to [monoidal][`Monoid`] values: **every** possible key is associated with a value, and only a **finite** number of keys are associated with values other than [`mempty`][`Monoid.mempty`].
