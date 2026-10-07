@@ -17,7 +17,7 @@ jobs:
     name: ${{ matrix.os }}-ghc-${{ matrix.ghc }}
     runs-on: ${{ matrix.os }}
     env:
-      cabal-build-dir: b
+      cabal-build-dir: dist-newstyle
     strategy:
       matrix:
         os:
@@ -97,13 +97,13 @@ jobs:
           || true
 
       - name: Documentation (Generation)
+        if: |
+            matrix.os == 'ubuntu-latest'
+            && matrix.ghc == '9.14'
         run: >
-          cabal haddock
-          --builddir=${{ env.cabal-build-dir }}
-          --enable-documentation
-          --haddock-hyperlink-source
-          --haddock-html-location
-          'https://hackage.haskell.org/package/$pkg-$version/docs'
+          cabal haddock-project
+          --hackage
+          --output=gh-pages
 
       - name: Documentation (Staging)
         if: |
@@ -111,8 +111,6 @@ jobs:
             && matrix.os == 'ubuntu-latest'
             && matrix.ghc == '9.14'
         run: >
-          mv ${{ env.cabal-build-dir }}/build/*/*/*/doc/html/* gh-pages
-
           touch gh-pages/.nojekyll
 
       - name: Documentation (Deployment)
