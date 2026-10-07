@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# OPTIONS_GHC -Wno-orphans #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright: &#169; 2025&#8211;2026 Jonathan Knowles</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License: Apache-2.0</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Data.MonoidMap.Hashable.html"><span class="hs-identifier">Data.MonoidMap.Hashable</span></a></span><span>
+</span><span id="line-8"></span><span>    </span><span class="hs-special">(</span><span>
+</span><span id="line-9"></span><span>    </span><span class="annot"><span class="hs-comment">-- * Introduction</span></span><span>
+</span><span id="line-10"></span><span>    </span><span class="annot"><span class="hs-comment">-- $_introduction</span></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-13"></span><span>
+</span><span id="line-14"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bool</span></span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Bool</span></span><span>
+</span><span id="line-16"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Eq</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Eq</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-operator">(==)</span></span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Hashable</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Hashable</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">hash</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">hashWithSalt</span></span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span>
+</span><span id="line-25"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-26"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.MonoidMap</span></span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidMap</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">toMap</span></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-30"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span>
+</span><span id="line-31"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">undefined</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-operator">(.)</span></span><span>
+</span><span id="line-33"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- $_introduction</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- #_introduction#</span><span>
+</span><span id="line-37"></span><span class="hs-comment">--</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- This module provides a 'Hashable' instance for 'MonoidMap'.</span><span>
+</span><span id="line-39"></span><span class="hs-comment">--</span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- This instance behaves identically to the 'Hashable' instance for 'Map',</span><span>
+</span><span id="line-41"></span><span class="hs-comment">-- satisfying the following the laws:</span><span>
+</span><span id="line-42"></span><span class="hs-comment">--</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-44"></span><span class="hs-comment">-- 'hash'           '==' 'hash'           '.' 'MonoidMap'.'toMap'</span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- 'hashWithSalt' i '==' 'hashWithSalt' i '.' 'MonoidMap'.'toMap'</span><span>
+</span><span id="line-46"></span><span class="hs-comment">-- @</span><span>
+</span><span id="line-47"></span><span class="hs-comment">--</span><span>
+</span><span id="line-48"></span><span>
+</span><span id="line-49"></span><span class="annot"><a href="Data.MonoidMap.Hashable.html#_importsRequiredForDocumentation"><span class="hs-identifier hs-type">_importsRequiredForDocumentation</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-50"></span><span id="_importsRequiredForDocumentation"><span class="annot"><span class="annottext">_importsRequiredForDocumentation :: ()
+</span><a href="Data.MonoidMap.Hashable.html#_importsRequiredForDocumentation"><span class="hs-identifier hs-var hs-var">_importsRequiredForDocumentation</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-51"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-52"></span><span>    </span><span class="annot"><a href="#local-6989586621679053372"><span class="hs-identifier hs-type">_Map</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span>
+</span><span id="line-53"></span><span>    </span><span id="local-6989586621679053372"><span class="annot"><span class="annottext">_Map :: Map () ()
+</span><a href="#local-6989586621679053372"><span class="hs-identifier hs-var hs-var">_Map</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map () ()
+forall a. HasCallStack =&gt; a
+</span><span class="hs-identifier hs-var">undefined</span></span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span>    </span><span class="annot"><a href="#local-6989586621679053373"><span class="hs-identifier hs-type">_equals</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="hs-special">(</span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Bool</span></span><span>
+</span><span id="line-56"></span><span>    </span><span id="local-6989586621679053373"><span class="annot"><span class="annottext">_equals :: () -&gt; () -&gt; Bool
+</span><a href="#local-6989586621679053373"><span class="hs-identifier hs-var hs-var">_equals</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">() -&gt; () -&gt; Bool
+forall a. Eq a =&gt; a -&gt; a -&gt; Bool
+</span><span class="hs-operator hs-var">(==)</span></span><span>
+</span><span id="line-57"></span><span>
+</span><span id="line-58"></span><span class="hs-keyword">instance</span><span> </span><span id="local-6989586621679053352"><span id="local-6989586621679053353"><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Hashable</span></span><span> </span><span class="annot"><a href="#local-6989586621679053352"><span class="hs-identifier hs-type">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Hashable</span></span><span> </span><span class="annot"><a href="#local-6989586621679053353"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Hashable</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">MonoidMap</span></span><span> </span><span class="annot"><a href="#local-6989586621679053352"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679053353"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span></span></span><span>
+</span><span id="line-59"></span><span>  </span><span class="hs-keyword">where</span><span>
+</span><span id="line-60"></span><span>    </span><span id="local-6989586621679053392"><span class="annot"><span class="annottext">hash :: MonoidMap k v -&gt; Int
+</span><span class="hs-identifier hs-var hs-var hs-var">hash</span></span></span><span>           </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k v -&gt; Int
+forall a. Hashable a =&gt; a -&gt; Int
+</span><span class="hs-identifier hs-var">hash</span></span><span>           </span><span class="annot"><span class="annottext">(Map k v -&gt; Int)
+-&gt; (MonoidMap k v -&gt; Map k v) -&gt; MonoidMap k v -&gt; Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">MonoidMap k v -&gt; Map k v
+forall k v. MonoidMap k v -&gt; Map k v
+</span><span class="hs-identifier hs-var">toMap</span></span><span>
+</span><span id="line-61"></span><span>    </span><span id="local-6989586621679053396"><span class="annot"><span class="annottext">hashWithSalt :: Int -&gt; MonoidMap k v -&gt; Int
+</span><span class="hs-identifier hs-var hs-var hs-var">hashWithSalt</span></span></span><span> </span><span id="local-6989586621679053397"><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679053397"><span class="hs-identifier hs-var">i</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Int -&gt; Map k v -&gt; Int
+forall a. Hashable a =&gt; Int -&gt; a -&gt; Int
+</span><span class="hs-identifier hs-var">hashWithSalt</span></span><span> </span><span class="annot"><span class="annottext">Int
+</span><a href="#local-6989586621679053397"><span class="hs-identifier hs-var">i</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k v -&gt; Int)
+-&gt; (MonoidMap k v -&gt; Map k v) -&gt; MonoidMap k v -&gt; Int
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">MonoidMap k v -&gt; Map k v
+forall k v. MonoidMap k v -&gt; Map k v
+</span><span class="hs-identifier hs-var">toMap</span></span><span>
+</span><span id="line-62"></span></pre></body></html>
