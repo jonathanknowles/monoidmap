@@ -1,12 +1,12 @@
 # `monoidmap`
 
-This repository contains the [`monoidmap`][monoidmap-hackage] package family, built around the [`MonoidMap`] type.
+This repository contains the [`monoidmap`][monoidmap-hackage] family of Haskell packages, built around the [`MonoidMap`] type:
 
-A [`MonoidMap`] represents a **total** function with **finite support** from keys to [monoidal][`Monoid`] values: **every** possible key is associated with a value, and only a **finite** number of keys are associated with values other than [`mempty`][`Monoid.mempty`].
+> A [`MonoidMap`] represents a **total** function with **finite** support from keys to [monoidal][`Monoid`] values: **every** possible key is associated with a value, and only a **finite** number of keys are associated with values other than [`mempty`][`Monoid.mempty`].
 
 For an extended introduction to the [`MonoidMap`] type, see the [README][monoidmap] for the `monoidmap` package.
 
-The family consists of the following packages:
+## Packages
 
 | Package<br>&nbsp; | Latest<br>Release | Description<br>&nbsp; |
 |:--|:--:|:--|
