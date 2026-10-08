@@ -1,6 +1,7 @@
 cabal-version:  3.0
 name:           monoidmap-hashable
 version:        0.0.0.1
+homepage:       https://github.com/jonathanknowles/monoidmap/tree/HEAD/packages/monoidmap-hashable
 bug-reports:    https://github.com/jonathanknowles/monoidmap-hashable/issues
 license:        Apache-2.0
 license-file:   LICENSE

@@ -1,6 +1,7 @@
 cabal-version:  3.0
 name:           monoidmap-internal
 version:        0.1.0.3
+homepage:       https://github.com/jonathanknowles/monoidmap/tree/HEAD/packages/monoidmap-internal
 bug-reports:    https://github.com/jonathanknowles/monoidmap-internal/issues
 license:        Apache-2.0
 license-file:   LICENSE

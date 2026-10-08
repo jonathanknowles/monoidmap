@@ -1,6 +1,7 @@
 cabal-version:  3.0
 name:           monoidmap-quickcheck
 version:        0.0.0.5
+homepage:       https://github.com/jonathanknowles/monoidmap/tree/HEAD/packages/monoidmap-quickcheck
 bug-reports:    https://github.com/jonathanknowles/monoidmap-quickcheck/issues
 license:        Apache-2.0
 license-file:   LICENSE
