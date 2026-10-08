@@ -14,12 +14,12 @@ For an extended introduction to the [`MonoidMap`] type, see the [README][monoidm
 
 | Package<br>&nbsp; | Latest<br>Release | Description<br>&nbsp; |
 |:--|:--:|:--|
-| 📦 [`monoidmap`][monoidmap] | [![Latest Release][monoidmap-badge]][monoidmap-hackage] | Provides the core [`MonoidMap`] data type and functions. |
-| 📦 [`monoidmap-examples`][monoidmap-examples] | [![Latest Release][monoidmap-examples-badge]][monoidmap-examples-hackage] | Provides worked examples of how to use [`MonoidMap`]. |
-| 📦 [`monoidmap-aeson`][monoidmap-aeson] | [![Latest Release][monoidmap-aeson-badge]][monoidmap-aeson-hackage] | Provides support for JSON encoding with [`aeson`]. |
-| 📦 [`monoidmap-hashable`][monoidmap-hashable] | [![Latest Release][monoidmap-hashable-badge]][monoidmap-hashable-hackage] | Provides support for in-memory hashing with [`hashable`]. |
-| 📦 [`monoidmap-quickcheck`][monoidmap-quickcheck] | [![Latest Release][monoidmap-quickcheck-badge]][monoidmap-quickcheck-hackage] | Provides support for property testing with [`QuickCheck`]. |
-| 📦 [`monoidmap-internal`][monoidmap-internal] | [![Latest Release][monoidmap-internal-badge]][monoidmap-internal-hackage] | Provides low-level internal functions. 🐉 |
+| 📦 [`monoidmap`][monoidmap] | [![Latest Release][monoidmap-badge]][monoidmap-hackage] | Core [`MonoidMap`] type and functions. |
+| 📦 [`monoidmap-examples`][monoidmap-examples] | [![Latest Release][monoidmap-examples-badge]][monoidmap-examples-hackage] | Examples of using [`MonoidMap`]. |
+| 📦 [`monoidmap-aeson`][monoidmap-aeson] | [![Latest Release][monoidmap-aeson-badge]][monoidmap-aeson-hackage] | JSON encoding with [`aeson`]. |
+| 📦 [`monoidmap-hashable`][monoidmap-hashable] | [![Latest Release][monoidmap-hashable-badge]][monoidmap-hashable-hackage] | In-memory hashing with [`hashable`]. |
+| 📦 [`monoidmap-quickcheck`][monoidmap-quickcheck] | [![Latest Release][monoidmap-quickcheck-badge]][monoidmap-quickcheck-hackage] | Property testing with [`QuickCheck`]. |
+| 📦 [`monoidmap-internal`][monoidmap-internal] | [![Latest Release][monoidmap-internal-badge]][monoidmap-internal-hackage] | Low-level internals. 🐉 |
 
 [`MonoidMap`]: https://hackage-content.haskell.org/package/monoidmap/docs/Data-MonoidMap.html#g:1
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
