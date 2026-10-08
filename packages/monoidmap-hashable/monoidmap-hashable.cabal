@@ -48,6 +48,7 @@ common extensions
 source-repository head
     type: git
     location: https://github.com/jonathanknowles/monoidmap
+    subdir: packages/monoidmap-hashable
 
 library
     import:
