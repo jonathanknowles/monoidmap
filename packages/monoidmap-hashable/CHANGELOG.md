@@ -1,3 +1,7 @@
+# 0.0.0.2
+
+- Updated links to source repository in package metadata.
+
 # 0.0.0.1
 
 - Added support for GHC version `9.14`.
