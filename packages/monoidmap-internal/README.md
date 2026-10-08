@@ -5,6 +5,6 @@
 )](https://hackage.haskell.org/package/monoidmap-internal)
 [![Development Branch](
   https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
-)](https://jonathanknowles.github.io/monoidmap-internal/)
+)](https://jonathanknowles.github.io/monoidmap/monoidmap-internal/)
 
 Internal support for the [`monoidmap`](https://github.com/jonathanknowles/monoidmap) package.
