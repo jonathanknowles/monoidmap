@@ -1,7 +1,8 @@
 cabal-version:  3.0
 name:           monoidmap-aeson
 version:        0.0.0.9
-bug-reports:    https://github.com/jonathanknowles/monoidmap-aeson/issues
+homepage:       https://github.com/jonathanknowles/monoidmap/tree/HEAD/packages/monoidmap-aeson
+bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
 license-file:   LICENSE
 author:         Jonathan Knowles
@@ -65,7 +66,8 @@ common extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/monoidmap-aeson
+    location: https://github.com/jonathanknowles/monoidmap
+    subdir: packages/monoidmap-aeson
 
 library
     import:

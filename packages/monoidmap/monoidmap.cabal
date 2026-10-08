@@ -1,6 +1,7 @@
 cabal-version:  3.0
 name:           monoidmap
 version:        0.0.5.1
+homepage:       https://github.com/jonathanknowles/monoidmap
 bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
 license-file:   LICENSE
@@ -54,6 +55,7 @@ common extensions
 source-repository head
     type: git
     location: https://github.com/jonathanknowles/monoidmap
+    subdir: packages/monoidmap
 
 library
     import:
