@@ -46,7 +46,7 @@ common extensions
 
 source-repository head
     type: git
-    location: https://github.com/jonathanknowles/monoidmap-quickcheck
+    location: https://github.com/jonathanknowles/monoidmap
 
 library
     import:
