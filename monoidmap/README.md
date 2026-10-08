@@ -5,7 +5,7 @@
 )](https://hackage.haskell.org/package/monoidmap)
 [![Development Branch](
   https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
-)](https://jonathanknowles.github.io/monoidmap/)
+)](https://jonathanknowles.github.io/monoidmap/monoidmap/)
 
 # Overview
 
@@ -15,11 +15,11 @@ This library provides a **[`MonoidMap`]** type that:
 - encodes key-value mappings with a [minimal encoding](#encoding) that only
 includes values _not_ equal to [`mempty`][`Monoid.mempty`].
 - provides a comprehensive set of [monoidal operations](#monoidal-operations) for transforming, combining, and comparing maps.
-- provides a [general basis](#General-basis-for-more-specialised-map-types) for building more specialised monoidal data structures.
+- provides a [general basis](#general-basis-for-more-specialised-map-types) for building more specialised monoidal data structures.
 
 # Relationship between keys and values
 
-A map of type <code><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k v</code> associates **every** possible key of type `k` with a value of type `v`:
+A map of type <code><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k v</code> associates **every** possible key of type `k` with a value of type `v`:
 
 ```hs
 MonoidMap.get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
@@ -255,22 +255,22 @@ Automatic exclusion of [`mempty`][`Monoid.mempty`] values makes it possible to p
 </thead>
 <tbody>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
     <td>$O(1)$</td>
     <td>$O(n)$</td>
   </tr>
@@ -297,7 +297,7 @@ However, this approach also has some disadvantages:
 
 Since all [`MonoidMap`] operations perform automatic minimisation when appropriate, it's not necessary for users to reason about when or whether it's necessary to "trim" the map.
 
-Furthermore, for nested maps such as <code><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of outer maps. See the [`NestedMonoidMap`] type for an example of this.
+Furthermore, for nested maps such as <code><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k1 (<a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#t:MonoidMap">MonoidMap</a> k2 v)</code>, automatic minimisation of inner maps enables seamless automatic minimisation of outer maps. See the [`NestedMonoidMap`] type for an example of this.
 
 ## Limitations of automatic minimisation
 
@@ -400,34 +400,34 @@ Defining monoidal operations in this way makes it possible to transform, combine
 </thead>
 <tbody>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:append"><code>append</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:append"><code>append</code></a></td>
     <td><a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup"><code>Semigroup</code></a></td>
     <td><a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><code>(&lt;&gt;)</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-"><></a>   <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:minus"><code>minus</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:minus"><code>minus</code></a></td>
     <td><a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group"><code>Group</code></a></td>
     <td><a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-"><code>(~~)</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/groups/docs/Data-Group.html#v:-126--126-">~~</a>   <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:monus"><code>monus</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:monus"><code>monus</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#t:Monus"><code>Monus</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><code>(&lt;\&gt;)</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1  <a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Monus.html#v:-60--92--62-"><\></a>  <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection"><code>intersection</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:intersection"><code>intersection</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#t:GCDMonoid"><code>GCDMonoid</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd"><code>gcd</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-GCD.html#v:gcd">gcd</a>` <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
   <tr>
-    <td><a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union"><code>union</code></a></td>
+    <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:union"><code>union</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#t:LCMMonoid"><code>LCMMonoid</code></a></td>
     <td><a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm"><code>lcm</code></a></td>
-    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
+    <td><code>∀ k. <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k (m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` m2) ≡ <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m1 `<a href="https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-LCM.html#v:lcm">lcm</a>` <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:get">get</a> k m2</code></td>
   </tr>
 </tbody>
 </table>
@@ -950,7 +950,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code><em>monoidmap</em></code>
       </a>
       <br/>
-      <a href="https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap">
+      <a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#t:MonoidMap">
         <code>MonoidMap</code>
       </a>
       <br/>
@@ -1112,25 +1112,25 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Map`]: https://hackage.haskell.org/package/containers/docs/Data-Map-Strict.html#t:Map
 [`Maybe`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#t:Maybe
 [`Monoid.mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
-[`MonoidMap.adjust`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:adjust
-[`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:empty
-[`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:intersection
-[`MonoidMap.invert`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:invert
-[`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:map
-[`MonoidMap.minus`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:minus
-[`MonoidMap.set`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:set
-[`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#v:union
-[`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/Data-MonoidMap.html#t:MonoidMap
+[`MonoidMap.adjust`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:adjust
+[`MonoidMap.empty`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:empty
+[`MonoidMap.intersection`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:intersection
+[`MonoidMap.invert`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:invert
+[`MonoidMap.map`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:map
+[`MonoidMap.minus`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:minus
+[`MonoidMap.set`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:set
+[`MonoidMap.union`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:union
+[`MonoidMap`]: https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#t:MonoidMap
 [`MonoidNull.null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
 [`MultiAsset.AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
 [`MultiAsset.PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
-[`MultiAsset.insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#LL831C1-L868C10
+[`MultiAsset.insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L831-L868
 [`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
 [`MultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey
 [`MultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
-[`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/components/monoidmap-examples/Examples/NestedMonoidMap.hs
+[`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/packages/monoidmap-examples/components/monoidmap-examples/Data/MonoidMap/Examples/NestedMonoidMap.hs
 [`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup

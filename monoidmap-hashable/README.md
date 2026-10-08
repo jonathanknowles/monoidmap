@@ -5,7 +5,7 @@
 )](https://hackage.haskell.org/package/monoidmap-hashable)
 [![Development Branch](
   https://img.shields.io/badge/Development%20Branch-API%20Documentation-225577
-)](https://jonathanknowles.github.io/monoidmap-hashable/)
+)](https://jonathanknowles.github.io/monoidmap/monoidmap-hashable/)
 
 ## Overview
 
