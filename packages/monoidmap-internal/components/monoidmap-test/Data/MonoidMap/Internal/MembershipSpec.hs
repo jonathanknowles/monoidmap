@@ -73,15 +73,25 @@ prop_nonNullKeys_get m =
         "not (MonoidMap.null m)"
 
 prop_nullify_get
-    :: Test k v => MonoidMap k v -> k -> Property
-prop_nullify_get m k =
-    MonoidMap.get k (MonoidMap.nullify k m) === mempty
+    :: Test k v => MonoidMap k v -> Pair k -> Property
+prop_nullify_get m (Pair k1 k2) =
+    MonoidMap.get k1 (MonoidMap.nullify k2 m) ===
+        (if k1 == k2 then mempty else MonoidMap.get k1 m)
     & cover 2
-        (MonoidMap.nonNullKey k m)
-        "MonoidMap.nonNullKey k m"
+        (k1 == k2 && MonoidMap.nonNullKey k1 m)
+        "k1 == k2 && MonoidMap.nonNullKey k1 m"
     & cover 2
-        (not (MonoidMap.nonNullKey k m))
-        "not (MonoidMap.nonNullKey k m)"
+        (k1 == k2 && MonoidMap.nullKey k1 m)
+        "k1 == k2 && MonoidMap.nullKey k1 m"
+    & cover 2
+        (k1 /= k2 && MonoidMap.nonNullKey k1 m)
+        "k1 /= k2 && MonoidMap.nonNullKey k1 m"
+    & cover 2
+        (k1 /= k2 && MonoidMap.nullKey k1 m)
+        "k1 /= k2 && MonoidMap.nullKey k1 m"
+    & cover 2
+        (k1 /= k2 && MonoidMap.nonNullKey k1 m && MonoidMap.nonNullKey k2 m)
+        "k1 /= k2 && MonoidMap.nonNullKey k1 m && MonoidMap.nonNullKey k2 m"
 
 prop_nullify_nonNullKey
     :: Test k v => MonoidMap k v -> k -> Property

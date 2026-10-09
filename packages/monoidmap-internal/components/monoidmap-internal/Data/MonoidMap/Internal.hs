@@ -668,7 +668,10 @@ adjust f k (MonoidMap m) = MonoidMap $
 -- Satisfies the following property:
 --
 -- @
--- 'get' k ('nullify' k m) '==' 'mempty'
+-- 'get' k1 ('nullify' k2 m) '=='
+--     if k1 '==' k2
+--     then 'mempty'
+--     else 'get' k1 m
 -- @
 --
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
