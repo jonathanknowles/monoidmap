@@ -704,13 +704,18 @@ nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 --
 -- Sets the values associated with all keys not in the given set to 'mempty'.
 --
--- Satisfies the following property:
+-- Satisfies the following properties:
 --
 -- @
 -- 'get' k ('nullifyKeysNotIn' ks m) '=='
 --     if 'Set'.'Set.notMember' k ks
 --     then 'mempty'
 --     else 'get' k m
+-- @
+--
+-- @
+-- 'nullifyKeysNotIn' ks m '=='
+--     'fromMap' ('Map'.'Map.restrictKeys' ('toMap' m) ks)
 -- @
 --
 nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
