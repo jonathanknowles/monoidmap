@@ -683,13 +683,18 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 --
 -- Sets the values associated with all keys in the given set to 'mempty'.
 --
--- Satisfies the following property:
+-- Satisfies the following properties:
 --
 -- @
 -- 'get' k ('nullifyKeysIn' ks m) '=='
 --     if 'Set'.'Set.member' k ks
 --     then 'mempty'
 --     else 'get' k m
+-- @
+--
+-- @
+-- 'nullifyKeysIn' ks m '=='
+--     'fromMap' ('Map'.'Map.withoutKeys' ('toMap' m) ks)
 -- @
 --
 nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
