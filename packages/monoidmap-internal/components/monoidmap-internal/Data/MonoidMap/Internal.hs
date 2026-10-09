@@ -41,6 +41,8 @@ module Data.MonoidMap.Internal
 
     -- ** Nullification
     , nullify
+    , nullifyKeysIn
+    , nullifyKeysNotIn
 
     -- ** Membership
     , null
@@ -676,6 +678,20 @@ adjust f k (MonoidMap m) = MonoidMap $
 --
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
+
+-- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
+--
+-- Sets the values associated with all keys in the given set to 'mempty'.
+--
+nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
+nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
+
+-- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
+--
+-- Sets the values associated with all keys not in the given set to 'mempty'.
+--
+nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
+nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
 
 --------------------------------------------------------------------------------
 -- Membership

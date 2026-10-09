@@ -39,6 +39,8 @@ module Data.MonoidMap
 
     -- ** Nullification
     , nullify
+    , nullifyKeysIn
+    , nullifyKeysNotIn
 
     -- ** Membership
     , null
