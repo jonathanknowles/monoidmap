@@ -38,6 +38,8 @@ module Data.MonoidMap.Internal
     -- ** Modification
     , set
     , adjust
+
+    -- ** Nullification
     , nullify
 
     -- ** Membership
@@ -656,6 +658,10 @@ adjust
     -> MonoidMap k v
 adjust f k (MonoidMap m) = MonoidMap $
     Map.alter (maybeNonNull . maybe (f mempty) (applyNonNull f)) k m
+
+--------------------------------------------------------------------------------
+-- Nullification
+--------------------------------------------------------------------------------
 
 -- | \(O(\log n)\). Sets the value associated with the given key to 'mempty'.
 --
