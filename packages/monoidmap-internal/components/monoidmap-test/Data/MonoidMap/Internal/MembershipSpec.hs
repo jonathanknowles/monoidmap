@@ -31,7 +31,7 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Property, cover, (===) )
+    ( Arbitrary (arbitrary, shrink), Property, cover, oneof, (===) )
 
 import qualified Data.MonoidMap.Internal as MonoidMap
 import qualified Data.Set as Set
@@ -104,3 +104,20 @@ prop_nullify_nonNullKeys m k =
     & cover 2
         (not (MonoidMap.nonNullKey k m))
         "not (MonoidMap.nonNullKey k m)"
+
+--------------------------------------------------------------------------------
+-- Utilities
+--------------------------------------------------------------------------------
+
+data Pair k = Pair !k !k
+    deriving (Eq, Show)
+
+instance (Arbitrary k, Eq k) => Arbitrary (Pair k) where
+    -- Generate values with at least 50% probability that both are the same.
+    arbitrary = do
+        k1 <- arbitrary
+        k2 <- oneof [pure k1, arbitrary]
+        pure $ Pair k1 k2
+    shrink (Pair k1 k2)
+        | k1 == k2  = [Pair k k | k <- shrink k1]
+        | otherwise = uncurry Pair <$> shrink (k1, k2)
