@@ -45,6 +45,9 @@ spec = describe "Membership" $ do
 specFor :: forall k v. Test k v => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do
 
+    it "prop_nonNullKeys_get" $
+        prop_nonNullKeys_get
+            @k @v & property
     it "prop_nullify_get" $
         prop_nullify_get
             @k @v & property
@@ -54,9 +57,20 @@ specFor = makeSpec $ do
     it "prop_nullify_nonNullKeys" $
         prop_nullify_nonNullKeys
             @k @v & property
-    it "prop_nonNullKeys_get" $
-        prop_nonNullKeys_get
-            @k @v & property
+
+prop_nonNullKeys_get
+    :: Test k v => MonoidMap k v -> Property
+prop_nonNullKeys_get m =
+    fmap
+        (\k -> (k, MonoidMap.get k m))
+        (Set.toList (MonoidMap.nonNullKeys m))
+        === MonoidMap.toList m
+    & cover 2
+        (MonoidMap.null m)
+        "MonoidMap.null m"
+    & cover 2
+        (not (MonoidMap.null m))
+        "not (MonoidMap.null m)"
 
 prop_nullify_get
     :: Test k v => MonoidMap k v -> k -> Property
@@ -90,17 +104,3 @@ prop_nullify_nonNullKeys m k =
     & cover 2
         (not (MonoidMap.nonNullKey k m))
         "not (MonoidMap.nonNullKey k m)"
-
-prop_nonNullKeys_get
-    :: Test k v => MonoidMap k v -> Property
-prop_nonNullKeys_get m =
-    fmap
-        (\k -> (k, MonoidMap.get k m))
-        (Set.toList (MonoidMap.nonNullKeys m))
-        === MonoidMap.toList m
-    & cover 2
-        (MonoidMap.null m)
-        "MonoidMap.null m"
-    & cover 2
-        (not (MonoidMap.null m))
-        "not (MonoidMap.null m)"
