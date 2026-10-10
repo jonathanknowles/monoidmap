@@ -36,7 +36,11 @@ module Data.MonoidMap
     -- ** Modification
     , set
     , adjust
+
+    -- ** Nullification
     , nullify
+    , nullifyKeysIn
+    , nullifyKeysNotIn
 
     -- ** Membership
     , null

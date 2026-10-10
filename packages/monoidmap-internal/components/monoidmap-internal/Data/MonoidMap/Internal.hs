@@ -38,7 +38,11 @@ module Data.MonoidMap.Internal
     -- ** Modification
     , set
     , adjust
+
+    -- ** Nullification
     , nullify
+    , nullifyKeysIn
+    , nullifyKeysNotIn
 
     -- ** Membership
     , null
@@ -657,16 +661,65 @@ adjust
 adjust f k (MonoidMap m) = MonoidMap $
     Map.alter (maybeNonNull . maybe (f mempty) (applyNonNull f)) k m
 
+--------------------------------------------------------------------------------
+-- Nullification
+--------------------------------------------------------------------------------
+
 -- | \(O(\log n)\). Sets the value associated with the given key to 'mempty'.
 --
 -- Satisfies the following property:
 --
 -- @
--- 'get' k ('nullify' k m) '==' 'mempty'
+-- 'get' k1 ('nullify' k2 m) '=='
+--     if k1 '==' k2
+--     then 'mempty'
+--     else 'get' k1 m
 -- @
 --
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
+
+-- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
+--
+-- Sets the values associated with all keys in the given set to 'mempty'.
+--
+-- Satisfies the following properties:
+--
+-- @
+-- 'get' k ('nullifyKeysIn' ks m) '=='
+--     if 'Set'.'Set.member' k ks
+--     then 'mempty'
+--     else 'get' k m
+-- @
+--
+-- @
+-- 'nullifyKeysIn' ks m '=='
+--     'fromMap' ('Map'.'Map.withoutKeys' ('toMap' m) ks)
+-- @
+--
+nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
+nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
+
+-- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
+--
+-- Sets the values associated with all keys not in the given set to 'mempty'.
+--
+-- Satisfies the following properties:
+--
+-- @
+-- 'get' k ('nullifyKeysNotIn' ks m) '=='
+--     if 'Set'.'Set.notMember' k ks
+--     then 'mempty'
+--     else 'get' k m
+-- @
+--
+-- @
+-- 'nullifyKeysNotIn' ks m '=='
+--     'fromMap' ('Map'.'Map.restrictKeys' ('toMap' m) ks)
+-- @
+--
+nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
+nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
 
 --------------------------------------------------------------------------------
 -- Membership
