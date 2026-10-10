@@ -1,3 +1,7 @@
+# 0.1.1.0
+
+- Added functions `nullifyKeysIn` and `nullifyKeysNotIn` to `MonoidMap`.
+
 # 0.1.0.4
 
 - Updated links to source repository in package metadata.
