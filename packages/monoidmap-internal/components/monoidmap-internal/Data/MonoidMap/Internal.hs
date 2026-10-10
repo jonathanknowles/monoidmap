@@ -697,6 +697,8 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 --     'fromMap' ('Map'.'Map.withoutKeys' ('toMap' m) ks)
 -- @
 --
+-- @since 0.0.6.0
+--
 nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 
@@ -717,6 +719,8 @@ nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 -- 'nullifyKeysNotIn' ks m '=='
 --     'fromMap' ('Map'.'Map.restrictKeys' ('toMap' m) ks)
 -- @
+--
+-- @since 0.0.6.0
 --
 nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks

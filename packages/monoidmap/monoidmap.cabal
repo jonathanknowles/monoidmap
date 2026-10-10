@@ -1,6 +1,6 @@
 cabal-version:  3.0
 name:           monoidmap
-version:        0.0.5.2
+version:        0.0.6.0
 homepage:       https://github.com/jonathanknowles/monoidmap
 bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
 license:        Apache-2.0
@@ -28,7 +28,7 @@ common dependency-groups
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
 common dependency-monoidmap-internal
-    build-depends:monoidmap-internal            >= 0.1.0.0    && < 0.2
+    build-depends:monoidmap-internal            >= 0.1.1.0    && < 0.2
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
 
