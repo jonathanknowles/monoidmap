@@ -22,6 +22,8 @@ import Data.Proxy
     ( Proxy (..) )
 import Data.Set
     ( Set )
+import Test.Combinators.OftenEqual
+    ( OftenEqual (OftenEqual) )
 import Test.Common
     ( Key
     , Test
@@ -33,7 +35,7 @@ import Test.Common
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Arbitrary (arbitrary, shrink), Property, cover, oneof, (===) )
+    ( Property, cover, (===) )
 
 import qualified Data.MonoidMap.Internal as MonoidMap
 import qualified Data.Set as Set
@@ -81,8 +83,8 @@ prop_nonNullKeys_get m =
         "not (MonoidMap.null m)"
 
 prop_nullify_get
-    :: Test k v => MonoidMap k v -> Pair k -> Property
-prop_nullify_get m (Pair k1 k2) =
+    :: Test k v => MonoidMap k v -> OftenEqual k -> Property
+prop_nullify_get m (OftenEqual k1 k2) =
     MonoidMap.get k1 (MonoidMap.nullify k2 m) ===
         (if k1 == k2 then mempty else MonoidMap.get k1 m)
     & cover 2
@@ -158,20 +160,3 @@ prop_nullifyKeysNotIn_get m ks k =
     & cover 2
         (Set.notMember k ks && MonoidMap.nonNullKey k m)
         "Set.notMember k ks && MonoidMap.nonNullKey k m"
-
---------------------------------------------------------------------------------
--- Utilities
---------------------------------------------------------------------------------
-
-data Pair k = Pair !k !k
-    deriving (Eq, Show)
-
-instance (Arbitrary k, Eq k) => Arbitrary (Pair k) where
-    -- Generate values with at least 50% probability that both are the same.
-    arbitrary = do
-        k1 <- arbitrary
-        k2 <- oneof [pure k1, arbitrary]
-        pure $ Pair k1 k2
-    shrink (Pair k1 k2)
-        | k1 == k2  = [Pair k k | k <- shrink k1]
-        | otherwise = uncurry Pair <$> shrink (k1, k2)

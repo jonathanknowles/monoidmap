@@ -160,6 +160,7 @@ test-suite monoidmap-test
         Data.MonoidMap.Internal.UnionSpec
         Data.MonoidMap.Internal.ValiditySpec
         Test.Combinators.NonZero
+        Test.Combinators.OftenEqual
         Test.Common
         Test.Hspec.Unit
         Test.Key
