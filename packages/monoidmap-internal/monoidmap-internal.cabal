@@ -112,6 +112,9 @@ benchmark monoidmap-benchmark
         components/monoidmap-benchmark
     main-is:
         Main.hs
+    -- Report allocation and memory statistics for each benchmark:
+    ghc-options:
+        "-with-rtsopts=-T"
 
 test-suite monoidmap-test
     import:
