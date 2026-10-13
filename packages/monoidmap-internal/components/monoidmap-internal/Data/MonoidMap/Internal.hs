@@ -527,15 +527,15 @@ fromMap = fromMap_filter_if_any_null
 {-# INLINABLE fromMap #-}
 
 fromMap_filter :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap_filter = MonoidMap . coerce . Map.filter (\(!v) -> not (C.null v))
+fromMap_filter = coerce . Map.filter (\(!v) -> not (C.null v))
 {-# INLINABLE fromMap_filter #-}
 
 fromMap_filter_if_any_null :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap_filter_if_any_null m
     | F.any (\(!v) -> C.null v) m =
-        MonoidMap $ coerce $ Map.filter (\(!v) -> not (C.null v)) m
+        coerce $ Map.filter (\(!v) -> not (C.null v)) m
     | otherwise =
-        MonoidMap $ coerce m
+        coerce m
 {-# INLINABLE fromMap_filter_if_any_null #-}
 
 fromMap_mapMaybe :: MonoidNull v => Map k v -> MonoidMap k v
