@@ -2,11 +2,15 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Benchmark for the `MonoidMap` type.
+-- Benchmark for the 'MonoidMap' type and its functions.
 --
--- Instead of benchmarking functions for the `MonoidMap` type directly, we
--- benchmark functions for the `RecoveredMap` type, a newtype wrapper around
--- the `MonoidMap` type designed to provide the same semantics as `Map`.
+-- When a 'MonoidMap' function has a direct counterpart in 'Map' (such as the
+-- 'fromList' function), we benchmark 'Map' against 'RecoveredMap': a newtype
+-- wrapper around 'MonoidMap' with functions that have the same semantics as
+-- those of 'Map', so that both sides of each comparison behave identically.
+--
+-- When a 'MonoidMap' function has no direct counterpart in 'Map' (such as the
+-- 'fromMap' function), we benchmark the 'MonoidMap' function directly.
 --
 module Main where
 
@@ -14,28 +18,33 @@ import Control.DeepSeq
     ( rnf )
 import Control.Exception
     ( evaluate )
+import Data.Bool
+    ( Bool (False, True) )
 import Data.Eq
-    ( Eq )
+    ( Eq ((==)) )
 import Data.Function
-    ( flip, ($) )
+    ( const, flip, ($) )
 import Data.Int
     ( Int )
 import Data.List
-    ( foldl', zip )
+    ( filter, foldl', zip )
 import Data.Maybe
     ( Maybe, fromMaybe )
+import Data.Monoid
+    ( Monoid (mempty), Sum (Sum) )
 import Data.Ord
     ( Ord )
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
 import Prelude
-    ( Integer, Num, (^), (+) )
+    ( Integer, Num, (^), (+), even, odd )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
     ( bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
+import qualified Data.MonoidMap.Internal as MMap
 import qualified Data.MonoidMap.Internal.RecoveredMap as RMap
 
 main :: IO ()
@@ -49,11 +58,41 @@ main = do
         rm_even    = fromList elems_even    :: RMap.Map Int Int
         rm_odd     = fromList elems_odd     :: RMap.Map Int Int
 
+        -- Maps in which different subsets of keys have 'null' values:
+        om_null_none = mapWithNullIf (const False)   :: OMap.Map Int (Sum Int)
+        om_null_min  = mapWithNullIf (== minNatural) :: OMap.Map Int (Sum Int)
+        om_null_max  = mapWithNullIf (== maxNatural) :: OMap.Map Int (Sum Int)
+        om_null_even = mapWithNullIf even            :: OMap.Map Int (Sum Int)
+        om_null_odd  = mapWithNullIf odd             :: OMap.Map Int (Sum Int)
+        om_null_all  = mapWithNullIf (const True)    :: OMap.Map Int (Sum Int)
+
     evaluate $ rnf [om_natural, om_even, om_odd]
     evaluate $ rnf [rm_natural, rm_even, rm_odd]
+    evaluate $ rnf
+        [ om_null_none
+        , om_null_min
+        , om_null_max
+        , om_null_even
+        , om_null_odd
+        , om_null_all
+        ]
 
     defaultMain
-        [ bgroup "delete"
+        [ bgroup "fromMap"
+            [ bench "no nulls" $
+                nf MMap.fromMap om_null_none
+            , bench "one null (min key)" $
+                nf MMap.fromMap om_null_min
+            , bench "one null (max key)" $
+                nf MMap.fromMap om_null_max
+            , bench "even nulls" $
+                nf MMap.fromMap om_null_even
+            , bench "odd nulls" $
+                nf MMap.fromMap om_null_odd
+            , bench "all nulls" $
+                nf MMap.fromMap om_null_all
+            ]
+        , bgroup "delete"
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
                     nf (deleteMany evens) om_odd
@@ -141,8 +180,11 @@ main = do
             ]
         ]
   where
-    bound :: Int
-    bound = 2 ^ (16 :: Int)
+    minNatural :: Int
+    minNatural = 1
+
+    maxNatural :: Int
+    maxNatural = 2 ^ (16 :: Int)
 
     elems_natural :: [(Int, Int)]
     elems_natural = zip naturals naturals
@@ -154,16 +196,24 @@ main = do
     elems_odd = zip odds odds
 
     naturals :: [Int]
-    naturals = [1 .. bound]
+    naturals = [minNatural .. maxNatural]
 
     evens :: [Int]
-    evens = [2, 4 .. bound]
+    evens = filter even naturals
 
     odds :: [Int]
-    odds = [1, 3 .. bound]
+    odds = filter odd naturals
 
     ten_power_24 :: Integer
     ten_power_24 = 1_000_000_000_000_000_000_000_000
+
+    -- A map from keys [minNatural .. maxNatural], with a null value for each
+    -- key that satisfies the given predicate, and a non-null value otherwise.
+    mapWithNullIf :: (Int -> Bool) -> OMap.Map Int (Sum Int)
+    mapWithNullIf hasNullValue = OMap.fromList
+        [ (k, if hasNullValue k then mempty else Sum 1)
+        | k <- [minNatural .. maxNatural]
+        ]
 
 class Ord k => Map m k v where
     fromList :: [(k, v)] -> m k v
