@@ -22,7 +22,7 @@ import Data.Function
 import Data.Int
     ( Int )
 import Data.List
-    ( foldl', zip )
+    ( filter, foldl', zip )
 import Data.Maybe
     ( Maybe, fromMaybe )
 import Data.Ord
@@ -30,7 +30,7 @@ import Data.Ord
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
 import Prelude
-    ( Integer, Num, (^), (+) )
+    ( Integer, Num, (^), (+), even, odd )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
@@ -158,10 +158,10 @@ main = do
     naturals = [1 .. bound]
 
     evens :: [Int]
-    evens = [2, 4 .. bound]
+    evens = filter even naturals
 
     odds :: [Int]
-    odds = [1, 3 .. bound]
+    odds = filter odd naturals
 
     ten_power_24 :: Integer
     ten_power_24 = 1_000_000_000_000_000_000_000_000
