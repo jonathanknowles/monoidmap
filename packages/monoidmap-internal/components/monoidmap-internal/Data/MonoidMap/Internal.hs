@@ -28,6 +28,11 @@ module Data.MonoidMap.Internal
     , fromSet
     , singleton
 
+    -- ** Construction (Internal)
+    , fromMap_filter
+    , fromMap_filter_if_any_null
+    , fromMap_mapMaybe
+
     -- ** Deconstruction
     , toList
     , toMap
@@ -518,7 +523,24 @@ fromListWith f =
 -- complexity that is linear in the size of the map.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = MonoidMap . Map.mapMaybe maybeNonNull
+fromMap = fromMap_filter_if_any_null
+{-# INLINABLE fromMap #-}
+
+fromMap_filter :: MonoidNull v => Map k v -> MonoidMap k v
+fromMap_filter = MonoidMap . coerce . Map.filter (\(!v) -> not (C.null v))
+{-# INLINABLE fromMap_filter #-}
+
+fromMap_filter_if_any_null :: MonoidNull v => Map k v -> MonoidMap k v
+fromMap_filter_if_any_null m
+    | F.any (\(!v) -> C.null v) m =
+        MonoidMap $ coerce $ Map.filter (\(!v) -> not (C.null v)) m
+    | otherwise =
+        MonoidMap $ coerce m
+{-# INLINABLE fromMap_filter_if_any_null #-}
+
+fromMap_mapMaybe :: MonoidNull v => Map k v -> MonoidMap k v
+fromMap_mapMaybe = MonoidMap . Map.mapMaybe maybeNonNull
+{-# INLINABLE fromMap_mapMaybe #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
 --   the given function to all values.
