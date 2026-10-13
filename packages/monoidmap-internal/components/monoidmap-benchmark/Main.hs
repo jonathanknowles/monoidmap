@@ -2,11 +2,12 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Benchmark for the `MonoidMap` type.
+-- Benchmark for the 'MonoidMap' type and its functions.
 --
--- Instead of benchmarking functions for the `MonoidMap` type directly, we
--- benchmark functions for the `RecoveredMap` type, a newtype wrapper around
--- the `MonoidMap` type designed to provide the same semantics as `Map`.
+-- When a 'MonoidMap' function has a direct counterpart in 'Map' (such as the
+-- 'fromList' function), we benchmark 'Map' against 'RecoveredMap': a newtype
+-- wrapper around 'MonoidMap' with functions that have the same semantics as
+-- those of 'Map', so that both sides of each comparison behave identically.
 --
 module Main where
 
