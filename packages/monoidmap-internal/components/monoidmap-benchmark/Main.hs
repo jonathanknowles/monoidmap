@@ -37,11 +37,11 @@ import Data.Ord
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
 import Prelude
-    ( Integer, Num, (^), (+), even, odd )
+    ( Integer, Num, even, id, odd, otherwise, (<$>), (^), (+) )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
-    ( bench, bgroup, defaultMain, nf )
+    ( bcompare, bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal as MMap
@@ -77,21 +77,32 @@ main = do
         , om_null_all
         ]
 
+    let fromMapCases =
+            [ ("no nulls",           om_null_none)
+            , ("one null (min key)", om_null_min)
+            , ("one null (max key)", om_null_max)
+            , ("even nulls",         om_null_even)
+            , ("odd nulls",          om_null_odd)
+            , ("all nulls",          om_null_all)
+            ]
+        fromMapImplementations =
+            [ ("mapMaybe",           MMap.fromMap_mapMaybe)
+            , ("filter",             MMap.fromMap_filter)
+            , ("filter if any null", MMap.fromMap_filter_if_any_null)
+            ]
+        benchFromMapCase (label, input) = bgroup label
+            [ relativeToBaseline name $ bench name $ nf f input
+            | (name, f) <- fromMapImplementations
+            ]
+          where
+            relativeToBaseline name
+                | name == "mapMaybe" = id
+                | otherwise = bcompare $
+                    "$NF == \"mapMaybe\" && $(NF-1) == \"" <> label <> "\""
+
     defaultMain
         [ bgroup "fromMap"
-            [ bench "no nulls" $
-                nf MMap.fromMap om_null_none
-            , bench "one null (min key)" $
-                nf MMap.fromMap om_null_min
-            , bench "one null (max key)" $
-                nf MMap.fromMap om_null_max
-            , bench "even nulls" $
-                nf MMap.fromMap om_null_even
-            , bench "odd nulls" $
-                nf MMap.fromMap om_null_odd
-            , bench "all nulls" $
-                nf MMap.fromMap om_null_all
-            ]
+            ( benchFromMapCase <$> fromMapCases )
         , bgroup "delete"
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
