@@ -142,8 +142,11 @@ main = do
             ]
         ]
   where
-    bound :: Int
-    bound = 2 ^ (16 :: Int)
+    minNatural :: Int
+    minNatural = 1
+
+    maxNatural :: Int
+    maxNatural = 2 ^ (16 :: Int)
 
     elems_natural :: [(Int, Int)]
     elems_natural = zip naturals naturals
@@ -155,7 +158,7 @@ main = do
     elems_odd = zip odds odds
 
     naturals :: [Int]
-    naturals = [1 .. bound]
+    naturals = [minNatural .. maxNatural]
 
     evens :: [Int]
     evens = filter even naturals
