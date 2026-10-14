@@ -89,10 +89,17 @@ main = do
             ]
 
     defaultMain
-        [ compareImplementations ("fromMap", MMap.fromMap) fromMapCases
-            [ ("fromMap_filter",             MMap.fromMap_filter)
-            , ("fromMap_filter_if_any_null", MMap.fromMap_filter_if_any_null)
-            , ("fromMap_mapMaybe",           MMap.fromMap_mapMaybe)
+        [ compareImplementations
+            ("fromMap", MMap.fromMap) fromMapCases
+            [ ( "fromMap_filter"
+              , MMap.fromMap_filter
+              )
+            , ( "fromMap_filter_if_any_null"
+              , MMap.fromMap_filter_if_any_null
+              )
+            , ( "fromMap_mapMaybe"
+              , MMap.fromMap_mapMaybe
+              )
             ]
         , compareImplementations
             ("fromMapWith", MMap.fromMapWith double) fromMapCases
