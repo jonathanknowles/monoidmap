@@ -86,9 +86,9 @@ main = do
             , ("all nulls",          om_null_all)
             ]
         fromMapImplementations =
-            [ ("mapMaybe",           MMap.fromMap_mapMaybe)
-            , ("filter",             MMap.fromMap_filter)
-            , ("filter if any null", MMap.fromMap_filter_if_any_null)
+            [ ("fromMap_mapMaybe",           MMap.fromMap_mapMaybe)
+            , ("fromMap_filter",             MMap.fromMap_filter)
+            , ("fromMap_filter_if_any_null", MMap.fromMap_filter_if_any_null)
             ]
         benchFromMapCase (label, input) = bgroup label
             [ relativeToBaseline name $ bench name $ nf f input
@@ -96,9 +96,9 @@ main = do
             ]
           where
             relativeToBaseline name
-                | name == "mapMaybe" = id
+                | name == "fromMap_mapMaybe" = id
                 | otherwise = bcompare $
-                    "$NF == \"mapMaybe\" && $(NF-1) == \"" <> label <> "\""
+                    "$NF == \"fromMap_mapMaybe\" && $(NF-1) == \"" <> label <> "\""
 
     defaultMain
         [ bgroup "fromMap"
