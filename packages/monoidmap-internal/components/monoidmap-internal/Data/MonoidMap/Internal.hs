@@ -559,6 +559,7 @@ fromMap_mapMaybe = MonoidMap . Map.mapMaybe maybeNonNull
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith = fromMapWith_mapMaybe
+{-# INLINABLE fromMapWith #-}
 
 fromMapWith_mapMaybe
     :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
