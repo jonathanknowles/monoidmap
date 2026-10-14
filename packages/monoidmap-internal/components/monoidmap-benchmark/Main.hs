@@ -15,7 +15,7 @@
 module Main where
 
 import Control.DeepSeq
-    ( rnf )
+    ( NFData, rnf )
 import Control.Exception
     ( evaluate )
 import Data.Bool
@@ -36,12 +36,14 @@ import Data.Ord
     ( Ord )
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
+import Data.String
+    ( String )
 import Prelude
-    ( Integer, Num, even, odd, (<$>), (^), (+) )
+    ( Integer, Num, even, odd, (^), (+) )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
-    ( bcompare, bench, bgroup, defaultMain, nf )
+    ( Benchmark, bcompare, bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal as MMap
@@ -85,23 +87,13 @@ main = do
             , ("odd nulls",          om_null_odd)
             , ("all nulls",          om_null_all)
             ]
-        fromMapImplementations =
+
+    defaultMain
+        [ compareImplementations ("fromMap", MMap.fromMap) fromMapCases
             [ ("fromMap_filter",             MMap.fromMap_filter)
             , ("fromMap_filter_if_any_null", MMap.fromMap_filter_if_any_null)
             , ("fromMap_mapMaybe",           MMap.fromMap_mapMaybe)
             ]
-        benchFromMapCase (label, input) = bgroup label $
-            bench "fromMap" (nf MMap.fromMap input) :
-            [ bcompare relativeToFromMap $ bench name $ nf f input
-            | (name, f) <- fromMapImplementations
-            ]
-          where
-            relativeToFromMap =
-                "$NF == \"fromMap\" && $(NF-1) == \"" <> label <> "\""
-
-    defaultMain
-        [ bgroup "fromMap"
-            ( benchFromMapCase <$> fromMapCases )
         , bgroup "delete"
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
@@ -224,6 +216,38 @@ main = do
         [ (k, if hasNullValue k then mempty else Sum 1)
         | k <- [minNatural .. maxNatural]
         ]
+
+-- | Compares implementations of a public function with the public function
+--   itself, for each of the given cases.
+--
+-- For each case, the time taken by each implementation is reported relative
+-- to the time taken by the public function.
+--
+compareImplementations
+    :: NFData r
+    => (String, i -> r)
+    -- ^ The public function, with its name (also used as the group name).
+    -> [(String, i)]
+    -- ^ Cases (inputs) to benchmark, each with a label.
+    -> [(String, i -> r)]
+    -- ^ Implementations of the public function, each with a name.
+    -> Benchmark
+compareImplementations (publicName, public) cases implementations =
+    bgroup publicName
+        [ bgroup label $
+            bench publicName (nf public input) :
+            [ bcompare (relativeToPublic label) $ bench name $ nf f input
+            | (name, f) <- implementations
+            ]
+        | (label, input) <- cases
+        ]
+  where
+    -- Matches the benchmark of the public function for the given case (and
+    -- nothing else):
+    relativeToPublic label =
+        "$NF == \"" <> publicName <> "\""
+        <> " && $(NF-1) == \"" <> label <> "\""
+        <> " && $(NF-2) == \"" <> publicName <> "\""
 
 class Ord k => Map m k v where
     fromList :: [(k, v)] -> m k v
