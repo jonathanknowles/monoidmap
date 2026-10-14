@@ -141,6 +141,9 @@ specValidMonoidNull = makeSpec $ do
     it "propValid_fromMap" $
         propValid_fromMap
             @k @v & property
+    it "propValid_fromMapWith" $
+        propValid_fromMapWith
+            @k @v & property
     it "propValid_fromSet" $
         propValid_fromSet
             @k @v & property
@@ -386,6 +389,14 @@ propValid_fromMap m =
     & cover 2
         (Map.filter Null.null m /= mempty)
         "Map.filter Null.null m /= mempty"
+
+propValid_fromMapWith
+    :: Test k v => Fun v v -> Map k v -> Property
+propValid_fromMapWith (applyFun -> f) m =
+    propValid (MonoidMap.fromMapWith f m)
+    & cover 2
+        (Map.filter Null.null (Map.map f m) /= mempty)
+        "Map.filter Null.null (Map.map f m) /= mempty"
 
 propValid_fromSet
     :: Test k v => Fun k v -> Set k -> Property
