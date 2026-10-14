@@ -102,6 +102,9 @@ main = do
             , ( "fromMapWith_map_filter"
               , MMap.fromMapWith_map_filter double
               )
+            , ( "fromMapWith_map_filter_if_any_null"
+              , MMap.fromMapWith_map_filter_if_any_null double
+              )
             ]
         , bgroup "delete"
             [ bgroup "absent"
