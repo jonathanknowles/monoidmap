@@ -94,6 +94,12 @@ main = do
             , ("fromMap_filter_if_any_null", MMap.fromMap_filter_if_any_null)
             , ("fromMap_mapMaybe",           MMap.fromMap_mapMaybe)
             ]
+        , compareImplementations
+            ("fromMapWith", MMap.fromMapWith double) fromMapCases
+            [ ( "fromMapWith_mapMaybe"
+              , MMap.fromMapWith_mapMaybe double
+              )
+            ]
         , bgroup "delete"
             [ bgroup "absent"
                 [ bench "Data.Map.Strict" $
@@ -216,6 +222,12 @@ main = do
         [ (k, if hasNullValue k then mempty else Sum 1)
         | k <- [minNatural .. maxNatural]
         ]
+
+    -- A simple function that replaces every value with a new value, while:
+    -- - preserving existing null values; and
+    -- - not introducing any new null values.
+    double :: Semigroup m => m -> m
+    double m = m <> m
 
 -- | Compares implementations of a public function with the public function
 --   itself, for each of the given cases.
