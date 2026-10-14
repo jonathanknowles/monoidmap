@@ -4,6 +4,7 @@
 {- HLINT ignore "Avoid lambda" -}
 {- HLINT ignore "Avoid lambda using `infix`" -}
 {- HLINT ignore "Redundant bracket" -}
+{- HLINT ignore "Use camelCase" -}
 
 -- |
 -- Copyright: © 2022–2026 Jonathan Knowles
@@ -32,6 +33,9 @@ module Data.MonoidMap.Internal
     , fromMap_filter
     , fromMap_filter_if_any_null
     , fromMap_mapMaybe
+    , fromMapWith_mapMaybe
+    , fromMapWith_map_filter
+    , fromMapWith_map_filter_if_any_null
 
     -- ** Deconstruction
     , toList
@@ -557,7 +561,23 @@ fromMap_mapMaybe = MonoidMap . Map.mapMaybe maybeNonNull
 -- @since 0.0.4.0
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
-fromMapWith f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
+fromMapWith = fromMapWith_mapMaybe
+{-# INLINABLE fromMapWith #-}
+
+fromMapWith_mapMaybe
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith_mapMaybe f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
+{-# INLINABLE fromMapWith_mapMaybe #-}
+
+fromMapWith_map_filter
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith_map_filter f = fromMap_filter . Map.map f
+{-# INLINABLE fromMapWith_map_filter #-}
+
+fromMapWith_map_filter_if_any_null
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith_map_filter_if_any_null f = fromMap_filter_if_any_null . Map.map f
+{-# INLINABLE fromMapWith_map_filter_if_any_null #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
