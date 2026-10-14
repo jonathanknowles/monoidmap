@@ -37,7 +37,7 @@ import Data.Ord
 import Data.Semigroup
     ( Semigroup ((<>)), stimes )
 import Prelude
-    ( Integer, Num, even, id, odd, otherwise, (<$>), (^), (+) )
+    ( Integer, Num, even, odd, (<$>), (^), (+) )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
@@ -86,19 +86,18 @@ main = do
             , ("all nulls",          om_null_all)
             ]
         fromMapImplementations =
-            [ ("fromMap_mapMaybe",           MMap.fromMap_mapMaybe)
-            , ("fromMap_filter",             MMap.fromMap_filter)
+            [ ("fromMap_filter",             MMap.fromMap_filter)
             , ("fromMap_filter_if_any_null", MMap.fromMap_filter_if_any_null)
+            , ("fromMap_mapMaybe",           MMap.fromMap_mapMaybe)
             ]
-        benchFromMapCase (label, input) = bgroup label
-            [ relativeToBaseline name $ bench name $ nf f input
+        benchFromMapCase (label, input) = bgroup label $
+            bench "fromMap" (nf MMap.fromMap input) :
+            [ bcompare relativeToFromMap $ bench name $ nf f input
             | (name, f) <- fromMapImplementations
             ]
           where
-            relativeToBaseline name
-                | name == "fromMap_mapMaybe" = id
-                | otherwise = bcompare $
-                    "$NF == \"fromMap_mapMaybe\" && $(NF-1) == \"" <> label <> "\""
+            relativeToFromMap =
+                "$NF == \"fromMap\" && $(NF-1) == \"" <> label <> "\""
 
     defaultMain
         [ bgroup "fromMap"
