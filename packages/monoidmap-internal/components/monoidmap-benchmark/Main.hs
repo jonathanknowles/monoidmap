@@ -99,6 +99,9 @@ main = do
             [ ( "fromMapWith_mapMaybe"
               , MMap.fromMapWith_mapMaybe double
               )
+            , ( "fromMapWith_map_filter"
+              , MMap.fromMapWith_map_filter double
+              )
             ]
         , bgroup "delete"
             [ bgroup "absent"

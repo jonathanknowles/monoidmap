@@ -33,6 +33,7 @@ module Data.MonoidMap.Internal
     , fromMap_filter_if_any_null
     , fromMap_mapMaybe
     , fromMapWith_mapMaybe
+    , fromMapWith_map_filter
 
     -- ** Deconstruction
     , toList
@@ -565,6 +566,11 @@ fromMapWith_mapMaybe
     :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith_mapMaybe f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
 {-# INLINABLE fromMapWith_mapMaybe #-}
+
+fromMapWith_map_filter
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith_map_filter f = fromMap_filter . Map.map f
+{-# INLINABLE fromMapWith_map_filter #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
