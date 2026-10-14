@@ -564,6 +564,7 @@ fromMapWith = fromMapWith_mapMaybe
 fromMapWith_mapMaybe
     :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith_mapMaybe f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
+{-# INLINABLE fromMapWith_mapMaybe #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
