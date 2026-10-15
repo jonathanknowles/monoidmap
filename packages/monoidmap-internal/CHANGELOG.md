@@ -1,3 +1,9 @@
+# 0.1.2.0
+
+- Improved the performance of `fromMap`, particularly for maps that
+  contain no `mempty` values. This also benefits `fromList`, `fromListWith`
+  and `fromSet`, which are defined in terms of `fromMap`.
+
 # 0.1.1.0
 
 - Added functions `nullifyKeysIn` and `nullifyKeysNotIn` to `MonoidMap`.
