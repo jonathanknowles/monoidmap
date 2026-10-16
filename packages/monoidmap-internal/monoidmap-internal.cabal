@@ -87,12 +87,11 @@ library
         components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
-        Data.MonoidMap.Internal.RecoveredMap
         Data.MonoidMap.Internal.Unsafe
     default-language:
         Haskell2010
 
-benchmark monoidmap-benchmark
+benchmark monoidmap-internal-benchmark
     import:
       , dependency-base
       , dependency-containers
@@ -106,7 +105,7 @@ benchmark monoidmap-benchmark
     type:
         exitcode-stdio-1.0
     hs-source-dirs:
-        components/monoidmap-benchmark
+        components/monoidmap-internal-benchmark
     main-is:
         Main.hs
     -- Report allocation and memory statistics for each benchmark:
@@ -152,7 +151,6 @@ test-suite monoidmap-test
         Data.MonoidMap.Internal.MembershipSpec
         Data.MonoidMap.Internal.PartitionSpec
         Data.MonoidMap.Internal.PrefixSpec
-        Data.MonoidMap.Internal.RecoveredMapSpec
         Data.MonoidMap.Internal.SingletonSpec
         Data.MonoidMap.Internal.SliceSpec
         Data.MonoidMap.Internal.SuffixSpec
