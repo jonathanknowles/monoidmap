@@ -8,6 +8,10 @@
 -- An ordinary left-biased map similar to 'Data.Map.Strict.Map', implemented in
 -- terms of 'MonoidMap'.
 --
+-- Since 'MonoidMap' is itself implemented in terms of 'Data.Map.Strict.Map',
+-- this module demonstrates that 'MonoidMap' and 'Data.Map.Strict.Map' are
+-- equally general: each can be used to implement the other.
+--
 module Data.MonoidMap.Examples.RecoveredMap
     ( Map
     , empty
