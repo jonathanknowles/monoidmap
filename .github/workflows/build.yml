@@ -173,6 +173,7 @@ jobs:
       - name: Benchmark
         run: >
           cabal bench all
+          -j1
           --builddir=${{ env.cabal-build-dir }}
           || true
 
