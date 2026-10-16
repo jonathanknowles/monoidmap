@@ -20,14 +20,24 @@ common dependency-base
     build-depends:base                          >= 4.14.3.0   && < 4.23
 common dependency-containers
     build-depends:containers                    >= 0.6.5.1    && < 0.9
+common dependency-deepseq
+    build-depends:deepseq                       >= 1.4.4.0    && < 1.6
 common dependency-hspec
     build-depends:hspec                         >= 2.10.9     && < 2.12
+common dependency-hspec-quickcheck-classes
+    build-depends:hspec-quickcheck-classes      >= 0.0.0.0    && < 0.1
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
 common dependency-monoidmap
     build-depends:monoidmap                     >= 0.0.4.4    && < 0.1
 common dependency-QuickCheck
     build-depends:QuickCheck                    >= 2.14.2     && < 2.20
+common dependency-quickcheck-classes
+    build-depends:quickcheck-classes            >= 0.6.5.0    && < 0.7
+common dependency-tasty-bench
+    build-depends:tasty-bench                   >= 0.3.2      && < 0.6
+common dependency-text
+    build-depends:text                          >= 1.2.4.1    && < 2.2
 
 common extensions
     default-extensions:
@@ -58,6 +68,7 @@ library
     import:
       , dependency-base
       , dependency-containers
+      , dependency-deepseq
       , dependency-monoid-subclasses
       , dependency-monoidmap
       , extensions
@@ -72,16 +83,41 @@ library
         Data.MonoidMap.Examples.MultiMap.Instances.MultiMap4
         Data.MonoidMap.Examples.MultiSet
         Data.MonoidMap.Examples.NestedMonoidMap
+        Data.MonoidMap.Examples.RecoveredMap
         Data.MonoidMap.Examples.Set.NonEmpty
     default-language:
         Haskell2010
+
+benchmark monoidmap-examples-benchmark
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-tasty-bench
+      , extensions
+    build-depends:
+      , monoidmap-examples
+    default-language:
+        Haskell2010
+    type:
+        exitcode-stdio-1.0
+    hs-source-dirs:
+        components/monoidmap-examples-benchmark
+    main-is:
+        Main.hs
+    -- Report allocation and memory statistics for each benchmark:
+    ghc-options:
+        "-with-rtsopts=-T"
 
 test-suite monoidmap-examples-test
     import:
       , dependency-base
       , dependency-containers
       , dependency-hspec
+      , dependency-hspec-quickcheck-classes
       , dependency-QuickCheck
+      , dependency-quickcheck-classes
+      , dependency-text
       , extensions
     build-depends:
       , monoidmap-examples
@@ -93,7 +129,9 @@ test-suite monoidmap-examples-test
         components/monoidmap-examples-test
     other-modules:
         Data.MonoidMap.Examples.MultiMapSpec
+        Data.MonoidMap.Examples.RecoveredMapSpec
         SpecHook
+        Test.Common
     type:
         exitcode-stdio-1.0
     default-language:
