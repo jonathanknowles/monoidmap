@@ -96,7 +96,9 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+            # TODO: Switch back to `macOS-latest`.
+            # https://github.com/jonathanknowles/monoidmap/issues/308
+          - macOS-15
           - windows-latest
         cabal:
           - '3.16'
