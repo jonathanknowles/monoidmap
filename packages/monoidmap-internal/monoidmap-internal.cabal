@@ -113,6 +113,27 @@ benchmark monoidmap-benchmark
     ghc-options:
         "-with-rtsopts=-T"
 
+benchmark monoidmap-internal-benchmark
+    import:
+      , dependency-base
+      , dependency-containers
+      , dependency-deepseq
+      , dependency-tasty-bench
+      , extensions
+    build-depends:
+      , monoidmap-internal
+    default-language:
+        Haskell2010
+    type:
+        exitcode-stdio-1.0
+    hs-source-dirs:
+        components/monoidmap-internal-benchmark
+    main-is:
+        Main.hs
+    -- Report allocation and memory statistics for each benchmark:
+    ghc-options:
+        "-with-rtsopts=-T"
+
 test-suite monoidmap-test
     import:
       , dependency-base
