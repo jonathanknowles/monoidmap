@@ -110,6 +110,10 @@ jobs:
           - '9.10'
           - '9.12'
           - '9.14'
+        # Only run Windows and macOS as part of the nightly build.
+        exclude:
+          - os: ${{ github.event_name != 'schedule' && 'macOS-15' || '' }}
+          - os: ${{ github.event_name != 'schedule' && 'windows-latest' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
