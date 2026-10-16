@@ -46,8 +46,6 @@ common dependency-quickcheck-quid
     build-depends:quickcheck-quid               >= 0.0.1.7    && < 0.1
 common dependency-tasty-bench
     build-depends:tasty-bench                   >= 0.3.2      && < 0.6
-common dependency-tasty-hunit
-    build-depends:tasty-hunit                   >= 0.10.0.3   && < 0.11
 common dependency-text
     build-depends:text                          >= 1.2.4.1    && < 2.2
 
@@ -100,7 +98,6 @@ benchmark monoidmap-benchmark
       , dependency-containers
       , dependency-deepseq
       , dependency-tasty-bench
-      , dependency-tasty-hunit
       , extensions
     build-depends:
       , monoidmap-internal
