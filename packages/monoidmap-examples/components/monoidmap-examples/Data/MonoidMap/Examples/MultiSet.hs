@@ -7,7 +7,8 @@
 -- See: https://en.wikipedia.org/wiki/Multiset
 --
 module Data.MonoidMap.Examples.MultiSet
-    ( fromList
+    ( MultiSet
+    , fromList
     , toList
     , null
     , member
