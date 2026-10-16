@@ -189,9 +189,9 @@ main = do
             ]
         , bgroup "mapAccumLWithKey"
             [ bench "Data.Map.Strict" $
-                nf (mapAccumL (\s v -> (s + v, v)) 0) om_natural
+                nf (mapAccumLWithKey (\s k v -> (s + k + v, v)) 0) om_natural
             , bench "RecoveredMap" $
-                nf (mapAccumL (\s v -> (s + v, v)) 0) rm_natural
+                nf (mapAccumLWithKey (\s k v -> (s + k + v, v)) 0) rm_natural
             ]
         , bgroup "mapAccumRWithKey"
             [ bench "Data.Map.Strict" $
