@@ -5,8 +5,8 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- An ordinary left-biased map similar to 'Map', implemented in terms of
--- 'MonoidMap'.
+-- An ordinary left-biased map similar to 'Data.Map.Strict.Map', implemented in
+-- terms of 'MonoidMap'.
 --
 module Data.MonoidMap.Examples.RecoveredMap
     ( Map
@@ -49,7 +49,8 @@ import Data.Set
 import qualified Data.MonoidMap as MonoidMap
 
 newtype Map k v = Map
-    --  'First' is used to mimic the left-biased nature of 'Data.Map':
+    --  'First' is used to mimic the left-biased nature of
+    --  'Data.Map.Strict.Map':
     {unMap :: MonoidMap k (First v)}
     deriving newtype (Eq, NFData, Monoid)
 
