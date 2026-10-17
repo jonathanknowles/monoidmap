@@ -101,7 +101,6 @@ test-suite monoidmap-test
       , dependency-hspec
       , dependency-hspec-quickcheck-classes
       , dependency-monoid-subclasses
-      , dependency-monoidmap-internal
       , dependency-pretty-show
       , dependency-QuickCheck
       , dependency-quickcheck-classes
