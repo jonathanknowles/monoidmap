@@ -89,6 +89,7 @@ test-suite monoidmap-test
     hs-source-dirs:
         components/monoidmap-test
     other-modules:
+        Data.MonoidMap.CoercionSpec
         Test.Hspec.TypeError
     type:
         exitcode-stdio-1.0
