@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Internal.SliceSpec
+module Data.MonoidMap.SliceSpec
     ( spec
     , Slice (..)
     ) where
@@ -21,7 +21,7 @@ import Data.Function
     ( (&) )
 import Data.Monoid.Null
     ( MonoidNull )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap, nonNullCount )
 import Data.Proxy
     ( Proxy (..) )
@@ -40,7 +40,7 @@ import Test.Hspec
 import Test.QuickCheck
     ( Arbitrary (..), Gen, Property, choose, cover, oneof, (===) )
 
-import qualified Data.MonoidMap.Internal as MonoidMap
+import qualified Data.MonoidMap as MonoidMap
 
 spec :: Spec
 spec = describe "Slicing" $ do

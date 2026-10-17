@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Internal.PrefixSpec
+module Data.MonoidMap.SuffixSpec
     ( spec
     ) where
 
@@ -18,19 +18,19 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )
 import Data.Semigroup.Cancellative
-    ( LeftReductive (..) )
+    ( RightReductive (..) )
 import Test.Common
     ( Key
     , Test
     , TestValueType (TestValueType)
     , makeSpec
     , property
-    , testValueTypesLeftReductive
+    , testValueTypesRightReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
@@ -40,41 +40,41 @@ import Test.QuickCheck
 import qualified Test.QuickCheck as QC
 
 spec :: Spec
-spec = describe "Prefixes" $ do
+spec = describe "Suffixes" $ do
 
-    forM_ testValueTypesLeftReductive $
+    forM_ testValueTypesRightReductive $
         \(TestValueType p) -> specFor (Proxy @Key) p
 
 specFor
-    :: forall k v. (Test k v, LeftReductive v) => Proxy k -> Proxy v -> Spec
+    :: forall k v. (Test k v, RightReductive v) => Proxy k -> Proxy v -> Spec
 specFor = makeSpec $ do
-    it "prop_stripPrefix_isJust" $
-        prop_stripPrefix_isJust
+    it "prop_stripSuffix_isJust" $
+        prop_stripSuffix_isJust
             @k @v & property
-    it "prop_stripPrefix_mappend" $
-        prop_stripPrefix_mappend
+    it "prop_stripSuffix_mappend" $
+        prop_stripSuffix_mappend
             @k @v & property
 
-prop_stripPrefix_isJust
-    :: (Test k v, LeftReductive v)
+prop_stripSuffix_isJust
+    :: (Test k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
-prop_stripPrefix_isJust m1 m2 =
-    isJust (stripPrefix m1 m2) === m1 `isPrefixOf` m2
+prop_stripSuffix_isJust m1 m2 =
+    isJust (stripSuffix m1 m2) === m1 `isSuffixOf` m2
     & cover 1
-        (m1 `isPrefixOf` m2)
-        "m1 `isPrefixOf` m2"
+        (m1 `isSuffixOf` m2)
+        "m1 `isSuffixOf` m2"
 
-prop_stripPrefix_mappend
-    :: (Test k v, LeftReductive v)
+prop_stripSuffix_mappend
+    :: (Test k v, RightReductive v)
     => MonoidMap k v
     -> MonoidMap k v
     -> Property
-prop_stripPrefix_mappend m1 m2 = QC.property $
+prop_stripSuffix_mappend m1 m2 = QC.property $
     all
-        (\r -> m1 <> r == m2)
-        (stripPrefix m1 m2)
+        (\r -> r <> m1 == m2)
+        (stripSuffix m1 m2)
     & cover 1
-        (isJust (stripPrefix m1 m2))
-        "isJust (stripPrefix m1 m2)"
+        (isJust (stripSuffix m1 m2))
+        "isJust (stripSuffix m1 m2)"
