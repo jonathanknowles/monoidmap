@@ -1,3 +1,4 @@
+{-# LANGUAGE RoleAnnotations #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_HADDOCK not-home #-}
@@ -262,6 +263,31 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
         via Map k
     deriving (Eq2, Show2, Bifoldable)
         via Map
+
+-- Without an explicit type role annotation, the following roles would be
+-- inferred:
+--
+--     type role MonoidMap nominal representational
+--
+-- These roles would be inherited from 'Map', which has these roles:
+--
+--     type role Map nominal representational
+--
+-- A representational role for the value type of a 'Map' is fine, because the
+-- validity of a 'Map' does not depend on any property of its value type.
+--
+-- However, the validity of a 'MonoidMap' does depend on a property of its
+-- value type: its 'mempty' value. A representational role would allow users
+-- to coerce between value types with the same representation but different
+-- 'mempty' values.
+--
+-- For example, users could coerce a 'MonoidMap' k ('Sum' 'Int') to a
+-- 'MonoidMap' k ('Product' 'Int'), and thereby construct a map that contains
+-- 'mempty' values.
+--
+-- So we must instead choose a nominal role for the value type of 'MonoidMap'.
+--
+type role MonoidMap nominal nominal
 
 -- Internal alias used when extra brevity is required.
 type MM = MonoidMap
