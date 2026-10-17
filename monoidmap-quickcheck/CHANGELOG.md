@@ -1,3 +1,7 @@
+# 0.0.0.7
+
+- Revised version bounds for dependencies.
+
 # 0.0.0.6
 
 - Updated links to source repository in package metadata.
