@@ -6,7 +6,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Internal.SingletonSpec
+module Data.MonoidMap.SingletonSpec
     ( spec
     ) where
 

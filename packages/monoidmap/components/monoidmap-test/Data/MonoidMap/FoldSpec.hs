@@ -2,7 +2,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Internal.FoldSpec
+module Data.MonoidMap.FoldSpec
     ( spec
     ) where
 

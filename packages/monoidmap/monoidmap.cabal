@@ -119,26 +119,26 @@ test-suite monoidmap-test
         components/monoidmap-test
     other-modules:
         SpecHook
+        Data.MonoidMap.AccessSpec
+        Data.MonoidMap.ClassSpec
         Data.MonoidMap.CoercionSpec
-        Data.MonoidMap.Internal.AccessSpec
-        Data.MonoidMap.Internal.ClassSpec
-        Data.MonoidMap.Internal.ComparisonSpec
-        Data.MonoidMap.Internal.ConversionSpec
-        Data.MonoidMap.Internal.DistributivitySpec
-        Data.MonoidMap.Internal.ExampleSpec
-        Data.MonoidMap.Internal.FilterSpec
-        Data.MonoidMap.Internal.FoldSpec
-        Data.MonoidMap.Internal.IntersectionSpec
-        Data.MonoidMap.Internal.MapSpec
-        Data.MonoidMap.Internal.MembershipSpec
-        Data.MonoidMap.Internal.PartitionSpec
-        Data.MonoidMap.Internal.PrefixSpec
-        Data.MonoidMap.Internal.SingletonSpec
-        Data.MonoidMap.Internal.SliceSpec
-        Data.MonoidMap.Internal.SuffixSpec
-        Data.MonoidMap.Internal.TraversalSpec
-        Data.MonoidMap.Internal.UnionSpec
-        Data.MonoidMap.Internal.ValiditySpec
+        Data.MonoidMap.ComparisonSpec
+        Data.MonoidMap.ConversionSpec
+        Data.MonoidMap.DistributivitySpec
+        Data.MonoidMap.ExampleSpec
+        Data.MonoidMap.FilterSpec
+        Data.MonoidMap.FoldSpec
+        Data.MonoidMap.IntersectionSpec
+        Data.MonoidMap.MapSpec
+        Data.MonoidMap.MembershipSpec
+        Data.MonoidMap.PartitionSpec
+        Data.MonoidMap.PrefixSpec
+        Data.MonoidMap.SingletonSpec
+        Data.MonoidMap.SliceSpec
+        Data.MonoidMap.SuffixSpec
+        Data.MonoidMap.TraversalSpec
+        Data.MonoidMap.UnionSpec
+        Data.MonoidMap.ValiditySpec
         Test.Combinators.NonZero
         Test.Combinators.OftenEqual
         Test.Common
