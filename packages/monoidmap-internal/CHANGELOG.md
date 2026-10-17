@@ -1,3 +1,15 @@
+# 0.2.0.0
+
+- Changed the role of the value type parameter of `MonoidMap` from
+  `representational` to `nominal`. This prevents coercions between
+  `MonoidMap` types with different value types, which could produce maps
+  that contain `mempty` values.
+
+  This is a breaking change: code that performs such coercions will no
+  longer compile.
+
+- Moved the `RecoveredMap` module to the `monoidmap-examples` package.
+
 # 0.1.2.0
 
 - Improved the performance of `fromMap`, particularly for maps that
