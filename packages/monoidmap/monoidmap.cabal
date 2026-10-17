@@ -79,6 +79,7 @@ library
 test-suite monoidmap-test
     import:
       , dependency-base
+      , dependency-deepseq
       , dependency-hspec
       , extensions
     build-depends:
@@ -87,6 +88,8 @@ test-suite monoidmap-test
         Spec.hs
     hs-source-dirs:
         components/monoidmap-test
+    other-modules:
+        Test.Hspec.TypeError
     type:
         exitcode-stdio-1.0
     default-language:
