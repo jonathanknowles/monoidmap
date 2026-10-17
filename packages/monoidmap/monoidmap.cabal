@@ -25,6 +25,8 @@ common dependency-deepseq
     build-depends:deepseq                       >= 1.4.4.0    && < 1.6
 common dependency-groups
     build-depends:groups                        >= 0.5.3      && < 0.6
+common dependency-hspec
+    build-depends:hspec                         >= 2.10.9     && < 2.12
 common dependency-monoid-subclasses
     build-depends:monoid-subclasses             >= 1.2.3      && < 1.3
 common dependency-monoidmap-internal
@@ -73,3 +75,25 @@ library
         Data.MonoidMap
     default-language:
         Haskell2010
+
+test-suite monoidmap-test
+    import:
+      , dependency-base
+      , dependency-deepseq
+      , dependency-hspec
+      , extensions
+    build-depends:
+      , monoidmap
+    main-is:
+        Spec.hs
+    hs-source-dirs:
+        components/monoidmap-test
+    other-modules:
+        Data.MonoidMap.CoercionSpec
+        Test.Hspec.TypeError
+    type:
+        exitcode-stdio-1.0
+    default-language:
+        Haskell2010
+    build-tool-depends:
+        hspec-discover:hspec-discover ==2.*
