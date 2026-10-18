@@ -4,14 +4,14 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Internal.ClassSpec
+module Data.MonoidMap.ClassSpec
     where
 
 import Prelude
 
 import Data.Monoid
     ( Product (..), Sum (..) )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap )
 import Data.Proxy
     ( Proxy (..) )

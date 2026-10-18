@@ -7,7 +7,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
-module Data.MonoidMap.Internal.DistributivitySpec
+module Data.MonoidMap.DistributivitySpec
     ( spec
     ) where
 
@@ -21,7 +21,7 @@ import Data.Function
     ( (&) )
 import Data.Maybe
     ( isJust )
-import Data.MonoidMap.Internal
+import Data.MonoidMap
     ( MonoidMap, get )
 import Data.Proxy
     ( Proxy (..) )
