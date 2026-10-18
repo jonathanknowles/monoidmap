@@ -227,8 +227,6 @@ import Data.Semigroup.Cancellative
     )
 import Data.Set
     ( Set )
-import Data.Typeable
-    ( Typeable )
 import GHC.Exts
     ( IsList (Item) )
 import NoThunks.Class
@@ -269,7 +267,6 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
           -- ^ @since monoidmap-0.0.0.0
         , NoThunks
           -- ^ @since monoidmap-0.0.0.0
-        , Typeable
         )
         via Map k v
     deriving
