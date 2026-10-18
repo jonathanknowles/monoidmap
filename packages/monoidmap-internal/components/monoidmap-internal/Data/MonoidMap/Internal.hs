@@ -256,12 +256,39 @@ import qualified Data.Semigroup.Cancellative as C
 -- Type
 --------------------------------------------------------------------------------
 
+-- |
+-- @since monoidmap-0.0.0.0
+--
 newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
-    deriving (Eq, Show, NFData, NoThunks, Typeable)
+    deriving
+        ( Eq
+          -- ^ @since monoidmap-0.0.0.0
+        , Show
+          -- ^ @since monoidmap-0.0.0.0
+        , NFData
+          -- ^ @since monoidmap-0.0.0.0
+        , NoThunks
+          -- ^ @since monoidmap-0.0.0.0
+        , Typeable
+        )
         via Map k v
-    deriving (Eq1, Show1, Foldable)
+    deriving
+        ( Eq1
+          -- ^ @since monoidmap-0.0.0.0
+        , Show1
+          -- ^ @since monoidmap-0.0.0.0
+        , Foldable
+          -- ^ @since monoidmap-0.0.0.0
+        )
         via Map k
-    deriving (Eq2, Show2, Bifoldable)
+    deriving
+        ( Eq2
+          -- ^ @since monoidmap-0.0.0.0
+        , Show2
+          -- ^ @since monoidmap-0.0.0.0
+        , Bifoldable
+          -- ^ @since monoidmap-0.0.0.0
+        )
         via Map
 
 -- Without an explicit type role annotation, the following roles would be
@@ -316,6 +343,7 @@ applyNonNull2 = coerce
 -- Instances
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     IsList (MonoidMap k v)
   where
@@ -323,6 +351,7 @@ instance (Ord k, MonoidNull v) =>
     fromList = fromList
     toList = toList
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
@@ -335,6 +364,7 @@ instance (Ord k, Read k, MonoidNull v, Read v) =>
 -- This implementation is closely based on the 'Data' instance for 'Map'
 -- provided by the 'containers' package (version 0.8).
 --
+-- | @since monoidmap-0.0.5.0
 instance (Data k, Data v, Ord k, MonoidNull v) => Data (MonoidMap k v) where
     dataTypeOf _ = dataType
     dataCast2 f = gcast2 f
@@ -354,6 +384,7 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 -- Instances: Semigroup and subclasses
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     Semigroup (MonoidMap k v)
   where
@@ -362,32 +393,39 @@ instance (Ord k, MonoidNull v) =>
     stimes 1 = id
     stimes n = map (stimes n)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Commutative v) =>
     Commutative (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isPrefixOf
     stripPrefix = stripPrefix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSuffixOf
     stripSuffix = stripSuffix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
     (</>) = minusMaybe
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightCancellative v) =>
     RightCancellative (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Cancellative v) =>
     Cancellative (MonoidMap k v)
 
@@ -395,35 +433,43 @@ instance (Ord k, MonoidNull v, Cancellative v) =>
 -- Instances: Monoid and subclasses
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     Monoid (MonoidMap k v)
   where
     mempty = empty
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, PositiveMonoid v) =>
     PositiveMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
     LeftDistributiveGCDMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
     RightDistributiveGCDMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
@@ -432,22 +478,27 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     stripSuffixOverlap = stripSuffixOverlap
     stripOverlap = stripOverlap
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = intersection
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
     DistributiveGCDMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)
   where
     lcm = union
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveLCMMonoid v) =>
     DistributiveLCMMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
@@ -457,6 +508,7 @@ instance (Ord k, MonoidNull v, Monus v) =>
 -- Instances: Group and subclasses
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Group v) =>
     Group (MonoidMap k v)
   where
@@ -464,6 +516,7 @@ instance (Ord k, MonoidNull v, Group v) =>
     (~~) = minus
     pow = power
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Abelian v) =>
     Abelian (MonoidMap k v)
 
@@ -481,6 +534,8 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 --
 -- Provides the definition of 'mempty' for the 'MonoidMap' instance of
 -- 'Monoid'.
+--
+-- @since monoidmap-0.0.0.0
 --
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
@@ -512,6 +567,8 @@ empty = MonoidMap Map.empty
 -- 'fromList' [(1,"abc"), (2,"xyz")]
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
 
@@ -529,6 +586,8 @@ fromList = fromListWith (<>)
 --     'maybe' 'mempty' ('F.foldl1' f)
 --         ('NE.nonEmpty' ('snd' '<$>' 'L.filter' (('==' k) . fst) kvs))
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 fromListWith
     :: (Ord k, MonoidNull v)
@@ -551,6 +610,8 @@ fromListWith f =
 --
 -- This function performs canonicalisation of 'C.null' values, and has a time
 -- complexity that is linear in the size of the map.
+--
+-- @since monoidmap-0.0.0.0
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = fromMap_filter_if_any_null
@@ -639,6 +700,8 @@ fromSet f = fromMap . Map.fromSet f
 -- 'nullify' k ('singleton' k v) '==' 'empty'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
 
@@ -663,6 +726,8 @@ singleton k v = set k v mempty
 -- 'L.sortOn' 'fst' ('toList' m) '==' 'toList' m
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toAscList . toMap
 
@@ -675,6 +740,8 @@ toList = Map.toAscList . toMap
 -- @
 -- 'fromMap' ('toMap' m) '==' m
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 toMap :: forall k v. MonoidMap k v -> Map k v
 toMap = coerce
@@ -692,6 +759,8 @@ toMap = coerce
 -- ∀ k. 'get' k 'empty' '==' 'mempty'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 
@@ -707,6 +776,8 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 -- 'get' k ('set' k v m) '==' v
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v (MonoidMap m) = MonoidMap $ case maybeNonNull v of
     Just v0 -> Map.insert k v0 m
@@ -719,6 +790,8 @@ set k v (MonoidMap m) = MonoidMap $ case maybeNonNull v of
 -- @
 -- 'adjust' f k m '==' 'set' k (f ('get' k m)) m
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 adjust
     :: (Ord k, MonoidNull v)
@@ -743,6 +816,8 @@ adjust f k (MonoidMap m) = MonoidMap $
 --     then 'mempty'
 --     else 'get' k1 m
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
@@ -809,6 +884,8 @@ nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
 -- Provides the definition of 'C.null' for the 'MonoidMap' instance of
 -- 'MonoidNull'.
 --
+-- @since monoidmap-0.0.0.0
+--
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
 
@@ -820,6 +897,8 @@ null = Map.null . toMap
 -- @
 -- 'nullKey' k m '==' 'C.null' ('get' k m)
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
@@ -833,6 +912,8 @@ nullKey k = Map.notMember k . toMap
 -- 'nonNull' m '==' (∃ k. 'nonNullKey' k m)
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
 
@@ -843,6 +924,8 @@ nonNull = not . null
 -- @
 -- 'nonNullCount' m '==' 'Set.size' ('nonNullKeys' m)
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
@@ -856,6 +939,8 @@ nonNullCount = Map.size . toMap
 -- 'nonNullKey' k m '==' 'not' ('C.null' ('get' k m))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
 
@@ -867,6 +952,8 @@ nonNullKey k = Map.member k . toMap
 -- @
 -- k '`Set.member`' ('nonNullKeys' m) '==' 'nonNullKey' k m
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
@@ -888,6 +975,8 @@ nonNullKeys = Map.keysSet . toMap
 -- 'take' n '==' 'fromList' . 'Prelude.take' n . 'toList'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 take :: Int -> MonoidMap k v -> MonoidMap k v
 take i (MonoidMap m) = MonoidMap (Map.take i m)
 
@@ -903,6 +992,8 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 -- @
 -- 'drop' n '==' 'fromList' . 'Prelude.drop' n . 'toList'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 drop :: Int -> MonoidMap k v -> MonoidMap k v
 drop i (MonoidMap m) = MonoidMap (Map.drop i m)
@@ -929,6 +1020,8 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 --     \\(m1, m2) -> 'Set.disjoint' ('nonNullKeys' m1) ('nonNullKeys' m2)
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
 splitAt i m = (take i m, drop i m)
 
@@ -954,6 +1047,8 @@ splitAt i m = (take i m, drop i m)
 -- 'filter' f m '==' 'fromList' ('L.filter' (f . 'snd') ('toList' m))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 
@@ -975,6 +1070,8 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
 -- 'filter' f m '==' 'fromList' ('L.filter' (f . 'fst') ('toList' m))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 
@@ -995,6 +1092,8 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 -- @
 -- 'filterWithKey' f m '==' 'fromList' ('L.filter' ('uncurry' f) ('toList' m))
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterWithKey f (MonoidMap m) =
@@ -1031,6 +1130,8 @@ filterWithKey f (MonoidMap m) =
 --         ('nonNullKeys' m2)
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partition (applyNonNull f) m
@@ -1061,6 +1162,8 @@ partition f (MonoidMap m) =
 --         ('nonNullKeys' m1)
 --         ('nonNullKeys' m2)
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 partitionKeys
     :: (k -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
@@ -1093,6 +1196,8 @@ partitionKeys f (MonoidMap m) =
 --         ('nonNullKeys' m1)
 --         ('nonNullKeys' m2)
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 partitionWithKey
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
@@ -1129,6 +1234,8 @@ partitionWithKey f (MonoidMap m) =
 --     (∀ g. 'map' (f . g) m '==' 'map' f ('map' g m))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 map
     :: MonoidNull v2
     => (v1 -> v2)
@@ -1153,6 +1260,8 @@ map f (MonoidMap m) =
 --         ('Set.filter' (('==') k . f) ('nonNullKeys' m))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 mapKeys
     :: (Ord k2, MonoidNull v)
     => (k1 -> k2)
@@ -1173,6 +1282,8 @@ mapKeys = mapKeysWith (<>)
 -- @
 -- 'mapKeysWith' c f '==' 'fromListWith' c . 'fmap' ('B.first' f) . 'toList'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 mapKeysWith
     :: (Ord k2, MonoidNull v)
@@ -1561,6 +1672,8 @@ mapAccumRWithKey f s0 m =
 -- m1 '`isSubmapOf`' m2 '==' (∀ k. 'isJust' ('get' k m2 '</>' 'get' k m1))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 isSubmapOf
     :: (Ord k, Monoid v, Reductive v)
     => MonoidMap k v
@@ -1594,6 +1707,8 @@ isSubmapOf = isSubmapOfBy $ \v1 v2 -> isJust (v2 </> v1)
 -- 'isSubmapOfBy' f m1 m2 '==' (∀ k. f ('get' k m1) ('get' k m2))
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 isSubmapOfBy
     :: (Ord k, Monoid v1, Monoid v2)
     => (v1 -> v2 -> Bool)
@@ -1623,6 +1738,8 @@ isSubmapOfBy leq m1 m2 =
 -- @
 -- 'disjoint' m1 m2 '==' (∀ k. 'C.null' ('C.gcd' ('get' k m1) ('get' k m2)))
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 disjoint
     :: (Ord k, GCDMonoid v, MonoidNull v)
@@ -1658,6 +1775,8 @@ disjoint = disjointBy (\v1 v2 -> C.null (C.gcd v1 v2))
 -- @
 -- 'disjointBy' f m1 m2 '==' (∀ k. f ('get' k m1) ('get' k m2))
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 disjointBy
     :: (Ord k, Monoid v1, Monoid v2)
@@ -1715,6 +1834,8 @@ disjointBy f m1 m2 =
 -- >>> 'append' m1 m2 '==' m3
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 append
     :: (Ord k, MonoidNull v)
@@ -1803,6 +1924,8 @@ append = merge MergeStrategy
 -- >>> m1 '`isPrefixOf`' m2
 -- 'False'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 isPrefixOf
     :: (Ord k, Monoid v, LeftReductive v)
@@ -1917,6 +2040,8 @@ isPrefixOf = isSubmapOfBy C.isPrefixOf
 -- >>> m1 '`isSuffixOf`' m2
 -- 'False'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 isSuffixOf
     :: (Ord k, Monoid v, RightReductive v)
@@ -2042,6 +2167,8 @@ isSuffixOf = isSubmapOfBy C.isSuffixOf
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 stripPrefix
     :: (Ord k, MonoidNull v, LeftReductive v)
     => MonoidMap k v
@@ -2133,6 +2260,8 @@ stripPrefix = mergeA MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 stripSuffix
     :: (Ord k, MonoidNull v, RightReductive v)
     => MonoidMap k v
@@ -2190,6 +2319,8 @@ stripSuffix = mergeA MergeStrategy
 -- >>> 'commonPrefix' __m1__ __m2__ '==' __m3__
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 commonPrefix
     :: (Ord k, MonoidNull v, LeftGCDMonoid v)
@@ -2251,6 +2382,8 @@ commonPrefix = merge MergeStrategy
 -- >>> 'commonSuffix' __m1__ __m2__ '==' __m3__
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 commonSuffix
     :: (Ord k, MonoidNull v, RightGCDMonoid v)
@@ -2351,6 +2484,8 @@ commonSuffix = merge MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 stripCommonPrefix
     :: (Ord k, MonoidNull v, LeftGCDMonoid v)
     => MonoidMap k v
@@ -2434,6 +2569,8 @@ stripCommonPrefix = C.stripCommonPrefix
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 stripCommonSuffix
     :: (Ord k, MonoidNull v, RightGCDMonoid v)
     => MonoidMap k v
@@ -2501,6 +2638,8 @@ stripCommonSuffix = C.stripCommonSuffix
 -- >>> 'overlap' m1 m2 '==' m3
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 overlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
@@ -2575,6 +2714,8 @@ overlap = merge MergeStrategy
 -- >>> 'stripPrefixOverlap' m1 m2 '==' m3
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 stripPrefixOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
@@ -2656,6 +2797,8 @@ stripPrefixOverlap = merge MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 stripSuffixOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
     => MonoidMap k v
@@ -2725,6 +2868,8 @@ stripSuffixOverlap = merge MergeStrategy
 --
 -- This function provides the definition of 'C.stripOverlap' for the
 -- 'MonoidMap' instance of 'OverlappingGCDMonoid'.
+--
+-- @since monoidmap-0.0.0.0
 --
 stripOverlap
     :: (Ord k, MonoidNull v, OverlappingGCDMonoid v)
@@ -2816,6 +2961,8 @@ stripOverlap m1 m2 =
 -- >>> 'intersection' m1 m2 '==' m3
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 intersection
     :: (Ord k, MonoidNull v, GCDMonoid v)
@@ -2920,6 +3067,8 @@ intersection = merge MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 union
     :: (Ord k, MonoidNull v, LCMMonoid v)
     => MonoidMap k v
@@ -2985,6 +3134,8 @@ union = merge MergeStrategy
 -- >>> m1 '`minus`' m2 '==' m3
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 minus
     :: (Ord k, MonoidNull v, Group v)
@@ -3121,6 +3272,8 @@ minus = merge MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 minusMaybe
     :: (Ord k, MonoidNull v, Reductive v)
     => MonoidMap k v
@@ -3253,6 +3406,8 @@ minusMaybe = mergeA MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 monus
     :: (Ord k, MonoidNull v, Monus v)
     => MonoidMap k v
@@ -3311,6 +3466,8 @@ monus = merge MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 invert
     :: (MonoidNull v, Group v)
     => MonoidMap k v
@@ -3358,6 +3515,8 @@ invert = map C.invert
 -- >>> m1 '`power`' (-1) '==' m2
 -- 'True'
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 power
     :: (Integral i, MonoidNull v, Group v)
@@ -3417,6 +3576,8 @@ power m i = map (`C.pow` i) m
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 intersectionWith
     :: (Ord k, MonoidNull v3)
     => (v1 -> v2 -> v3)
@@ -3442,6 +3603,8 @@ intersectionWith f = merge MergeStrategy
 -- 'runIdentity' ('intersectionWithA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
 --          '==' ('intersectionWith'    \    \   \    \  \        \ f  m1 m2)
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 intersectionWithA
     :: (Applicative f, Ord k, MonoidNull v3)
@@ -3509,6 +3672,8 @@ intersectionWithA f = mergeA MergeStrategy
 -- 'True'
 -- @
 --
+-- @since monoidmap-0.0.0.0
+--
 unionWith
     :: (Ord k, Monoid v1, Monoid v2, MonoidNull v3)
     => (v1 -> v2 -> v3)
@@ -3534,6 +3699,8 @@ unionWith f = merge MergeStrategy
 -- 'runIdentity' ('unionWithA' (('fmap' . 'fmap') 'Identity' f) m1 m2)
 --          '==' ('unionWith'    \    \   \    \  \        \ f  m1 m2)
 -- @
+--
+-- @since monoidmap-0.0.0.0
 --
 unionWithA
     :: (Applicative f, Ord k, Monoid v1, Monoid v2, MonoidNull v3)
