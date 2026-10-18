@@ -319,6 +319,7 @@ applyNonNull2 = coerce
 -- Instances
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     IsList (MonoidMap k v)
   where
@@ -326,6 +327,7 @@ instance (Ord k, MonoidNull v) =>
     fromList = fromList
     toList = toList
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
@@ -338,6 +340,7 @@ instance (Ord k, Read k, MonoidNull v, Read v) =>
 -- This implementation is closely based on the 'Data' instance for 'Map'
 -- provided by the 'containers' package (version 0.8).
 --
+-- | @since monoidmap-0.0.5.0
 instance (Data k, Data v, Ord k, MonoidNull v) => Data (MonoidMap k v) where
     dataTypeOf _ = dataType
     dataCast2 f = gcast2 f
@@ -357,6 +360,7 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 -- Instances: Semigroup and subclasses
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     Semigroup (MonoidMap k v)
   where
@@ -365,32 +369,39 @@ instance (Ord k, MonoidNull v) =>
     stimes 1 = id
     stimes n = map (stimes n)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Commutative v) =>
     Commutative (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isPrefixOf
     stripPrefix = stripPrefix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSuffixOf
     stripSuffix = stripSuffix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
     (</>) = minusMaybe
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
     LeftCancellative (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightCancellative v) =>
     RightCancellative (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Cancellative v) =>
     Cancellative (MonoidMap k v)
 
@@ -398,35 +409,43 @@ instance (Ord k, MonoidNull v, Cancellative v) =>
 -- Instances: Monoid and subclasses
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     Monoid (MonoidMap k v)
   where
     mempty = empty
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, PositiveMonoid v) =>
     PositiveMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
     LeftDistributiveGCDMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
     RightDistributiveGCDMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
@@ -435,22 +454,27 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     stripSuffixOverlap = stripSuffixOverlap
     stripOverlap = stripOverlap
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = intersection
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
     DistributiveGCDMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)
   where
     lcm = union
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveLCMMonoid v) =>
     DistributiveLCMMonoid (MonoidMap k v)
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
@@ -460,6 +484,7 @@ instance (Ord k, MonoidNull v, Monus v) =>
 -- Instances: Group and subclasses
 --------------------------------------------------------------------------------
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Group v) =>
     Group (MonoidMap k v)
   where
@@ -467,6 +492,7 @@ instance (Ord k, MonoidNull v, Group v) =>
     (~~) = minus
     pow = power
 
+-- | @since monoidmap-0.0.0.0
 instance (Ord k, MonoidNull v, Abelian v) =>
     Abelian (MonoidMap k v)
 
