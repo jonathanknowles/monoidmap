@@ -584,7 +584,7 @@ fromMap_mapMaybe = MonoidMap . Map.mapMaybe maybeNonNull
 -- This function performs canonicalisation of 'C.null' values, and has a time
 -- complexity that is linear in the size of the map.
 --
--- @since 0.0.4.0
+-- @since monoidmap-0.0.4.0
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith = fromMapWith_mapMaybe
@@ -620,7 +620,7 @@ fromMapWith_map_filter_if_any_null f = fromMap_filter_if_any_null . Map.map f
 -- This function performs canonicalisation of 'C.null' values, and has a time
 -- complexity that is linear in the 'Set.size' of the set.
 --
--- @since 0.0.2.0
+-- @since monoidmap-0.0.2.0
 --
 fromSet :: MonoidNull v => (k -> v) -> Set k -> MonoidMap k v
 fromSet f = fromMap . Map.fromSet f
@@ -765,7 +765,7 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 --     'fromMap' ('Map'.'Map.withoutKeys' ('toMap' m) ks)
 -- @
 --
--- @since 0.0.6.0
+-- @since monoidmap-0.0.6.0
 --
 nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
@@ -788,7 +788,7 @@ nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 --     'fromMap' ('Map'.'Map.restrictKeys' ('toMap' m) ks)
 -- @
 --
--- @since 0.0.6.0
+-- @since monoidmap-0.0.6.0
 --
 nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
@@ -1193,7 +1193,7 @@ mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
 -- (   'nullKey' k m) ==> ('get' k ('mapWithKey' f m) '==' 'mempty'       )
 -- @
 --
--- @since 0.0.3.0
+-- @since monoidmap-0.0.3.0
 --
 mapWithKey
     :: MonoidNull v2
@@ -1218,7 +1218,7 @@ mapWithKey f (MonoidMap m) =
 -- 'foldl' f r m '==' 'Map'.'Map.foldl' f r ('toMap' m)
 -- @
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldl :: (r -> v -> r) -> r -> MonoidMap k v -> r
 foldl =
@@ -1238,7 +1238,7 @@ foldl =
 -- 'foldr' f r m '==' 'Map'.'Map.foldr' f r ('toMap' m)
 -- @
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldr :: (v -> r -> r) -> r -> MonoidMap k v -> r
 foldr =
@@ -1258,7 +1258,7 @@ foldr =
 -- 'foldlWithKey' f r m '==' 'Map'.'Map.foldlWithKey' f r ('toMap' m)
 -- @
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldlWithKey :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
 foldlWithKey =
@@ -1278,7 +1278,7 @@ foldlWithKey =
 -- 'foldrWithKey' f r m '==' 'Map'.'Map.foldrWithKey' f r ('toMap' m)
 -- @
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldrWithKey :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
 foldrWithKey =
@@ -1298,7 +1298,7 @@ foldrWithKey =
 -- 'foldMapWithKey' f m '==' 'Map'.'Map.foldMapWithKey' f ('toMap' m)
 -- @
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldMapWithKey :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
 foldMapWithKey =
@@ -1318,7 +1318,7 @@ foldMapWithKey =
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
 foldl' =
@@ -1334,7 +1334,7 @@ foldl' =
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldr' :: (v -> r -> r) -> r -> MonoidMap k v -> r
 foldr' =
@@ -1350,7 +1350,7 @@ foldr' =
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
 foldlWithKey' =
@@ -1366,7 +1366,7 @@ foldlWithKey' =
 -- Each application of the operator is evaluated before using the result in the
 -- next application. This function is strict in the starting value.
 --
--- @since 0.0.1.7
+-- @since monoidmap-0.0.1.7
 --
 foldrWithKey' :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
 foldrWithKey' =
@@ -1382,7 +1382,7 @@ foldrWithKey' =
 -- Each application of `mappend` is evaluated before using the result in the
 -- next application.
 --
--- @since 0.0.1.8
+-- @since monoidmap-0.0.1.8
 --
 foldMapWithKey' :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
 foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
@@ -1401,7 +1401,7 @@ foldMapWithKey' f = foldlWithKey' (\r k v -> r <> f k v) mempty
 -- 'fmap' 'fromMap' ('Traversable'.'Traversable.traverse' f ('toMap' m))
 -- @
 --
--- @since 0.0.1.9
+-- @since monoidmap-0.0.1.9
 --
 traverse
     :: Applicative t
@@ -1422,7 +1422,7 @@ traverse f = traverseWithKey (const f)
 -- 'fmap' 'fromMap' ('Map'.'Map.traverseWithKey' f ('toMap' m))
 -- @
 --
--- @since 0.0.1.9
+-- @since monoidmap-0.0.1.9
 --
 traverseWithKey
     :: Applicative t
@@ -1446,7 +1446,7 @@ traverseWithKey f (MonoidMap m) =
 -- 'fmap' 'fromMap' ('Traversable'.'Traversable.mapAccumL' f s ('toMap' m))
 -- @
 --
--- @since 0.0.1.9
+-- @since monoidmap-0.0.1.9
 --
 mapAccumL
     :: MonoidNull v2
@@ -1472,7 +1472,7 @@ mapAccumL f s m =
 -- 'fmap' 'fromMap' ('Traversable'.'Traversable.mapAccumR' f s ('toMap' m))
 -- @
 --
--- @since 0.0.1.9
+-- @since monoidmap-0.0.1.9
 --
 mapAccumR
     :: MonoidNull v2
@@ -1498,7 +1498,7 @@ mapAccumR f s m =
 -- 'fmap' 'fromMap' ('Map'.'Map.mapAccumWithKey' f s ('toMap' m))
 -- @
 --
--- @since 0.0.1.9
+-- @since monoidmap-0.0.1.9
 --
 mapAccumLWithKey
     :: MonoidNull v2
@@ -1524,7 +1524,7 @@ mapAccumLWithKey f s0 m =
 -- 'fmap' 'fromMap' ('Map'.'Map.mapAccumRWithKey' f s ('toMap' m))
 -- @
 --
--- @since 0.0.1.9
+-- @since monoidmap-0.0.1.9
 --
 mapAccumRWithKey
     :: MonoidNull v2
