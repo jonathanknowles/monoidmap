@@ -260,11 +260,35 @@ import qualified Data.Semigroup.Cancellative as C
 -- @since monoidmap-0.0.0.0
 --
 newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
-    deriving (Eq, Show, NFData, NoThunks, Typeable)
+    deriving
+        ( Eq
+          -- ^ @since monoidmap-0.0.0.0
+        , Show
+          -- ^ @since monoidmap-0.0.0.0
+        , NFData
+          -- ^ @since monoidmap-0.0.0.0
+        , NoThunks
+          -- ^ @since monoidmap-0.0.0.0
+        , Typeable
+        )
         via Map k v
-    deriving (Eq1, Show1, Foldable)
+    deriving
+        ( Eq1
+          -- ^ @since monoidmap-0.0.0.0
+        , Show1
+          -- ^ @since monoidmap-0.0.0.0
+        , Foldable
+          -- ^ @since monoidmap-0.0.0.0
+        )
         via Map k
-    deriving (Eq2, Show2, Bifoldable)
+    deriving
+        ( Eq2
+          -- ^ @since monoidmap-0.0.0.0
+        , Show2
+          -- ^ @since monoidmap-0.0.0.0
+        , Bifoldable
+          -- ^ @since monoidmap-0.0.0.0
+        )
         via Map
 
 -- Without an explicit type role annotation, the following roles would be
