@@ -357,6 +357,15 @@ fromNonNullMap :: Map k (NonNull v) -> Map k v
 fromNonNullMap = coerce
 {-# INLINE fromNonNullMap #-}
 
+-- | /Unsafely/ converts an ordinary map into a map of non-null values.
+--
+-- This function /expects/ but does /not/ check that no value in the given map
+-- is 'C.null'. It must only be applied to maps that satisfy this condition.
+--
+unsafeToNonNullMap :: Map k v -> Map k (NonNull v)
+unsafeToNonNullMap = coerce
+{-# INLINE unsafeToNonNullMap #-}
+
 --------------------------------------------------------------------------------
 -- Non-null maps
 --------------------------------------------------------------------------------
@@ -645,15 +654,16 @@ fromMap = fromMap_filter_if_any_null
 {-# INLINABLE fromMap #-}
 
 fromMap_filter :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap_filter = coerce . Map.filter (\(!v) -> not (C.null v))
+fromMap_filter =
+    MonoidMap . unsafeToNonNullMap . Map.filter (\(!v) -> not (C.null v))
 {-# INLINABLE fromMap_filter #-}
 
 fromMap_filter_if_any_null :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap_filter_if_any_null m
     | F.any (\(!v) -> C.null v) m =
-        coerce $ Map.filter (\(!v) -> not (C.null v)) m
+        MonoidMap $ unsafeToNonNullMap $ Map.filter (\(!v) -> not (C.null v)) m
     | otherwise =
-        coerce m
+        MonoidMap $ unsafeToNonNullMap m
 {-# INLINABLE fromMap_filter_if_any_null #-}
 
 fromMap_mapMaybe :: MonoidNull v => Map k v -> MonoidMap k v
