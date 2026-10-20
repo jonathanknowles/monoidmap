@@ -353,6 +353,10 @@ applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
 applyNonNull2 = coerce
 {-# INLINE applyNonNull2 #-}
 
+fromNonNullMap :: Map k (NonNull v) -> Map k v
+fromNonNullMap = coerce
+{-# INLINE fromNonNullMap #-}
+
 --------------------------------------------------------------------------------
 -- Non-null maps
 --------------------------------------------------------------------------------
@@ -767,7 +771,8 @@ toList = Map.toAscList . toMap
 -- @since monoidmap-0.0.0.0
 --
 toMap :: forall k v. MonoidMap k v -> Map k v
-toMap = coerce
+toMap (MonoidMap m) = fromNonNullMap m
+{-# INLINE toMap #-}
 
 --------------------------------------------------------------------------------
 -- Lookup
@@ -1340,6 +1345,14 @@ mapWithKey f (MonoidMap m) =
         (\k v -> Identity $ maybeNonNull $ applyNonNull (f k) v) m
 
 --------------------------------------------------------------------------------
+-- Folding
+--------------------------------------------------------------------------------
+
+-- Note: the folding functions in this module are defined without any arguments
+-- on their left-hand sides so that the compiler can inline them even when they
+-- are not applied to all of their arguments.
+
+--------------------------------------------------------------------------------
 -- Lazy folding
 --------------------------------------------------------------------------------
 
@@ -1355,12 +1368,7 @@ mapWithKey f (MonoidMap m) =
 -- @since monoidmap-0.0.1.7
 --
 foldl :: (r -> v -> r) -> r -> MonoidMap k v -> r
-foldl =
-    (coerce
-        :: ((r -> v -> r) -> r ->       Map k v -> r)
-        -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldl
+foldl = \f r -> Map.foldl f r . toMap
 {-# INLINE foldl #-}
 
 -- | \(O(n)\). Folds over the values in the map using the given
@@ -1375,12 +1383,7 @@ foldl =
 -- @since monoidmap-0.0.1.7
 --
 foldr :: (v -> r -> r) -> r -> MonoidMap k v -> r
-foldr =
-    (coerce
-        :: ((v -> r -> r) -> r ->       Map k v -> r)
-        -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldr
+foldr = \f r -> Map.foldr f r . toMap
 {-# INLINE foldr #-}
 
 -- | \(O(n)\). Folds over the keys and values in the map using the given
@@ -1395,12 +1398,7 @@ foldr =
 -- @since monoidmap-0.0.1.7
 --
 foldlWithKey :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
-foldlWithKey =
-    (coerce
-        :: ((r -> k -> v -> r) -> r ->       Map k v -> r)
-        -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldlWithKey
+foldlWithKey = \f r -> Map.foldlWithKey f r . toMap
 {-# INLINE foldlWithKey #-}
 
 -- | \(O(n)\). Folds over the keys and values in the map using the given
@@ -1415,12 +1413,7 @@ foldlWithKey =
 -- @since monoidmap-0.0.1.7
 --
 foldrWithKey :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
-foldrWithKey =
-    (coerce
-        :: ((k -> v -> r -> r) -> r ->       Map k v -> r)
-        -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldrWithKey
+foldrWithKey = \f r -> Map.foldrWithKey f r . toMap
 {-# INLINE foldrWithKey #-}
 
 -- | \(O(n)\). Folds over the keys and values in the map using the given
@@ -1435,12 +1428,7 @@ foldrWithKey =
 -- @since monoidmap-0.0.1.7
 --
 foldMapWithKey :: Monoid r => (k -> v -> r) -> MonoidMap k v -> r
-foldMapWithKey =
-    (coerce
-        :: ((k -> v -> r) ->       Map k v -> r)
-        -> ((k -> v -> r) -> MonoidMap k v -> r)
-    )
-    Map.foldMapWithKey
+foldMapWithKey = \f -> Map.foldMapWithKey f . toMap
 {-# INLINE foldMapWithKey #-}
 
 --------------------------------------------------------------------------------
@@ -1455,12 +1443,7 @@ foldMapWithKey =
 -- @since monoidmap-0.0.1.7
 --
 foldl' :: (r -> v -> r) -> r -> MonoidMap k v -> r
-foldl' =
-    (coerce
-        :: ((r -> v -> r) -> r ->       Map k v -> r)
-        -> ((r -> v -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldl'
+foldl' = \f r -> Map.foldl' f r . toMap
 {-# INLINE foldl' #-}
 
 -- | \(O(n)\). A strict version of 'foldr'.
@@ -1471,12 +1454,7 @@ foldl' =
 -- @since monoidmap-0.0.1.7
 --
 foldr' :: (v -> r -> r) -> r -> MonoidMap k v -> r
-foldr' =
-    (coerce
-        :: ((v -> r -> r) -> r ->       Map k v -> r)
-        -> ((v -> r -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldr'
+foldr' = \f r -> Map.foldr' f r . toMap
 {-# INLINE foldr' #-}
 
 -- | \(O(n)\). A strict version of 'foldlWithKey'.
@@ -1487,12 +1465,7 @@ foldr' =
 -- @since monoidmap-0.0.1.7
 --
 foldlWithKey' :: (r -> k -> v -> r) -> r -> MonoidMap k v -> r
-foldlWithKey' =
-    (coerce
-        :: ((r -> k -> v -> r) -> r ->       Map k v -> r)
-        -> ((r -> k -> v -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldlWithKey'
+foldlWithKey' = \f r -> Map.foldlWithKey' f r . toMap
 {-# INLINE foldlWithKey' #-}
 
 -- | \(O(n)\). A strict version of 'foldrWithKey'.
@@ -1503,12 +1476,7 @@ foldlWithKey' =
 -- @since monoidmap-0.0.1.7
 --
 foldrWithKey' :: (k -> v -> r -> r) -> r -> MonoidMap k v -> r
-foldrWithKey' =
-    (coerce
-        :: ((k -> v -> r -> r) -> r ->       Map k v -> r)
-        -> ((k -> v -> r -> r) -> r -> MonoidMap k v -> r)
-    )
-    Map.foldrWithKey'
+foldrWithKey' = \f r -> Map.foldrWithKey' f r . toMap
 {-# INLINE foldrWithKey' #-}
 
 -- | \(O(n)\). A strict version of 'foldMapWithKey'.
