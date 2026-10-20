@@ -637,22 +637,15 @@ fromListWith f =
     -- /reverse order/, so we must flip the provided combining function.
     fromMap . Map.fromListWith (flip f)
 
--- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
+-- | Constructs a 'MonoidMap' from an ordinary 'Map', removing all 'C.null'
+--   values.
 --
--- Satisfies the following property for all possible keys __@k@__:
---
--- @
--- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' k m
--- @
---
--- This function performs canonicalisation of 'C.null' values, and has a time
--- complexity that is linear in the size of the map.
---
--- @since monoidmap-0.0.0.0
+-- This function selects which of the @fromMap_*@ implementations below is used
+-- by the public @fromMap@ function of the @monoidmap@ package.
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = fromMap_filter_if_any_null
-{-# INLINABLE fromMap #-}
+{-# INLINE fromMap #-}
 
 fromMap_filter :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap_filter =
@@ -671,23 +664,15 @@ fromMap_mapMaybe :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap_mapMaybe = MonoidMap . Map.mapMaybe maybeNonNull
 {-# INLINABLE fromMap_mapMaybe #-}
 
--- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
---   the given function to all values.
+-- | Constructs a 'MonoidMap' from an ordinary 'Map', applying the given
+--   function to all values, and removing all 'C.null' values.
 --
--- Satisfies the following property for all possible keys __@k@__:
---
--- @
--- 'get' k ('fromMapWith' f m) '==' 'maybe' 'mempty' f ('Map'.'Map.lookup' k m)
--- @
---
--- This function performs canonicalisation of 'C.null' values, and has a time
--- complexity that is linear in the size of the map.
---
--- @since monoidmap-0.0.4.0
+-- This function selects which of the @fromMapWith_*@ implementations below is
+-- used by the public @fromMapWith@ function of the @monoidmap@ package.
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith = fromMapWith_mapMaybe
-{-# INLINABLE fromMapWith #-}
+{-# INLINE fromMapWith #-}
 
 fromMapWith_mapMaybe
     :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2

@@ -162,6 +162,7 @@ import Prelude hiding
     )
 
 import Data.MonoidMap.Internal
+    hiding ( fromMap, fromMapWith )
 
 import Control.Applicative
     ( Applicative (..) )
@@ -236,6 +237,8 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified GHC.Exts as GHC
 import qualified Data.Traversable as Traversable
+
+import qualified Data.MonoidMap.Internal as Internal
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
@@ -500,3 +503,42 @@ import Data.Semigroup
 -- Defining monoidal operations in this way makes it possible to transform,
 -- combine, and compare maps in ways that are consistent with the algebraic
 -- properties of the underlying monoidal value type.
+
+--------------------------------------------------------------------------------
+-- Construction
+--------------------------------------------------------------------------------
+
+-- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromMap' m) '==' 'Map'.'Map.findWithDefault' 'mempty' k m
+-- @
+--
+-- This function performs canonicalisation of 'C.null' values, and has a time
+-- complexity that is linear in the size of the map.
+--
+-- @since monoidmap-0.0.0.0
+--
+fromMap :: MonoidNull v => Map k v -> MonoidMap k v
+fromMap = Internal.fromMap
+{-# INLINABLE fromMap #-}
+
+-- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
+--   the given function to all values.
+--
+-- Satisfies the following property for all possible keys __@k@__:
+--
+-- @
+-- 'get' k ('fromMapWith' f m) '==' 'maybe' 'mempty' f ('Map'.'Map.lookup' k m)
+-- @
+--
+-- This function performs canonicalisation of 'C.null' values, and has a time
+-- complexity that is linear in the size of the map.
+--
+-- @since monoidmap-0.0.4.0
+--
+fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith = Internal.fromMapWith
+{-# INLINABLE fromMapWith #-}
