@@ -18,6 +18,16 @@ module Data.MonoidMap.Internal
     -- * Types
       MonoidMap (..)
     , NonNull (..)
+    , NonNullMap (..)
+
+    -- * Non-null values
+    , maybeNonNull
+    , applyNonNull
+    , applyNonNull2
+
+    -- * Non-null maps
+    , fromNonNullMap
+    , unsafeToNonNullMap
 
     -- * General operations
 
