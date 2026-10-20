@@ -146,7 +146,102 @@ module Data.MonoidMap
     )
     where
 
+import Prelude hiding
+    ( drop
+    , filter
+    , foldl
+    , foldl'
+    , foldr
+    , lookup
+    , map
+    , null
+    , splitAt
+    , subtract
+    , take
+    , traverse
+    )
+
 import Data.MonoidMap.Internal
+
+import Control.Applicative
+    ( Applicative (..) )
+import Control.DeepSeq
+    ( NFData )
+import Data.Bifoldable
+    ( Bifoldable )
+import Data.Coerce
+    ( coerce )
+import Data.Data
+    ( Constr
+    , Data (dataCast2, dataTypeOf, gfoldl, gunfold, toConstr)
+    , DataType
+    , Fixity (Prefix)
+    , gcast2
+    , mkConstr
+    , mkDataType
+    )
+import Data.Function
+    ( (&) )
+import Data.Functor.Classes
+    ( Eq1, Eq2, Show1, Show2 )
+import Data.Functor.Identity
+    ( Identity (..) )
+import Data.Group
+    ( Abelian, Group )
+import Data.Map.Strict
+    ( Map, lookup )
+import Data.Maybe
+    ( fromMaybe, isJust )
+import Data.Monoid.GCD
+    ( DistributiveGCDMonoid
+    , GCDMonoid
+    , LeftDistributiveGCDMonoid
+    , LeftGCDMonoid
+    , OverlappingGCDMonoid
+    , RightDistributiveGCDMonoid
+    , RightGCDMonoid
+    )
+import Data.Monoid.LCM
+    ( DistributiveLCMMonoid, LCMMonoid )
+import Data.Monoid.Monus
+    ( Monus (..) )
+import Data.Monoid.Null
+    ( MonoidNull, PositiveMonoid )
+import Data.Semigroup
+    ( stimes )
+import Data.Semigroup.Cancellative
+    ( Cancellative
+    , Commutative
+    , LeftCancellative
+    , LeftReductive
+    , Reductive (..)
+    , RightCancellative
+    , RightReductive
+    )
+import Data.Set
+    ( Set )
+import GHC.Exts
+    ( IsList (Item) )
+import NoThunks.Class
+    ( NoThunks )
+import Text.Read
+    ( Read (..) )
+
+import qualified Data.Bifunctor as B
+import qualified Data.Foldable as F
+import qualified Data.List as L
+import qualified Data.List.NonEmpty as NE
+import qualified Data.Map.Merge.Strict as Map
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
+import qualified GHC.Exts as GHC
+import qualified Data.Traversable as Traversable
+
+import qualified Data.Group as C
+import qualified Data.Monoid.GCD as C
+import qualified Data.Monoid.LCM as C
+import qualified Data.Monoid.Null as C
+import qualified Data.Semigroup.Cancellative as C
 
 -- Imports for module documentation:
 
@@ -172,14 +267,6 @@ import Data.Ord
     ( Ord )
 import Data.Semigroup
     ( Semigroup ((<>)) )
-
-import qualified Data.Map.Strict as SMap
-import qualified Data.MonoidMap.Internal as MMap
-
-import qualified Data.Group as C
-import qualified Data.Monoid.GCD as C
-import qualified Data.Monoid.LCM as C
-import qualified Data.Monoid.Null as C
 
 --------------------------------------------------------------------------------
 -- Introduction
@@ -258,16 +345,16 @@ import qualified Data.Monoid.Null as C
 -- operations to query a key for its value, for both types:
 --
 -- @
---       'Map'.'SMap.lookup' :: \      \      k ->       'Map' k v -> 'Maybe' v
--- 'MonoidMap'.'MMap.get'    :: 'Monoid' v => k -> 'MonoidMap' k v -> \     \ v
+--       'Map'.'lookup' :: \      \      k ->       'Map' k v -> 'Maybe' v
+-- 'MonoidMap'.'get'    :: 'Monoid' v => k -> 'MonoidMap' k v -> \     \ v
 -- @
 --
 -- Whereas a standard 'Map' has a default value of 'Nothing', a 'MonoidMap' has
 -- a default value of 'mempty':
 --
 -- @
--- ∀ k.       'Map'.'SMap.lookup' k       'Map'.'SMap.empty' '==' 'Nothing'
--- ∀ k. 'MonoidMap'.'MMap.get'    k 'MonoidMap'.'MMap.empty' '==' 'mempty'
+-- ∀ k.       'Map'.'lookup' k 'mempty' '==' 'Nothing'
+-- ∀ k. 'MonoidMap'.'get'    k 'mempty' '==' 'mempty'
 -- @
 --
 -- In practice, the standard 'Map' type uses 'Maybe' to indicate the /presence/
@@ -283,7 +370,7 @@ import qualified Data.Monoid.Null as C
 --
 -- +-------------------------+--------------------------------------------+
 -- | @                       |                                            |
--- | 'Map'.'SMap.lookup' k m | Interpretation                             |
+-- | 'Map'.'lookup' k m      | Interpretation                             |
 -- | @                       |                                            |
 -- +=========================+============================================+
 -- | @                       | 'Map' __@m@__ has /no/ entry               |
@@ -301,7 +388,7 @@ import qualified Data.Monoid.Null as C
 --
 -- +------------------------------------+---+------------------------------+
 -- | @                                  |   | @                            |
--- | 'Map'.'SMap.lookup' k m            |   | 'MonoidMap'.'MMap.get' k m   |
+-- | 'Map'.'lookup' k m                 |   | 'MonoidMap'.'get' k m        |
 -- | @                                  |   | @                            |
 -- +====================================+===+==============================+
 -- | @                                  |   | @                            |
