@@ -522,7 +522,7 @@ import Data.Semigroup
 -- @since monoidmap-0.0.0.0
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = Internal.fromMap
+fromMap = MonoidMap . Internal.fromMap
 {-# INLINABLE fromMap #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
@@ -540,5 +540,5 @@ fromMap = Internal.fromMap
 -- @since monoidmap-0.0.4.0
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
-fromMapWith = Internal.fromMapWith
+fromMapWith f = MonoidMap . Internal.fromMapWith f
 {-# INLINABLE fromMapWith #-}

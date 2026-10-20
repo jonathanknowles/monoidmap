@@ -392,7 +392,7 @@ instance (Ord k, MonoidNull v) =>
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
-    readPrec = fromMap <$> readPrec
+    readPrec = MonoidMap . fromMap <$> readPrec
 
 --------------------------------------------------------------------------------
 -- Instances: Data
@@ -635,57 +635,57 @@ fromListWith
 fromListWith f =
     -- The 'Map.fromListWith' function combines values for duplicate keys in
     -- /reverse order/, so we must flip the provided combining function.
-    fromMap . Map.fromListWith (flip f)
+    MonoidMap . fromMap . Map.fromListWith (flip f)
 
--- | Constructs a 'MonoidMap' from an ordinary 'Map', removing all 'C.null'
---   values.
+-- | Constructs a map of non-null values from an ordinary 'Map', removing all
+--   'C.null' values.
 --
 -- This function selects which of the @fromMap_*@ implementations below is used
 -- by the public @fromMap@ function of the @monoidmap@ package.
 --
-fromMap :: MonoidNull v => Map k v -> MonoidMap k v
+fromMap :: MonoidNull v => Map k v -> Map k (NonNull v)
 fromMap = fromMap_filter_if_any_null
 {-# INLINE fromMap #-}
 
-fromMap_filter :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap_filter =
-    MonoidMap . unsafeToNonNullMap . Map.filter (\(!v) -> not (C.null v))
+fromMap_filter :: MonoidNull v => Map k v -> Map k (NonNull v)
+fromMap_filter = unsafeToNonNullMap . Map.filter (\(!v) -> not (C.null v))
 {-# INLINABLE fromMap_filter #-}
 
-fromMap_filter_if_any_null :: MonoidNull v => Map k v -> MonoidMap k v
+fromMap_filter_if_any_null :: MonoidNull v => Map k v -> Map k (NonNull v)
 fromMap_filter_if_any_null m
     | F.any (\(!v) -> C.null v) m =
-        MonoidMap $ unsafeToNonNullMap $ Map.filter (\(!v) -> not (C.null v)) m
+        unsafeToNonNullMap $ Map.filter (\(!v) -> not (C.null v)) m
     | otherwise =
-        MonoidMap $ unsafeToNonNullMap m
+        unsafeToNonNullMap m
 {-# INLINABLE fromMap_filter_if_any_null #-}
 
-fromMap_mapMaybe :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap_mapMaybe = MonoidMap . Map.mapMaybe maybeNonNull
+fromMap_mapMaybe :: MonoidNull v => Map k v -> Map k (NonNull v)
+fromMap_mapMaybe = Map.mapMaybe maybeNonNull
 {-# INLINABLE fromMap_mapMaybe #-}
 
--- | Constructs a 'MonoidMap' from an ordinary 'Map', applying the given
---   function to all values, and removing all 'C.null' values.
+-- | Constructs a map of non-null values from an ordinary 'Map', applying the
+--   given function to all values, and removing all 'C.null' values.
 --
 -- This function selects which of the @fromMapWith_*@ implementations below is
 -- used by the public @fromMapWith@ function of the @monoidmap@ package.
 --
-fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+fromMapWith
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
 fromMapWith = fromMapWith_mapMaybe
 {-# INLINE fromMapWith #-}
 
 fromMapWith_mapMaybe
-    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
-fromMapWith_mapMaybe f = MonoidMap . Map.mapMaybe (maybeNonNull . f)
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
+fromMapWith_mapMaybe f = Map.mapMaybe (maybeNonNull . f)
 {-# INLINABLE fromMapWith_mapMaybe #-}
 
 fromMapWith_map_filter
-    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
 fromMapWith_map_filter f = fromMap_filter . Map.map f
 {-# INLINABLE fromMapWith_map_filter #-}
 
 fromMapWith_map_filter_if_any_null
-    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
+    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
 fromMapWith_map_filter_if_any_null f = fromMap_filter_if_any_null . Map.map f
 {-# INLINABLE fromMapWith_map_filter_if_any_null #-}
 
@@ -707,7 +707,7 @@ fromMapWith_map_filter_if_any_null f = fromMap_filter_if_any_null . Map.map f
 -- @since monoidmap-0.0.2.0
 --
 fromSet :: MonoidNull v => (k -> v) -> Set k -> MonoidMap k v
-fromSet f = fromMap . Map.fromSet f
+fromSet f = MonoidMap . fromMap . Map.fromSet f
 
 -- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
