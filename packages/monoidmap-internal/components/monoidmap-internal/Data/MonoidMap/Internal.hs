@@ -268,7 +268,7 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
         , NoThunks
           -- ^ @since monoidmap-0.0.0.0
         )
-        via Map k v
+        via NonNullMap k v
     deriving
         ( Eq1
           -- ^ @since monoidmap-0.0.0.0
@@ -277,7 +277,7 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
         , Foldable
           -- ^ @since monoidmap-0.0.0.0
         )
-        via Map k
+        via NonNullMap k
     deriving
         ( Eq2
           -- ^ @since monoidmap-0.0.0.0
@@ -286,7 +286,7 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
         , Bifoldable
           -- ^ @since monoidmap-0.0.0.0
         )
-        via Map
+        via NonNullMap
 
 -- Without an explicit type role annotation, the following roles would be
 -- inferred:
@@ -352,6 +352,15 @@ applyNonNull = coerce
 applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
 applyNonNull2 = coerce
 {-# INLINE applyNonNull2 #-}
+
+--------------------------------------------------------------------------------
+-- Non-null maps
+--------------------------------------------------------------------------------
+
+newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
+    deriving (Eq, Show, NFData, NoThunks) via Map k v
+    deriving (Eq1, Show1, Foldable) via Map k
+    deriving (Eq2, Show2, Bifoldable) via Map
 
 --------------------------------------------------------------------------------
 -- Instances
