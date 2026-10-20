@@ -321,6 +321,7 @@ type MM = MonoidMap
 --------------------------------------------------------------------------------
 
 newtype NonNull v = UnsafeNonNull {getNonNull :: v}
+    deriving newtype NFData
 
 -- Without an explicit type role annotation, the following role would be
 -- inferred:
