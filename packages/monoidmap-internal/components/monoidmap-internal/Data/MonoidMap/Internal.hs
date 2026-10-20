@@ -322,6 +322,23 @@ type MM = MonoidMap
 
 newtype NonNull v = UnsafeNonNull {getNonNull :: v}
 
+-- Without an explicit type role annotation, the following role would be
+-- inferred:
+--
+--     type role NonNull representational
+--
+-- However, the validity of a 'NonNull' value depends on a property of its
+-- type: its 'mempty' value. A representational role would allow users to
+-- coerce between types with the same representation but different 'mempty'
+-- values, even without access to the 'NonNull' constructor.
+--
+-- For example, users could coerce a 'NonNull' ('Sum' 'Int') to a 'NonNull'
+-- ('Product' 'Int'), and thereby construct a 'NonNull' value that is 'mempty'.
+--
+-- So we must instead choose a nominal role.
+--
+type role NonNull nominal
+
 maybeNonNull :: MonoidNull v => v -> Maybe (NonNull v)
 maybeNonNull !v
     | C.null  v = Nothing
