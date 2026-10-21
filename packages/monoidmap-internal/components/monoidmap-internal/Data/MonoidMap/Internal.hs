@@ -119,6 +119,12 @@ unsafeToNonNullMap = coerce
 -- Non-null maps
 --------------------------------------------------------------------------------
 
+-- A map of non-null values.
+--
+-- Types with the same representation as 'NonNullMap' (such as 'MonoidMap')
+-- can derive their instances via this type, without needing access to the
+-- constructor of 'NonNull'.
+--
 newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
     deriving (Eq, Show, NFData, NoThunks) via Map k v
     deriving (Eq1, Show1, Foldable) via Map k
