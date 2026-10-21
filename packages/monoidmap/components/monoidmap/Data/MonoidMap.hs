@@ -1,4 +1,10 @@
+{-# LANGUAGE RoleAnnotations #-}
+{-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{- HLINT ignore "Avoid lambda" -}
+{- HLINT ignore "Avoid lambda using `infix`" -}
+{- HLINT ignore "Redundant bracket" -}
+{- HLINT ignore "Use camelCase" -}
 
 -- |
 -- Copyright: © 2022–2026 Jonathan Knowles
