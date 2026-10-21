@@ -267,7 +267,7 @@ import Data.Map.Strict
 import Data.Maybe
     ( Maybe (Just, Nothing) )
 import Data.Monoid
-    ( Monoid (mempty), Sum )
+    ( Monoid (mempty), Product, Sum )
 import Data.Monoid.GCD
     ( GCDMonoid )
 import Data.Monoid.LCM
@@ -3095,8 +3095,8 @@ stripOverlap m1 m2 =
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Product' 'Natural' values, this function computes the
--- /greatest common divisor/ of each pair of matching values:
+-- With 'Product' 'Natural' values, this function computes the /greatest/
+-- /common/ /divisor/ of each pair of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 2), ("b",  6), ("c", 15), ("d", 35)]
@@ -3200,8 +3200,8 @@ intersection = merge MergeStrategy
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Product' 'Natural' values, this function computes the
--- /least common multiple/ of each pair of matching values:
+-- With 'Product' 'Natural' values, this function computes the /least/ /common/
+-- /multiple/ of each pair of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 2), ("b",  6), ("c",  15), ("d",  35)]
