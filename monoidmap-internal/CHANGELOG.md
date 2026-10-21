@@ -1,3 +1,30 @@
+# 0.3.0.0
+
+- Moved the `MonoidMap` type, its instances, and all of its functions to
+  the `Data.MonoidMap` module of the `monoidmap` package. These are no
+  longer exported by `Data.MonoidMap.Internal`.
+
+- Removed the `Data.MonoidMap.Internal.Unsafe` module, including the
+  `unsafeFromMap` function.
+
+- Changed `fromMap`, `fromMapWith`, and their alternative implementations
+  to return values of type `Map k (NonNull v)` instead of `MonoidMap k v`.
+
+- Stopped exporting the data constructor of `NonNull`, and removed its
+  `getNonNull` field.
+
+- Changed the role of the type parameter of `NonNull` from
+  `representational` to `nominal`.
+
+- Added the `NonNullMap` type, and exported the `maybeNonNull`,
+  `applyNonNull`, `applyNonNull2`, and `fromNonNullMap` functions.
+
+- Made `NonNull` an instance of `NFData`.
+
+- Moved the test suite to the `monoidmap` package.
+
+- Removed the dependency on `groups`.
+
 # 0.2.0.0
 
 - Changed the role of the value type parameter of `MonoidMap` from
