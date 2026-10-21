@@ -1,6 +1,4 @@
 {-# LANGUAGE RoleAnnotations #-}
-{-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_HADDOCK not-home #-}
 {- HLINT ignore "Avoid lambda" -}
 {- HLINT ignore "Avoid lambda using `infix`" -}
@@ -42,100 +40,27 @@ module Data.MonoidMap.Internal
     )
     where
 
-import Prelude hiding
-    ( drop
-    , filter
-    , foldl
-    , foldl'
-    , foldr
-    , lookup
-    , map
-    , null
-    , splitAt
-    , subtract
-    , take
-    , traverse
-    )
+import Prelude
 
-import Control.Applicative
-    ( Applicative (..) )
 import Control.DeepSeq
     ( NFData )
 import Data.Bifoldable
     ( Bifoldable )
 import Data.Coerce
     ( coerce )
-import Data.Data
-    ( Constr
-    , Data (dataCast2, dataTypeOf, gfoldl, gunfold, toConstr)
-    , DataType
-    , Fixity (Prefix)
-    , gcast2
-    , mkConstr
-    , mkDataType
-    )
-import Data.Function
-    ( (&) )
 import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
-import Data.Functor.Identity
-    ( Identity (..) )
-import Data.Group
-    ( Abelian, Group )
 import Data.Map.Strict
-    ( Map, lookup )
-import Data.Maybe
-    ( fromMaybe, isJust )
-import Data.Monoid.GCD
-    ( DistributiveGCDMonoid
-    , GCDMonoid
-    , LeftDistributiveGCDMonoid
-    , LeftGCDMonoid
-    , OverlappingGCDMonoid
-    , RightDistributiveGCDMonoid
-    , RightGCDMonoid
-    )
-import Data.Monoid.LCM
-    ( DistributiveLCMMonoid, LCMMonoid )
-import Data.Monoid.Monus
-    ( Monus (..) )
+    ( Map )
 import Data.Monoid.Null
-    ( MonoidNull, PositiveMonoid )
-import Data.Semigroup
-    ( stimes )
-import Data.Semigroup.Cancellative
-    ( Cancellative
-    , Commutative
-    , LeftCancellative
-    , LeftReductive
-    , Reductive (..)
-    , RightCancellative
-    , RightReductive
-    )
-import Data.Set
-    ( Set )
-import GHC.Exts
-    ( IsList (Item) )
+    ( MonoidNull )
 import NoThunks.Class
     ( NoThunks )
-import Text.Read
-    ( Read (..) )
 
-import qualified Data.Bifunctor as B
 import qualified Data.Foldable as F
-import qualified Data.List as L
-import qualified Data.List.NonEmpty as NE
-import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
-import qualified GHC.Exts as GHC
-import qualified Data.Traversable as Traversable
 
-import qualified Data.Group as C
-import qualified Data.Monoid.GCD as C
-import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
-import qualified Data.Semigroup.Cancellative as C
 
 --------------------------------------------------------------------------------
 -- Non-null values
