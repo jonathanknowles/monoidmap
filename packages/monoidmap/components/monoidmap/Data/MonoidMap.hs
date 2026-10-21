@@ -245,6 +245,7 @@ import qualified GHC.Exts as GHC
 import qualified Data.Traversable as Traversable
 
 import qualified Data.MonoidMap.Internal as Internal
+import qualified Data.MonoidMap.Internal
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C

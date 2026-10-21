@@ -402,7 +402,7 @@ instance (Ord k, MonoidNull v) =>
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
-    readPrec = MonoidMap . fromMap <$> readPrec
+    readPrec = MonoidMap . Data.MonoidMap.Internal.fromMap <$> readPrec
 
 --------------------------------------------------------------------------------
 -- Instances: Data
@@ -645,7 +645,7 @@ fromListWith
 fromListWith f =
     -- The 'Map.fromListWith' function combines values for duplicate keys in
     -- /reverse order/, so we must flip the provided combining function.
-    MonoidMap . fromMap . Map.fromListWith (flip f)
+    MonoidMap . Data.MonoidMap.Internal.fromMap . Map.fromListWith (flip f)
 
 -- | Constructs a map of non-null values from an ordinary 'Map', removing all
 --   'C.null' values.
@@ -717,7 +717,7 @@ fromMapWith_map_filter_if_any_null f = fromMap_filter_if_any_null . Map.map f
 -- @since monoidmap-0.0.2.0
 --
 fromSet :: MonoidNull v => (k -> v) -> Set k -> MonoidMap k v
-fromSet f = MonoidMap . fromMap . Map.fromSet f
+fromSet f = MonoidMap . Data.MonoidMap.Internal.fromMap . Map.fromSet f
 
 -- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
