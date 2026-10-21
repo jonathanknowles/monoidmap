@@ -1,5 +1,4 @@
 {-# LANGUAGE RoleAnnotations #-}
-{-# OPTIONS_HADDOCK not-home #-}
 {- HLINT ignore "Avoid lambda" -}
 {- HLINT ignore "Avoid lambda using `infix`" -}
 {- HLINT ignore "Redundant bracket" -}
@@ -9,7 +8,10 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Provides /internal/ operations for the 'MonoidMap' type.
+-- Provides /internal/ support for the @monoidmap@ package.
+--
+-- This module defines the 'NonNull' type of values that are not 'C.null',
+-- and functions for constructing maps of 'NonNull' values from ordinary maps.
 --
 module Data.MonoidMap.Internal
     (
