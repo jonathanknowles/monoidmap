@@ -245,7 +245,6 @@ import qualified GHC.Exts as GHC
 import qualified Data.Traversable as Traversable
 
 import qualified Data.MonoidMap.Internal as Internal
-import qualified Data.MonoidMap.Internal
 
 import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
@@ -593,7 +592,7 @@ instance (Ord k, MonoidNull v) =>
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
-    readPrec = MonoidMap . Data.MonoidMap.Internal.fromMap <$> readPrec
+    readPrec = fromMap <$> readPrec
 
 --------------------------------------------------------------------------------
 -- Instances: Data
@@ -836,7 +835,7 @@ fromListWith
 fromListWith f =
     -- The 'Map.fromListWith' function combines values for duplicate keys in
     -- /reverse order/, so we must flip the provided combining function.
-    MonoidMap . Data.MonoidMap.Internal.fromMap . Map.fromListWith (flip f)
+    fromMap . Map.fromListWith (flip f)
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
@@ -891,7 +890,7 @@ fromMapWith f = MonoidMap . Internal.fromMapWith f
 -- @since monoidmap-0.0.2.0
 --
 fromSet :: MonoidNull v => (k -> v) -> Set k -> MonoidMap k v
-fromSet f = MonoidMap . Data.MonoidMap.Internal.fromMap . Map.fromSet f
+fromSet f = fromMap . Map.fromSet f
 
 -- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
