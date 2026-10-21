@@ -267,7 +267,7 @@ import Data.Map.Strict
 import Data.Maybe
     ( Maybe (Just, Nothing) )
 import Data.Monoid
-    ( Monoid (mempty) )
+    ( Monoid (mempty), Product, Sum )
 import Data.Monoid.GCD
     ( GCDMonoid )
 import Data.Monoid.LCM
@@ -280,6 +280,8 @@ import Data.Ord
     ( Ord )
 import Data.Semigroup
     ( Semigroup ((<>)) )
+import Numeric.Natural
+    ( Natural )
 
 --------------------------------------------------------------------------------
 -- Introduction
@@ -1997,7 +1999,7 @@ disjointBy f m1 m2 =
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 4), ("b", 2), ("c", 1)          ]
@@ -2076,7 +2078,7 @@ append = merge MergeStrategy
 -- 'False'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 1), ("b", 1), ("c", 1)]
@@ -2192,7 +2194,7 @@ isPrefixOf = isSubmapOfBy C.isPrefixOf
 -- 'False'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 1), ("b", 1), ("c", 1)]
@@ -2325,7 +2327,7 @@ isSuffixOf = isSubmapOfBy C.isSuffixOf
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -2418,7 +2420,7 @@ stripPrefix = mergeA MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -2482,7 +2484,7 @@ stripSuffix = mergeA MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -2545,7 +2547,7 @@ commonPrefix = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> __m1__ = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -2642,7 +2644,7 @@ commonSuffix = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
@@ -2727,7 +2729,7 @@ stripCommonPrefix = C.stripCommonPrefix
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
@@ -2801,7 +2803,7 @@ stripCommonSuffix = C.stripCommonSuffix
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
@@ -2877,7 +2879,7 @@ overlap = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
@@ -2959,7 +2961,7 @@ stripPrefixOverlap = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural' values:
+-- With 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4)]
@@ -3093,8 +3095,8 @@ stripOverlap m1 m2 =
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Product' 'Numeric.Natural.Natural' values, this function
--- computes the /greatest common divisor/ of each pair of matching values:
+-- With 'Product' 'Natural' values, this function computes the /greatest/
+-- /common/ /divisor/ of each pair of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 2), ("b",  6), ("c", 15), ("d", 35)]
@@ -3106,8 +3108,8 @@ stripOverlap m1 m2 =
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- computes the /minimum/ of each pair of matching values:
+-- With 'Sum' 'Natural' values, this function computes the /minimum/ of each
+-- pair of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -3119,8 +3121,8 @@ stripOverlap m1 m2 =
 -- 'True'
 -- @
 --
--- With 'Set' 'Numeric.Natural.Natural' values, this function computes the
--- /set/ /intersection/ of each pair of matching values:
+-- With 'Set' 'Natural' values, this function computes the /set/ /intersection/
+-- of each pair of matching values:
 --
 -- @
 -- f xs = 'fromList' ('Set.fromList' '<$>' xs)
@@ -3198,8 +3200,8 @@ intersection = merge MergeStrategy
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Product' 'Numeric.Natural.Natural' values, this function
--- computes the /least common multiple/ of each pair of matching values:
+-- With 'Product' 'Natural' values, this function computes the /least/ /common/
+-- /multiple/ of each pair of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 2), ("b",  6), ("c",  15), ("d",  35)]
@@ -3211,8 +3213,8 @@ intersection = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- computes the /maximum/ of each pair of matching values:
+-- With 'Sum' 'Natural' values, this function computes the /maximum/ of each
+-- pair of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -3224,8 +3226,8 @@ intersection = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Set' 'Numeric.Natural.Natural' values, this function computes the
--- /set/ /union/ of each pair of matching values:
+-- With 'Set' 'Natural' values, this function computes the /set/ /union/ of
+-- each pair of matching values:
 --
 -- @
 -- f xs = 'fromList' ('Set.fromList' '<$>' xs)
@@ -3286,8 +3288,8 @@ union = merge MergeStrategy
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Sum' 'Integer' values, this function performs normal
--- integer subtraction of matching values:
+-- With 'Sum' 'Integer' values, this function performs normal integer
+-- subtraction of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", (-1)), ("b",   0 ), ("c", 1)]
@@ -3365,9 +3367,9 @@ minus = merge MergeStrategy
 --
 -- === __Examples__
 --
--- With 'Set' 'Numeric.Natural.Natural' values, this function performs /set/
--- /subtraction/ of matching values, succeeding if (and only if) each value
--- from the second map is a subset of its matching value from the first map:
+-- With 'Set' 'Natural' values, this function performs /set/ /subtraction/ of
+-- matching values, succeeding if (and only if) each value from the second map
+-- is a subset of its matching value from the first map:
 --
 -- @
 -- f xs = 'fromList' ('Set.fromList' '<$>' xs)
@@ -3402,10 +3404,9 @@ minus = merge MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- performs /ordinary/ /subtraction/ of matching values, succeeding if (and only
--- if) each value from the second map is less than or equal to its matching
--- value from the first map:
+-- With 'Sum' 'Natural' values, this function performs /ordinary/ /subtraction/
+-- of matching values, succeeding if (and only if) each value from the second
+-- map is less than or equal to its matching value from the first map:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 2), ("b", 3), ("c", 5), ("d", 8)]
@@ -3500,8 +3501,8 @@ minusMaybe = mergeA MergeStrategy
 --
 -- === __Examples__
 --
--- With 'Set' 'Numeric.Natural.Natural' values, this function performs /set/
--- /subtraction/ of matching values:
+-- With 'Set' 'Natural' values, this function performs /set/ /subtraction/ of
+-- matching values:
 --
 -- @
 -- f xs = 'fromList' ('Set.fromList' '<$>' xs)
@@ -3537,8 +3538,8 @@ minusMaybe = mergeA MergeStrategy
 -- 'True'
 -- @
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- performs /truncated/ /subtraction/ of matching values:
+-- With 'Sum' 'Natural' values, this function performs /truncated/ /subtraction/
+-- of matching values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -3628,8 +3629,7 @@ monus = merge MergeStrategy
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Sum' 'Integer' values, this function performs negation
--- of values:
+-- With 'Sum' 'Integer' values, this function performs negation of values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", (-1)), ("b", 0), ("c",   1) ]
@@ -3669,8 +3669,8 @@ invert = map C.invert
 --
 -- === __Examples__
 --
--- With 'Data.Monoid.Sum' 'Numeric.Natural.Natural' values, this function
--- performs /ordinary multiplication/ of all values by the given exponent:
+-- With 'Sum' 'Natural' values, this function performs /ordinary/
+-- /multiplication/ of all values by the given exponent:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 0), ("b", 1), ("c", 2), ("d", 3)]
@@ -3737,8 +3737,7 @@ power m i = map (`C.pow` i) m
 --
 -- === __Examples__
 --
--- With the 'Prelude.min' function applied to 'Data.Monoid.Sum'
--- 'Numeric.Natural.Natural' values:
+-- With the 'Prelude.min' function applied to 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1)          ]
@@ -3833,8 +3832,7 @@ intersectionWithA f = mergeA MergeStrategy
 --
 -- === __Examples__
 --
--- With the 'Prelude.max' function applied to 'Data.Monoid.Sum'
--- 'Numeric.Natural.Natural' values:
+-- With the 'Prelude.max' function applied to 'Sum' 'Natural' values:
 --
 -- @
 -- >>> m1 = 'fromList' [("a", 4), ("b", 3), ("c", 2), ("d", 1)          ]
