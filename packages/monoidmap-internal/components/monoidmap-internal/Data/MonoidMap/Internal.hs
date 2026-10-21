@@ -26,7 +26,6 @@ module Data.MonoidMap.Internal
 
     -- * Non-null maps
     , fromNonNullMap
-    , unsafeToNonNullMap
 
     -- * Construction
     , fromMap
