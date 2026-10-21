@@ -1,3 +1,21 @@
+# 0.1.1.0
+
+- Moved the definitions of the `MonoidMap` type, its instances, and all of
+  its functions from the `monoidmap-internal` package to `Data.MonoidMap`.
+  The API of `Data.MonoidMap` is unchanged.
+
+- Changed the data type name reported by the `Data` instance for
+  `MonoidMap` from `"Data.MonoidMap.Internal.MonoidMap"` to
+  `"Data.MonoidMap.MonoidMap"`.
+
+- Revised `@since` annotations in the documentation to refer to versions of
+  `monoidmap` rather than `monoidmap-internal`, and added annotations to all
+  types, functions, and instances that lacked them.
+
+- Fixed several broken links in the documentation.
+
+- Moved the test suite here from the `monoidmap-internal` package.
+
 # 0.1.0.0
 
 - Changed the role of the value type parameter of `MonoidMap` from
