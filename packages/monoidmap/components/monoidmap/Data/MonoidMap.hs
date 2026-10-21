@@ -953,7 +953,7 @@ toList = Map.toAscList . toMap
 --
 -- @since 0.0.0.0
 --
-toMap :: forall k v. MonoidMap k v -> Map k v
+toMap :: MonoidMap k v -> Map k v
 toMap (MonoidMap m) = fromNonNullMap m
 {-# INLINE toMap #-}
 
