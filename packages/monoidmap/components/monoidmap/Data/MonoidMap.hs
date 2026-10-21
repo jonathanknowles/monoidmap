@@ -242,21 +242,19 @@ import Text.Read
 
 import qualified Data.Bifunctor as B
 import qualified Data.Foldable as F
+import qualified Data.Group as C
 import qualified Data.List as L
 import qualified Data.List.NonEmpty as NE
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
-import qualified GHC.Exts as GHC
-import qualified Data.Traversable as Traversable
-
-import qualified Data.MonoidMap.Internal as Internal
-
-import qualified Data.Group as C
 import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
+import qualified Data.MonoidMap.Internal as Internal
 import qualified Data.Semigroup.Cancellative as C
+import qualified Data.Set as Set
+import qualified Data.Traversable as Traversable
+import qualified GHC.Exts as GHC
 
 -- Imports for module documentation:
 

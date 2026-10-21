@@ -60,7 +60,6 @@ import NoThunks.Class
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
-
 import qualified Data.Monoid.Null as C
 
 --------------------------------------------------------------------------------
