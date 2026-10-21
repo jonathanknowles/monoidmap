@@ -28,63 +28,17 @@ module Data.MonoidMap.Internal
     , fromNonNullMap
     , unsafeToNonNullMap
 
-    -- * General operations
-
-    -- ** Construction
+    -- * Construction
     , fromMap
     , fromMapWith
 
-    -- ** Construction (Internal)
+    -- ** Implementations
     , fromMap_filter
     , fromMap_filter_if_any_null
     , fromMap_mapMaybe
     , fromMapWith_mapMaybe
     , fromMapWith_map_filter
     , fromMapWith_map_filter_if_any_null
-
-    -- ** Deconstruction
-
-    -- ** Lookup
-
-    -- ** Modification
-
-    -- ** Nullification
-
-    -- ** Membership
-
-    -- ** Slicing
-
-    -- ** Filtering
-
-    -- ** Partitioning
-
-    -- ** Mapping
-
-    -- ** Folding
-
-    -- ** Traversal
-
-    -- * Monoidal operations
-
-    -- ** Association
-
-    -- ** Subtraction
-
-    -- ** Inversion
-
-    -- ** Exponentiation
-
-    -- ** Comparison
-
-    -- ** Intersection
-
-    -- ** Union
-
-    -- ** Prefixes
-
-    -- ** Suffixes
-
-    -- ** Overlap
     )
     where
 
