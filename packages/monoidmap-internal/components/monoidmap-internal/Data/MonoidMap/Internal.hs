@@ -130,6 +130,16 @@ newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
     deriving (Eq1, Show1, Foldable) via Map k
     deriving (Eq2, Show2, Bifoldable) via Map
 
+-- Strictly speaking, this type role annotation is redundant, as:
+--
+-- - The type parameter 'k' already has a nominal role inherited from 'Map'.
+-- - The type parameter 'v' already has a nominal role inherited from 'NonNull'.
+--
+-- But we reassert these roles here, so that they cannot be silently weakened
+-- by a future change to the representation of 'NonNullMap'.
+--
+type role NonNullMap nominal nominal
+
 --------------------------------------------------------------------------------
 -- Construction
 --------------------------------------------------------------------------------
