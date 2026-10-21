@@ -243,6 +243,10 @@ newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
     deriving (Eq1, Show1, Foldable) via Map k
     deriving (Eq2, Show2, Bifoldable) via Map
 
+--------------------------------------------------------------------------------
+-- Construction
+--------------------------------------------------------------------------------
+
 -- | Constructs a map of non-null values from an ordinary 'Map', removing all
 --   'C.null' values.
 --

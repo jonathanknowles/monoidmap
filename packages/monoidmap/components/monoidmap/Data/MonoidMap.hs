@@ -838,10 +838,6 @@ fromListWith f =
     -- /reverse order/, so we must flip the provided combining function.
     MonoidMap . Data.MonoidMap.Internal.fromMap . Map.fromListWith (flip f)
 
---------------------------------------------------------------------------------
--- Construction
---------------------------------------------------------------------------------
-
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
 -- Satisfies the following property for all possible keys __@k@__:
