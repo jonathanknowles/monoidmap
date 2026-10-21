@@ -168,7 +168,13 @@ import Prelude hiding
     )
 
 import Data.MonoidMap.Internal
-    hiding ( fromMap, fromMapWith )
+    ( NonNull
+    , NonNullMap (..)
+    , applyNonNull
+    , applyNonNull2
+    , fromNonNullMap
+    , maybeNonNull
+    )
 
 import Control.Applicative
     ( Applicative (..) )
