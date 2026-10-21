@@ -16,7 +16,7 @@
 module Data.MonoidMap.Internal
     (
     -- * Types
-      NonNull (..)
+      NonNull
     , NonNullMap (..)
 
     -- * Non-null values
@@ -187,7 +187,7 @@ import qualified Data.Semigroup.Cancellative as C
 -- Non-null values
 --------------------------------------------------------------------------------
 
-newtype NonNull v = UnsafeNonNull {getNonNull :: v}
+newtype NonNull v = UnsafeNonNull v
     deriving newtype NFData
 
 -- Without an explicit type role annotation, the following role would be
