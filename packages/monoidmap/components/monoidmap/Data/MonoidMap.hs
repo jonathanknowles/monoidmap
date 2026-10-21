@@ -618,7 +618,7 @@ instance (Data k, Data v, Ord k, MonoidNull v) => Data (MonoidMap k v) where
     toConstr _ = fromListConstr
 
 dataType :: DataType
-dataType = mkDataType "Data.MonoidMap.Internal.MonoidMap" [fromListConstr]
+dataType = mkDataType "Data.MonoidMap.MonoidMap" [fromListConstr]
 
 fromListConstr :: Constr
 fromListConstr = mkConstr dataType "fromList" [] Prefix
