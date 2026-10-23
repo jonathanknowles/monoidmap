@@ -31,11 +31,11 @@ import Data.MonoidMap.Internal.NonNull.Unsafe
 import NoThunks.Class
     ( NoThunks )
 
--- A map of non-null values.
+-- | A map of 'NonNull' values.
 --
--- Types with the same representation as 'NonNullMap' (such as 'MonoidMap')
--- can derive their instances via this type, without needing access to the
--- constructor of 'NonNull'.
+-- Other types with the same representation (such as @MonoidMap@ from the
+-- @monoidmap@ package) can derive their instances via this type, without
+-- access to the data constructor of 'NonNull'.
 --
 newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
     deriving (Eq, Show, NFData, NoThunks) via Map k v
@@ -52,11 +52,13 @@ newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
 --
 type role NonNullMap nominal nominal
 
+-- | Converts a 'NonNullMap' into an ordinary map.
+--
 toMap :: NonNullMap k v -> Map k v
 toMap = coerce
 {-# INLINE toMap #-}
 
--- | /Unsafely/ converts an ordinary map into a map of non-null values.
+-- | /Unsafely/ converts an ordinary map into a 'NonNullMap'.
 --
 -- This function /expects/ but does /not/ check that no value in the given map
 -- is null. It must only be applied to maps that satisfy this condition.
