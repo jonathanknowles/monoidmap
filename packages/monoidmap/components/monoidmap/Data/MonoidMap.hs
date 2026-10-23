@@ -167,13 +167,15 @@ import Prelude hiding
     , traverse
     )
 
-import Data.MonoidMap.Internal
+import Data.MonoidMap.Internal.NonNull
     ( NonNull
-    , NonNullMap (..)
     , applyNonNull
     , applyNonNull2
-    , fromNonNullMap
     , maybeNonNull
+    )
+import Data.MonoidMap.Internal.NonNullMap
+    ( NonNullMap (..)
+    , fromNonNullMap
     )
 
 import Control.Applicative
@@ -250,7 +252,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
-import qualified Data.MonoidMap.Internal as Internal
+import qualified Data.MonoidMap.Internal.NonNullMap as NonNullMap
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified Data.Traversable as Traversable
@@ -857,7 +859,7 @@ fromListWith f =
 -- @since 0.0.0.0
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = MonoidMap . Internal.fromMap
+fromMap = MonoidMap . NonNullMap.fromMap
 {-# INLINABLE fromMap #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
@@ -875,7 +877,7 @@ fromMap = MonoidMap . Internal.fromMap
 -- @since 0.0.4.0
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
-fromMapWith f = MonoidMap . Internal.fromMapWith f
+fromMapWith f = MonoidMap . NonNullMap.fromMapWith f
 {-# INLINABLE fromMapWith #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from

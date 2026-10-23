@@ -7,24 +7,13 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Provides /internal/ support for the @monoidmap@ package.
+-- Provides the 'NonNullMap' type of maps of 'NonNull' values, and functions
+-- for converting between ordinary maps and maps of 'NonNull' values.
 --
--- This module provides the 'NonNull' type of values that are not 'null',
--- and functions for constructing maps of 'NonNull' values from ordinary maps.
---
-module Data.MonoidMap.Internal
+module Data.MonoidMap.Internal.NonNullMap
     (
-    -- * Types
-      NonNull
-    , NonNullMap (..)
-
-    -- * Non-null values
-    , maybeNonNull
-    , applyNonNull
-    , applyNonNull2
-
-    -- * Non-null maps
-    , fromNonNullMap
+    -- * Type
+      NonNullMap (..)
 
     -- * Construction
     , fromMap
@@ -37,6 +26,9 @@ module Data.MonoidMap.Internal
     , fromMapWith_mapMaybe
     , fromMapWith_map_filter
     , fromMapWith_map_filter_if_any_null
+
+    -- * Deconstruction
+    , fromNonNullMap
     )
     where
 
@@ -47,31 +39,13 @@ import Data.Map.Strict
     ( Map )
 import Data.Monoid.Null
     ( MonoidNull (null) )
-import Data.MonoidMap.Internal.NonNull.Unsafe
-    ( NonNull
-    , maybeNonNull
-    , unwrap
-    )
+import Data.MonoidMap.Internal.NonNull
+    ( NonNull, maybeNonNull )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
-    ( NonNullMap (..)
-    , fromNonNullMap
-    , unsafeToNonNullMap
-    )
+    ( NonNullMap (..), fromNonNullMap, unsafeToNonNullMap )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
-
---------------------------------------------------------------------------------
--- Non-null values
---------------------------------------------------------------------------------
-
-applyNonNull :: (v -> a) -> (NonNull v -> a)
-applyNonNull f = f . unwrap
-{-# INLINE applyNonNull #-}
-
-applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
-applyNonNull2 f v1 v2 = f (unwrap v1) (unwrap v2)
-{-# INLINE applyNonNull2 #-}
 
 --------------------------------------------------------------------------------
 -- Construction
