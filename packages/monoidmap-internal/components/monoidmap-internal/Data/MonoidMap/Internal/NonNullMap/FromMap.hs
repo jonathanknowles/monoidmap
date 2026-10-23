@@ -30,16 +30,18 @@ import Data.Monoid.Null
 import Data.MonoidMap.Internal.NonNull
     ( NonNull, nonNull )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
-    ( unsafeFromMap )
+    ( NonNullMap (..)
+    , unsafeFromMap
+    )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 
-fromMap_filter :: MonoidNull v => Map k v -> Map k (NonNull v)
+fromMap_filter :: MonoidNull v => Map k v -> NonNullMap k v
 fromMap_filter = unsafeFromMap . Map.filter (\(!v) -> not (null v))
 {-# INLINABLE fromMap_filter #-}
 
-fromMap_filter_if_any_null :: MonoidNull v => Map k v -> Map k (NonNull v)
+fromMap_filter_if_any_null :: MonoidNull v => Map k v -> NonNullMap k v
 fromMap_filter_if_any_null m
     | F.any (\(!v) -> null v) m =
         unsafeFromMap $ Map.filter (\(!v) -> not (null v)) m
@@ -47,6 +49,6 @@ fromMap_filter_if_any_null m
         unsafeFromMap m
 {-# INLINABLE fromMap_filter_if_any_null #-}
 
-fromMap_mapMaybe :: MonoidNull v => Map k v -> Map k (NonNull v)
-fromMap_mapMaybe = Map.mapMaybe nonNull
+fromMap_mapMaybe :: MonoidNull v => Map k v -> NonNullMap k v
+fromMap_mapMaybe = NonNullMap . Map.mapMaybe nonNull
 {-# INLINABLE fromMap_mapMaybe #-}

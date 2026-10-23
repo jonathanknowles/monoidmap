@@ -52,7 +52,7 @@ newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
 --
 type role NonNullMap nominal nominal
 
-toMap :: Map k (NonNull v) -> Map k v
+toMap :: NonNullMap k v -> Map k v
 toMap = coerce
 {-# INLINE toMap #-}
 
@@ -61,6 +61,6 @@ toMap = coerce
 -- This function /expects/ but does /not/ check that no value in the given map
 -- is null. It must only be applied to maps that satisfy this condition.
 --
-unsafeFromMap :: Map k v -> Map k (NonNull v)
+unsafeFromMap :: Map k v -> NonNullMap k v
 unsafeFromMap = coerce
 {-# INLINE unsafeFromMap #-}

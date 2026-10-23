@@ -579,6 +579,17 @@ type role MonoidMap nominal nominal
 -- Internal alias used when extra brevity is required.
 type MM = MonoidMap
 
+-- Internal conversions between 'MonoidMap' and 'NonNullMap', which have the
+-- same representation.
+
+fromNonNullMap :: NonNullMap k v -> MonoidMap k v
+fromNonNullMap (NonNullMap m) = MonoidMap m
+{-# INLINE fromNonNullMap #-}
+
+toNonNullMap :: MonoidMap k v -> NonNullMap k v
+toNonNullMap (MonoidMap m) = NonNullMap m
+{-# INLINE toNonNullMap #-}
+
 --------------------------------------------------------------------------------
 -- Instances
 --------------------------------------------------------------------------------
@@ -854,7 +865,7 @@ fromListWith f =
 -- @since 0.0.0.0
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
-fromMap = MonoidMap . NonNullMap.fromMap
+fromMap = fromNonNullMap . NonNullMap.fromMap
 {-# INLINABLE fromMap #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
@@ -872,7 +883,7 @@ fromMap = MonoidMap . NonNullMap.fromMap
 -- @since 0.0.4.0
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
-fromMapWith f = MonoidMap . NonNullMap.fromMapWith f
+fromMapWith f = fromNonNullMap . NonNullMap.fromMapWith f
 {-# INLINABLE fromMapWith #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
@@ -953,7 +964,7 @@ toList = Map.toAscList . toMap
 -- @since 0.0.0.0
 --
 toMap :: MonoidMap k v -> Map k v
-toMap (MonoidMap m) = NonNullMap.toMap m
+toMap = NonNullMap.toMap . toNonNullMap
 {-# INLINE toMap #-}
 
 --------------------------------------------------------------------------------

@@ -46,25 +46,24 @@ import Data.MonoidMap.Internal.NonNullMap.Unsafe
 -- Construction
 --------------------------------------------------------------------------------
 
--- | Constructs a map of non-null values from an ordinary 'Map', removing all
+-- | Constructs a 'NonNullMap' from an ordinary 'Map', removing all
 --   'null' values.
 --
 -- This function selects which of the implementations in
 -- "Data.MonoidMap.Internal.NonNullMap.FromMap" is used by the public @fromMap@
 -- function of the @monoidmap@ package.
 --
-fromMap :: MonoidNull v => Map k v -> Map k (NonNull v)
+fromMap :: MonoidNull v => Map k v -> NonNullMap k v
 fromMap = fromMap_filter_if_any_null
 {-# INLINE fromMap #-}
 
--- | Constructs a map of non-null values from an ordinary 'Map', applying the
---   given function to all values, and removing all 'null' values.
+-- | Constructs a 'NonNullMap' from an ordinary 'Map', applying the given
+--   function to all values, and removing all 'null' values.
 --
 -- This function selects which of the implementations in
 -- "Data.MonoidMap.Internal.NonNullMap.FromMapWith" is used by the public
 -- @fromMapWith@ function of the @monoidmap@ package.
 --
-fromMapWith
-    :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
+fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> NonNullMap k v2
 fromMapWith = fromMapWith_mapMaybe
 {-# INLINE fromMapWith #-}
