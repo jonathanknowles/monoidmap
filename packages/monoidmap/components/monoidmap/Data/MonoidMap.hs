@@ -167,7 +167,7 @@ import Prelude hiding
     , traverse
     )
 
-import Data.MonoidMap.Internal
+import Data.MonoidMap.Internal.NonNull
     ( NonNull
     , NonNullMap (..)
     , applyNonNull
@@ -250,7 +250,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
-import qualified Data.MonoidMap.Internal as Internal
+import qualified Data.MonoidMap.Internal.NonNull as Internal
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified Data.Traversable as Traversable

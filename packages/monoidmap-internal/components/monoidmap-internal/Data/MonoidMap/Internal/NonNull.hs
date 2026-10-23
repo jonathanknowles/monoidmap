@@ -7,7 +7,7 @@
 -- This module provides the 'NonNull' type of values that are not 'Null.null',
 -- and functions for constructing maps of 'NonNull' values from ordinary maps.
 --
-module Data.MonoidMap.Internal
+module Data.MonoidMap.Internal.NonNull
     (
     -- * Types
       NonNull

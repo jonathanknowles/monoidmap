@@ -65,7 +65,7 @@ library
     hs-source-dirs:
         components/monoidmap-internal
     exposed-modules:
-        Data.MonoidMap.Internal
+        Data.MonoidMap.Internal.NonNull
         Data.MonoidMap.Internal.NonNull.FromMap
         Data.MonoidMap.Internal.NonNull.FromMapWith
     other-modules:
