@@ -9,8 +9,8 @@
 --
 module Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..)
-    , fromNonNullMap
-    , unsafeToNonNullMap
+    , toMap
+    , unsafeFromMap
     )
     where
 
@@ -52,15 +52,15 @@ newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
 --
 type role NonNullMap nominal nominal
 
-fromNonNullMap :: Map k (NonNull v) -> Map k v
-fromNonNullMap = coerce
-{-# INLINE fromNonNullMap #-}
+toMap :: Map k (NonNull v) -> Map k v
+toMap = coerce
+{-# INLINE toMap #-}
 
 -- | /Unsafely/ converts an ordinary map into a map of non-null values.
 --
 -- This function /expects/ but does /not/ check that no value in the given map
 -- is null. It must only be applied to maps that satisfy this condition.
 --
-unsafeToNonNullMap :: Map k v -> Map k (NonNull v)
-unsafeToNonNullMap = coerce
-{-# INLINE unsafeToNonNullMap #-}
+unsafeFromMap :: Map k v -> Map k (NonNull v)
+unsafeFromMap = coerce
+{-# INLINE unsafeFromMap #-}

@@ -5,6 +5,13 @@
 -- Provides the 'NonNullMap' type of maps of 'NonNull' values, and functions
 -- for converting between ordinary maps and maps of 'NonNull' values.
 --
+-- This module is intended to be imported qualified:
+--
+-- @
+-- import Data.MonoidMap.Internal.NonNullMap (NonNullMap (..))
+-- import Data.MonoidMap.Internal.NonNullMap qualified as NonNullMap
+-- @
+--
 module Data.MonoidMap.Internal.NonNullMap
     (
     -- * Type
@@ -15,7 +22,7 @@ module Data.MonoidMap.Internal.NonNullMap
     , fromMapWith
 
     -- * Deconstruction
-    , fromNonNullMap
+    , toMap
     )
     where
 
@@ -33,7 +40,7 @@ import Data.MonoidMap.Internal.NonNullMap.FromMap
 import Data.MonoidMap.Internal.NonNullMap.FromMapWith
     ( fromMapWith_mapMaybe )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
-    ( NonNullMap (..), fromNonNullMap )
+    ( NonNullMap (..), toMap )
 
 --------------------------------------------------------------------------------
 -- Construction

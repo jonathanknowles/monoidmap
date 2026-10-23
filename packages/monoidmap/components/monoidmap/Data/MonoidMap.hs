@@ -170,9 +170,7 @@ import Prelude hiding
 import Data.MonoidMap.Internal.NonNull
     ( NonNull )
 import Data.MonoidMap.Internal.NonNullMap
-    ( NonNullMap (..)
-    , fromNonNullMap
-    )
+    ( NonNullMap (..) )
 
 import Control.Applicative
     ( Applicative (..) )
@@ -955,7 +953,7 @@ toList = Map.toAscList . toMap
 -- @since 0.0.0.0
 --
 toMap :: MonoidMap k v -> Map k v
-toMap (MonoidMap m) = fromNonNullMap m
+toMap (MonoidMap m) = NonNullMap.toMap m
 {-# INLINE toMap #-}
 
 --------------------------------------------------------------------------------
