@@ -1,0 +1,66 @@
+{-# LANGUAGE RoleAnnotations #-}
+
+-- |
+-- Copyright: © 2022–2026 Jonathan Knowles
+-- License: Apache-2.0
+--
+-- Defines the 'NonNullMap' type, together with the primitive operations on
+-- 'NonNullMap' that need access to the data constructor of 'NonNull'.
+--
+module Data.MonoidMap.Internal.NonNullMap.Unsafe
+    ( NonNullMap (..)
+    , fromNonNullMap
+    , unsafeToNonNullMap
+    )
+    where
+
+import Prelude
+
+import Control.DeepSeq
+    ( NFData )
+import Data.Bifoldable
+    ( Bifoldable )
+import Data.Coerce
+    ( coerce )
+import Data.Functor.Classes
+    ( Eq1, Eq2, Show1, Show2 )
+import Data.Map.Strict
+    ( Map )
+import Data.MonoidMap.Internal.NonNull.Unsafe
+    ( NonNull (UnsafeNonNull) )
+import NoThunks.Class
+    ( NoThunks )
+
+-- A map of non-null values.
+--
+-- Types with the same representation as 'NonNullMap' (such as 'MonoidMap')
+-- can derive their instances via this type, without needing access to the
+-- constructor of 'NonNull'.
+--
+newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
+    deriving (Eq, Show, NFData, NoThunks) via Map k v
+    deriving (Eq1, Show1, Foldable) via Map k
+    deriving (Eq2, Show2, Bifoldable) via Map
+
+-- Strictly speaking, this type role annotation is redundant, as:
+--
+-- - The type parameter 'k' already has a nominal role inherited from 'Map'.
+-- - The type parameter 'v' already has a nominal role inherited from 'NonNull'.
+--
+-- But we reassert these roles here, so that they cannot be silently weakened
+-- by a future change to the representation of 'NonNullMap'.
+--
+type role NonNullMap nominal nominal
+
+fromNonNullMap :: Map k (NonNull v) -> Map k v
+fromNonNullMap = coerce
+{-# INLINE fromNonNullMap #-}
+
+-- | /Unsafely/ converts an ordinary map into a map of non-null values.
+--
+-- This function /expects/ but does /not/ check that no value in the given map
+-- is null. It must only be applied to maps that satisfy this condition.
+--
+unsafeToNonNullMap :: Map k v -> Map k (NonNull v)
+unsafeToNonNullMap = coerce
+{-# INLINE unsafeToNonNullMap #-}

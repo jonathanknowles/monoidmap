@@ -66,6 +66,9 @@ library
         components/monoidmap-internal
     exposed-modules:
         Data.MonoidMap.Internal
+    other-modules:
+        Data.MonoidMap.Internal.NonNull.Unsafe
+        Data.MonoidMap.Internal.NonNullMap.Unsafe
     default-language:
         Haskell2010
 
