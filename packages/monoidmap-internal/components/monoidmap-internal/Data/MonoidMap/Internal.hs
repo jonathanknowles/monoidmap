@@ -10,7 +10,7 @@
 --
 -- Provides /internal/ support for the @monoidmap@ package.
 --
--- This module defines the 'NonNull' type of values that are not 'C.null',
+-- This module defines the 'NonNull' type of values that are not 'null',
 -- and functions for constructing maps of 'NonNull' values from ordinary maps.
 --
 module Data.MonoidMap.Internal
@@ -41,7 +41,8 @@ module Data.MonoidMap.Internal
     )
     where
 
-import Prelude
+import Prelude hiding
+    ( null )
 
 import Control.DeepSeq
     ( NFData )
@@ -54,13 +55,12 @@ import Data.Functor.Classes
 import Data.Map.Strict
     ( Map )
 import Data.Monoid.Null
-    ( MonoidNull )
+    ( MonoidNull (null) )
 import NoThunks.Class
     ( NoThunks )
 
 import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
-import qualified Data.Monoid.Null as C
 
 --------------------------------------------------------------------------------
 -- Non-null values
@@ -88,7 +88,7 @@ type role NonNull nominal
 
 maybeNonNull :: MonoidNull v => v -> Maybe (NonNull v)
 maybeNonNull !v
-    | C.null  v = Nothing
+    | null v    = Nothing
     | otherwise = Just (UnsafeNonNull v)
 {-# INLINE maybeNonNull #-}
 
@@ -107,7 +107,7 @@ fromNonNullMap = coerce
 -- | /Unsafely/ converts an ordinary map into a map of non-null values.
 --
 -- This function /expects/ but does /not/ check that no value in the given map
--- is 'C.null'. It must only be applied to maps that satisfy this condition.
+-- is null. It must only be applied to maps that satisfy this condition.
 --
 unsafeToNonNullMap :: Map k v -> Map k (NonNull v)
 unsafeToNonNullMap = coerce
@@ -143,7 +143,7 @@ type role NonNullMap nominal nominal
 --------------------------------------------------------------------------------
 
 -- | Constructs a map of non-null values from an ordinary 'Map', removing all
---   'C.null' values.
+--   'null' values.
 --
 -- This function selects which of the @fromMap_*@ implementations below is used
 -- by the public @fromMap@ function of the @monoidmap@ package.
@@ -153,13 +153,13 @@ fromMap = fromMap_filter_if_any_null
 {-# INLINE fromMap #-}
 
 fromMap_filter :: MonoidNull v => Map k v -> Map k (NonNull v)
-fromMap_filter = unsafeToNonNullMap . Map.filter (\(!v) -> not (C.null v))
+fromMap_filter = unsafeToNonNullMap . Map.filter (\(!v) -> not (null v))
 {-# INLINABLE fromMap_filter #-}
 
 fromMap_filter_if_any_null :: MonoidNull v => Map k v -> Map k (NonNull v)
 fromMap_filter_if_any_null m
-    | F.any (\(!v) -> C.null v) m =
-        unsafeToNonNullMap $ Map.filter (\(!v) -> not (C.null v)) m
+    | F.any (\(!v) -> null v) m =
+        unsafeToNonNullMap $ Map.filter (\(!v) -> not (null v)) m
     | otherwise =
         unsafeToNonNullMap m
 {-# INLINABLE fromMap_filter_if_any_null #-}
@@ -169,7 +169,7 @@ fromMap_mapMaybe = Map.mapMaybe maybeNonNull
 {-# INLINABLE fromMap_mapMaybe #-}
 
 -- | Constructs a map of non-null values from an ordinary 'Map', applying the
---   given function to all values, and removing all 'C.null' values.
+--   given function to all values, and removing all 'null' values.
 --
 -- This function selects which of the @fromMapWith_*@ implementations below is
 -- used by the public @fromMapWith@ function of the @monoidmap@ package.
