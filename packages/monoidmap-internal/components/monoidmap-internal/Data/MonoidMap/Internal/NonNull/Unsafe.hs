@@ -17,10 +17,10 @@
 module Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull
     , NonNullMap (..)
-    , maybeNonNull
-    , applyNonNull
-    , applyNonNull2
-    , fromNonNullMap
+    , nonNull
+    , apply
+    , apply2
+    , toMap
     , unsafeToNonNullMap
     )
     where
@@ -66,23 +66,23 @@ newtype NonNull v = UnsafeNonNull v
 --
 type role NonNull nominal
 
-maybeNonNull :: Null.MonoidNull v => v -> Maybe (NonNull v)
-maybeNonNull !v
+nonNull :: Null.MonoidNull v => v -> Maybe (NonNull v)
+nonNull !v
     | Null.null v = Nothing
     | otherwise   = Just (UnsafeNonNull v)
-{-# INLINE maybeNonNull #-}
+{-# INLINE nonNull #-}
 
-applyNonNull :: (v -> a) -> (NonNull v -> a)
-applyNonNull = coerce
-{-# INLINE applyNonNull #-}
+apply :: (v -> a) -> (NonNull v -> a)
+apply = coerce
+{-# INLINE apply #-}
 
-applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
-applyNonNull2 = coerce
-{-# INLINE applyNonNull2 #-}
+apply2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
+apply2 = coerce
+{-# INLINE apply2 #-}
 
-fromNonNullMap :: Map k (NonNull v) -> Map k v
-fromNonNullMap = coerce
-{-# INLINE fromNonNullMap #-}
+toMap :: Map k (NonNull v) -> Map k v
+toMap = coerce
+{-# INLINE toMap #-}
 
 -- | /Unsafely/ converts an ordinary map into a map of non-null values.
 --

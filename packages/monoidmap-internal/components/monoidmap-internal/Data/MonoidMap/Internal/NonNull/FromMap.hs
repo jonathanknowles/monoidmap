@@ -26,7 +26,7 @@ import Data.Map.Strict
     ( Map )
 import Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull
-    , maybeNonNull
+    , nonNull
     , unsafeToNonNullMap
     )
 
@@ -47,5 +47,5 @@ fromMap_filter_if_any_null m
 {-# INLINABLE fromMap_filter_if_any_null #-}
 
 fromMap_mapMaybe :: Null.MonoidNull v => Map k v -> Map k (NonNull v)
-fromMap_mapMaybe = Map.mapMaybe maybeNonNull
+fromMap_mapMaybe = Map.mapMaybe nonNull
 {-# INLINABLE fromMap_mapMaybe #-}

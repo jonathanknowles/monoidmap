@@ -7,6 +7,14 @@
 -- This module provides the 'NonNull' type of values that are not 'Null.null',
 -- and functions for constructing maps of 'NonNull' values from ordinary maps.
 --
+-- This module is intended to be imported qualified, to avoid name clashes:
+--
+-- @
+-- import Data.MonoidMap.Internal.NonNull
+--     ( NonNull, NonNullMap (..) )
+-- import qualified Data.MonoidMap.Internal.NonNull as NonNull
+-- @
+--
 module Data.MonoidMap.Internal.NonNull
     (
     -- * Types
@@ -14,12 +22,12 @@ module Data.MonoidMap.Internal.NonNull
     , NonNullMap (..)
 
     -- * Non-null values
-    , maybeNonNull
-    , applyNonNull
-    , applyNonNull2
+    , nonNull
+    , apply
+    , apply2
 
     -- * Non-null maps
-    , fromNonNullMap
+    , toMap
 
     -- * Construction
     , fromMap
@@ -36,10 +44,10 @@ import Data.MonoidMap.Internal.NonNull.FromMapWith
 import Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull
     , NonNullMap (..)
-    , applyNonNull
-    , applyNonNull2
-    , fromNonNullMap
-    , maybeNonNull
+    , apply
+    , apply2
+    , nonNull
+    , toMap
     )
 
 import qualified Data.Monoid.Null as Null
