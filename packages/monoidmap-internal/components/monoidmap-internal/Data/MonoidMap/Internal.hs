@@ -1,8 +1,3 @@
-{- HLINT ignore "Avoid lambda" -}
-{- HLINT ignore "Avoid lambda using `infix`" -}
-{- HLINT ignore "Redundant bracket" -}
-{- HLINT ignore "Use camelCase" -}
-
 -- |
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
@@ -29,22 +24,15 @@ module Data.MonoidMap.Internal
     -- * Construction
     , fromMap
     , fromMapWith
-
-    -- ** Implementations
-    , fromMapWith_mapMaybe
-    , fromMapWith_map_filter
-    , fromMapWith_map_filter_if_any_null
     )
     where
-
-import Prelude
 
 import Data.Map.Strict
     ( Map )
 import Data.MonoidMap.Internal.NonNull.FromMap
-    ( fromMap_filter
-    , fromMap_filter_if_any_null
-    )
+    ( fromMap_filter_if_any_null )
+import Data.MonoidMap.Internal.NonNull.FromMapWith
+    ( fromMapWith_mapMaybe )
 import Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull
     , NonNullMap (..)
@@ -54,7 +42,6 @@ import Data.MonoidMap.Internal.NonNull.Unsafe
     , maybeNonNull
     )
 
-import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.Null as Null
 
 --------------------------------------------------------------------------------
@@ -75,25 +62,11 @@ fromMap = fromMap_filter_if_any_null
 -- | Constructs a map of non-null values from an ordinary 'Map', applying the
 --   given function to all values, and removing all 'Null.null' values.
 --
--- This function selects which of the @fromMapWith_*@ implementations below is
--- used by the public @fromMapWith@ function of the @monoidmap@ package.
+-- This function selects which of the @fromMapWith_*@ implementations in
+-- "Data.MonoidMap.Internal.NonNull.FromMapWith" is used by the public
+-- @fromMapWith@ function of the @monoidmap@ package.
 --
 fromMapWith
     :: Null.MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
 fromMapWith = fromMapWith_mapMaybe
 {-# INLINE fromMapWith #-}
-
-fromMapWith_mapMaybe
-    :: Null.MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
-fromMapWith_mapMaybe f = Map.mapMaybe (maybeNonNull . f)
-{-# INLINABLE fromMapWith_mapMaybe #-}
-
-fromMapWith_map_filter
-    :: Null.MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
-fromMapWith_map_filter f = fromMap_filter . Map.map f
-{-# INLINABLE fromMapWith_map_filter #-}
-
-fromMapWith_map_filter_if_any_null
-    :: Null.MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
-fromMapWith_map_filter_if_any_null f = fromMap_filter_if_any_null . Map.map f
-{-# INLINABLE fromMapWith_map_filter_if_any_null #-}

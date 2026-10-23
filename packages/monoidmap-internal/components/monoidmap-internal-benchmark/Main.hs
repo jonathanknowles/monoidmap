@@ -38,6 +38,7 @@ import Test.Tasty.Bench
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal as MMap
 import qualified Data.MonoidMap.Internal.NonNull.FromMap as MMap
+import qualified Data.MonoidMap.Internal.NonNull.FromMapWith as MMap
 
 main :: IO ()
 main = do
