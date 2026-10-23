@@ -67,6 +67,7 @@ library
     exposed-modules:
         Data.MonoidMap.Internal.NonNull
         Data.MonoidMap.Internal.NonNullMap
+        Data.MonoidMap.Internal.NonNullMap.FromMap
     other-modules:
         Data.MonoidMap.Internal.NonNull.Unsafe
         Data.MonoidMap.Internal.NonNullMap.Unsafe

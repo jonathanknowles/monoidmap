@@ -20,9 +20,6 @@ module Data.MonoidMap.Internal.NonNullMap
     , fromMapWith
 
     -- ** Implementations
-    , fromMap_filter
-    , fromMap_filter_if_any_null
-    , fromMap_mapMaybe
     , fromMapWith_mapMaybe
     , fromMapWith_map_filter
     , fromMapWith_map_filter_if_any_null
@@ -41,10 +38,11 @@ import Data.Monoid.Null
     ( MonoidNull (null) )
 import Data.MonoidMap.Internal.NonNull
     ( NonNull, maybeNonNull )
+import Data.MonoidMap.Internal.NonNullMap.FromMap
+    ( fromMap_filter, fromMap_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
-    ( NonNullMap (..), fromNonNullMap, unsafeToNonNullMap )
+    ( NonNullMap (..), fromNonNullMap )
 
-import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 
 --------------------------------------------------------------------------------
@@ -54,28 +52,13 @@ import qualified Data.Map.Strict as Map
 -- | Constructs a map of non-null values from an ordinary 'Map', removing all
 --   'null' values.
 --
--- This function selects which of the @fromMap_*@ implementations below is used
--- by the public @fromMap@ function of the @monoidmap@ package.
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.FromMap" is used by the public @fromMap@
+-- function of the @monoidmap@ package.
 --
 fromMap :: MonoidNull v => Map k v -> Map k (NonNull v)
 fromMap = fromMap_filter_if_any_null
 {-# INLINE fromMap #-}
-
-fromMap_filter :: MonoidNull v => Map k v -> Map k (NonNull v)
-fromMap_filter = unsafeToNonNullMap . Map.filter (\(!v) -> not (null v))
-{-# INLINABLE fromMap_filter #-}
-
-fromMap_filter_if_any_null :: MonoidNull v => Map k v -> Map k (NonNull v)
-fromMap_filter_if_any_null m
-    | F.any (\(!v) -> null v) m =
-        unsafeToNonNullMap $ Map.filter (\(!v) -> not (null v)) m
-    | otherwise =
-        unsafeToNonNullMap m
-{-# INLINABLE fromMap_filter_if_any_null #-}
-
-fromMap_mapMaybe :: MonoidNull v => Map k v -> Map k (NonNull v)
-fromMap_mapMaybe = Map.mapMaybe maybeNonNull
-{-# INLINABLE fromMap_mapMaybe #-}
 
 -- | Constructs a map of non-null values from an ordinary 'Map', applying the
 --   given function to all values, and removing all 'null' values.
