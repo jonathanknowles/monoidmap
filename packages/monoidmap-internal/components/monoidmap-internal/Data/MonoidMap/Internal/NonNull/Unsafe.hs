@@ -22,6 +22,8 @@ import Control.DeepSeq
 import Data.Monoid.Null
     ( MonoidNull (null) )
 
+-- | A value that is not 'null'.
+--
 newtype NonNull v = UnsafeNonNull v
     deriving newtype NFData
 
@@ -42,12 +44,17 @@ newtype NonNull v = UnsafeNonNull v
 --
 type role NonNull nominal
 
+-- | Converts a value into a 'NonNull' value, returning 'Nothing' if the
+--   value is 'null'.
+--
 nonNull :: MonoidNull v => v -> Maybe (NonNull v)
 nonNull !v
     | null v    = Nothing
     | otherwise = Just (UnsafeNonNull v)
 {-# INLINE nonNull #-}
 
+-- | Extracts the value from a 'NonNull' value.
+--
 unwrap :: NonNull v -> v
 unwrap (UnsafeNonNull v) = v
 {-# INLINE unwrap #-}

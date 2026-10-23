@@ -37,10 +37,14 @@ import Data.Monoid.Null
 import Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull, nonNull, unwrap )
 
+-- | Applies a function on ordinary values to a 'NonNull' value.
+--
 apply :: (v -> a) -> (NonNull v -> a)
 apply f = f . unwrap
 {-# INLINE apply #-}
 
+-- | Applies a binary function on ordinary values to two 'NonNull' values.
+--
 apply2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
 apply2 f v1 v2 = f (unwrap v1) (unwrap v2)
 {-# INLINE apply2 #-}
