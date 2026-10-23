@@ -9,7 +9,7 @@
 --
 -- This module is the only module with access to the data constructor of
 -- 'NonNull', and is therefore the only module that can construct a 'NonNull'
--- value that is 'C.null'. It is not exposed by this package.
+-- value that is 'Null.null'. It is not exposed by this package.
 --
 -- All other modules must construct 'NonNull' values with the functions
 -- defined here.
@@ -37,12 +37,10 @@ import Data.Functor.Classes
     ( Eq1, Eq2, Show1, Show2 )
 import Data.Map.Strict
     ( Map )
-import Data.Monoid.Null
-    ( MonoidNull )
 import NoThunks.Class
     ( NoThunks )
 
-import qualified Data.Monoid.Null as C
+import qualified Data.Monoid.Null as Null
 
 --------------------------------------------------------------------------------
 -- Non-null values
@@ -68,10 +66,10 @@ newtype NonNull v = UnsafeNonNull v
 --
 type role NonNull nominal
 
-maybeNonNull :: MonoidNull v => v -> Maybe (NonNull v)
+maybeNonNull :: Null.MonoidNull v => v -> Maybe (NonNull v)
 maybeNonNull !v
-    | C.null  v = Nothing
-    | otherwise = Just (UnsafeNonNull v)
+    | Null.null v = Nothing
+    | otherwise   = Just (UnsafeNonNull v)
 {-# INLINE maybeNonNull #-}
 
 applyNonNull :: (v -> a) -> (NonNull v -> a)
@@ -89,7 +87,7 @@ fromNonNullMap = coerce
 -- | /Unsafely/ converts an ordinary map into a map of non-null values.
 --
 -- This function /expects/ but does /not/ check that no value in the given map
--- is 'C.null'. It must only be applied to maps that satisfy this condition.
+-- is 'Null.null'. It must only be applied to maps that satisfy this condition.
 --
 unsafeToNonNullMap :: Map k v -> Map k (NonNull v)
 unsafeToNonNullMap = coerce
