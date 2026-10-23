@@ -9,7 +9,7 @@
 --
 module Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull (UnsafeNonNull)
-    , maybeNonNull
+    , nonNull
     , unwrap
     )
     where
@@ -42,11 +42,11 @@ newtype NonNull v = UnsafeNonNull v
 --
 type role NonNull nominal
 
-maybeNonNull :: MonoidNull v => v -> Maybe (NonNull v)
-maybeNonNull !v
+nonNull :: MonoidNull v => v -> Maybe (NonNull v)
+nonNull !v
     | null v    = Nothing
     | otherwise = Just (UnsafeNonNull v)
-{-# INLINE maybeNonNull #-}
+{-# INLINE nonNull #-}
 
 unwrap :: NonNull v -> v
 unwrap (UnsafeNonNull v) = v

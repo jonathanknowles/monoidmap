@@ -168,11 +168,7 @@ import Prelude hiding
     )
 
 import Data.MonoidMap.Internal.NonNull
-    ( NonNull
-    , applyNonNull
-    , applyNonNull2
-    , maybeNonNull
-    )
+    ( NonNull )
 import Data.MonoidMap.Internal.NonNullMap
     ( NonNullMap (..)
     , fromNonNullMap
@@ -252,6 +248,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
+import qualified Data.MonoidMap.Internal.NonNull as NonNull
 import qualified Data.MonoidMap.Internal.NonNullMap as NonNullMap
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
@@ -994,7 +991,7 @@ get k m = fromMaybe mempty $ Map.lookup k $ toMap m
 -- @since 0.0.0.0
 --
 set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
-set k v (MonoidMap m) = MonoidMap $ case maybeNonNull v of
+set k v (MonoidMap m) = MonoidMap $ case NonNull.nonNull v of
     Just v0 -> Map.insert k v0 m
     Nothing -> Map.delete k    m
 
@@ -1015,7 +1012,7 @@ adjust
     -> MonoidMap k v
     -> MonoidMap k v
 adjust f k (MonoidMap m) = MonoidMap $
-    Map.alter (maybeNonNull . maybe (f mempty) (applyNonNull f)) k m
+    Map.alter (NonNull.nonNull . maybe (f mempty) (NonNull.apply f)) k m
 
 --------------------------------------------------------------------------------
 -- Nullification
@@ -1265,7 +1262,7 @@ splitAt i m = (take i m, drop i m)
 -- @since 0.0.0.0
 --
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
-filter f (MonoidMap m) = MonoidMap $ Map.filter (applyNonNull f) m
+filter f (MonoidMap m) = MonoidMap $ Map.filter (NonNull.apply f) m
 
 -- | \(O(n)\). Filters a map according to a predicate on /keys/.
 --
@@ -1312,7 +1309,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 --
 filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterWithKey f (MonoidMap m) =
-    MonoidMap $ Map.filterWithKey (applyNonNull . f) m
+    MonoidMap $ Map.filterWithKey (NonNull.apply . f) m
 
 --------------------------------------------------------------------------------
 -- Partitioning
@@ -1349,7 +1346,7 @@ filterWithKey f (MonoidMap m) =
 --
 partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partition (applyNonNull f) m
+    B.bimap MonoidMap MonoidMap $ Map.partition (NonNull.apply f) m
 
 -- | \(O(n)\). Partitions a map according to a predicate on /keys/.
 --
@@ -1417,7 +1414,7 @@ partitionKeys f (MonoidMap m) =
 partitionWithKey
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partitionWithKey f (MonoidMap m) =
-    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (applyNonNull . f) m
+    B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (NonNull.apply . f) m
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -1457,7 +1454,7 @@ map
     -> MonoidMap k v1
     -> MonoidMap k v2
 map f (MonoidMap m) =
-    MonoidMap $ Map.mapMaybe (maybeNonNull . applyNonNull f) m
+    MonoidMap $ Map.mapMaybe (NonNull.nonNull . NonNull.apply f) m
 
 -- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
 --   are associated with non-'C.null' values.
@@ -1529,7 +1526,7 @@ mapWithKey
 mapWithKey f (MonoidMap m) =
     MonoidMap . runIdentity $
     Map.traverseMaybeWithKey
-        (\k v -> Identity $ maybeNonNull $ applyNonNull (f k) v) m
+        (\k v -> Identity $ NonNull.nonNull $ NonNull.apply (f k) v) m
 
 --------------------------------------------------------------------------------
 -- Folding
@@ -1722,7 +1719,7 @@ traverseWithKey
 traverseWithKey f (MonoidMap m) =
     MonoidMap <$>
     Map.traverseMaybeWithKey
-        (\k v -> maybeNonNull <$> applyNonNull (f k) v) m
+        (\k v -> NonNull.nonNull <$> NonNull.apply (f k) v) m
 {-# INLINE traverseWithKey #-}
 
 -- | \(O(n)\). Threads an accumulating argument through the map in ascending
@@ -3946,7 +3943,7 @@ withNonNull
     -> WhenOneSideNull f k v1 v2
 withNonNull f
     = Map.mapMaybeMissing
-    $ \_k v -> maybeNonNull $ applyNonNull f v
+    $ \_k v -> NonNull.nonNull $ NonNull.apply f v
 {-# INLINE withNonNull #-}
 
 withNonNullA
@@ -3955,7 +3952,7 @@ withNonNullA
     -> WhenOneSideNull f k v1 v2
 withNonNullA f
     = Map.traverseMaybeMissing
-    $ \_k v -> maybeNonNull <$> applyNonNull f v
+    $ \_k v -> NonNull.nonNull <$> NonNull.apply f v
 {-# INLINE withNonNullA #-}
 
 withBoth
@@ -3964,7 +3961,7 @@ withBoth
     -> WhenBothNonNull f k v1 v2 v3
 withBoth f
     = Map.zipWithMaybeMatched
-    $ \_k v1 v2 -> maybeNonNull $ applyNonNull2 f v1 v2
+    $ \_k v1 v2 -> NonNull.nonNull $ NonNull.apply2 f v1 v2
 {-# INLINE withBoth #-}
 
 withBothA
@@ -3973,7 +3970,7 @@ withBothA
     -> WhenBothNonNull f k v1 v2 v3
 withBothA f
     = Map.zipWithMaybeAMatched
-    $ \_k v1 v2 -> maybeNonNull <$> applyNonNull2 f v1 v2
+    $ \_k v1 v2 -> NonNull.nonNull <$> NonNull.apply2 f v1 v2
 {-# INLINE withBothA #-}
 
 --------------------------------------------------------------------------------

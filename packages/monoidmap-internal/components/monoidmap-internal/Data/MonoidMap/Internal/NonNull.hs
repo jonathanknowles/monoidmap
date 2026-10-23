@@ -5,20 +5,27 @@
 -- Provides the 'NonNull' type of values that are not 'null', and functions for
 -- working with 'NonNull' values.
 --
+-- This module is intended to be imported qualified:
+--
+-- @
+-- import Data.MonoidMap.Internal.NonNull (NonNull)
+-- import Data.MonoidMap.Internal.NonNull qualified as NonNull
+-- @
+--
 module Data.MonoidMap.Internal.NonNull
     (
     -- * Type
       NonNull
 
     -- * Construction
-    , maybeNonNull
+    , nonNull
 
     -- * Deconstruction
     , unwrap
 
     -- * Function application
-    , applyNonNull
-    , applyNonNull2
+    , apply
+    , apply2
     )
     where
 
@@ -28,12 +35,12 @@ import Prelude hiding
 import Data.Monoid.Null
     ( MonoidNull (null) )
 import Data.MonoidMap.Internal.NonNull.Unsafe
-    ( NonNull, maybeNonNull, unwrap )
+    ( NonNull, nonNull, unwrap )
 
-applyNonNull :: (v -> a) -> (NonNull v -> a)
-applyNonNull f = f . unwrap
-{-# INLINE applyNonNull #-}
+apply :: (v -> a) -> (NonNull v -> a)
+apply f = f . unwrap
+{-# INLINE apply #-}
 
-applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
-applyNonNull2 f v1 v2 = f (unwrap v1) (unwrap v2)
-{-# INLINE applyNonNull2 #-}
+apply2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
+apply2 f v1 v2 = f (unwrap v1) (unwrap v2)
+{-# INLINE apply2 #-}

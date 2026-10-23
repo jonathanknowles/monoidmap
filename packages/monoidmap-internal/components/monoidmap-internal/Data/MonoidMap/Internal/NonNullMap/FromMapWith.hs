@@ -25,7 +25,7 @@ import Data.Map.Strict
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap.Internal.NonNull
-    ( NonNull, maybeNonNull )
+    ( NonNull, nonNull )
 import Data.MonoidMap.Internal.NonNullMap.FromMap
     ( fromMap_filter
     , fromMap_filter_if_any_null
@@ -35,7 +35,7 @@ import qualified Data.Map.Strict as Map
 
 fromMapWith_mapMaybe
     :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> Map k (NonNull v2)
-fromMapWith_mapMaybe f = Map.mapMaybe (maybeNonNull . f)
+fromMapWith_mapMaybe f = Map.mapMaybe (nonNull . f)
 {-# INLINABLE fromMapWith_mapMaybe #-}
 
 fromMapWith_map_filter
