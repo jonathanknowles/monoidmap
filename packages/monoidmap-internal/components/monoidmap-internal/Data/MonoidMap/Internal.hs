@@ -92,12 +92,16 @@ maybeNonNull !v
     | otherwise = Just (UnsafeNonNull v)
 {-# INLINE maybeNonNull #-}
 
+unwrap :: NonNull v -> v
+unwrap (UnsafeNonNull v) = v
+{-# INLINE unwrap #-}
+
 applyNonNull :: (v -> a) -> (NonNull v -> a)
-applyNonNull = coerce
+applyNonNull f = f . unwrap
 {-# INLINE applyNonNull #-}
 
 applyNonNull2 :: (v1 -> v2 -> a) -> (NonNull v1 -> NonNull v2 -> a)
-applyNonNull2 = coerce
+applyNonNull2 f v1 v2 = f (unwrap v1) (unwrap v2)
 {-# INLINE applyNonNull2 #-}
 
 fromNonNullMap :: Map k (NonNull v) -> Map k v
