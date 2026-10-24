@@ -38,6 +38,15 @@ import NoThunks.Class
 -- access to the data constructor of 'NonNull'.
 --
 newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
+    --
+    -- Here we take great care to only derive instances that consume values.
+    --
+    -- It's risky to derive an instance that produces values, as the derived
+    -- instance may not necessarily respect the 'NonNull' invariant.
+    --
+    -- For example, the 'Read' instance for 'Map', given appropriate input,
+    -- will quite happily produce maps with 'mempty' values.
+    --
     deriving (Eq, Show, NFData, NoThunks) via Map k v
     deriving (Eq1, Show1, Foldable) via Map k
     deriving (Eq2, Show2, Bifoldable) via Map
