@@ -38,7 +38,16 @@
 </span><span id="line-38"></span><span class="hs-comment">-- access to the data constructor of 'NonNull'.</span><span>
 </span><span id="line-39"></span><span class="hs-comment">--</span><span>
 </span><span id="line-40"></span><span class="hs-keyword">newtype</span><span> </span><span id="NonNullMap"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-var">NonNullMap</span></a></span></span><span> </span><span id="local-6989586621679067857"><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span></span><span> </span><span id="local-6989586621679067858"><span class="annot"><a href="#local-6989586621679067858"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="NonNullMap"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-var">NonNullMap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier hs-type">NonNull</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067858"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
-</span><span id="line-41"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679067862"><span id="local-6989586621679067869"><span class="annot"><span class="annottext">NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+</span><span id="line-41"></span><span>    </span><span class="hs-comment">--</span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-comment">-- Here we take great care to only derive instances that consume values.</span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-comment">--</span><span>
+</span><span id="line-44"></span><span>    </span><span class="hs-comment">-- It's risky to derive an instance that produces values, as the derived</span><span>
+</span><span id="line-45"></span><span>    </span><span class="hs-comment">-- instance may not necessarily respect the 'NonNull' invariant.</span><span>
+</span><span id="line-46"></span><span>    </span><span class="hs-comment">--</span><span>
+</span><span id="line-47"></span><span>    </span><span class="hs-comment">-- For example, the 'Read' instance for 'Map', given appropriate input,</span><span>
+</span><span id="line-48"></span><span>    </span><span class="hs-comment">-- will quite happily produce maps with 'mempty' values.</span><span>
+</span><span id="line-49"></span><span>    </span><span class="hs-comment">--</span><span>
+</span><span id="line-50"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679067862"><span id="local-6989586621679067869"><span class="annot"><span class="annottext">NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
 (NonNullMap k v -&gt; NonNullMap k v -&gt; Bool)
 -&gt; (NonNullMap k v -&gt; NonNullMap k v -&gt; Bool)
 -&gt; Eq (NonNullMap k v)
@@ -108,7 +117,7 @@ $cshowTypeOf :: forall k v.
 Proxy (NonNullMap k v) -&gt; String
 showTypeOf :: Proxy (NonNullMap k v) -&gt; String
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">NoThunks</span></span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">via</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067858"><span class="hs-identifier hs-type">v</span></a></span><span>
-</span><span id="line-42"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679067945"><span class="annot"><span class="annottext">(forall a. Eq a =&gt; Eq (NonNullMap k a)) =&gt;
+</span><span id="line-51"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679067945"><span class="annot"><span class="annottext">(forall a. Eq a =&gt; Eq (NonNullMap k a)) =&gt;
 (forall a b.
  (a -&gt; b -&gt; Bool) -&gt; NonNullMap k a -&gt; NonNullMap k b -&gt; Bool)
 -&gt; Eq1 (NonNullMap k)
@@ -262,7 +271,7 @@ sum :: forall a. Num a =&gt; NonNullMap k a -&gt; a
 $cproduct :: forall k a. Num a =&gt; NonNullMap k a -&gt; a
 product :: forall a. Num a =&gt; NonNullMap k a -&gt; a
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Foldable</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">via</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span><span>
-</span><span id="line-43"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679068078"><span class="annot"><span class="annottext">(forall k. Eq k =&gt; Eq1 (NonNullMap k)) =&gt;
+</span><span id="line-52"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679068078"><span class="annot"><span class="annottext">(forall k. Eq k =&gt; Eq1 (NonNullMap k)) =&gt;
 (forall a b c d.
  (a -&gt; b -&gt; Bool)
  -&gt; (c -&gt; d -&gt; Bool) -&gt; NonNullMap a c -&gt; NonNullMap b d -&gt; Bool)
@@ -405,35 +414,35 @@ $cbifoldl :: forall c a b.
 bifoldl :: forall c a b.
 (c -&gt; a -&gt; c) -&gt; (c -&gt; b -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
 </span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Bifoldable</span></span></span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">via</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span>
-</span><span id="line-44"></span><span>
-</span><span id="line-45"></span><span class="hs-comment">-- Strictly speaking, this type role annotation is redundant, as:</span><span>
-</span><span id="line-46"></span><span class="hs-comment">--</span><span>
-</span><span id="line-47"></span><span class="hs-comment">-- - The type parameter 'k' already has a nominal role inherited from 'Map'.</span><span>
-</span><span id="line-48"></span><span class="hs-comment">-- - The type parameter 'v' already has a nominal role inherited from 'NonNull'.</span><span>
-</span><span id="line-49"></span><span class="hs-comment">--</span><span>
-</span><span id="line-50"></span><span class="hs-comment">-- But we reassert these roles here, so that they cannot be silently weakened</span><span>
-</span><span id="line-51"></span><span class="hs-comment">-- by a future change to the representation of 'NonNullMap'.</span><span>
-</span><span id="line-52"></span><span class="hs-comment">--</span><span>
-</span><span id="line-53"></span><span class="hs-keyword">type</span><span> </span><span class="hs-keyword">role</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span>
-</span><span id="line-54"></span><span>
-</span><span id="line-55"></span><span class="hs-comment">-- | Converts a 'NonNullMap' into an ordinary map.</span><span>
-</span><span id="line-56"></span><span class="hs-comment">--</span><span>
-</span><span id="line-57"></span><span id="local-6989586621679067844"><span id="local-6989586621679067845"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-identifier hs-type">toMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067844"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067845"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067844"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067845"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
-</span><span id="line-58"></span><span id="toMap"><span class="annot"><span class="annottext">toMap :: forall k v. NonNullMap k v -&gt; Map k v
+</span><span id="line-53"></span><span>
+</span><span id="line-54"></span><span class="hs-comment">-- Strictly speaking, this type role annotation is redundant, as:</span><span>
+</span><span id="line-55"></span><span class="hs-comment">--</span><span>
+</span><span id="line-56"></span><span class="hs-comment">-- - The type parameter 'k' already has a nominal role inherited from 'Map'.</span><span>
+</span><span id="line-57"></span><span class="hs-comment">-- - The type parameter 'v' already has a nominal role inherited from 'NonNull'.</span><span>
+</span><span id="line-58"></span><span class="hs-comment">--</span><span>
+</span><span id="line-59"></span><span class="hs-comment">-- But we reassert these roles here, so that they cannot be silently weakened</span><span>
+</span><span id="line-60"></span><span class="hs-comment">-- by a future change to the representation of 'NonNullMap'.</span><span>
+</span><span id="line-61"></span><span class="hs-comment">--</span><span>
+</span><span id="line-62"></span><span class="hs-keyword">type</span><span> </span><span class="hs-keyword">role</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span>
+</span><span id="line-63"></span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- | Converts a 'NonNullMap' into an ordinary map.</span><span>
+</span><span id="line-65"></span><span class="hs-comment">--</span><span>
+</span><span id="line-66"></span><span id="local-6989586621679067844"><span id="local-6989586621679067845"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-identifier hs-type">toMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067844"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067845"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067844"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067845"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-67"></span><span id="toMap"><span class="annot"><span class="annottext">toMap :: forall k v. NonNullMap k v -&gt; Map k v
 </span><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-identifier hs-var hs-var">toMap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonNullMap k v -&gt; Map k v
 forall a b. Coercible a b =&gt; a -&gt; b
 </span><span class="hs-identifier hs-var">coerce</span></span><span>
-</span><span id="line-59"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-pragma hs-type">toMap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
-</span><span id="line-60"></span><span>
-</span><span id="line-61"></span><span class="hs-comment">-- | /Unsafely/ converts an ordinary map into a 'NonNullMap'.</span><span>
-</span><span id="line-62"></span><span class="hs-comment">--</span><span>
-</span><span id="line-63"></span><span class="hs-comment">-- This function /expects/ but does /not/ check that no value in the given map</span><span>
-</span><span id="line-64"></span><span class="hs-comment">-- is null. It must only be applied to maps that satisfy this condition.</span><span>
-</span><span id="line-65"></span><span class="hs-comment">--</span><span>
-</span><span id="line-66"></span><span id="local-6989586621679067848"><span id="local-6989586621679067849"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067848"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067849"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067848"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067849"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
-</span><span id="line-67"></span><span id="unsafeFromMap"><span class="annot"><span class="annottext">unsafeFromMap :: forall k v. Map k v -&gt; NonNullMap k v
+</span><span id="line-68"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-pragma hs-type">toMap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-69"></span><span>
+</span><span id="line-70"></span><span class="hs-comment">-- | /Unsafely/ converts an ordinary map into a 'NonNullMap'.</span><span>
+</span><span id="line-71"></span><span class="hs-comment">--</span><span>
+</span><span id="line-72"></span><span class="hs-comment">-- This function /expects/ but does /not/ check that no value in the given map</span><span>
+</span><span id="line-73"></span><span class="hs-comment">-- is null. It must only be applied to maps that satisfy this condition.</span><span>
+</span><span id="line-74"></span><span class="hs-comment">--</span><span>
+</span><span id="line-75"></span><span id="local-6989586621679067848"><span id="local-6989586621679067849"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067848"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067849"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067848"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067849"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-76"></span><span id="unsafeFromMap"><span class="annot"><span class="annottext">unsafeFromMap :: forall k v. Map k v -&gt; NonNullMap k v
 </span><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-var hs-var">unsafeFromMap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k v -&gt; NonNullMap k v
 forall a b. Coercible a b =&gt; a -&gt; b
 </span><span class="hs-identifier hs-var">coerce</span></span><span>
-</span><span id="line-68"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-pragma hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
-</span><span id="line-69"></span></pre></body></html>
+</span><span id="line-77"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-pragma hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-78"></span></pre></body></html>
