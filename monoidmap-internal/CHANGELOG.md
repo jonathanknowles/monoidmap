@@ -1,3 +1,34 @@
+# 0.4.0.0
+
+- Revised the module structure of the package, replacing the
+  `Data.MonoidMap.Internal` module with the following modules:
+
+  - `Data.MonoidMap.Internal.NonNull`
+  - `Data.MonoidMap.Internal.NonNullMap`
+  - `Data.MonoidMap.Internal.NonNullMap.FromMap`
+  - `Data.MonoidMap.Internal.NonNullMap.FromMapWith`
+
+  The new structure has the following aims:
+
+  - To confine the data constructor of `NonNull` to two small private
+    modules, making the code that maintains the `NonNull` invariant
+    a little easier to audit.
+
+  - To dedicate each public module to a single type, with functions named
+    for qualified import. Several functions have been renamed accordingly:
+    for example, `maybeNonNull` is now `NonNull.nonNull`, and
+    `fromNonNullMap` is now `NonNullMap.toMap`.
+
+  - To move the alternative `fromMap*` and `fromMapWith*` implementations,
+    which exist only for benchmarking, into their own modules, so that
+    they no longer clutter the main API.
+
+- Changed `fromMap`, `fromMapWith`, and `toMap` to accept or return values
+  of type `NonNullMap k v` instead of `Map k (NonNull v)`.
+
+- Added documentation for the `NonNull` and `NonNullMap` types and their
+  functions.
+
 # 0.3.0.0
 
 - Moved the `MonoidMap` type, its instances, and all of its functions to
