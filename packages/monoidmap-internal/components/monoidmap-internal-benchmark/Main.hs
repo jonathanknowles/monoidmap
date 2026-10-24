@@ -36,7 +36,9 @@ import Test.Tasty.Bench
     ( Benchmark, bcompare, bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
-import qualified Data.MonoidMap.Internal as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromMap as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromMapWith as MMap
 
 main :: IO ()
 main = do

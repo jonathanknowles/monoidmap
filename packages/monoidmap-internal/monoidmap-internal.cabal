@@ -65,7 +65,13 @@ library
     hs-source-dirs:
         components/monoidmap-internal
     exposed-modules:
-        Data.MonoidMap.Internal
+        Data.MonoidMap.Internal.NonNull
+        Data.MonoidMap.Internal.NonNullMap
+        Data.MonoidMap.Internal.NonNullMap.FromMap
+        Data.MonoidMap.Internal.NonNullMap.FromMapWith
+    other-modules:
+        Data.MonoidMap.Internal.NonNull.Unsafe
+        Data.MonoidMap.Internal.NonNullMap.Unsafe
     default-language:
         Haskell2010
 
