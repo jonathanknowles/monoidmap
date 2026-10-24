@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RoleAnnotations #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright: &#169; 2022&#8211;2026 Jonathan Knowles</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License: Apache-2.0</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Defines the 'NonNullMap' type, together with the primitive operations on</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- 'NonNullMap' that need access to the data constructor of 'NonNull'.</span><span>
+</span><span id="line-9"></span><span class="hs-comment">--</span><span>
+</span><span id="line-10"></span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html"><span class="hs-identifier">Data.MonoidMap.Internal.NonNullMap.Unsafe</span></a></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier">NonNullMap</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-identifier">toMap</span></a></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier">unsafeFromMap</span></a></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span>
+</span><span id="line-18"></span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.DeepSeq</span></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">NFData</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Bifoldable</span></span><span>
+</span><span id="line-22"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Bifoldable</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Coerce</span></span><span>
+</span><span id="line-24"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">coerce</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-25"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Functor.Classes</span></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Eq1</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Eq2</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Show1</span></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier">Show2</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-29"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html"><span class="hs-identifier">Data.MonoidMap.Internal.NonNull.Unsafe</span></a></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier">NonNull</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#UnsafeNonNull"><span class="hs-identifier">UnsafeNonNull</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-31"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">NoThunks.Class</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">NoThunks</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-33"></span><span>
+</span><span id="line-34"></span><span class="hs-comment">-- | A map of 'NonNull' values.</span><span>
+</span><span id="line-35"></span><span class="hs-comment">--</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- Other types with the same representation (such as @MonoidMap@ from the</span><span>
+</span><span id="line-37"></span><span class="hs-comment">-- @monoidmap@ package) can derive their instances via this type, without</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- access to the data constructor of 'NonNull'.</span><span>
+</span><span id="line-39"></span><span class="hs-comment">--</span><span>
+</span><span id="line-40"></span><span class="hs-keyword">newtype</span><span> </span><span id="NonNullMap"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-var">NonNullMap</span></a></span></span><span> </span><span id="local-6989586621679067857"><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span></span><span> </span><span id="local-6989586621679067858"><span class="annot"><a href="#local-6989586621679067858"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="NonNullMap"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-var">NonNullMap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier hs-type">NonNull</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067858"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span>
+</span><span id="line-41"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679067862"><span id="local-6989586621679067869"><span class="annot"><span class="annottext">NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+(NonNullMap k v -&gt; NonNullMap k v -&gt; Bool)
+-&gt; (NonNullMap k v -&gt; NonNullMap k v -&gt; Bool)
+-&gt; Eq (NonNullMap k v)
+forall a. (a -&gt; a -&gt; Bool) -&gt; (a -&gt; a -&gt; Bool) -&gt; Eq a
+forall k v.
+(Eq k, Eq v) =&gt;
+NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+$c== :: forall k v.
+(Eq k, Eq v) =&gt;
+NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+== :: NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+$c/= :: forall k v.
+(Eq k, Eq v) =&gt;
+NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+/= :: NonNullMap k v -&gt; NonNullMap k v -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var">Eq</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679067880"><span id="local-6989586621679067887"><span id="local-6989586621679067893"><span class="annot"><span class="annottext">Int -&gt; NonNullMap k v -&gt; ShowS
+[NonNullMap k v] -&gt; ShowS
+NonNullMap k v -&gt; String
+(Int -&gt; NonNullMap k v -&gt; ShowS)
+-&gt; (NonNullMap k v -&gt; String)
+-&gt; ([NonNullMap k v] -&gt; ShowS)
+-&gt; Show (NonNullMap k v)
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; (a -&gt; String) -&gt; ([a] -&gt; ShowS) -&gt; Show a
+forall k v. (Show k, Show v) =&gt; Int -&gt; NonNullMap k v -&gt; ShowS
+forall k v. (Show k, Show v) =&gt; [NonNullMap k v] -&gt; ShowS
+forall k v. (Show k, Show v) =&gt; NonNullMap k v -&gt; String
+$cshowsPrec :: forall k v. (Show k, Show v) =&gt; Int -&gt; NonNullMap k v -&gt; ShowS
+showsPrec :: Int -&gt; NonNullMap k v -&gt; ShowS
+$cshow :: forall k v. (Show k, Show v) =&gt; NonNullMap k v -&gt; String
+show :: NonNullMap k v -&gt; String
+$cshowList :: forall k v. (Show k, Show v) =&gt; [NonNullMap k v] -&gt; ShowS
+showList :: [NonNullMap k v] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show</span></span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679067906"><span class="annot"><span class="annottext">NonNullMap k v -&gt; ()
+(NonNullMap k v -&gt; ()) -&gt; NFData (NonNullMap k v)
+forall a. (a -&gt; ()) -&gt; NFData a
+forall k v. (NFData k, NFData v) =&gt; NonNullMap k v -&gt; ()
+$crnf :: forall k v. (NFData k, NFData v) =&gt; NonNullMap k v -&gt; ()
+rnf :: NonNullMap k v -&gt; ()
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">NFData</span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679067918"><span id="local-6989586621679067925"><span id="local-6989586621679067931"><span class="annot"><span class="annottext">Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo)
+Proxy (NonNullMap k v) -&gt; String
+(Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo))
+-&gt; (Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo))
+-&gt; (Proxy (NonNullMap k v) -&gt; String)
+-&gt; NoThunks (NonNullMap k v)
+forall a.
+(Context -&gt; a -&gt; IO (Maybe ThunkInfo))
+-&gt; (Context -&gt; a -&gt; IO (Maybe ThunkInfo))
+-&gt; (Proxy a -&gt; String)
+-&gt; NoThunks a
+forall k v.
+(NoThunks k, NoThunks v) =&gt;
+Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo)
+forall k v.
+(NoThunks k, NoThunks v) =&gt;
+Proxy (NonNullMap k v) -&gt; String
+$cnoThunks :: forall k v.
+(NoThunks k, NoThunks v) =&gt;
+Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo)
+noThunks :: Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo)
+$cwNoThunks :: forall k v.
+(NoThunks k, NoThunks v) =&gt;
+Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo)
+wNoThunks :: Context -&gt; NonNullMap k v -&gt; IO (Maybe ThunkInfo)
+$cshowTypeOf :: forall k v.
+(NoThunks k, NoThunks v) =&gt;
+Proxy (NonNullMap k v) -&gt; String
+showTypeOf :: Proxy (NonNullMap k v) -&gt; String
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">NoThunks</span></span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">via</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067858"><span class="hs-identifier hs-type">v</span></a></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679067945"><span class="annot"><span class="annottext">(forall a. Eq a =&gt; Eq (NonNullMap k a)) =&gt;
+(forall a b.
+ (a -&gt; b -&gt; Bool) -&gt; NonNullMap k a -&gt; NonNullMap k b -&gt; Bool)
+-&gt; Eq1 (NonNullMap k)
+forall a. Eq a =&gt; Eq (NonNullMap k a)
+forall k a. (Eq k, Eq a) =&gt; Eq (NonNullMap k a)
+forall k a b.
+Eq k =&gt;
+(a -&gt; b -&gt; Bool) -&gt; NonNullMap k a -&gt; NonNullMap k b -&gt; Bool
+forall a b.
+(a -&gt; b -&gt; Bool) -&gt; NonNullMap k a -&gt; NonNullMap k b -&gt; Bool
+forall (f :: * -&gt; *).
+(forall a. Eq a =&gt; Eq (f a)) =&gt;
+(forall a b. (a -&gt; b -&gt; Bool) -&gt; f a -&gt; f b -&gt; Bool) -&gt; Eq1 f
+$cliftEq :: forall k a b.
+Eq k =&gt;
+(a -&gt; b -&gt; Bool) -&gt; NonNullMap k a -&gt; NonNullMap k b -&gt; Bool
+liftEq :: forall a b.
+(a -&gt; b -&gt; Bool) -&gt; NonNullMap k a -&gt; NonNullMap k b -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var">Eq1</span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679067957"><span id="local-6989586621679067963"><span class="annot"><span class="annottext">(forall a. Show a =&gt; Show (NonNullMap k a)) =&gt;
+(forall a.
+ (Int -&gt; a -&gt; ShowS)
+ -&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; NonNullMap k a -&gt; ShowS)
+-&gt; (forall a.
+    (Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; [NonNullMap k a] -&gt; ShowS)
+-&gt; Show1 (NonNullMap k)
+forall a. Show a =&gt; Show (NonNullMap k a)
+forall k a. (Show k, Show a) =&gt; Show (NonNullMap k a)
+forall k a.
+Show k =&gt;
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; NonNullMap k a -&gt; ShowS
+forall k a.
+Show k =&gt;
+(Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; [NonNullMap k a] -&gt; ShowS
+forall a.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; NonNullMap k a -&gt; ShowS
+forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; [NonNullMap k a] -&gt; ShowS
+forall (f :: * -&gt; *).
+(forall a. Show a =&gt; Show (f a)) =&gt;
+(forall a.
+ (Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; f a -&gt; ShowS)
+-&gt; (forall a.
+    (Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; [f a] -&gt; ShowS)
+-&gt; Show1 f
+$cliftShowsPrec :: forall k a.
+Show k =&gt;
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; NonNullMap k a -&gt; ShowS
+liftShowsPrec :: forall a.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS) -&gt; Int -&gt; NonNullMap k a -&gt; ShowS
+$cliftShowList :: forall k a.
+Show k =&gt;
+(Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; [NonNullMap k a] -&gt; ShowS
+liftShowList :: forall a.
+(Int -&gt; a -&gt; ShowS) -&gt; ([a] -&gt; ShowS) -&gt; [NonNullMap k a] -&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show1</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679067972"><span id="local-6989586621679067979"><span id="local-6989586621679067985"><span id="local-6989586621679067991"><span id="local-6989586621679067995"><span id="local-6989586621679067999"><span id="local-6989586621679068003"><span id="local-6989586621679068007"><span id="local-6989586621679068011"><span id="local-6989586621679068015"><span id="local-6989586621679068019"><span id="local-6989586621679068023"><span id="local-6989586621679068027"><span id="local-6989586621679068033"><span id="local-6989586621679068039"><span id="local-6989586621679068045"><span id="local-6989586621679068051"><span class="annot"><span class="annottext">(forall m. Monoid m =&gt; NonNullMap k m -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a)
+-&gt; (forall a. NonNullMap k a -&gt; [a])
+-&gt; (forall a. NonNullMap k a -&gt; Bool)
+-&gt; (forall a. NonNullMap k a -&gt; Int)
+-&gt; (forall a. Eq a =&gt; a -&gt; NonNullMap k a -&gt; Bool)
+-&gt; (forall a. Ord a =&gt; NonNullMap k a -&gt; a)
+-&gt; (forall a. Ord a =&gt; NonNullMap k a -&gt; a)
+-&gt; (forall a. Num a =&gt; NonNullMap k a -&gt; a)
+-&gt; (forall a. Num a =&gt; NonNullMap k a -&gt; a)
+-&gt; Foldable (NonNullMap k)
+forall a. Eq a =&gt; a -&gt; NonNullMap k a -&gt; Bool
+forall a. Num a =&gt; NonNullMap k a -&gt; a
+forall a. Ord a =&gt; NonNullMap k a -&gt; a
+forall m. Monoid m =&gt; NonNullMap k m -&gt; m
+forall a. NonNullMap k a -&gt; Bool
+forall a. NonNullMap k a -&gt; Int
+forall a. NonNullMap k a -&gt; [a]
+forall a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a
+forall k a. Eq a =&gt; a -&gt; NonNullMap k a -&gt; Bool
+forall k a. Num a =&gt; NonNullMap k a -&gt; a
+forall k a. Ord a =&gt; NonNullMap k a -&gt; a
+forall m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+forall k m. Monoid m =&gt; NonNullMap k m -&gt; m
+forall m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+forall k a. NonNullMap k a -&gt; Bool
+forall k a. NonNullMap k a -&gt; Int
+forall k a. NonNullMap k a -&gt; [a]
+forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+forall k a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a
+forall k m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+forall k b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+forall k a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+forall (t :: * -&gt; *).
+(forall m. Monoid m =&gt; t m -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; t a -&gt; m)
+-&gt; (forall m a. Monoid m =&gt; (a -&gt; m) -&gt; t a -&gt; m)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; t a -&gt; b)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; t a -&gt; a)
+-&gt; (forall a. (a -&gt; a -&gt; a) -&gt; t a -&gt; a)
+-&gt; (forall a. t a -&gt; [a])
+-&gt; (forall a. t a -&gt; Bool)
+-&gt; (forall a. t a -&gt; Int)
+-&gt; (forall a. Eq a =&gt; a -&gt; t a -&gt; Bool)
+-&gt; (forall a. Ord a =&gt; t a -&gt; a)
+-&gt; (forall a. Ord a =&gt; t a -&gt; a)
+-&gt; (forall a. Num a =&gt; t a -&gt; a)
+-&gt; (forall a. Num a =&gt; t a -&gt; a)
+-&gt; Foldable t
+$cfold :: forall k m. Monoid m =&gt; NonNullMap k m -&gt; m
+fold :: forall m. Monoid m =&gt; NonNullMap k m -&gt; m
+$cfoldMap :: forall k m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+foldMap :: forall m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+$cfoldMap' :: forall k m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+foldMap' :: forall m a. Monoid m =&gt; (a -&gt; m) -&gt; NonNullMap k a -&gt; m
+$cfoldr :: forall k a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+foldr :: forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+$cfoldr' :: forall k a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+foldr' :: forall a b. (a -&gt; b -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+$cfoldl :: forall k b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+foldl :: forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+$cfoldl' :: forall k b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+foldl' :: forall b a. (b -&gt; a -&gt; b) -&gt; b -&gt; NonNullMap k a -&gt; b
+$cfoldr1 :: forall k a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a
+foldr1 :: forall a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a
+$cfoldl1 :: forall k a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a
+foldl1 :: forall a. (a -&gt; a -&gt; a) -&gt; NonNullMap k a -&gt; a
+$ctoList :: forall k a. NonNullMap k a -&gt; [a]
+toList :: forall a. NonNullMap k a -&gt; [a]
+$cnull :: forall k a. NonNullMap k a -&gt; Bool
+null :: forall a. NonNullMap k a -&gt; Bool
+$clength :: forall k a. NonNullMap k a -&gt; Int
+length :: forall a. NonNullMap k a -&gt; Int
+$celem :: forall k a. Eq a =&gt; a -&gt; NonNullMap k a -&gt; Bool
+elem :: forall a. Eq a =&gt; a -&gt; NonNullMap k a -&gt; Bool
+$cmaximum :: forall k a. Ord a =&gt; NonNullMap k a -&gt; a
+maximum :: forall a. Ord a =&gt; NonNullMap k a -&gt; a
+$cminimum :: forall k a. Ord a =&gt; NonNullMap k a -&gt; a
+minimum :: forall a. Ord a =&gt; NonNullMap k a -&gt; a
+$csum :: forall k a. Num a =&gt; NonNullMap k a -&gt; a
+sum :: forall a. Num a =&gt; NonNullMap k a -&gt; a
+$cproduct :: forall k a. Num a =&gt; NonNullMap k a -&gt; a
+product :: forall a. Num a =&gt; NonNullMap k a -&gt; a
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Foldable</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">via</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067857"><span class="hs-identifier hs-type">k</span></a></span><span>
+</span><span id="line-43"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="hs-special">(</span><span id="local-6989586621679068078"><span class="annot"><span class="annottext">(forall k. Eq k =&gt; Eq1 (NonNullMap k)) =&gt;
+(forall a b c d.
+ (a -&gt; b -&gt; Bool)
+ -&gt; (c -&gt; d -&gt; Bool) -&gt; NonNullMap a c -&gt; NonNullMap b d -&gt; Bool)
+-&gt; Eq2 NonNullMap
+forall k. Eq k =&gt; Eq1 (NonNullMap k)
+forall a b c d.
+(a -&gt; b -&gt; Bool)
+-&gt; (c -&gt; d -&gt; Bool) -&gt; NonNullMap a c -&gt; NonNullMap b d -&gt; Bool
+forall (f :: * -&gt; * -&gt; *).
+(forall a. Eq a =&gt; Eq1 (f a)) =&gt;
+(forall a b c d.
+ (a -&gt; b -&gt; Bool) -&gt; (c -&gt; d -&gt; Bool) -&gt; f a c -&gt; f b d -&gt; Bool)
+-&gt; Eq2 f
+$cliftEq2 :: forall a b c d.
+(a -&gt; b -&gt; Bool)
+-&gt; (c -&gt; d -&gt; Bool) -&gt; NonNullMap a c -&gt; NonNullMap b d -&gt; Bool
+liftEq2 :: forall a b c d.
+(a -&gt; b -&gt; Bool)
+-&gt; (c -&gt; d -&gt; Bool) -&gt; NonNullMap a c -&gt; NonNullMap b d -&gt; Bool
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var">Eq2</span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679068088"><span id="local-6989586621679068093"><span class="annot"><span class="annottext">(forall k. Show k =&gt; Show1 (NonNullMap k)) =&gt;
+(forall a b.
+ (Int -&gt; a -&gt; ShowS)
+ -&gt; ([a] -&gt; ShowS)
+ -&gt; (Int -&gt; b -&gt; ShowS)
+ -&gt; ([b] -&gt; ShowS)
+ -&gt; Int
+ -&gt; NonNullMap a b
+ -&gt; ShowS)
+-&gt; (forall a b.
+    (Int -&gt; a -&gt; ShowS)
+    -&gt; ([a] -&gt; ShowS)
+    -&gt; (Int -&gt; b -&gt; ShowS)
+    -&gt; ([b] -&gt; ShowS)
+    -&gt; [NonNullMap a b]
+    -&gt; ShowS)
+-&gt; Show2 NonNullMap
+forall k. Show k =&gt; Show1 (NonNullMap k)
+forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; Int
+-&gt; NonNullMap a b
+-&gt; ShowS
+forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; [NonNullMap a b]
+-&gt; ShowS
+forall (f :: * -&gt; * -&gt; *).
+(forall a. Show a =&gt; Show1 (f a)) =&gt;
+(forall a b.
+ (Int -&gt; a -&gt; ShowS)
+ -&gt; ([a] -&gt; ShowS)
+ -&gt; (Int -&gt; b -&gt; ShowS)
+ -&gt; ([b] -&gt; ShowS)
+ -&gt; Int
+ -&gt; f a b
+ -&gt; ShowS)
+-&gt; (forall a b.
+    (Int -&gt; a -&gt; ShowS)
+    -&gt; ([a] -&gt; ShowS)
+    -&gt; (Int -&gt; b -&gt; ShowS)
+    -&gt; ([b] -&gt; ShowS)
+    -&gt; [f a b]
+    -&gt; ShowS)
+-&gt; Show2 f
+$cliftShowsPrec2 :: forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; Int
+-&gt; NonNullMap a b
+-&gt; ShowS
+liftShowsPrec2 :: forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; Int
+-&gt; NonNullMap a b
+-&gt; ShowS
+$cliftShowList2 :: forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; [NonNullMap a b]
+-&gt; ShowS
+liftShowList2 :: forall a b.
+(Int -&gt; a -&gt; ShowS)
+-&gt; ([a] -&gt; ShowS)
+-&gt; (Int -&gt; b -&gt; ShowS)
+-&gt; ([b] -&gt; ShowS)
+-&gt; [NonNullMap a b]
+-&gt; ShowS
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Show2</span></span></span></span><span class="hs-special">,</span><span> </span><span id="local-6989586621679068101"><span id="local-6989586621679068108"><span id="local-6989586621679068114"><span id="local-6989586621679068118"><span class="annot"><span class="annottext">(forall m. Monoid m =&gt; NonNullMap m m -&gt; m)
+-&gt; (forall m a b.
+    Monoid m =&gt;
+    (a -&gt; m) -&gt; (b -&gt; m) -&gt; NonNullMap a b -&gt; m)
+-&gt; (forall a c b.
+    (a -&gt; c -&gt; c) -&gt; (b -&gt; c -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c)
+-&gt; (forall c a b.
+    (c -&gt; a -&gt; c) -&gt; (c -&gt; b -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c)
+-&gt; Bifoldable NonNullMap
+forall m. Monoid m =&gt; NonNullMap m m -&gt; m
+forall m a b.
+Monoid m =&gt;
+(a -&gt; m) -&gt; (b -&gt; m) -&gt; NonNullMap a b -&gt; m
+forall c a b.
+(c -&gt; a -&gt; c) -&gt; (c -&gt; b -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
+forall a c b.
+(a -&gt; c -&gt; c) -&gt; (b -&gt; c -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
+forall (p :: * -&gt; * -&gt; *).
+(forall m. Monoid m =&gt; p m m -&gt; m)
+-&gt; (forall m a b. Monoid m =&gt; (a -&gt; m) -&gt; (b -&gt; m) -&gt; p a b -&gt; m)
+-&gt; (forall a c b.
+    (a -&gt; c -&gt; c) -&gt; (b -&gt; c -&gt; c) -&gt; c -&gt; p a b -&gt; c)
+-&gt; (forall c a b.
+    (c -&gt; a -&gt; c) -&gt; (c -&gt; b -&gt; c) -&gt; c -&gt; p a b -&gt; c)
+-&gt; Bifoldable p
+$cbifold :: forall m. Monoid m =&gt; NonNullMap m m -&gt; m
+bifold :: forall m. Monoid m =&gt; NonNullMap m m -&gt; m
+$cbifoldMap :: forall m a b.
+Monoid m =&gt;
+(a -&gt; m) -&gt; (b -&gt; m) -&gt; NonNullMap a b -&gt; m
+bifoldMap :: forall m a b.
+Monoid m =&gt;
+(a -&gt; m) -&gt; (b -&gt; m) -&gt; NonNullMap a b -&gt; m
+$cbifoldr :: forall a c b.
+(a -&gt; c -&gt; c) -&gt; (b -&gt; c -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
+bifoldr :: forall a c b.
+(a -&gt; c -&gt; c) -&gt; (b -&gt; c -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
+$cbifoldl :: forall c a b.
+(c -&gt; a -&gt; c) -&gt; (c -&gt; b -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
+bifoldl :: forall c a b.
+(c -&gt; a -&gt; c) -&gt; (c -&gt; b -&gt; c) -&gt; c -&gt; NonNullMap a b -&gt; c
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var hs-var">Bifoldable</span></span></span></span></span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">via</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span>
+</span><span id="line-44"></span><span>
+</span><span id="line-45"></span><span class="hs-comment">-- Strictly speaking, this type role annotation is redundant, as:</span><span>
+</span><span id="line-46"></span><span class="hs-comment">--</span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- - The type parameter 'k' already has a nominal role inherited from 'Map'.</span><span>
+</span><span id="line-48"></span><span class="hs-comment">-- - The type parameter 'v' already has a nominal role inherited from 'NonNull'.</span><span>
+</span><span id="line-49"></span><span class="hs-comment">--</span><span>
+</span><span id="line-50"></span><span class="hs-comment">-- But we reassert these roles here, so that they cannot be silently weakened</span><span>
+</span><span id="line-51"></span><span class="hs-comment">-- by a future change to the representation of 'NonNullMap'.</span><span>
+</span><span id="line-52"></span><span class="hs-comment">--</span><span>
+</span><span id="line-53"></span><span class="hs-keyword">type</span><span> </span><span class="hs-keyword">role</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span>
+</span><span id="line-54"></span><span>
+</span><span id="line-55"></span><span class="hs-comment">-- | Converts a 'NonNullMap' into an ordinary map.</span><span>
+</span><span id="line-56"></span><span class="hs-comment">--</span><span>
+</span><span id="line-57"></span><span id="local-6989586621679067844"><span id="local-6989586621679067845"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-identifier hs-type">toMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067844"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067845"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067844"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067845"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-58"></span><span id="toMap"><span class="annot"><span class="annottext">toMap :: forall k v. NonNullMap k v -&gt; Map k v
+</span><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-identifier hs-var hs-var">toMap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonNullMap k v -&gt; Map k v
+forall a b. Coercible a b =&gt; a -&gt; b
+</span><span class="hs-identifier hs-var">coerce</span></span><span>
+</span><span id="line-59"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#toMap"><span class="hs-pragma hs-type">toMap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-60"></span><span>
+</span><span id="line-61"></span><span class="hs-comment">-- | /Unsafely/ converts an ordinary map into a 'NonNullMap'.</span><span>
+</span><span id="line-62"></span><span class="hs-comment">--</span><span>
+</span><span id="line-63"></span><span class="hs-comment">-- This function /expects/ but does /not/ check that no value in the given map</span><span>
+</span><span id="line-64"></span><span class="hs-comment">-- is null. It must only be applied to maps that satisfy this condition.</span><span>
+</span><span id="line-65"></span><span class="hs-comment">--</span><span>
+</span><span id="line-66"></span><span id="local-6989586621679067848"><span id="local-6989586621679067849"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Map</span></span><span> </span><span class="annot"><a href="#local-6989586621679067848"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067849"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067848"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067849"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-67"></span><span id="unsafeFromMap"><span class="annot"><span class="annottext">unsafeFromMap :: forall k v. Map k v -&gt; NonNullMap k v
+</span><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-identifier hs-var hs-var">unsafeFromMap</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k v -&gt; NonNullMap k v
+forall a b. Coercible a b =&gt; a -&gt; b
+</span><span class="hs-identifier hs-var">coerce</span></span><span>
+</span><span id="line-68"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#unsafeFromMap"><span class="hs-pragma hs-type">unsafeFromMap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-69"></span></pre></body></html>

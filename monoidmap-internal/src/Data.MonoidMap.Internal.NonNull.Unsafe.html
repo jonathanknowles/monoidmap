@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-pragma">{-# LANGUAGE RoleAnnotations #-}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright: &#169; 2022&#8211;2026 Jonathan Knowles</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License: Apache-2.0</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Defines the 'NonNull' type, together with the primitive operations on</span><span>
+</span><span id="line-8"></span><span class="hs-comment">-- 'NonNull' values that need access to its data constructor.</span><span>
+</span><span id="line-9"></span><span class="hs-comment">--</span><span>
+</span><span id="line-10"></span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html"><span class="hs-identifier">Data.MonoidMap.Internal.NonNull.Unsafe</span></a></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier">NonNull</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#UnsafeNonNull"><span class="hs-identifier">UnsafeNonNull</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-identifier">nonNull</span></a></span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#unwrap"><span class="hs-identifier">unwrap</span></a></span><span>
+</span><span id="line-14"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-15"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span> </span><span class="hs-keyword">hiding</span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">null</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span>
+</span><span id="line-20"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Control.DeepSeq</span></span><span>
+</span><span id="line-21"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">NFData</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span>
+</span><span id="line-23"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidNull</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier">null</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span class="hs-comment">-- | A value that is not 'null'.</span><span>
+</span><span id="line-26"></span><span class="hs-comment">--</span><span>
+</span><span id="line-27"></span><span class="hs-keyword">newtype</span><span> </span><span id="NonNull"><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier hs-var">NonNull</span></a></span></span><span> </span><span id="local-6989586621679067648"><span class="annot"><a href="#local-6989586621679067648"><span class="hs-identifier hs-type">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span id="UnsafeNonNull"><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#UnsafeNonNull"><span class="hs-identifier hs-var">UnsafeNonNull</span></a></span></span><span> </span><span class="annot"><a href="#local-6989586621679067648"><span class="hs-identifier hs-type">v</span></a></span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-keyword">deriving</span><span> </span><span class="annot"><span class="hs-keyword">newtype</span></span><span> </span><span id="local-6989586621679067658"><span class="annot"><span class="annottext">NonNull v -&gt; ()
+(NonNull v -&gt; ()) -&gt; NFData (NonNull v)
+forall v. NFData v =&gt; NonNull v -&gt; ()
+forall a. (a -&gt; ()) -&gt; NFData a
+$crnf :: forall v. NFData v =&gt; NonNull v -&gt; ()
+rnf :: NonNull v -&gt; ()
+</span><span class="hs-identifier hs-var hs-var hs-var hs-var">NFData</span></span></span><span>
+</span><span id="line-29"></span><span>
+</span><span id="line-30"></span><span class="hs-comment">-- Without an explicit type role annotation, the following role would be</span><span>
+</span><span id="line-31"></span><span class="hs-comment">-- inferred:</span><span>
+</span><span id="line-32"></span><span class="hs-comment">--</span><span>
+</span><span id="line-33"></span><span class="hs-comment">--     type role NonNull representational</span><span>
+</span><span id="line-34"></span><span class="hs-comment">--</span><span>
+</span><span id="line-35"></span><span class="hs-comment">-- However, the validity of a 'NonNull' value depends on a property of its</span><span>
+</span><span id="line-36"></span><span class="hs-comment">-- type: its 'mempty' value. A representational role would allow users to</span><span>
+</span><span id="line-37"></span><span class="hs-comment">-- coerce between types with the same representation but different 'mempty'</span><span>
+</span><span id="line-38"></span><span class="hs-comment">-- values, even without access to the 'NonNull' constructor.</span><span>
+</span><span id="line-39"></span><span class="hs-comment">--</span><span>
+</span><span id="line-40"></span><span class="hs-comment">-- For example, users could coerce a 'NonNull' ('Sum' 'Int') to a 'NonNull'</span><span>
+</span><span id="line-41"></span><span class="hs-comment">-- ('Product' 'Int'), and thereby construct a 'NonNull' value that is 'mempty'.</span><span>
+</span><span id="line-42"></span><span class="hs-comment">--</span><span>
+</span><span id="line-43"></span><span class="hs-comment">-- So we must instead choose a nominal role.</span><span>
+</span><span id="line-44"></span><span class="hs-comment">--</span><span>
+</span><span id="line-45"></span><span class="hs-keyword">type</span><span> </span><span class="hs-keyword">role</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier hs-type">NonNull</span></a></span><span> </span><span class="annot"><span class="hs-identifier">nominal</span></span><span>
+</span><span id="line-46"></span><span>
+</span><span id="line-47"></span><span class="hs-comment">-- | Converts a value into a 'NonNull' value, returning 'Nothing' if the</span><span>
+</span><span id="line-48"></span><span class="hs-comment">--   value is 'null'.</span><span>
+</span><span id="line-49"></span><span class="hs-comment">--</span><span>
+</span><span id="line-50"></span><span id="local-6989586621679067644"><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-identifier hs-type">nonNull</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidNull</span></span><span> </span><span class="annot"><a href="#local-6989586621679067644"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679067644"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier hs-type">NonNull</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067644"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span></span><span>
+</span><span id="line-51"></span><span id="nonNull"><span class="annot"><span class="annottext">nonNull :: forall v. MonoidNull v =&gt; v -&gt; Maybe (NonNull v)
+</span><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-identifier hs-var hs-var">nonNull</span></a></span></span><span> </span><span class="hs-glyph">!</span><span id="local-6989586621679067666"><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679067666"><span class="hs-identifier hs-var">v</span></a></span></span><span>
+</span><span id="line-52"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">v -&gt; Bool
+forall m. MonoidNull m =&gt; m -&gt; Bool
+</span><span class="hs-identifier hs-var">null</span></span><span> </span><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679067666"><span class="hs-identifier hs-var">v</span></a></span><span>    </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Maybe (NonNull v)
+forall a. Maybe a
+</span><span class="hs-identifier hs-var">Nothing</span></span><span>
+</span><span id="line-53"></span><span>    </span><span class="hs-glyph">|</span><span> </span><span class="annot"><span class="annottext">Bool
+</span><span class="hs-identifier hs-var">otherwise</span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonNull v -&gt; Maybe (NonNull v)
+forall a. a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Just</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">v -&gt; NonNull v
+forall v. v -&gt; NonNull v
+</span><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#UnsafeNonNull"><span class="hs-identifier hs-var">UnsafeNonNull</span></a></span><span> </span><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679067666"><span class="hs-identifier hs-var">v</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-54"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-pragma hs-type">nonNull</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-55"></span><span>
+</span><span id="line-56"></span><span class="hs-comment">-- | Extracts the value from a 'NonNull' value.</span><span>
+</span><span id="line-57"></span><span class="hs-comment">--</span><span>
+</span><span id="line-58"></span><span id="local-6989586621679067649"><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#unwrap"><span class="hs-identifier hs-type">unwrap</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#NonNull"><span class="hs-identifier hs-type">NonNull</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679067649"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679067649"><span class="hs-identifier hs-type">v</span></a></span></span><span>
+</span><span id="line-59"></span><span id="unwrap"><span class="annot"><span class="annottext">unwrap :: forall v. NonNull v -&gt; v
+</span><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#unwrap"><span class="hs-identifier hs-var hs-var">unwrap</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#UnsafeNonNull"><span class="hs-identifier hs-type">UnsafeNonNull</span></a></span><span> </span><span id="local-6989586621679067667"><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679067667"><span class="hs-identifier hs-var">v</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679067667"><span class="hs-identifier hs-var">v</span></a></span><span>
+</span><span id="line-60"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#unwrap"><span class="hs-pragma hs-type">unwrap</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-61"></span></pre></body></html>
