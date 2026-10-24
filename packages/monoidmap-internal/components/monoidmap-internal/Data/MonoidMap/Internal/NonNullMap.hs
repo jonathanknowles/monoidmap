@@ -2,8 +2,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Provides the 'NonNullMap' type of maps of 'NonNull' values, and functions
--- for converting between ordinary maps and maps of 'NonNull' values.
+-- Provides the 'NonNullMap' type and related functions.
 --
 -- This module is intended to be imported qualified:
 --
