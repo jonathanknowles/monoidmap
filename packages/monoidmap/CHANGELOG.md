@@ -1,3 +1,8 @@
+# 0.1.1.1
+
+- Adapted to the revised module structure of `monoidmap-internal-0.4.0.0`.
+  The API of `Data.MonoidMap` is unchanged.
+
 # 0.1.1.0
 
 - Moved the definitions of the `MonoidMap` type, its instances, and all of
