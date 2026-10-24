@@ -2,8 +2,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Provides the 'NonNull' type of values that are not 'null', and functions for
--- working with 'NonNull' values.
+-- Provides the 'NonNull' type and related functions.
 --
 -- This module is intended to be imported qualified:
 --

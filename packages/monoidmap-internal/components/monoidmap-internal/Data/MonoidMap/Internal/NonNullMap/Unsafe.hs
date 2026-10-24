@@ -34,8 +34,8 @@ import NoThunks.Class
 -- | A map of 'NonNull' values.
 --
 -- Other types with the same representation (such as @MonoidMap@ from the
--- @monoidmap@ package) can derive their instances via this type, without
--- access to the data constructor of 'NonNull'.
+-- @monoidmap@ package) can derive instances via this type, without access
+-- to the data constructor of 'NonNull'.
 --
 newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
     --
