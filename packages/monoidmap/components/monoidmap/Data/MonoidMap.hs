@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE RoleAnnotations #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
@@ -231,8 +232,10 @@ import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (Item) )
+#ifdef NOTHUNKS
 import NoThunks.Class
     ( NoThunks (showTypeOf, wNoThunks) )
+#endif
 import Text.Read
     ( Read (..) )
 
@@ -629,6 +632,7 @@ dataType = mkDataType "Data.MonoidMap.MonoidMap" [fromListConstr]
 fromListConstr :: Constr
 fromListConstr = mkConstr dataType "fromList" [] Prefix
 
+#ifdef NOTHUNKS
 --------------------------------------------------------------------------------
 -- Instances: NoThunks
 --------------------------------------------------------------------------------
@@ -637,6 +641,7 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
     showTypeOf _ = "MonoidMap"
     wNoThunks ctx = wNoThunks ctx . toMap
+#endif
 
 --------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
@@ -2779,7 +2784,7 @@ stripCommonSuffix = C.stripCommonSuffix
 -- greatest map that is both a /suffix/ of __@m1@__ and a /prefix/ of __@m2@__:
 --
 -- @
--- m1 '==' r1 '<>' o \  \
+-- m1 '==' r1 '<>' o
 -- m2 '=='    \  \ o '<>' r2
 -- @
 --
@@ -2862,7 +2867,7 @@ overlap = merge MergeStrategy
 -- __@r2@__:
 --
 -- @
--- m1 '==' r1 '<>' o \  \
+-- m1 '==' r1 '<>' o
 -- m2 '=='    \  \ o '<>' r2
 -- @
 --
@@ -2944,7 +2949,7 @@ stripPrefixOverlap = merge MergeStrategy
 -- __@r1@__:
 --
 -- @
--- m1 '==' r1 '<>' o \  \
+-- m1 '==' r1 '<>' o
 -- m2 '=='    \  \ o '<>' r2
 -- @
 --
@@ -3025,7 +3030,7 @@ stripSuffixOverlap = merge MergeStrategy
 -- __@(r1, o, r2)@__, where:
 --
 -- @
--- m1 '==' r1 '<>' o \  \
+-- m1 '==' r1 '<>' o
 -- m2 '=='    \  \ o '<>' r2
 -- @
 --
