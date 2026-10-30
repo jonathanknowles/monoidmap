@@ -28,8 +28,6 @@ import Data.Map.Strict
     ( Map )
 import Data.MonoidMap.Internal.NonNull.Unsafe
     ( NonNull (UnsafeNonNull) )
-import NoThunks.Class
-    ( NoThunks )
 
 -- | A map of 'NonNull' values.
 --
@@ -47,7 +45,7 @@ newtype NonNullMap k v = NonNullMap (Map k (NonNull v))
     -- For example, the 'Read' instance for 'Map', given appropriate input,
     -- will quite happily produce maps with 'mempty' values.
     --
-    deriving (Eq, Show, NFData, NoThunks) via Map k v
+    deriving (Eq, Show, NFData) via Map k v
     deriving (Eq1, Show1, Foldable) via Map k
     deriving (Eq2, Show2, Bifoldable) via Map
 

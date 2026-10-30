@@ -232,7 +232,7 @@ import Data.Set
 import GHC.Exts
     ( IsList (Item) )
 import NoThunks.Class
-    ( NoThunks )
+    ( NoThunks (showTypeOf, wNoThunks) )
 import Text.Read
     ( Read (..) )
 
@@ -528,8 +528,6 @@ newtype MonoidMap k v = MonoidMap (Map k (NonNull v))
           -- ^ @since 0.0.0.0
         , NFData
           -- ^ @since 0.0.0.0
-        , NoThunks
-          -- ^ @since 0.0.0.0
         )
         via NonNullMap k v
     deriving
@@ -630,6 +628,15 @@ dataType = mkDataType "Data.MonoidMap.MonoidMap" [fromListConstr]
 
 fromListConstr :: Constr
 fromListConstr = mkConstr dataType "fromList" [] Prefix
+
+--------------------------------------------------------------------------------
+-- Instances: NoThunks
+--------------------------------------------------------------------------------
+
+-- | @since 0.0.0.0
+instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
+    showTypeOf _ = "MonoidMap"
+    wNoThunks ctx = wNoThunks ctx . toMap
 
 --------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
