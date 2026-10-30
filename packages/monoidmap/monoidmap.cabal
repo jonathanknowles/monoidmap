@@ -17,6 +17,14 @@ extra-doc-files:
     CHANGELOG.md
     README.md
 
+flag nothunks
+    description:
+        Provide a `NoThunks` instance for `MonoidMap`.
+        This instance will move to the `monoidmap-nothunks` package
+        in a future version of the `monoidmap` package.
+    default: True
+    manual: True
+
 common dependency-base
     build-depends:base                          >= 4.14.3.0   && < 4.23
 common dependency-containers
@@ -34,8 +42,9 @@ common dependency-monoid-subclasses
 common dependency-monoidmap-internal
     build-depends:monoidmap-internal            >= 0.5.0.0    && < 0.6
 common dependency-nothunks
-    build-depends:nothunks                      >= 0.1.3      && < 0.4
-    cpp-options:-DNOTHUNKS
+    if flag(nothunks)
+        build-depends:nothunks                  >= 0.1.3      && < 0.4
+        cpp-options:-DNOTHUNKS
 common dependency-pretty-show
     build-depends:pretty-show                   >= 1.10       && < 1.11
 common dependency-QuickCheck
