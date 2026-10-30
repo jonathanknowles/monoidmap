@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE RoleAnnotations #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
@@ -231,8 +232,10 @@ import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (Item) )
+#ifdef NOTHUNKS
 import NoThunks.Class
     ( NoThunks (showTypeOf, wNoThunks) )
+#endif
 import Text.Read
     ( Read (..) )
 
@@ -629,6 +632,7 @@ dataType = mkDataType "Data.MonoidMap.MonoidMap" [fromListConstr]
 fromListConstr :: Constr
 fromListConstr = mkConstr dataType "fromList" [] Prefix
 
+#ifdef NOTHUNKS
 --------------------------------------------------------------------------------
 -- Instances: NoThunks
 --------------------------------------------------------------------------------
@@ -637,6 +641,7 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
     showTypeOf _ = "MonoidMap"
     wNoThunks ctx = wNoThunks ctx . toMap
+#endif
 
 --------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
