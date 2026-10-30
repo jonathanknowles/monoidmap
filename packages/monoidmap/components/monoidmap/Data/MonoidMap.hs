@@ -635,7 +635,7 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 
 -- | @since 0.0.0.0
 instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
-    showTypeOf _ = "Map"
+    showTypeOf _ = "MonoidMap"
     wNoThunks ctx = wNoThunks ctx . toMap
 
 --------------------------------------------------------------------------------
