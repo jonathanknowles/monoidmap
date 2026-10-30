@@ -1,3 +1,12 @@
+# 0.1.3.0
+
+- Added a manual flag `nothunks`, which is on by default. Switching this flag
+  off removes the `NoThunks` instance for `MonoidMap`, and removes `nothunks`
+  from the dependencies of `monoidmap`.
+
+- The `NoThunks` instance for `MonoidMap` will move to a separate
+  `monoidmap-nothunks` package in a future major version of `monoidmap`.
+
 # 0.1.2.0
 
 - Changed the `NoThunks` instance for `MonoidMap` to report `MonoidMap`
