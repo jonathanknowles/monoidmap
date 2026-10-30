@@ -1,3 +1,8 @@
+# 0.1.2.0
+
+- Changed the `NoThunks` instance for `MonoidMap` to report `MonoidMap`
+  rather than `Map` in the context of any thunk that it finds.
+
 # 0.1.1.1
 
 - Adapted to the revised module structure of `monoidmap-internal-0.4.0.0`.
