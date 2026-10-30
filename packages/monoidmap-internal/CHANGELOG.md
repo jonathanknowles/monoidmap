@@ -1,3 +1,8 @@
+# 0.5.0.0
+
+- Removed the `NoThunks` instance for `NonNullMap`, and the dependency on
+  `nothunks`. The `monoidmap` package no longer relies on this instance.
+
 # 0.4.0.0
 
 - Revised the module structure of the package, replacing the
