@@ -93,3 +93,7 @@ benchmark monoidmap-internal-benchmark
     -- Report allocation and memory statistics for each benchmark:
     ghc-options:
         "-with-rtsopts=-T"
+    -- Align functions to cache lines, so that results are not skewed by
+    -- incidental changes in code alignment:
+    ghc-options:
+        -fproc-alignment=64
