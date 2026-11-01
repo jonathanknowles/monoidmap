@@ -996,6 +996,7 @@ toMap = NonNullMap.toMap . toNonNullMap
 --
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
 get k = NonNullMap.get k . toNonNullMap
+{-# INLINE get #-}
 
 --------------------------------------------------------------------------------
 -- Modification
