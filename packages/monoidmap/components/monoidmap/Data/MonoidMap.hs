@@ -201,7 +201,7 @@ import Data.Group
 import Data.Map.Strict
     ( Map, lookup )
 import Data.Maybe
-    ( fromMaybe, isJust )
+    ( isJust )
 import Data.Monoid.GCD
     ( DistributiveGCDMonoid
     , GCDMonoid
@@ -995,7 +995,7 @@ toMap = NonNullMap.toMap . toNonNullMap
 -- @since 0.0.0.0
 --
 get :: (Ord k, Monoid v) => k -> MonoidMap k v -> v
-get k m = fromMaybe mempty $ Map.lookup k $ toMap m
+get k = NonNullMap.get k . toNonNullMap
 
 --------------------------------------------------------------------------------
 -- Modification
