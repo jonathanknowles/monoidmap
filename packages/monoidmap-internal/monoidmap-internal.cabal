@@ -66,6 +66,7 @@ library
         Data.MonoidMap.Internal.NonNullMap
         Data.MonoidMap.Internal.NonNullMap.FromMap
         Data.MonoidMap.Internal.NonNullMap.FromMapWith
+        Data.MonoidMap.Internal.NonNullMap.Get
     other-modules:
         Data.MonoidMap.Internal.NonNull.Unsafe
         Data.MonoidMap.Internal.NonNullMap.Unsafe
@@ -92,3 +93,7 @@ benchmark monoidmap-internal-benchmark
     -- Report allocation and memory statistics for each benchmark:
     ghc-options:
         "-with-rtsopts=-T"
+    -- Align functions to cache lines, so that results are not skewed by
+    -- incidental changes in code alignment:
+    ghc-options:
+        -fproc-alignment=64

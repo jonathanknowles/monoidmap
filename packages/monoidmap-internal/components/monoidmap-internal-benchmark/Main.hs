@@ -22,6 +22,8 @@ import Data.Function
     ( const, ($) )
 import Data.Int
     ( Int )
+import Data.List
+    ( filter, foldl' )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
 import Data.Semigroup
@@ -39,6 +41,7 @@ import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.NonNullMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMapWith as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.Get as MMap
 
 main :: IO ()
 main = do
@@ -60,6 +63,23 @@ main = do
         , om_null_all
         ]
 
+    let -- Map with keys that are all even:
+        mm_keys_even = MMap.fromMap om_null_odd
+        -- Map with keys that are all odd:
+        mm_keys_odd  = MMap.fromMap om_null_even
+
+        keys_even = filter even [minNatural .. maxNatural]
+        keys_odd  = filter odd  [minNatural .. maxNatural]
+
+    evaluate $ rnf
+        [ mm_keys_even
+        , mm_keys_odd
+        ]
+    evaluate $ rnf
+        [ keys_even
+        , keys_odd
+        ]
+
     let fromMapCases =
             [ ("no nulls",           om_null_none)
             , ("one null (min key)", om_null_min)
@@ -67,6 +87,13 @@ main = do
             , ("even nulls",         om_null_even)
             , ("odd nulls",          om_null_odd)
             , ("all nulls",          om_null_all)
+            ]
+
+    let getCases =
+            [ ("all keys present (even)", (keys_even, mm_keys_even))
+            , ("all keys present (odd)",  (keys_odd,  mm_keys_odd))
+            , ("no keys present (even)",  (keys_even, mm_keys_odd))
+            , ("no keys present (odd)",   (keys_odd,  mm_keys_even))
             ]
 
     defaultMain
@@ -94,6 +121,15 @@ main = do
               , MMap.fromMapWith_map_filter_if_any_null double
               )
             ]
+        , compareImplementations
+            ("get", getAll MMap.get) getCases
+            [ ( "get_findWithDefault"
+              , getAll MMap.get_findWithDefault
+              )
+            , ( "get_lookup"
+              , getAll MMap.get_lookup
+              )
+            ]
         ]
   where
     minNatural :: Int
@@ -115,6 +151,23 @@ main = do
     -- - not introducing any new null values.
     double :: Semigroup m => m -> m
     double m = m <> m
+
+    -- Gets the values associated with all of the given keys, and combines them
+    -- into a single value.
+    --
+    -- This function is marked with `NOINLINE` in order to ensure that every
+    -- implementation of 'get' is called from exactly the same loop.
+    --
+    -- Otherwise, the compiler could compile a separate copy of the loop for
+    -- each implementation, and differences between the copies could outweigh
+    -- differences between the implementations themselves.
+    --
+    getAll
+        :: (Int -> MMap.NonNullMap Int (Sum Int) -> Sum Int)
+        -> ([Int], MMap.NonNullMap Int (Sum Int))
+        -> Sum Int
+    getAll get (ks, m) = foldl' (\v k -> v <> get k m) mempty ks
+    {-# NOINLINE getAll #-}
 
 -- | Compares implementations of a public function with the public function
 --   itself, for each of the given cases.
