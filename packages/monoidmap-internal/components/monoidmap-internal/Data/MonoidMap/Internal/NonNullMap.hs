@@ -22,6 +22,9 @@ module Data.MonoidMap.Internal.NonNullMap
 
     -- * Deconstruction
     , toMap
+
+    -- * Lookup
+    , get
     )
     where
 
@@ -38,6 +41,8 @@ import Data.MonoidMap.Internal.NonNullMap.FromMap
     ( fromMap_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.FromMapWith
     ( fromMapWith_mapMaybe )
+import Data.MonoidMap.Internal.NonNullMap.Get
+    ( get_lookup )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
 
@@ -66,3 +71,18 @@ fromMap = fromMap_filter_if_any_null
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> NonNullMap k v2
 fromMapWith = fromMapWith_mapMaybe
 {-# INLINE fromMapWith #-}
+
+--------------------------------------------------------------------------------
+-- Lookup
+--------------------------------------------------------------------------------
+
+-- | Gets the value associated with the given key, returning 'mempty' if the
+--   key is not present.
+--
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.Get" is used by the public @get@
+-- function of the @monoidmap@ package.
+--
+get :: (Ord k, Monoid v) => k -> NonNullMap k v -> v
+get = get_lookup
+{-# INLINE get #-}
