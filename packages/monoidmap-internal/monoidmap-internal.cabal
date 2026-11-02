@@ -69,6 +69,8 @@ library
         Data.MonoidMap.Internal.NonNullMap.Get
         Data.MonoidMap.Internal.NonNullMap.Map
         Data.MonoidMap.Internal.NonNullMap.Merge
+        Data.MonoidMap.Internal.NonNullMap.StripPrefix
+        Data.MonoidMap.Internal.NonNullMap.StripSuffix
     other-modules:
         Data.MonoidMap.Internal.NonNull.Unsafe
         Data.MonoidMap.Internal.NonNullMap.Unsafe

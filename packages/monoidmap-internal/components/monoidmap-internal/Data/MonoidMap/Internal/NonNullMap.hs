@@ -28,6 +28,12 @@ module Data.MonoidMap.Internal.NonNullMap
 
     -- * Mapping
     , map
+
+    -- * Prefixes
+    , stripPrefix
+
+    -- * Suffixes
+    , stripSuffix
     )
     where
 
@@ -48,6 +54,10 @@ import Data.MonoidMap.Internal.NonNullMap.Get
     ( get_lookup )
 import Data.MonoidMap.Internal.NonNullMap.Map
     ( map )
+import Data.MonoidMap.Internal.NonNullMap.StripPrefix
+    ( stripPrefix )
+import Data.MonoidMap.Internal.NonNullMap.StripSuffix
+    ( stripSuffix )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
 

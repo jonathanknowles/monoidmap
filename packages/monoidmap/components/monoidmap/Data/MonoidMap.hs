@@ -2372,19 +2372,8 @@ stripPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripPrefix = mergeA Merge.Strategy
-    { withNonNullL =
-        Merge.withNonNullA (\v -> C.stripPrefix v mempty)
-
-    , withNonNullR =
-        Merge.keepNonNull
-        -- Justification:
-        --
-        -- stripPrefix mempty a ≡ a
-
-    , withNonNullP =
-        Merge.withBothA C.stripPrefix
-    }
+stripPrefix m1 m2 = fromNonNullMap <$>
+    NonNullMap.stripPrefix (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE stripPrefix #-}
 
 -- | Strips a /suffix/ from a 'MonoidMap'.
@@ -2465,19 +2454,8 @@ stripSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripSuffix = mergeA Merge.Strategy
-    { withNonNullL =
-        Merge.withNonNullA (\v -> C.stripSuffix v mempty)
-
-    , withNonNullR =
-        Merge.keepNonNull
-        -- Justification:
-        --
-        -- stripSuffix mempty a ≡ a
-
-    , withNonNullP =
-        Merge.withBothA C.stripSuffix
-    }
+stripSuffix m1 m2 = fromNonNullMap <$>
+    NonNullMap.stripSuffix (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE stripSuffix #-}
 
 -- | Finds the /greatest common prefix/ of two maps.
