@@ -172,6 +172,8 @@ import Data.MonoidMap.Internal.NonNull
     ( NonNull )
 import Data.MonoidMap.Internal.NonNullMap
     ( NonNullMap (..) )
+import Data.MonoidMap.Internal.NonNullMap.Merge
+    ( Strategy (withNonNullL, withNonNullR, withNonNullP) )
 
 import Control.Applicative
     ( Applicative (..) )
@@ -244,13 +246,13 @@ import qualified Data.Foldable as F
 import qualified Data.Group as C
 import qualified Data.List as L
 import qualified Data.List.NonEmpty as NE
-import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
 import qualified Data.MonoidMap.Internal.NonNull as NonNull
 import qualified Data.MonoidMap.Internal.NonNullMap as NonNullMap
+import qualified Data.MonoidMap.Internal.NonNullMap.Merge as Merge
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified Data.Traversable as Traversable
@@ -2039,21 +2041,21 @@ append
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-append = merge MergeStrategy
+append = merge Merge.Strategy
     { withNonNullL =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- v <> mempty ≡ v
 
     , withNonNullR =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- mempty <> v ≡ v
 
     , withNonNullP =
-        withBoth (<>)
+        Merge.withBoth (<>)
     }
 {-# INLINE append #-}
 
@@ -2371,18 +2373,18 @@ stripPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripPrefix = mergeA MergeStrategy
+stripPrefix = mergeA Merge.Strategy
     { withNonNullL =
-        withNonNullA (\v -> C.stripPrefix v mempty)
+        Merge.withNonNullA (\v -> C.stripPrefix v mempty)
 
     , withNonNullR =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- stripPrefix mempty a ≡ a
 
     , withNonNullP =
-        withBothA C.stripPrefix
+        Merge.withBothA C.stripPrefix
     }
 {-# INLINE stripPrefix #-}
 
@@ -2464,18 +2466,18 @@ stripSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-stripSuffix = mergeA MergeStrategy
+stripSuffix = mergeA Merge.Strategy
     { withNonNullL =
-        withNonNullA (\v -> C.stripSuffix v mempty)
+        Merge.withNonNullA (\v -> C.stripSuffix v mempty)
 
     , withNonNullR =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- stripSuffix mempty a ≡ a
 
     , withNonNullP =
-        withBothA C.stripSuffix
+        Merge.withBothA C.stripSuffix
     }
 {-# INLINE stripSuffix #-}
 
@@ -2524,21 +2526,21 @@ commonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonPrefix = merge MergeStrategy
+commonPrefix = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- commonPrefix a mempty ≡ mempty
 
     , withNonNullR =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- commonPrefix mempty a ≡ mempty
 
     , withNonNullP =
-        withBoth C.commonPrefix
+        Merge.withBoth C.commonPrefix
     }
 {-# INLINE commonPrefix #-}
 
@@ -2587,21 +2589,21 @@ commonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonSuffix = merge MergeStrategy
+commonSuffix = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- commonSuffix a mempty ≡ mempty
 
     , withNonNullR =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- commonSuffix mempty a ≡ mempty
 
     , withNonNullP =
-        withBoth C.commonSuffix
+        Merge.withBoth C.commonSuffix
     }
 {-# INLINE commonSuffix #-}
 
@@ -2843,21 +2845,21 @@ overlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-overlap = merge MergeStrategy
+overlap = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- overlap a mempty ≡ mempty
 
     , withNonNullR =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- overlap mempty a ≡ mempty
 
     , withNonNullP =
-        withBoth C.overlap
+        Merge.withBoth C.overlap
     }
 {-# INLINE overlap #-}
 
@@ -2919,9 +2921,9 @@ stripPrefixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripPrefixOverlap = merge MergeStrategy
+stripPrefixOverlap = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- overlap a b      <> stripPrefixOverlap a b      ≡ b
@@ -2930,7 +2932,7 @@ stripPrefixOverlap = merge MergeStrategy
         --                     stripPrefixOverlap a mempty ≡ mempty
 
     , withNonNullR =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- overlap a      b <> stripPrefixOverlap a      b ≡ b
@@ -2939,7 +2941,7 @@ stripPrefixOverlap = merge MergeStrategy
         --                     stripPrefixOverlap mempty b ≡ b
 
     , withNonNullP =
-        withBoth C.stripPrefixOverlap
+        Merge.withBoth C.stripPrefixOverlap
     }
 {-# INLINE stripPrefixOverlap #-}
 
@@ -3001,9 +3003,9 @@ stripSuffixOverlap
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-stripSuffixOverlap = merge MergeStrategy
+stripSuffixOverlap = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- stripSuffixOverlap b a      <> overlap a      b ≡ a
@@ -3012,7 +3014,7 @@ stripSuffixOverlap = merge MergeStrategy
         -- stripSuffixOverlap b mempty                     ≡ mempty
 
     , withNonNullR =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- stripSuffixOverlap b      a <> overlap a b      ≡ a
@@ -3021,7 +3023,7 @@ stripSuffixOverlap = merge MergeStrategy
         -- stripSuffixOverlap mempty a                     ≡ a
 
     , withNonNullP =
-        withBoth C.stripSuffixOverlap
+        Merge.withBoth C.stripSuffixOverlap
     }
 {-# INLINE stripSuffixOverlap #-}
 
@@ -3166,21 +3168,21 @@ intersection
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-intersection = merge MergeStrategy
+intersection = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- gcd a mempty ≡ mempty
 
     , withNonNullR =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- gcd mempty b ≡ mempty
 
     , withNonNullP =
-        withBoth C.gcd
+        Merge.withBoth C.gcd
     }
 {-# INLINE intersection #-}
 
@@ -3271,21 +3273,21 @@ union
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-union = merge MergeStrategy
+union = merge Merge.Strategy
     { withNonNullL =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- lcm a mempty ≡ a
 
     , withNonNullR =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- lcm mempty a ≡ a
 
     , withNonNullP =
-        withBoth C.lcm
+        Merge.withBoth C.lcm
     }
 {-# INLINE union #-}
 
@@ -3339,15 +3341,15 @@ minus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-minus = merge MergeStrategy
+minus = merge Merge.Strategy
     { withNonNullL =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- a ~~ mempty ≡ a
 
     , withNonNullR =
-        withNonNull C.invert
+        Merge.withNonNull C.invert
         -- Justification:
         --
         -- a      ~~ b ≡ a      <> invert b
@@ -3355,7 +3357,7 @@ minus = merge MergeStrategy
         -- mempty ~~ b ≡           invert b
 
     , withNonNullP =
-        withBoth (C.~~)
+        Merge.withBoth (C.~~)
     }
 {-# INLINE minus #-}
 
@@ -3475,9 +3477,9 @@ minusMaybe
     => MonoidMap k v
     -> MonoidMap k v
     -> Maybe (MonoidMap k v)
-minusMaybe = mergeA MergeStrategy
+minusMaybe = mergeA Merge.Strategy
     { withNonNullL =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- According to laws for Reductive:
@@ -3499,10 +3501,10 @@ minusMaybe = mergeA MergeStrategy
         -- a </> mempty ≡ Just a
 
     , withNonNullR =
-        withNonNullA (\v -> mempty </> v)
+        Merge.withNonNullA (\v -> mempty </> v)
 
     , withNonNullP =
-        withBothA (</>)
+        Merge.withBothA (</>)
     }
 {-# INLINE minusMaybe #-}
 
@@ -3609,9 +3611,9 @@ monus
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-monus = merge MergeStrategy
+monus = merge Merge.Strategy
     { withNonNullL =
-        keepNonNull
+        Merge.keepNonNull
         -- Justification:
         --
         -- a      <> (b <\> a     ) ≡ b <> (a      <\> b)
@@ -3621,13 +3623,13 @@ monus = merge MergeStrategy
         --            b <\> mempty  ≡ b
 
     , withNonNullR =
-        keepNull
+        Merge.keepNull
         -- Justification:
         --
         -- mempty <\> a ≡ mempty
 
     , withNonNullP =
-        withBoth (<\>)
+        Merge.withBoth (<\>)
     }
 {-# INLINE monus #-}
 
@@ -3779,13 +3781,13 @@ intersectionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-intersectionWith f = merge MergeStrategy
+intersectionWith f = merge Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
     , withNonNullR =
-        keepNull
+        Merge.keepNull
     , withNonNullP =
-        withBoth f
+        Merge.withBoth f
     }
 {-# INLINE intersectionWith #-}
 
@@ -3807,13 +3809,13 @@ intersectionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-intersectionWithA f = mergeA MergeStrategy
+intersectionWithA f = mergeA Merge.Strategy
     { withNonNullL =
-        keepNull
+        Merge.keepNull
     , withNonNullR =
-        keepNull
+        Merge.keepNull
     , withNonNullP =
-        withBothA f
+        Merge.withBothA f
     }
 {-# INLINE intersectionWithA #-}
 
@@ -3874,13 +3876,13 @@ unionWith
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-unionWith f = merge MergeStrategy
+unionWith f = merge Merge.Strategy
     { withNonNullL =
-        withNonNull (\v -> f v mempty)
+        Merge.withNonNull (\v -> f v mempty)
     , withNonNullR =
-        withNonNull (\v -> f mempty v)
+        Merge.withNonNull (\v -> f mempty v)
     , withNonNullP =
-        withBoth f
+        Merge.withBoth f
     }
 {-# INLINE unionWith #-}
 
@@ -3902,13 +3904,13 @@ unionWithA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-unionWithA f = mergeA MergeStrategy
+unionWithA f = mergeA Merge.Strategy
     { withNonNullL =
-        withNonNullA (\v -> f v mempty)
+        Merge.withNonNullA (\v -> f v mempty)
     , withNonNullR =
-        withNonNullA (\v -> f mempty v)
+        Merge.withNonNullA (\v -> f mempty v)
     , withNonNullP =
-        withBothA f
+        Merge.withBothA f
     }
 {-# INLINE unionWithA #-}
 
@@ -3916,84 +3918,25 @@ unionWithA f = mergeA MergeStrategy
 -- Merging
 --------------------------------------------------------------------------------
 
-type WhenOneSideNull f k          vx                        vr
-   = Map.WhenMissing f k (NonNull vx)              (NonNull vr)
-type WhenBothNonNull f k          v1           v2           vr
-   = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
-
-data MergeStrategy f k v1 v2 v3 = MergeStrategy
-    { withNonNullL :: !(WhenOneSideNull f k v1    v3)
-    , withNonNullR :: !(WhenOneSideNull f k    v2 v3)
-    , withNonNullP :: !(WhenBothNonNull f k v1 v2 v3)
-    }
-
 merge
     :: Ord k
-    => MergeStrategy Identity k v1 v2 v3
+    => Merge.Strategy Identity k v1 v2 v3
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-merge (MergeStrategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
-    MonoidMap $ Map.merge nnl nnr nnp m1 m2
+merge s m1 m2 =
+    fromNonNullMap $ Merge.merge s (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE merge #-}
 
 mergeA
     :: (Applicative f, Ord k)
-    => MergeStrategy f k v1 v2 v3
+    => Merge.Strategy f k v1 v2 v3
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-mergeA (MergeStrategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
-    MonoidMap <$> Map.mergeA nnl nnr nnp m1 m2
+mergeA s m1 m2 =
+    fromNonNullMap <$> Merge.mergeA s (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE mergeA #-}
-
-keepNull
-    :: Applicative f
-    => WhenOneSideNull f k v1 v2
-keepNull = Map.dropMissing
-{-# INLINE keepNull #-}
-
-keepNonNull
-    :: Applicative f
-    => WhenOneSideNull f k v v
-keepNonNull = Map.preserveMissing
-{-# INLINE keepNonNull #-}
-
-withNonNull
-    :: (Applicative f, MonoidNull v2)
-    => (v1 -> v2)
-    -> WhenOneSideNull f k v1 v2
-withNonNull f
-    = Map.mapMaybeMissing
-    $ \_k v -> NonNull.nonNull $ NonNull.apply f v
-{-# INLINE withNonNull #-}
-
-withNonNullA
-    :: (Applicative f, MonoidNull v2)
-    => (v1 -> f v2)
-    -> WhenOneSideNull f k v1 v2
-withNonNullA f
-    = Map.traverseMaybeMissing
-    $ \_k v -> NonNull.nonNull <$> NonNull.apply f v
-{-# INLINE withNonNullA #-}
-
-withBoth
-    :: (Applicative f, MonoidNull v3)
-    => (v1 -> v2 -> v3)
-    -> WhenBothNonNull f k v1 v2 v3
-withBoth f
-    = Map.zipWithMaybeMatched
-    $ \_k v1 v2 -> NonNull.nonNull $ NonNull.apply2 f v1 v2
-{-# INLINE withBoth #-}
-
-withBothA
-    :: (Applicative f, MonoidNull v3)
-    => (v1 -> v2 -> f v3)
-    -> WhenBothNonNull f k v1 v2 v3
-withBothA f
-    = Map.zipWithMaybeAMatched
-    $ \_k v1 v2 -> NonNull.nonNull <$> NonNull.apply2 f v1 v2
-{-# INLINE withBothA #-}
 
 --------------------------------------------------------------------------------
 -- State
