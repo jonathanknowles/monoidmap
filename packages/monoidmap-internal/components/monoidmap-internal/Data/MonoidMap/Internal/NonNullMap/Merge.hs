@@ -2,7 +2,7 @@
 -- Copyright: © 2022–2026 Jonathan Knowles
 -- License: Apache-2.0
 --
--- Provides strategies for merging maps of 'NonNull' values.
+-- Provides functions for merging maps of 'NonNull' values.
 --
 -- Every strategy provided by this module produces only 'NonNull' values.
 --
@@ -13,7 +13,9 @@
 -- @
 --
 module Data.MonoidMap.Internal.NonNullMap.Merge
-    ( WhenOneSideNull
+    ( merge
+    , mergeA
+    , WhenOneSideNull
     , WhenBothNonNull
     , Strategy (..)
     , keepNull
@@ -27,13 +29,37 @@ module Data.MonoidMap.Internal.NonNullMap.Merge
 
 import Prelude
 
+import Data.Functor.Identity
+    ( Identity )
 import Data.Monoid.Null
     ( MonoidNull )
 import Data.MonoidMap.Internal.NonNull
     ( NonNull )
+import Data.MonoidMap.Internal.NonNullMap.Unsafe
+    ( NonNullMap (..) )
 
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.MonoidMap.Internal.NonNull as NonNull
+
+merge
+    :: Ord k
+    => Strategy Identity k v1 v2 v3
+    -> NonNullMap k v1
+    -> NonNullMap k v2
+    -> NonNullMap k v3
+merge (Strategy nnl nnr nnp) (NonNullMap m1) (NonNullMap m2) =
+    NonNullMap $ Map.merge nnl nnr nnp m1 m2
+{-# INLINE merge #-}
+
+mergeA
+    :: (Applicative f, Ord k)
+    => Strategy f k v1 v2 v3
+    -> NonNullMap k v1
+    -> NonNullMap k v2
+    -> f (NonNullMap k v3)
+mergeA (Strategy nnl nnr nnp) (NonNullMap m1) (NonNullMap m2) =
+    NonNullMap <$> Map.mergeA nnl nnr nnp m1 m2
+{-# INLINE mergeA #-}
 
 type WhenOneSideNull f k          vx                        vr
    = Map.WhenMissing f k (NonNull vx)              (NonNull vr)

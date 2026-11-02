@@ -253,13 +253,13 @@ import qualified Data.Foldable as F
 import qualified Data.Group as C
 import qualified Data.List as L
 import qualified Data.List.NonEmpty as NE
-import qualified Data.Map.Merge.Strict as Map
 import qualified Data.Map.Strict as Map
 import qualified Data.Monoid.GCD as C
 import qualified Data.Monoid.LCM as C
 import qualified Data.Monoid.Null as C
 import qualified Data.MonoidMap.Internal.NonNull as NonNull
 import qualified Data.MonoidMap.Internal.NonNullMap as NonNullMap
+import qualified Data.MonoidMap.Internal.NonNullMap.Merge as Merge
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified Data.Traversable as Traversable
@@ -3931,8 +3931,8 @@ merge
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> MonoidMap k v3
-merge (Strategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
-    MonoidMap $ Map.merge nnl nnr nnp m1 m2
+merge s m1 m2 =
+    fromNonNullMap $ Merge.merge s (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE merge #-}
 
 mergeA
@@ -3941,8 +3941,8 @@ mergeA
     -> MonoidMap k v1
     -> MonoidMap k v2
     -> f (MonoidMap k v3)
-mergeA (Strategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
-    MonoidMap <$> Map.mergeA nnl nnr nnp m1 m2
+mergeA s m1 m2 =
+    fromNonNullMap <$> Merge.mergeA s (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE mergeA #-}
 
 --------------------------------------------------------------------------------
