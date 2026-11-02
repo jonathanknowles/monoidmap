@@ -2503,22 +2503,8 @@ commonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonPrefix = merge Merge.Strategy
-    { withNonNullL =
-        Merge.keepNull
-        -- Justification:
-        --
-        -- commonPrefix a mempty ≡ mempty
-
-    , withNonNullR =
-        Merge.keepNull
-        -- Justification:
-        --
-        -- commonPrefix mempty a ≡ mempty
-
-    , withNonNullP =
-        Merge.withBoth C.commonPrefix
-    }
+commonPrefix m1 m2 = fromNonNullMap $
+    NonNullMap.commonPrefix (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE commonPrefix #-}
 
 -- | Finds the /greatest common suffix/ of two maps.
@@ -2566,22 +2552,8 @@ commonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> MonoidMap k v
-commonSuffix = merge Merge.Strategy
-    { withNonNullL =
-        Merge.keepNull
-        -- Justification:
-        --
-        -- commonSuffix a mempty ≡ mempty
-
-    , withNonNullR =
-        Merge.keepNull
-        -- Justification:
-        --
-        -- commonSuffix mempty a ≡ mempty
-
-    , withNonNullP =
-        Merge.withBoth C.commonSuffix
-    }
+commonSuffix m1 m2 = fromNonNullMap $
+    NonNullMap.commonSuffix (toNonNullMap m1) (toNonNullMap m2)
 {-# INLINE commonSuffix #-}
 
 -- | Strips the /greatest common prefix/ from a pair of maps.

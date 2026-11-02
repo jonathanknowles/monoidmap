@@ -64,6 +64,8 @@ library
     exposed-modules:
         Data.MonoidMap.Internal.NonNull
         Data.MonoidMap.Internal.NonNullMap
+        Data.MonoidMap.Internal.NonNullMap.CommonPrefix
+        Data.MonoidMap.Internal.NonNullMap.CommonSuffix
         Data.MonoidMap.Internal.NonNullMap.FromMap
         Data.MonoidMap.Internal.NonNullMap.FromMapWith
         Data.MonoidMap.Internal.NonNullMap.Get

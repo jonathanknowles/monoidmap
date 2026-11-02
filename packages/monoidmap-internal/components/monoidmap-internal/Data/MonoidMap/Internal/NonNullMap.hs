@@ -31,9 +31,11 @@ module Data.MonoidMap.Internal.NonNullMap
 
     -- * Prefixes
     , stripPrefix
+    , commonPrefix
 
     -- * Suffixes
     , stripSuffix
+    , commonSuffix
     )
     where
 
@@ -46,6 +48,10 @@ import Data.Monoid.Null
     ( MonoidNull (null) )
 import Data.MonoidMap.Internal.NonNull
     ( NonNull )
+import Data.MonoidMap.Internal.NonNullMap.CommonPrefix
+    ( commonPrefix )
+import Data.MonoidMap.Internal.NonNullMap.CommonSuffix
+    ( commonSuffix )
 import Data.MonoidMap.Internal.NonNullMap.FromMap
     ( fromMap_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.FromMapWith
