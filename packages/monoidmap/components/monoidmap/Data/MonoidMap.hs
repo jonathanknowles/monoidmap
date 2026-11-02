@@ -1477,8 +1477,7 @@ map
     => (v1 -> v2)
     -> MonoidMap k v1
     -> MonoidMap k v2
-map f (MonoidMap m) =
-    MonoidMap $ Map.mapMaybe (NonNull.nonNull . NonNull.apply f) m
+map f = fromNonNullMap . NonNullMap.map f . toNonNullMap
 
 -- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
 --   are associated with non-'C.null' values.

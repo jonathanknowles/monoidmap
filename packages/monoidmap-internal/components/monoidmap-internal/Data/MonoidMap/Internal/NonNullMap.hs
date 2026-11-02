@@ -25,11 +25,14 @@ module Data.MonoidMap.Internal.NonNullMap
 
     -- * Lookup
     , get
+
+    -- * Mapping
+    , map
     )
     where
 
 import Prelude hiding
-    ( null )
+    ( map, null )
 
 import Data.Map.Strict
     ( Map )
@@ -43,6 +46,8 @@ import Data.MonoidMap.Internal.NonNullMap.FromMapWith
     ( fromMapWith_mapMaybe )
 import Data.MonoidMap.Internal.NonNullMap.Get
     ( get_lookup )
+import Data.MonoidMap.Internal.NonNullMap.Map
+    ( map )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
 
