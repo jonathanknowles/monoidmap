@@ -13,15 +13,23 @@
 -- @
 --
 module Data.MonoidMap.Internal.NonNullMap.Merge
-    ( merge
+    (
+    -- * Merging
+      merge
     , mergeA
+
+    -- * Strategies
+    , Strategy (..)
     , WhenOneSideNull
     , WhenBothNonNull
-    , Strategy (..)
+
+    -- * Strategies for when one side is null
     , keepNull
     , keepNonNull
     , withNonNull
     , withNonNullA
+
+    -- * Strategies for when both sides are non-null
     , withBoth
     , withBothA
     )
@@ -40,6 +48,10 @@ import Data.MonoidMap.Internal.NonNullMap.Unsafe
 
 import qualified Data.Map.Merge.Strict as Map
 import qualified Data.MonoidMap.Internal.NonNull as NonNull
+
+--------------------------------------------------------------------------------
+-- Merging
+--------------------------------------------------------------------------------
 
 merge
     :: Ord k
@@ -61,6 +73,10 @@ mergeA (Strategy nnl nnr nnp) (NonNullMap m1) (NonNullMap m2) =
     NonNullMap <$> Map.mergeA nnl nnr nnp m1 m2
 {-# INLINE mergeA #-}
 
+--------------------------------------------------------------------------------
+-- Strategies
+--------------------------------------------------------------------------------
+
 type WhenOneSideNull f k          vx                        vr
    = Map.WhenMissing f k (NonNull vx)              (NonNull vr)
 type WhenBothNonNull f k          v1           v2           vr
@@ -71,6 +87,10 @@ data Strategy f k v1 v2 v3 = Strategy
     , withNonNullR :: !(WhenOneSideNull f k    v2 v3)
     , withNonNullP :: !(WhenBothNonNull f k v1 v2 v3)
     }
+
+--------------------------------------------------------------------------------
+-- Strategies for when one side is null
+--------------------------------------------------------------------------------
 
 keepNull
     :: Applicative f
@@ -101,6 +121,10 @@ withNonNullA f
     = Map.traverseMaybeMissing
     $ \_k v -> NonNull.nonNull <$> NonNull.apply f v
 {-# INLINE withNonNullA #-}
+
+--------------------------------------------------------------------------------
+-- Strategies for when both sides are non-null
+--------------------------------------------------------------------------------
 
 withBoth
     :: (Applicative f, MonoidNull v3)
