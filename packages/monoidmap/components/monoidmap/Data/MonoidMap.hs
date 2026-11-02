@@ -172,6 +172,15 @@ import Data.MonoidMap.Internal.NonNull
     ( NonNull )
 import Data.MonoidMap.Internal.NonNullMap
     ( NonNullMap (..) )
+import Data.MonoidMap.Internal.NonNullMap.Merge
+    ( MergeStrategy (..)
+    , keepNonNull
+    , keepNull
+    , withBoth
+    , withBothA
+    , withNonNull
+    , withNonNullA
+    )
 
 import Control.Applicative
     ( Applicative (..) )
@@ -3916,17 +3925,6 @@ unionWithA f = mergeA MergeStrategy
 -- Merging
 --------------------------------------------------------------------------------
 
-type WhenOneSideNull f k          vx                        vr
-   = Map.WhenMissing f k (NonNull vx)              (NonNull vr)
-type WhenBothNonNull f k          v1           v2           vr
-   = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
-
-data MergeStrategy f k v1 v2 v3 = MergeStrategy
-    { withNonNullL :: !(WhenOneSideNull f k v1    v3)
-    , withNonNullR :: !(WhenOneSideNull f k    v2 v3)
-    , withNonNullP :: !(WhenBothNonNull f k v1 v2 v3)
-    }
-
 merge
     :: Ord k
     => MergeStrategy Identity k v1 v2 v3
@@ -3946,54 +3944,6 @@ mergeA
 mergeA (MergeStrategy nnl nnr nnp) (MonoidMap m1) (MonoidMap m2) =
     MonoidMap <$> Map.mergeA nnl nnr nnp m1 m2
 {-# INLINE mergeA #-}
-
-keepNull
-    :: Applicative f
-    => WhenOneSideNull f k v1 v2
-keepNull = Map.dropMissing
-{-# INLINE keepNull #-}
-
-keepNonNull
-    :: Applicative f
-    => WhenOneSideNull f k v v
-keepNonNull = Map.preserveMissing
-{-# INLINE keepNonNull #-}
-
-withNonNull
-    :: (Applicative f, MonoidNull v2)
-    => (v1 -> v2)
-    -> WhenOneSideNull f k v1 v2
-withNonNull f
-    = Map.mapMaybeMissing
-    $ \_k v -> NonNull.nonNull $ NonNull.apply f v
-{-# INLINE withNonNull #-}
-
-withNonNullA
-    :: (Applicative f, MonoidNull v2)
-    => (v1 -> f v2)
-    -> WhenOneSideNull f k v1 v2
-withNonNullA f
-    = Map.traverseMaybeMissing
-    $ \_k v -> NonNull.nonNull <$> NonNull.apply f v
-{-# INLINE withNonNullA #-}
-
-withBoth
-    :: (Applicative f, MonoidNull v3)
-    => (v1 -> v2 -> v3)
-    -> WhenBothNonNull f k v1 v2 v3
-withBoth f
-    = Map.zipWithMaybeMatched
-    $ \_k v1 v2 -> NonNull.nonNull $ NonNull.apply2 f v1 v2
-{-# INLINE withBoth #-}
-
-withBothA
-    :: (Applicative f, MonoidNull v3)
-    => (v1 -> v2 -> f v3)
-    -> WhenBothNonNull f k v1 v2 v3
-withBothA f
-    = Map.zipWithMaybeAMatched
-    $ \_k v1 v2 -> NonNull.nonNull <$> NonNull.apply2 f v1 v2
-{-# INLINE withBothA #-}
 
 --------------------------------------------------------------------------------
 -- State

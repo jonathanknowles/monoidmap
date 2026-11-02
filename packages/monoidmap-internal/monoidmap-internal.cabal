@@ -67,6 +67,7 @@ library
         Data.MonoidMap.Internal.NonNullMap.FromMap
         Data.MonoidMap.Internal.NonNullMap.FromMapWith
         Data.MonoidMap.Internal.NonNullMap.Get
+        Data.MonoidMap.Internal.NonNullMap.Merge
     other-modules:
         Data.MonoidMap.Internal.NonNull.Unsafe
         Data.MonoidMap.Internal.NonNullMap.Unsafe
