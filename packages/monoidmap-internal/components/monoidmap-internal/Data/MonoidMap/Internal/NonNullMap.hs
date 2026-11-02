@@ -32,10 +32,12 @@ module Data.MonoidMap.Internal.NonNullMap
     -- * Prefixes
     , stripPrefix
     , commonPrefix
+    , stripCommonPrefix
 
     -- * Suffixes
     , stripSuffix
     , commonSuffix
+    , stripCommonSuffix
     )
     where
 
@@ -44,6 +46,8 @@ import Prelude hiding
 
 import Data.Map.Strict
     ( Map )
+import Data.Monoid.GCD
+    ( LeftGCDMonoid, RightGCDMonoid )
 import Data.Monoid.Null
     ( MonoidNull (null) )
 import Data.MonoidMap.Internal.NonNull
@@ -60,6 +64,10 @@ import Data.MonoidMap.Internal.NonNullMap.Get
     ( get_lookup )
 import Data.MonoidMap.Internal.NonNullMap.Map
     ( map )
+import Data.MonoidMap.Internal.NonNullMap.StripCommonPrefix
+    ( stripCommonPrefix_default )
+import Data.MonoidMap.Internal.NonNullMap.StripCommonSuffix
+    ( stripCommonSuffix_default )
 import Data.MonoidMap.Internal.NonNullMap.StripPrefix
     ( stripPrefix )
 import Data.MonoidMap.Internal.NonNullMap.StripSuffix
@@ -107,3 +115,39 @@ fromMapWith = fromMapWith_mapMaybe
 get :: (Ord k, Monoid v) => k -> NonNullMap k v -> v
 get = get_lookup
 {-# INLINE get #-}
+
+--------------------------------------------------------------------------------
+-- Prefixes
+--------------------------------------------------------------------------------
+
+-- | Strips the greatest common prefix from a pair of maps.
+--
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.StripCommonPrefix" is used by the
+-- public @stripCommonPrefix@ function of the @monoidmap@ package.
+--
+stripCommonPrefix
+    :: (Ord k, MonoidNull v, LeftGCDMonoid v)
+    => NonNullMap k v
+    -> NonNullMap k v
+    -> (NonNullMap k v, NonNullMap k v, NonNullMap k v)
+stripCommonPrefix = stripCommonPrefix_default
+{-# INLINE stripCommonPrefix #-}
+
+--------------------------------------------------------------------------------
+-- Suffixes
+--------------------------------------------------------------------------------
+
+-- | Strips the greatest common suffix from a pair of maps.
+--
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.StripCommonSuffix" is used by the
+-- public @stripCommonSuffix@ function of the @monoidmap@ package.
+--
+stripCommonSuffix
+    :: (Ord k, MonoidNull v, RightGCDMonoid v)
+    => NonNullMap k v
+    -> NonNullMap k v
+    -> (NonNullMap k v, NonNullMap k v, NonNullMap k v)
+stripCommonSuffix = stripCommonSuffix_default
+{-# INLINE stripCommonSuffix #-}
