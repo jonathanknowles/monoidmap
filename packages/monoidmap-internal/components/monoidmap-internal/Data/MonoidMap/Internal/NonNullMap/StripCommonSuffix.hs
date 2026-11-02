@@ -15,11 +15,14 @@ module Data.MonoidMap.Internal.NonNullMap.StripCommonSuffix
     , stripCommonSuffix_triples
     , stripCommonSuffix_triples_matched
     , stripCommonSuffix_lists
+    , stripCommonSuffix_merge3
     )
     where
 
 import Prelude
 
+import Data.Map.Internal
+    ( Map (Bin, Tip), link, link2 )
 import Data.Maybe
     ( fromJust )
 import Data.Monoid.GCD
@@ -213,3 +216,66 @@ stripCommonSuffix_lists (NonNullMap m1) (NonNullMap m2) =
 
     fromDescList = NonNullMap . Map.fromDistinctDescList
 {-# INLINABLE stripCommonSuffix_lists #-}
+
+-- | Traverses both maps together, constructing all three results at once, in
+--   the same way that the functions of "Data.Map.Merge.Strict" construct a
+--   single result.
+--
+-- This implementation constructs no intermediate structures, and like the
+-- merge-based implementations, it reuses subtrees of the original maps for
+-- keys present in only one map. However, it depends on the internals of the
+-- @containers@ package, to which the Package Versioning Policy does not
+-- apply.
+--
+stripCommonSuffix_merge3
+    :: (Ord k, MonoidNull v, RightGCDMonoid v)
+    => NonNullMap k v
+    -> NonNullMap k v
+    -> (NonNullMap k v, NonNullMap k v, NonNullMap k v)
+stripCommonSuffix_merge3 (NonNullMap m1) (NonNullMap m2) =
+    case go m1 m2 of
+        (a, b, c) -> (NonNullMap a, NonNullMap b, NonNullMap c)
+  where
+    -- Whenever no key within a pair of subtrees has a non-null common suffix,
+    -- the subtrees are returned unchanged, as:
+    --
+    -- commonSuffix a b ≡ mempty ==> stripCommonSuffix a b ≡ (a, b, mempty)
+    --
+    -- This allows the remainders to share subtrees with the original maps.
+    --
+    go Tip t2 = (Tip, t2, Tip)
+    go t1 Tip = (t1, Tip, Tip)
+    go t1@(Bin _ k v1 lt1 rt1) t2 =
+        let !(lt2, mv2, rt2) = Map.splitLookup k t2
+            !(r1l, r2l, sl) = go lt1 lt2
+            !(r1r, r2r, sr) = go rt1 rt2
+        in
+        case mv2 of
+            Nothing
+                | Map.null sl && Map.null sr ->
+                    (t1, t2, Tip)
+                | otherwise ->
+                    triple
+                        (link k v1 r1l r1r)
+                        (link2 r2l r2r)
+                        (link2 sl sr)
+            Just v2
+                | Nothing <- ms, Map.null sl && Map.null sr ->
+                    (t1, t2, Tip)
+                | otherwise ->
+                    triple
+                        (linkNonNull k r1 r1l r1r)
+                        (linkNonNull k r2 r2l r2r)
+                        (linkMaybe k ms sl sr)
+              where
+                (r1, r2, s) = NonNull.apply2 C.stripCommonSuffix v1 v2
+                ms = NonNull.nonNull s
+
+    linkNonNull k v = linkMaybe k (NonNull.nonNull v)
+
+    linkMaybe k mv l r = case mv of
+        Nothing -> link2 l r
+        Just !nv -> link k nv l r
+
+    triple !a !b !c = (a, b, c)
+{-# INLINABLE stripCommonSuffix_merge3 #-}

@@ -15,11 +15,14 @@ module Data.MonoidMap.Internal.NonNullMap.StripCommonPrefix
     , stripCommonPrefix_triples
     , stripCommonPrefix_triples_matched
     , stripCommonPrefix_lists
+    , stripCommonPrefix_merge3
     )
     where
 
 import Prelude
 
+import Data.Map.Internal
+    ( Map (Bin, Tip), link, link2 )
 import Data.Maybe
     ( fromJust )
 import Data.Monoid.GCD
@@ -213,3 +216,66 @@ stripCommonPrefix_lists (NonNullMap m1) (NonNullMap m2) =
 
     fromDescList = NonNullMap . Map.fromDistinctDescList
 {-# INLINABLE stripCommonPrefix_lists #-}
+
+-- | Traverses both maps together, constructing all three results at once, in
+--   the same way that the functions of "Data.Map.Merge.Strict" construct a
+--   single result.
+--
+-- This implementation constructs no intermediate structures, and like the
+-- merge-based implementations, it reuses subtrees of the original maps for
+-- keys present in only one map. However, it depends on the internals of the
+-- @containers@ package, to which the Package Versioning Policy does not
+-- apply.
+--
+stripCommonPrefix_merge3
+    :: (Ord k, MonoidNull v, LeftGCDMonoid v)
+    => NonNullMap k v
+    -> NonNullMap k v
+    -> (NonNullMap k v, NonNullMap k v, NonNullMap k v)
+stripCommonPrefix_merge3 (NonNullMap m1) (NonNullMap m2) =
+    case go m1 m2 of
+        (a, b, c) -> (NonNullMap a, NonNullMap b, NonNullMap c)
+  where
+    -- Whenever no key within a pair of subtrees has a non-null common prefix,
+    -- the subtrees are returned unchanged, as:
+    --
+    -- commonPrefix a b ≡ mempty ==> stripCommonPrefix a b ≡ (mempty, a, b)
+    --
+    -- This allows the remainders to share subtrees with the original maps.
+    --
+    go Tip t2 = (Tip, Tip, t2)
+    go t1 Tip = (Tip, t1, Tip)
+    go t1@(Bin _ k v1 lt1 rt1) t2 =
+        let !(lt2, mv2, rt2) = Map.splitLookup k t2
+            !(pl, r1l, r2l) = go lt1 lt2
+            !(pr, r1r, r2r) = go rt1 rt2
+        in
+        case mv2 of
+            Nothing
+                | Map.null pl && Map.null pr ->
+                    (Tip, t1, t2)
+                | otherwise ->
+                    triple
+                        (link2 pl pr)
+                        (link k v1 r1l r1r)
+                        (link2 r2l r2r)
+            Just v2
+                | Nothing <- mp, Map.null pl && Map.null pr ->
+                    (Tip, t1, t2)
+                | otherwise ->
+                    triple
+                        (linkMaybe k mp pl pr)
+                        (linkNonNull k r1 r1l r1r)
+                        (linkNonNull k r2 r2l r2r)
+              where
+                (p, r1, r2) = NonNull.apply2 C.stripCommonPrefix v1 v2
+                mp = NonNull.nonNull p
+
+    linkNonNull k v = linkMaybe k (NonNull.nonNull v)
+
+    linkMaybe k mv l r = case mv of
+        Nothing -> link2 l r
+        Just !nv -> link k nv l r
+
+    triple !a !b !c = (a, b, c)
+{-# INLINABLE stripCommonPrefix_merge3 #-}

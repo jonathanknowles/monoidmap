@@ -192,6 +192,9 @@ main = do
             , ( "stripCommonPrefix_lists"
               , applyPair MMap.stripCommonPrefix_lists
               )
+            , ( "stripCommonPrefix_merge3"
+              , applyPair MMap.stripCommonPrefix_merge3
+              )
             ]
         , compareImplementations
             ("stripCommonPrefix", applyPair MMap.stripCommonPrefix)
@@ -207,6 +210,9 @@ main = do
               )
             , ( "stripCommonPrefix_lists"
               , applyPair MMap.stripCommonPrefix_lists
+              )
+            , ( "stripCommonPrefix_merge3"
+              , applyPair MMap.stripCommonPrefix_merge3
               )
             ]
         , compareImplementations
@@ -224,6 +230,9 @@ main = do
             , ( "stripCommonSuffix_lists"
               , applyPair MMap.stripCommonSuffix_lists
               )
+            , ( "stripCommonSuffix_merge3"
+              , applyPair MMap.stripCommonSuffix_merge3
+              )
             ]
         , compareImplementations
             ("stripCommonSuffix", applyPair MMap.stripCommonSuffix)
@@ -239,6 +248,9 @@ main = do
               )
             , ( "stripCommonSuffix_lists"
               , applyPair MMap.stripCommonSuffix_lists
+              )
+            , ( "stripCommonSuffix_merge3"
+              , applyPair MMap.stripCommonSuffix_merge3
               )
             ]
         ]
