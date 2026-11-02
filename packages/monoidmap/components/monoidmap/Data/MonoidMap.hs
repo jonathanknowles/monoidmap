@@ -719,6 +719,7 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
+    stripCommonPrefix = stripCommonPrefix
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
@@ -729,6 +730,7 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
+    stripCommonSuffix = stripCommonSuffix
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
@@ -2639,7 +2641,12 @@ stripCommonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
-stripCommonPrefix = C.stripCommonPrefix
+stripCommonPrefix m1 m2 =
+    (fromNonNullMap p, fromNonNullMap r1, fromNonNullMap r2)
+  where
+    (p, r1, r2) =
+        NonNullMap.stripCommonPrefix (toNonNullMap m1) (toNonNullMap m2)
+{-# INLINE stripCommonPrefix #-}
 
 -- | Strips the /greatest common suffix/ from a pair of maps.
 --
@@ -2724,7 +2731,12 @@ stripCommonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
-stripCommonSuffix = C.stripCommonSuffix
+stripCommonSuffix m1 m2 =
+    (fromNonNullMap r1, fromNonNullMap r2, fromNonNullMap s)
+  where
+    (r1, r2, s) =
+        NonNullMap.stripCommonSuffix (toNonNullMap m1) (toNonNullMap m2)
+{-# INLINE stripCommonSuffix #-}
 
 --------------------------------------------------------------------------------
 -- Overlap
