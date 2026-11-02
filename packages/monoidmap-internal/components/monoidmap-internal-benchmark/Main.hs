@@ -16,6 +16,8 @@ import Control.Exception
     ( evaluate )
 import Data.Bool
     ( Bool (False, True) )
+import Data.Char
+    ( Char )
 import Data.Eq
     ( Eq ((==)) )
 import Data.Function
@@ -23,7 +25,7 @@ import Data.Function
 import Data.Int
     ( Int )
 import Data.List
-    ( filter, foldl' )
+    ( filter, foldl', replicate )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
 import Data.Semigroup
@@ -32,6 +34,8 @@ import Data.String
     ( String )
 import Prelude
     ( even, odd, (^) )
+import Numeric.Natural
+    ( Natural )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
@@ -42,6 +46,8 @@ import qualified Data.MonoidMap.Internal.NonNullMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMapWith as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.Get as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.StripCommonPrefix as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.StripCommonSuffix as MMap
 
 main :: IO ()
 main = do
@@ -96,6 +102,47 @@ main = do
             , ("no keys present (odd)",   (keys_odd,  mm_keys_even))
             ]
 
+    let -- Maps with 'Sum Natural' values, for which operations on individual
+        -- values are cheap:
+        mn_2_all  = sumMap 2 (const True)
+        mn_3_all  = sumMap 3 (const True)
+        mn_2_even = sumMap 2 even
+        mn_3_odd  = sumMap 3 odd
+
+        -- Maps with 'String' values, for which operations on individual
+        -- values are relatively expensive:
+        ms_x_all  = stringMap 'x' (const True)
+        ms_y_all  = stringMap 'y' (const True)
+        ms_x_even = stringMap 'x' even
+        ms_y_odd  = stringMap 'y' odd
+
+    evaluate $ rnf
+        [ mn_2_all
+        , mn_3_all
+        , mn_2_even
+        , mn_3_odd
+        ]
+    evaluate $ rnf
+        [ ms_x_all
+        , ms_y_all
+        , ms_x_even
+        , ms_y_odd
+        ]
+
+    -- Implementations of 'stripCommonPrefix' and 'stripCommonSuffix' can
+    -- handle keys present in only one map quite differently from keys
+    -- present in both maps, so we benchmark both kinds of key:
+    --
+    let stripCasesSum =
+            [ ("Sum Natural, same keys",     (mn_2_all,  mn_3_all))
+            , ("Sum Natural, disjoint keys", (mn_2_even, mn_3_odd))
+            ]
+
+    let stripCasesString =
+            [ ("String, same keys",     (ms_x_all,  ms_y_all))
+            , ("String, disjoint keys", (ms_x_even, ms_y_odd))
+            ]
+
     defaultMain
         [ compareImplementations
             ("fromMap", MMap.fromMap) fromMapCases
@@ -128,6 +175,46 @@ main = do
               )
             , ( "get_lookup"
               , getAll MMap.get_lookup
+              )
+            ]
+        , compareImplementations
+            ("stripCommonPrefix", applyPair MMap.stripCommonPrefix)
+            stripCasesSum
+            [ ( "stripCommonPrefix_default"
+              , applyPair MMap.stripCommonPrefix_default
+              )
+            , ( "stripCommonPrefix_triples"
+              , applyPair MMap.stripCommonPrefix_triples
+              )
+            ]
+        , compareImplementations
+            ("stripCommonPrefix", applyPair MMap.stripCommonPrefix)
+            stripCasesString
+            [ ( "stripCommonPrefix_default"
+              , applyPair MMap.stripCommonPrefix_default
+              )
+            , ( "stripCommonPrefix_triples"
+              , applyPair MMap.stripCommonPrefix_triples
+              )
+            ]
+        , compareImplementations
+            ("stripCommonSuffix", applyPair MMap.stripCommonSuffix)
+            stripCasesSum
+            [ ( "stripCommonSuffix_default"
+              , applyPair MMap.stripCommonSuffix_default
+              )
+            , ( "stripCommonSuffix_triples"
+              , applyPair MMap.stripCommonSuffix_triples
+              )
+            ]
+        , compareImplementations
+            ("stripCommonSuffix", applyPair MMap.stripCommonSuffix)
+            stripCasesString
+            [ ( "stripCommonSuffix_default"
+              , applyPair MMap.stripCommonSuffix_default
+              )
+            , ( "stripCommonSuffix_triples"
+              , applyPair MMap.stripCommonSuffix_triples
               )
             ]
         ]
@@ -168,6 +255,31 @@ main = do
         -> Sum Int
     getAll get (ks, m) = foldl' (\v k -> v <> get k m) mempty ks
     {-# NOINLINE getAll #-}
+
+    -- A map from keys [minNatural .. maxNatural] that satisfy the given
+    -- predicate, with the given value for every key.
+    sumMap :: Natural -> (Int -> Bool) -> MMap.NonNullMap Int (Sum Natural)
+    sumMap n p = MMap.fromMap $ OMap.fromList
+        [(k, Sum n) | k <- [minNatural .. maxNatural], p k]
+
+    -- A map from keys [1 .. 2 ^ 12] that satisfy the given predicate, where
+    -- the value for every key has the given character in the middle, with a
+    -- long common prefix and suffix on either side.
+    stringMap :: Char -> (Int -> Bool) -> MMap.NonNullMap Int String
+    stringMap c p = MMap.fromMap $ OMap.fromList
+        [(k, padding <> [c] <> padding) | k <- [1 .. 2 ^ (12 :: Int)], p k]
+      where
+        padding = replicate 32 'a'
+
+    -- Applies the given function to both maps in the given pair.
+    --
+    -- This function is marked with `NOINLINE` in order to ensure that every
+    -- implementation is called in exactly the same way, for the same reason
+    -- as 'getAll'.
+    --
+    applyPair :: (m -> m -> r) -> (m, m) -> r
+    applyPair f (m1, m2) = f m1 m2
+    {-# NOINLINE applyPair #-}
 
 -- | Compares implementations of a public function with the public function
 --   itself, for each of the given cases.
