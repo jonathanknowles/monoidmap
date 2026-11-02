@@ -6,10 +6,16 @@
 --
 -- Every strategy provided by this module produces only 'NonNull' values.
 --
+-- This module is intended to be imported qualified:
+--
+-- @
+-- import Data.MonoidMap.Internal.NonNullMap.Merge qualified as Merge
+-- @
+--
 module Data.MonoidMap.Internal.NonNullMap.Merge
     ( WhenOneSideNull
     , WhenBothNonNull
-    , MergeStrategy (..)
+    , Strategy (..)
     , keepNull
     , keepNonNull
     , withNonNull
@@ -34,7 +40,7 @@ type WhenOneSideNull f k          vx                        vr
 type WhenBothNonNull f k          v1           v2           vr
    = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
 
-data MergeStrategy f k v1 v2 v3 = MergeStrategy
+data Strategy f k v1 v2 v3 = Strategy
     { withNonNullL :: !(WhenOneSideNull f k v1    v3)
     , withNonNullR :: !(WhenOneSideNull f k    v2 v3)
     , withNonNullP :: !(WhenBothNonNull f k v1 v2 v3)
