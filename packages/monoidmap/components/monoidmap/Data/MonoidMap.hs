@@ -882,7 +882,7 @@ fromListWith f =
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = fromNonNullMap . NonNullMap.fromMap
-{-# INLINABLE fromMap #-}
+{-# INLINE fromMap #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
 --   the given function to all values.
@@ -900,7 +900,7 @@ fromMap = fromNonNullMap . NonNullMap.fromMap
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith f = fromNonNullMap . NonNullMap.fromMapWith f
-{-# INLINABLE fromMapWith #-}
+{-# INLINE fromMapWith #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
@@ -2714,7 +2714,7 @@ stripCommonPrefix m1 m2 =
     )
   where
     p = commonPrefix m1 m2
-{-# INLINABLE stripCommonPrefix #-}
+{-# INLINE stripCommonPrefix #-}
 
 -- | Strips the /greatest common suffix/ from a pair of maps.
 --
@@ -2821,7 +2821,7 @@ stripCommonSuffix m1 m2 =
     )
   where
     s = commonSuffix m1 m2
-{-# INLINABLE stripCommonSuffix #-}
+{-# INLINE stripCommonSuffix #-}
 
 --------------------------------------------------------------------------------
 -- Overlap
