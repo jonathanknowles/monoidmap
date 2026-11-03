@@ -1,3 +1,16 @@
+# 0.5.1.0
+
+- Added the `Data.MonoidMap.Internal.NonNullMap.Merge` module, which provides
+  the `merge` and `mergeA` functions for merging values of type `NonNullMap`,
+  together with a set of merge strategies that can only produce `NonNull`
+  values. The `monoidmap` package now uses this module to implement all of its
+  merge-based functions.
+
+- Added the `get` function to `Data.MonoidMap.Internal.NonNullMap`.
+
+- Added the `Data.MonoidMap.Internal.NonNullMap.Get` module, which provides
+  alternative implementations of `get` for benchmarking.
+
 # 0.5.0.0
 
 - Removed the `NoThunks` instance for `NonNullMap`, and the dependency on
