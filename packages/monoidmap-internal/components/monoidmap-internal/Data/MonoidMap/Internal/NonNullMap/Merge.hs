@@ -59,8 +59,14 @@ merge
     -> NonNullMap k v1
     -> NonNullMap k v2
     -> NonNullMap k v3
-merge (Strategy nnl nnr nnp) (NonNullMap m1) (NonNullMap m2) =
-    NonNullMap $ Map.merge nnl nnr nnp m1 m2
+merge
+    (Strategy
+        (WhenOneSideNull nnl)
+        (WhenOneSideNull nnr)
+        (WhenBothNonNull nnp))
+    (NonNullMap m1)
+    (NonNullMap m2) =
+        NonNullMap $ Map.merge nnl nnr nnp m1 m2
 {-# INLINE merge #-}
 
 mergeA
@@ -69,18 +75,25 @@ mergeA
     -> NonNullMap k v1
     -> NonNullMap k v2
     -> f (NonNullMap k v3)
-mergeA (Strategy nnl nnr nnp) (NonNullMap m1) (NonNullMap m2) =
-    NonNullMap <$> Map.mergeA nnl nnr nnp m1 m2
+mergeA
+    (Strategy
+        (WhenOneSideNull nnl)
+        (WhenOneSideNull nnr)
+        (WhenBothNonNull nnp))
+    (NonNullMap m1)
+    (NonNullMap m2) =
+        NonNullMap <$> Map.mergeA nnl nnr nnp m1 m2
 {-# INLINE mergeA #-}
 
 --------------------------------------------------------------------------------
 -- Strategies
 --------------------------------------------------------------------------------
 
-type WhenOneSideNull f k          vx                        vr
-   = Map.WhenMissing f k (NonNull vx)              (NonNull vr)
-type WhenBothNonNull f k          v1           v2           vr
-   = Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr)
+newtype WhenOneSideNull f k vx vr = WhenOneSideNull
+    (Map.WhenMissing f k (NonNull vx) (NonNull vr))
+
+newtype WhenBothNonNull f k v1 v2 vr = WhenBothNonNull
+    (Map.WhenMatched f k (NonNull v1) (NonNull v2) (NonNull vr))
 
 data Strategy f k v1 v2 v3 = Strategy
     { withNonNullL :: !(WhenOneSideNull f k v1    v3)
@@ -95,13 +108,13 @@ data Strategy f k v1 v2 v3 = Strategy
 keepNull
     :: Applicative f
     => WhenOneSideNull f k v1 v2
-keepNull = Map.dropMissing
+keepNull = WhenOneSideNull Map.dropMissing
 {-# INLINE keepNull #-}
 
 keepNonNull
     :: Applicative f
     => WhenOneSideNull f k v v
-keepNonNull = Map.preserveMissing
+keepNonNull = WhenOneSideNull Map.preserveMissing
 {-# INLINE keepNonNull #-}
 
 withNonNull
@@ -109,7 +122,8 @@ withNonNull
     => (v1 -> v2)
     -> WhenOneSideNull f k v1 v2
 withNonNull f
-    = Map.mapMaybeMissing
+    = WhenOneSideNull
+    $ Map.mapMaybeMissing
     $ \_k v -> NonNull.nonNull $ NonNull.apply f v
 {-# INLINE withNonNull #-}
 
@@ -118,7 +132,8 @@ withNonNullA
     => (v1 -> f v2)
     -> WhenOneSideNull f k v1 v2
 withNonNullA f
-    = Map.traverseMaybeMissing
+    = WhenOneSideNull
+    $ Map.traverseMaybeMissing
     $ \_k v -> NonNull.nonNull <$> NonNull.apply f v
 {-# INLINE withNonNullA #-}
 
@@ -131,7 +146,8 @@ withBoth
     => (v1 -> v2 -> v3)
     -> WhenBothNonNull f k v1 v2 v3
 withBoth f
-    = Map.zipWithMaybeMatched
+    = WhenBothNonNull
+    $ Map.zipWithMaybeMatched
     $ \_k v1 v2 -> NonNull.nonNull $ NonNull.apply2 f v1 v2
 {-# INLINE withBoth #-}
 
@@ -140,6 +156,7 @@ withBothA
     => (v1 -> v2 -> f v3)
     -> WhenBothNonNull f k v1 v2 v3
 withBothA f
-    = Map.zipWithMaybeAMatched
+    = WhenBothNonNull
+    $ Map.zipWithMaybeAMatched
     $ \_k v1 v2 -> NonNull.nonNull <$> NonNull.apply2 f v1 v2
 {-# INLINE withBothA #-}
