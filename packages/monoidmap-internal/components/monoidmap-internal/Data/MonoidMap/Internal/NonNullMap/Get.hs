@@ -31,9 +31,9 @@ import qualified Data.Map.Strict as Map
 get_findWithDefault
     :: (Ord k, Monoid v) => k -> NonNullMap k v -> v
 get_findWithDefault k m = Map.findWithDefault mempty k $ toMap m
-{-# INLINABLE get_findWithDefault #-}
+{-# INLINE get_findWithDefault #-}
 
 get_lookup
     :: (Ord k, Monoid v) => k -> NonNullMap k v -> v
 get_lookup k m = fromMaybe mempty $ Map.lookup k $ toMap m
-{-# INLINABLE get_lookup #-}
+{-# INLINE get_lookup #-}
