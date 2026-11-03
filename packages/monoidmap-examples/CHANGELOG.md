@@ -1,3 +1,8 @@
+# 0.1.0.1
+
+- Revised the inlining of functions exported by `RecoveredMap`, so that GHC can
+  specialise them at call sites.
+
 # 0.1.0.0
 
 - Changed the role of the value type parameter of `NestedMonoidMap` from
