@@ -203,7 +203,7 @@ import Data.Group
 import Data.Map.Strict
     ( Map, lookup )
 import Data.Maybe
-    ( isJust )
+    ( fromJust, isJust )
 import Data.Monoid.GCD
     ( DistributiveGCDMonoid
     , GCDMonoid
@@ -719,6 +719,7 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
+    stripCommonPrefix = stripCommonPrefix
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
@@ -729,6 +730,7 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
+    stripCommonSuffix = stripCommonSuffix
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
@@ -2690,7 +2692,29 @@ stripCommonPrefix
     => MonoidMap k v
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
-stripCommonPrefix = C.stripCommonPrefix
+stripCommonPrefix m1 m2 =
+    --
+    -- This implementation is equivalent to the default implementation of
+    -- 'stripCommonPrefix' in 'LeftGCDMonoid'.
+    --
+    -- As @p@ is a prefix of both maps, stripping @p@ from either map cannot
+    -- fail.
+    --
+    -- However, this approach has two drawbacks: firstly, it uses 'fromJust',
+    -- which is a partial function; and secondly, it is inefficient, as for
+    -- each key, 'stripPrefix' must repeat the comparison of values already
+    -- performed by 'commonPrefix'.
+    --
+    -- Applying 'C.stripCommonPrefix' pointwise to each pair of values just
+    -- once could avoid both problems.
+    --
+    ( p
+    , fromJust (stripPrefix p m1)
+    , fromJust (stripPrefix p m2)
+    )
+  where
+    p = commonPrefix m1 m2
+{-# INLINABLE stripCommonPrefix #-}
 
 -- | Strips the /greatest common suffix/ from a pair of maps.
 --
@@ -2775,7 +2799,29 @@ stripCommonSuffix
     => MonoidMap k v
     -> MonoidMap k v
     -> (MonoidMap k v, MonoidMap k v, MonoidMap k v)
-stripCommonSuffix = C.stripCommonSuffix
+stripCommonSuffix m1 m2 =
+    --
+    -- This implementation is equivalent to the default implementation of
+    -- 'stripCommonSuffix' in 'RightGCDMonoid'.
+    --
+    -- As @s@ is a suffix of both maps, stripping @s@ from either map cannot
+    -- fail.
+    --
+    -- However, this approach has two drawbacks: firstly, it uses 'fromJust',
+    -- which is a partial function; and secondly, it is inefficient, as for
+    -- each key, 'stripSuffix' must repeat the comparison of values already
+    -- performed by 'commonSuffix'.
+    --
+    -- Applying 'C.stripCommonSuffix' pointwise to each pair of values just
+    -- once could avoid both problems.
+    --
+    ( fromJust (stripSuffix s m1)
+    , fromJust (stripSuffix s m2)
+    , s
+    )
+  where
+    s = commonSuffix m1 m2
+{-# INLINABLE stripCommonSuffix #-}
 
 --------------------------------------------------------------------------------
 -- Overlap
