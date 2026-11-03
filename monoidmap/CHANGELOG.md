@@ -1,3 +1,10 @@
+# 0.1.3.1
+
+- Revised the inlining of functions exported by `Data.MonoidMap`, so that GHC
+  can specialise them at call sites.
+
+- Revised version bounds for dependencies.
+
 # 0.1.3.0
 
 - Added a manual flag `nothunks`, which is on by default. Switching this flag
