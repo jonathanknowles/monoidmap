@@ -603,13 +603,16 @@ instance (Ord k, MonoidNull v) =>
   where
     type Item (MonoidMap k v) = (k, v)
     fromList = fromList
+    {-# INLINE fromList #-}
     toList = toList
+    {-# INLINE toList #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
+    {-# INLINE readPrec #-}
 
 --------------------------------------------------------------------------------
 -- Instances: Data
@@ -621,12 +624,17 @@ instance (Ord k, Read k, MonoidNull v, Read v) =>
 -- | @since 0.0.5.0
 instance (Data k, Data v, Ord k, MonoidNull v) => Data (MonoidMap k v) where
     dataTypeOf _ = dataType
+    {-# INLINE dataTypeOf #-}
     dataCast2 f = gcast2 f
+    {-# INLINE dataCast2 #-}
     gfoldl f z m = z fromList `f` toList m
+    {-# INLINE gfoldl #-}
     gunfold k z c
         | c == fromListConstr = k (z fromList)
         | otherwise = error "gunfold MonoidMap: unexpected constructor"
+    {-# INLINE gunfold #-}
     toConstr _ = fromListConstr
+    {-# INLINE toConstr #-}
 
 dataType :: DataType
 dataType = mkDataType "Data.MonoidMap.MonoidMap" [fromListConstr]
@@ -642,7 +650,9 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 -- | @since 0.0.0.0
 instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
     showTypeOf _ = "MonoidMap"
+    {-# INLINE showTypeOf #-}
     wNoThunks ctx = wNoThunks ctx . toMap
+    {-# INLINE wNoThunks #-}
 #endif
 
 --------------------------------------------------------------------------------
@@ -654,9 +664,11 @@ instance (Ord k, MonoidNull v) =>
     Semigroup (MonoidMap k v)
   where
     (<>) = append
+    {-# INLINE (<>) #-}
     stimes 0 = const mempty
     stimes 1 = id
     stimes n = map (stimes n)
+    {-# INLINE stimes #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, Commutative v) =>
@@ -667,20 +679,25 @@ instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isPrefixOf
+    {-# INLINE isPrefixOf #-}
     stripPrefix = stripPrefix
+    {-# INLINE stripPrefix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSuffixOf
+    {-# INLINE isSuffixOf #-}
     stripSuffix = stripSuffix
+    {-# INLINE stripSuffix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
     (</>) = minusMaybe
+    {-# INLINE (</>) #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
@@ -703,12 +720,14 @@ instance (Ord k, MonoidNull v) =>
     Monoid (MonoidMap k v)
   where
     mempty = empty
+    {-# INLINE mempty #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
+    {-# INLINE null #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, PositiveMonoid v) =>
@@ -719,7 +738,9 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
+    {-# INLINE commonPrefix #-}
     stripCommonPrefix = stripCommonPrefix
+    {-# INLINE stripCommonPrefix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
@@ -730,7 +751,9 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
+    {-# INLINE commonSuffix #-}
     stripCommonSuffix = stripCommonSuffix
+    {-# INLINE stripCommonSuffix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
@@ -741,15 +764,20 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
     overlap = overlap
+    {-# INLINE overlap #-}
     stripPrefixOverlap = stripPrefixOverlap
+    {-# INLINE stripPrefixOverlap #-}
     stripSuffixOverlap = stripSuffixOverlap
+    {-# INLINE stripSuffixOverlap #-}
     stripOverlap = stripOverlap
+    {-# INLINE stripOverlap #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = intersection
+    {-# INLINE gcd #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
@@ -760,6 +788,7 @@ instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)
   where
     lcm = union
+    {-# INLINE lcm #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveLCMMonoid v) =>
@@ -770,6 +799,7 @@ instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
     (<\>) = monus
+    {-# INLINE (<\>) #-}
 
 --------------------------------------------------------------------------------
 -- Instances: Group and subclasses
@@ -780,8 +810,11 @@ instance (Ord k, MonoidNull v, Group v) =>
     Group (MonoidMap k v)
   where
     invert = invert
+    {-# INLINE invert #-}
     (~~) = minus
+    {-# INLINE (~~) #-}
     pow = power
+    {-# INLINE pow #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, Abelian v) =>
