@@ -603,13 +603,16 @@ instance (Ord k, MonoidNull v) =>
   where
     type Item (MonoidMap k v) = (k, v)
     fromList = fromList
+    {-# INLINE fromList #-}
     toList = toList
+    {-# INLINE toList #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, Read k, MonoidNull v, Read v) =>
     Read (MonoidMap k v)
   where
     readPrec = fromMap <$> readPrec
+    {-# INLINE readPrec #-}
 
 --------------------------------------------------------------------------------
 -- Instances: Data
@@ -621,12 +624,17 @@ instance (Ord k, Read k, MonoidNull v, Read v) =>
 -- | @since 0.0.5.0
 instance (Data k, Data v, Ord k, MonoidNull v) => Data (MonoidMap k v) where
     dataTypeOf _ = dataType
+    {-# INLINE dataTypeOf #-}
     dataCast2 f = gcast2 f
+    {-# INLINE dataCast2 #-}
     gfoldl f z m = z fromList `f` toList m
+    {-# INLINE gfoldl #-}
     gunfold k z c
         | c == fromListConstr = k (z fromList)
         | otherwise = error "gunfold MonoidMap: unexpected constructor"
+    {-# INLINE gunfold #-}
     toConstr _ = fromListConstr
+    {-# INLINE toConstr #-}
 
 dataType :: DataType
 dataType = mkDataType "Data.MonoidMap.MonoidMap" [fromListConstr]
@@ -642,7 +650,9 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 -- | @since 0.0.0.0
 instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
     showTypeOf _ = "MonoidMap"
+    {-# INLINE showTypeOf #-}
     wNoThunks ctx = wNoThunks ctx . toMap
+    {-# INLINE wNoThunks #-}
 #endif
 
 --------------------------------------------------------------------------------
@@ -654,9 +664,11 @@ instance (Ord k, MonoidNull v) =>
     Semigroup (MonoidMap k v)
   where
     (<>) = append
+    {-# INLINE (<>) #-}
     stimes 0 = const mempty
     stimes 1 = id
     stimes n = map (stimes n)
+    {-# INLINE stimes #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, Commutative v) =>
@@ -667,20 +679,25 @@ instance (Ord k, MonoidNull v, LeftReductive v) =>
     LeftReductive (MonoidMap k v)
   where
     isPrefixOf = isPrefixOf
+    {-# INLINE isPrefixOf #-}
     stripPrefix = stripPrefix
+    {-# INLINE stripPrefix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, RightReductive v) =>
     RightReductive (MonoidMap k v)
   where
     isSuffixOf = isSuffixOf
+    {-# INLINE isSuffixOf #-}
     stripSuffix = stripSuffix
+    {-# INLINE stripSuffix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, Reductive v) =>
     Reductive (MonoidMap k v)
   where
     (</>) = minusMaybe
+    {-# INLINE (</>) #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, LeftCancellative v) =>
@@ -703,12 +720,14 @@ instance (Ord k, MonoidNull v) =>
     Monoid (MonoidMap k v)
   where
     mempty = empty
+    {-# INLINE mempty #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v) =>
     MonoidNull (MonoidMap k v)
   where
     null = null
+    {-# INLINE null #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, PositiveMonoid v) =>
@@ -719,7 +738,9 @@ instance (Ord k, MonoidNull v, LeftGCDMonoid v) =>
     LeftGCDMonoid (MonoidMap k v)
   where
     commonPrefix = commonPrefix
+    {-# INLINE commonPrefix #-}
     stripCommonPrefix = stripCommonPrefix
+    {-# INLINE stripCommonPrefix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, LeftDistributiveGCDMonoid v) =>
@@ -730,7 +751,9 @@ instance (Ord k, MonoidNull v, RightGCDMonoid v) =>
     RightGCDMonoid (MonoidMap k v)
   where
     commonSuffix = commonSuffix
+    {-# INLINE commonSuffix #-}
     stripCommonSuffix = stripCommonSuffix
+    {-# INLINE stripCommonSuffix #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, RightDistributiveGCDMonoid v) =>
@@ -741,15 +764,20 @@ instance (Ord k, MonoidNull v, OverlappingGCDMonoid v) =>
     OverlappingGCDMonoid (MonoidMap k v)
   where
     overlap = overlap
+    {-# INLINE overlap #-}
     stripPrefixOverlap = stripPrefixOverlap
+    {-# INLINE stripPrefixOverlap #-}
     stripSuffixOverlap = stripSuffixOverlap
+    {-# INLINE stripSuffixOverlap #-}
     stripOverlap = stripOverlap
+    {-# INLINE stripOverlap #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, GCDMonoid v) =>
     GCDMonoid (MonoidMap k v)
   where
     gcd = intersection
+    {-# INLINE gcd #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveGCDMonoid v) =>
@@ -760,6 +788,7 @@ instance (Ord k, MonoidNull v, LCMMonoid v) =>
     LCMMonoid (MonoidMap k v)
   where
     lcm = union
+    {-# INLINE lcm #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, DistributiveLCMMonoid v) =>
@@ -770,6 +799,7 @@ instance (Ord k, MonoidNull v, Monus v) =>
     Monus (MonoidMap k v)
   where
     (<\>) = monus
+    {-# INLINE (<\>) #-}
 
 --------------------------------------------------------------------------------
 -- Instances: Group and subclasses
@@ -780,8 +810,11 @@ instance (Ord k, MonoidNull v, Group v) =>
     Group (MonoidMap k v)
   where
     invert = invert
+    {-# INLINE invert #-}
     (~~) = minus
+    {-# INLINE (~~) #-}
     pow = power
+    {-# INLINE pow #-}
 
 -- | @since 0.0.0.0
 instance (Ord k, MonoidNull v, Abelian v) =>
@@ -806,6 +839,7 @@ instance (Ord k, MonoidNull v, Abelian v) =>
 --
 empty :: MonoidMap k v
 empty = MonoidMap Map.empty
+{-# INLINE empty #-}
 
 -- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs.
 --
@@ -838,6 +872,7 @@ empty = MonoidMap Map.empty
 --
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
 fromList = fromListWith (<>)
+{-# INLINE fromList #-}
 
 -- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs,
 --   with a combining function for values.
@@ -866,6 +901,7 @@ fromListWith f =
     -- The 'Map.fromListWith' function combines values for duplicate keys in
     -- /reverse order/, so we must flip the provided combining function.
     fromMap . Map.fromListWith (flip f)
+{-# INLINE fromListWith #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.
 --
@@ -882,7 +918,7 @@ fromListWith f =
 --
 fromMap :: MonoidNull v => Map k v -> MonoidMap k v
 fromMap = fromNonNullMap . NonNullMap.fromMap
-{-# INLINABLE fromMap #-}
+{-# INLINE fromMap #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map', applying
 --   the given function to all values.
@@ -900,7 +936,7 @@ fromMap = fromNonNullMap . NonNullMap.fromMap
 --
 fromMapWith :: MonoidNull v2 => (v1 -> v2) -> Map k v1 -> MonoidMap k v2
 fromMapWith f = fromNonNullMap . NonNullMap.fromMapWith f
-{-# INLINABLE fromMapWith #-}
+{-# INLINE fromMapWith #-}
 
 -- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from
 --   keys to values.
@@ -921,6 +957,7 @@ fromMapWith f = fromNonNullMap . NonNullMap.fromMapWith f
 --
 fromSet :: MonoidNull v => (k -> v) -> Set k -> MonoidMap k v
 fromSet f = fromMap . Map.fromSet f
+{-# INLINE fromSet #-}
 
 -- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.
 --
@@ -940,6 +977,7 @@ fromSet f = fromMap . Map.fromSet f
 --
 singleton :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v
 singleton k v = set k v mempty
+{-# INLINE singleton #-}
 
 --------------------------------------------------------------------------------
 -- Deconstruction
@@ -966,6 +1004,7 @@ singleton k v = set k v mempty
 --
 toList :: MonoidMap k v -> [(k, v)]
 toList = Map.toAscList . toMap
+{-# INLINE toList #-}
 
 -- | \(O(1)\). Converts a 'MonoidMap' to an ordinary 'Map'.
 --
@@ -1020,6 +1059,7 @@ set :: (Ord k, MonoidNull v) => k -> v -> MonoidMap k v -> MonoidMap k v
 set k v (MonoidMap m) = MonoidMap $ case NonNull.nonNull v of
     Just v0 -> Map.insert k v0 m
     Nothing -> Map.delete k    m
+{-# INLINE set #-}
 
 -- | \(O(\log n)\). Adjusts the value associated with the given key.
 --
@@ -1039,6 +1079,7 @@ adjust
     -> MonoidMap k v
 adjust f k (MonoidMap m) = MonoidMap $
     Map.alter (NonNull.nonNull . maybe (f mempty) (NonNull.apply f)) k m
+{-# INLINE adjust #-}
 
 --------------------------------------------------------------------------------
 -- Nullification
@@ -1059,6 +1100,7 @@ adjust f k (MonoidMap m) = MonoidMap $
 --
 nullify :: Ord k => k -> MonoidMap k v -> MonoidMap k v
 nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
+{-# INLINE nullify #-}
 
 -- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
 --
@@ -1082,6 +1124,7 @@ nullify k (MonoidMap m) = MonoidMap $ Map.delete k m
 --
 nullifyKeysIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
+{-# INLINE nullifyKeysIn #-}
 
 -- | \(O\bigl(m \log\bigl(\frac{n}{m}+1\bigr)\bigr), \; 0 < m \leq n\).
 --
@@ -1105,6 +1148,7 @@ nullifyKeysIn ks (MonoidMap m) = MonoidMap $ m `Map.withoutKeys` ks
 --
 nullifyKeysNotIn :: Ord k => Set k -> MonoidMap k v -> MonoidMap k v
 nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
+{-# INLINE nullifyKeysNotIn #-}
 
 --------------------------------------------------------------------------------
 -- Membership
@@ -1126,6 +1170,7 @@ nullifyKeysNotIn ks (MonoidMap m) = MonoidMap $ m `Map.restrictKeys` ks
 --
 null :: MonoidMap k v -> Bool
 null = Map.null . toMap
+{-# INLINE null #-}
 
 -- | \(O(\log n)\). Returns 'True' if (and only if) the given key is associated
 --   with a value that is 'C.null'.
@@ -1140,6 +1185,7 @@ null = Map.null . toMap
 --
 nullKey :: Ord k => k -> MonoidMap k v -> Bool
 nullKey k = Map.notMember k . toMap
+{-# INLINE nullKey #-}
 
 -- | \(O(1)\). Returns 'True' if (and only if) the map contains at least one
 --   value that is not 'C.null'.
@@ -1154,6 +1200,7 @@ nullKey k = Map.notMember k . toMap
 --
 nonNull :: MonoidMap k v -> Bool
 nonNull = not . null
+{-# INLINE nonNull #-}
 
 -- | \(O(1)\). Returns a count of all values in the map that are not 'C.null'.
 --
@@ -1167,6 +1214,7 @@ nonNull = not . null
 --
 nonNullCount :: MonoidMap k v -> Int
 nonNullCount = Map.size . toMap
+{-# INLINE nonNullCount #-}
 
 -- | \(O(\log n)\). Returns 'True' if (and only if) the given key is associated
 --   with a value that is not 'C.null'.
@@ -1181,6 +1229,7 @@ nonNullCount = Map.size . toMap
 --
 nonNullKey :: Ord k => k -> MonoidMap k v -> Bool
 nonNullKey k = Map.member k . toMap
+{-# INLINE nonNullKey #-}
 
 -- | \(O(n)\). Returns the set of keys associated with values that are not
 --   'C.null'.
@@ -1195,6 +1244,7 @@ nonNullKey k = Map.member k . toMap
 --
 nonNullKeys :: MonoidMap k v -> Set k
 nonNullKeys = Map.keysSet . toMap
+{-# INLINE nonNullKeys #-}
 
 --------------------------------------------------------------------------------
 -- Slicing
@@ -1217,6 +1267,7 @@ nonNullKeys = Map.keysSet . toMap
 --
 take :: Int -> MonoidMap k v -> MonoidMap k v
 take i (MonoidMap m) = MonoidMap (Map.take i m)
+{-# INLINE take #-}
 
 -- | \(O(\log n)\). /Drops/ a slice from a map.
 --
@@ -1235,6 +1286,7 @@ take i (MonoidMap m) = MonoidMap (Map.take i m)
 --
 drop :: Int -> MonoidMap k v -> MonoidMap k v
 drop i (MonoidMap m) = MonoidMap (Map.drop i m)
+{-# INLINE drop #-}
 
 -- | \(O(\log n)\). /Splits/ a map into /two/ slices.
 --
@@ -1262,6 +1314,7 @@ drop i (MonoidMap m) = MonoidMap (Map.drop i m)
 --
 splitAt :: Int -> MonoidMap k a -> (MonoidMap k a, MonoidMap k a)
 splitAt i m = (take i m, drop i m)
+{-# INLINE splitAt #-}
 
 --------------------------------------------------------------------------------
 -- Filtering
@@ -1289,6 +1342,7 @@ splitAt i m = (take i m, drop i m)
 --
 filter :: (v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filter f (MonoidMap m) = MonoidMap $ Map.filter (NonNull.apply f) m
+{-# INLINE filter #-}
 
 -- | \(O(n)\). Filters a map according to a predicate on /keys/.
 --
@@ -1312,6 +1366,7 @@ filter f (MonoidMap m) = MonoidMap $ Map.filter (NonNull.apply f) m
 --
 filterKeys :: (k -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
+{-# INLINE filterKeys #-}
 
 -- | \(O(n)\). Filters a map according to a predicate on /keys and values/.
 --
@@ -1336,6 +1391,7 @@ filterKeys f (MonoidMap m) = MonoidMap $ Map.filterWithKey (\k _ -> f k) m
 filterWithKey :: (k -> v -> Bool) -> MonoidMap k v -> MonoidMap k v
 filterWithKey f (MonoidMap m) =
     MonoidMap $ Map.filterWithKey (NonNull.apply . f) m
+{-# INLINE filterWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Partitioning
@@ -1373,6 +1429,7 @@ filterWithKey f (MonoidMap m) =
 partition :: (v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partition f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partition (NonNull.apply f) m
+{-# INLINE partition #-}
 
 -- | \(O(n)\). Partitions a map according to a predicate on /keys/.
 --
@@ -1407,6 +1464,7 @@ partitionKeys
     :: (k -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partitionKeys f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (\k _ -> f k) m
+{-# INLINE partitionKeys #-}
 
 -- | \(O(n)\). Partitions a map according to a predicate on /keys and values/.
 --
@@ -1441,6 +1499,7 @@ partitionWithKey
     :: (k -> v -> Bool) -> MonoidMap k v -> (MonoidMap k v, MonoidMap k v)
 partitionWithKey f (MonoidMap m) =
     B.bimap MonoidMap MonoidMap $ Map.partitionWithKey (NonNull.apply . f) m
+{-# INLINE partitionWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Mapping
@@ -1481,6 +1540,7 @@ map
     -> MonoidMap k v2
 map f (MonoidMap m) =
     MonoidMap $ Map.mapMaybe (NonNull.nonNull . NonNull.apply f) m
+{-# INLINE map #-}
 
 -- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
 --   are associated with non-'C.null' values.
@@ -1506,6 +1566,7 @@ mapKeys
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeys = mapKeysWith (<>)
+{-# INLINE mapKeys #-}
 
 -- | \(O(n \log n)\). Applies a function to all the keys of a 'MonoidMap' that
 --   are associated with non-'C.null' values, with a combining function for
@@ -1531,6 +1592,7 @@ mapKeysWith
     -> MonoidMap k1 v
     -> MonoidMap k2 v
 mapKeysWith combine fk = fromListWith combine . fmap (B.first fk) . toList
+{-# INLINE mapKeysWith #-}
 
 -- | \(O(n)\). Applies a key-dependent function to all non-'C.null' values of
 --   a 'MonoidMap'.
@@ -1553,6 +1615,7 @@ mapWithKey f (MonoidMap m) =
     MonoidMap . runIdentity $
     Map.traverseMaybeWithKey
         (\k v -> Identity $ NonNull.nonNull $ NonNull.apply (f k) v) m
+{-# INLINE mapWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Folding
@@ -2714,7 +2777,7 @@ stripCommonPrefix m1 m2 =
     )
   where
     p = commonPrefix m1 m2
-{-# INLINABLE stripCommonPrefix #-}
+{-# INLINE stripCommonPrefix #-}
 
 -- | Strips the /greatest common suffix/ from a pair of maps.
 --
@@ -2821,7 +2884,7 @@ stripCommonSuffix m1 m2 =
     )
   where
     s = commonSuffix m1 m2
-{-# INLINABLE stripCommonSuffix #-}
+{-# INLINE stripCommonSuffix #-}
 
 --------------------------------------------------------------------------------
 -- Overlap
@@ -3126,6 +3189,7 @@ stripOverlap m1 m2 =
     , m1 `overlap` m2
     , stripPrefixOverlap m1 m2
     )
+{-# INLINE stripOverlap #-}
 
 --------------------------------------------------------------------------------
 -- Intersection
