@@ -60,60 +60,79 @@ newtype Map k v = Map
 
 instance Ord k => Semigroup (Map k v) where
     (<>) = coerce @(MonoidMap k (First v) -> _ -> _) (<>)
+    {-# INLINE (<>) #-}
     stimes = stimesIdempotentMonoid
+    {-# INLINE stimes #-}
 
 instance (Show k, Show v) => Show (Map k v) where
     show = ("fromList " <>) . show . toList
+    {-# INLINE show #-}
 
 instance Functor (Map k) where
     fmap = map
+    {-# INLINE fmap #-}
 
 empty :: Map k v
 empty = Map MonoidMap.empty
+{-# INLINE empty #-}
 
 singleton :: Ord k => k -> v -> Map k v
 singleton k = Map . MonoidMap.singleton k . pure
+{-# INLINE singleton #-}
 
 fromList :: Ord k => [(k, v)] -> Map k v
 fromList = Map . MonoidMap.fromListWith (const id) . fmap (fmap pure)
+{-# INLINE fromList #-}
 
 toList :: Map k v -> [(k, v)]
 toList = mapMaybe (getFirst . sequenceA) . MonoidMap.toList . unMap
+{-# INLINE toList #-}
 
 delete :: Ord k => k -> Map k v -> Map k v
 delete k = Map . MonoidMap.nullify k . unMap
+{-# INLINE delete #-}
 
 insert :: Ord k => k -> v -> Map k v -> Map k v
 insert k v = Map . MonoidMap.set k (pure v) . unMap
+{-# INLINE insert #-}
 
 keysSet :: Map k v -> Set k
 keysSet = MonoidMap.nonNullKeys . unMap
+{-# INLINE keysSet #-}
 
 lookup :: Ord k => k -> Map k v -> Maybe v
 lookup k = getFirst . MonoidMap.get k . unMap
+{-# INLINE lookup #-}
 
 member :: Ord k => k -> Map k v -> Bool
 member k = MonoidMap.nonNullKey k . unMap
+{-# INLINE member #-}
 
 map :: (v1 -> v2) -> Map k v1 -> Map k v2
 map f = Map . MonoidMap.map (fmap f) . unMap
+{-# INLINE map #-}
 
 mapWithKey :: (k -> v1 -> v2) -> Map k v1 -> Map k v2
 mapWithKey f = Map . MonoidMap.mapWithKey (fmap . f) . unMap
+{-# INLINE mapWithKey #-}
 
 mapAccumL :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumL f s m = Map <$> MonoidMap.mapAccumL (accum f) s (unMap m)
+{-# INLINE mapAccumL #-}
 
 mapAccumR :: (s -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumR f s m = Map <$> MonoidMap.mapAccumR (accum f) s (unMap m)
+{-# INLINE mapAccumR #-}
 
 mapAccumLWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumLWithKey f s m =
     Map <$> MonoidMap.mapAccumLWithKey (accumWithKey f) s (unMap m)
+{-# INLINE mapAccumLWithKey #-}
 
 mapAccumRWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> Map k v1 -> (s, Map k v2)
 mapAccumRWithKey f s m =
     Map <$> MonoidMap.mapAccumRWithKey (accumWithKey f) s (unMap m)
+{-# INLINE mapAccumRWithKey #-}
 
 --------------------------------------------------------------------------------
 -- Utilities
@@ -123,8 +142,10 @@ accum :: (s -> v1 -> (s, v2)) -> s -> First v1 -> (s, First v2)
 accum f s1 (First mv1) = case mv1 of
     Just v1 -> let (s2, v2) = f s1 v1 in (s2, First (Just v2))
     Nothing -> (s1, First Nothing)
+{-# INLINE accum #-}
 
 accumWithKey :: (s -> k -> v1 -> (s, v2)) -> s -> k -> First v1 -> (s, First v2)
 accumWithKey f s1 k (First mv1) = case mv1 of
     Just v1 -> let (s2, v2) = f s1 k v1 in (s2, First (Just v2))
     Nothing -> (s1, First Nothing)
+{-# INLINE accumWithKey #-}

@@ -40,7 +40,7 @@ import qualified Data.Map.Strict as Map
 fromMap_filter
     :: MonoidNull v => Map k v -> NonNullMap k v
 fromMap_filter = unsafeFromMap . Map.filter (\(!v) -> not (null v))
-{-# INLINABLE fromMap_filter #-}
+{-# INLINE fromMap_filter #-}
 
 fromMap_filter_if_any_null
     :: MonoidNull v => Map k v -> NonNullMap k v
@@ -49,9 +49,9 @@ fromMap_filter_if_any_null m
         unsafeFromMap $ Map.filter (\(!v) -> not (null v)) m
     | otherwise =
         unsafeFromMap m
-{-# INLINABLE fromMap_filter_if_any_null #-}
+{-# INLINE fromMap_filter_if_any_null #-}
 
 fromMap_mapMaybe
     :: MonoidNull v => Map k v -> NonNullMap k v
 fromMap_mapMaybe = NonNullMap . Map.mapMaybe nonNull
-{-# INLINABLE fromMap_mapMaybe #-}
+{-# INLINE fromMap_mapMaybe #-}
