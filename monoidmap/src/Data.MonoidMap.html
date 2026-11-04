@@ -1418,7 +1418,7 @@ forall k a. Map k a
 </span><span id="line-850"></span><span class="hs-comment">--</span><span>
 </span><span id="line-851"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-852"></span><span class="hs-comment">-- 'get' k ('fromList' kvs) '=='</span><span>
-</span><span id="line-853"></span><span class="hs-comment">--     'foldMap' 'snd' ('L.filter' (('==' k) . fst) kvs)</span><span>
+</span><span id="line-853"></span><span class="hs-comment">--     'foldMap' 'snd' ('L.filter' (('==' k) . 'fst') kvs)</span><span>
 </span><span id="line-854"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-855"></span><span class="hs-comment">--</span><span>
 </span><span id="line-856"></span><span class="hs-comment">-- Satisfies the following round-trip property:</span><span>
@@ -1461,7 +1461,7 @@ forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span id="line-886"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-887"></span><span class="hs-comment">-- 'get' k ('fromListWith' f kvs) '=='</span><span>
 </span><span id="line-888"></span><span class="hs-comment">--     'maybe' 'mempty' ('F.foldl1' f)</span><span>
-</span><span id="line-889"></span><span class="hs-comment">--         ('NE.nonEmpty' ('snd' '&lt;$&gt;' 'L.filter' (('==' k) . fst) kvs))</span><span>
+</span><span id="line-889"></span><span class="hs-comment">--         ('NE.nonEmpty' ('snd' '&lt;$&gt;' 'L.filter' (('==' k) . 'fst') kvs))</span><span>
 </span><span id="line-890"></span><span class="hs-comment">-- @</span><span>
 </span><span id="line-891"></span><span class="hs-comment">--</span><span>
 </span><span id="line-892"></span><span class="hs-comment">-- @since 0.0.0.0</span><span>
@@ -1475,8 +1475,8 @@ forall a. Semigroup a =&gt; a -&gt; a -&gt; a
 </span><span id="line-900"></span><span id="fromListWith"><span class="annot"><span class="annottext">fromListWith :: forall k v.
 (Ord k, MonoidNull v) =&gt;
 (v -&gt; v -&gt; v) -&gt; [(k, v)] -&gt; MonoidMap k v
-</span><a href="Data.MonoidMap.html#fromListWith"><span class="hs-identifier hs-var hs-var">fromListWith</span></a></span></span><span> </span><span id="local-6989586621679092965"><span class="annot"><span class="annottext">v -&gt; v -&gt; v
-</span><a href="#local-6989586621679092965"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
+</span><a href="Data.MonoidMap.html#fromListWith"><span class="hs-identifier hs-var hs-var">fromListWith</span></a></span></span><span> </span><span id="local-6989586621679092966"><span class="annot"><span class="annottext">v -&gt; v -&gt; v
+</span><a href="#local-6989586621679092966"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span>
 </span><span id="line-901"></span><span>    </span><span class="hs-comment">-- The 'Map.fromListWith' function combines values for duplicate keys in</span><span>
 </span><span id="line-902"></span><span>    </span><span class="hs-comment">-- /reverse order/, so we must flip the provided combining function.</span><span>
 </span><span id="line-903"></span><span>    </span><span class="annot"><span class="annottext">Map k v -&gt; MonoidMap k v
@@ -1489,7 +1489,7 @@ forall k a. Ord k =&gt; (a -&gt; a -&gt; a) -&gt; [(k, a)] -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.fromListWith</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(v -&gt; v -&gt; v) -&gt; v -&gt; v -&gt; v
 forall a b c. (a -&gt; b -&gt; c) -&gt; b -&gt; a -&gt; c
 </span><span class="hs-identifier hs-var">flip</span></span><span> </span><span class="annot"><span class="annottext">v -&gt; v -&gt; v
-</span><a href="#local-6989586621679092965"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span>
+</span><a href="#local-6989586621679092966"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span>
 </span><span id="line-904"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.html#fromListWith"><span class="hs-pragma hs-type">fromListWith</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
 </span><span id="line-905"></span><span>
 </span><span id="line-906"></span><span class="hs-comment">-- | \(O(n)\). Constructs a 'MonoidMap' from an ordinary 'Map'.</span><span>
@@ -1535,8 +1535,8 @@ forall v k. MonoidNull v =&gt; Map k v -&gt; NonNullMap k v
 </span><span id="line-938"></span><span id="fromMapWith"><span class="annot"><span class="annottext">fromMapWith :: forall v2 v1 k.
 MonoidNull v2 =&gt;
 (v1 -&gt; v2) -&gt; Map k v1 -&gt; MonoidMap k v2
-</span><a href="Data.MonoidMap.html#fromMapWith"><span class="hs-identifier hs-var hs-var">fromMapWith</span></a></span></span><span> </span><span id="local-6989586621679092974"><span class="annot"><span class="annottext">v1 -&gt; v2
-</span><a href="#local-6989586621679092974"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonNullMap k v2 -&gt; MonoidMap k v2
+</span><a href="Data.MonoidMap.html#fromMapWith"><span class="hs-identifier hs-var hs-var">fromMapWith</span></a></span></span><span> </span><span id="local-6989586621679092975"><span class="annot"><span class="annottext">v1 -&gt; v2
+</span><a href="#local-6989586621679092975"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">NonNullMap k v2 -&gt; MonoidMap k v2
 forall k v. NonNullMap k v -&gt; MonoidMap k v
 </span><a href="Data.MonoidMap.html#fromNonNullMap"><span class="hs-identifier hs-var">fromNonNullMap</span></a></span><span> </span><span class="annot"><span class="annottext">(NonNullMap k v2 -&gt; MonoidMap k v2)
 -&gt; (Map k v1 -&gt; NonNullMap k v2) -&gt; Map k v1 -&gt; MonoidMap k v2
@@ -1546,7 +1546,7 @@ forall v2 v1 k.
 MonoidNull v2 =&gt;
 (v1 -&gt; v2) -&gt; Map k v1 -&gt; NonNullMap k v2
 </span><span class="hs-identifier hs-var">NonNullMap.fromMapWith</span></span><span> </span><span class="annot"><span class="annottext">v1 -&gt; v2
-</span><a href="#local-6989586621679092974"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><a href="#local-6989586621679092975"><span class="hs-identifier hs-var">f</span></a></span><span>
 </span><span id="line-939"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.html#fromMapWith"><span class="hs-pragma hs-type">fromMapWith</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
 </span><span id="line-940"></span><span>
 </span><span id="line-941"></span><span class="hs-comment">-- | \(O(n)\). Constructs a 'MonoidMap' from a 'Set' and a function from</span><span>
@@ -1568,8 +1568,8 @@ MonoidNull v2 =&gt;
 </span><span id="line-957"></span><span class="hs-comment">--</span><span>
 </span><span id="line-958"></span><span id="local-6989586621679091366"><span id="local-6989586621679091367"><span class="annot"><a href="Data.MonoidMap.html#fromSet"><span class="hs-identifier hs-type">fromSet</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidNull</span></span><span> </span><span class="annot"><a href="#local-6989586621679091366"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679091367"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679091366"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="hs-identifier hs-type">Set</span></span><span> </span><span class="annot"><a href="#local-6989586621679091367"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.html#MonoidMap"><span class="hs-identifier hs-type">MonoidMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679091367"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679091366"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
 </span><span id="line-959"></span><span id="fromSet"><span class="annot"><span class="annottext">fromSet :: forall v k. MonoidNull v =&gt; (k -&gt; v) -&gt; Set k -&gt; MonoidMap k v
-</span><a href="Data.MonoidMap.html#fromSet"><span class="hs-identifier hs-var hs-var">fromSet</span></a></span></span><span> </span><span id="local-6989586621679092980"><span class="annot"><span class="annottext">k -&gt; v
-</span><a href="#local-6989586621679092980"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k v -&gt; MonoidMap k v
+</span><a href="Data.MonoidMap.html#fromSet"><span class="hs-identifier hs-var hs-var">fromSet</span></a></span></span><span> </span><span id="local-6989586621679092981"><span class="annot"><span class="annottext">k -&gt; v
+</span><a href="#local-6989586621679092981"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k v -&gt; MonoidMap k v
 forall v k. MonoidNull v =&gt; Map k v -&gt; MonoidMap k v
 </span><a href="Data.MonoidMap.html#fromMap"><span class="hs-identifier hs-var">fromMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k v -&gt; MonoidMap k v)
 -&gt; (Set k -&gt; Map k v) -&gt; Set k -&gt; MonoidMap k v
@@ -1577,7 +1577,7 @@ forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
 </span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">(k -&gt; v) -&gt; Set k -&gt; Map k v
 forall k a. (k -&gt; a) -&gt; Set k -&gt; Map k a
 </span><span class="hs-identifier hs-var">Map.fromSet</span></span><span> </span><span class="annot"><span class="annottext">k -&gt; v
-</span><a href="#local-6989586621679092980"><span class="hs-identifier hs-var">f</span></a></span><span>
+</span><a href="#local-6989586621679092981"><span class="hs-identifier hs-var">f</span></a></span><span>
 </span><span id="line-960"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.html#fromSet"><span class="hs-pragma hs-type">fromSet</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
 </span><span id="line-961"></span><span>
 </span><span id="line-962"></span><span class="hs-comment">-- | \(O(1)\). Constructs a 'MonoidMap' from a single key-value pair.</span><span>
@@ -1598,15 +1598,15 @@ forall k a. (k -&gt; a) -&gt; Set k -&gt; Map k a
 </span><span id="line-977"></span><span class="hs-comment">--</span><span>
 </span><span id="line-978"></span><span id="local-6989586621679091373"><span id="local-6989586621679091374"><span class="annot"><a href="Data.MonoidMap.html#singleton"><span class="hs-identifier hs-type">singleton</span></a></span><span> </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679091373"><span class="hs-identifier hs-type">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidNull</span></span><span> </span><span class="annot"><a href="#local-6989586621679091374"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679091373"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679091374"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.html#MonoidMap"><span class="hs-identifier hs-type">MonoidMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679091373"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679091374"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
 </span><span id="line-979"></span><span id="singleton"><span class="annot"><span class="annottext">singleton :: forall k v. (Ord k, MonoidNull v) =&gt; k -&gt; v -&gt; MonoidMap k v
-</span><a href="Data.MonoidMap.html#singleton"><span class="hs-identifier hs-var hs-var">singleton</span></a></span></span><span> </span><span id="local-6989586621679092989"><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679092989"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679092990"><span class="annot"><span class="annottext">v
-</span><a href="#local-6989586621679092990"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">k -&gt; v -&gt; MonoidMap k v -&gt; MonoidMap k v
+</span><a href="Data.MonoidMap.html#singleton"><span class="hs-identifier hs-var hs-var">singleton</span></a></span></span><span> </span><span id="local-6989586621679092990"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679092990"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span id="local-6989586621679092991"><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679092991"><span class="hs-identifier hs-var">v</span></a></span></span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">k -&gt; v -&gt; MonoidMap k v -&gt; MonoidMap k v
 forall k v.
 (Ord k, MonoidNull v) =&gt;
 k -&gt; v -&gt; MonoidMap k v -&gt; MonoidMap k v
 </span><a href="Data.MonoidMap.html#set"><span class="hs-identifier hs-var">set</span></a></span><span> </span><span class="annot"><span class="annottext">k
-</span><a href="#local-6989586621679092989"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">v
-</span><a href="#local-6989586621679092990"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">MonoidMap k v
+</span><a href="#local-6989586621679092990"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">v
+</span><a href="#local-6989586621679092991"><span class="hs-identifier hs-var">v</span></a></span><span> </span><span class="annot"><span class="annottext">MonoidMap k v
 forall a. Monoid a =&gt; a
 </span><span class="hs-identifier hs-var">mempty</span></span><span>
 </span><span id="line-980"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.html#singleton"><span class="hs-pragma hs-type">singleton</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
