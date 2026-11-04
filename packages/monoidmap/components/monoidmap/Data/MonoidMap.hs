@@ -850,7 +850,7 @@ empty = MonoidMap Map.empty
 --
 -- @
 -- 'get' k ('fromList' kvs) '=='
---     'foldMap' 'snd' ('L.filter' (('==' k) . fst) kvs)
+--     'foldMap' 'snd' ('L.filter' (('==' k) . 'fst') kvs)
 -- @
 --
 -- Satisfies the following round-trip property:
@@ -886,7 +886,7 @@ fromList = fromListWith (<>)
 -- @
 -- 'get' k ('fromListWith' f kvs) '=='
 --     'maybe' 'mempty' ('F.foldl1' f)
---         ('NE.nonEmpty' ('snd' '<$>' 'L.filter' (('==' k) . fst) kvs))
+--         ('NE.nonEmpty' ('snd' '<$>' 'L.filter' (('==' k) . 'fst') kvs))
 -- @
 --
 -- @since 0.0.0.0
