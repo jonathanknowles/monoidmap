@@ -5,6 +5,7 @@
 {- HLINT ignore "Avoid lambda using `infix`" -}
 {- HLINT ignore "Avoid lambda" -}
 {- HLINT ignore "Redundant bracket" -}
+{- HLINT ignore "Redundant lambda" -}
 {- HLINT ignore "Use camelCase" -}
 
 -- |
