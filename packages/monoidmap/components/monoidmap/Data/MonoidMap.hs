@@ -180,7 +180,7 @@ import Data.MonoidMap.Internal.NonNullMap.Merge
 import Control.Applicative
     ( Applicative (..) )
 import Control.DeepSeq
-    ( NFData (rnf) )
+    ( NFData (rnf), NFData1 (liftRnf) )
 import Data.Bifoldable
     ( Bifoldable )
 import Data.Coerce
@@ -650,6 +650,10 @@ fromListConstr = mkConstr dataType "fromList" [] Prefix
 instance (NFData k, NFData v) => NFData (MonoidMap k v) where
     rnf = foldlWithKey' (\() k v -> rnf k `seq` rnf v) ()
     {-# INLINE rnf #-}
+
+instance NFData k => NFData1 (MonoidMap k) where
+    liftRnf = \rnfV -> foldlWithKey' (\() k v -> rnf k `seq` rnfV v) ()
+    {-# INLINE liftRnf #-}
 
 #ifdef NOTHUNKS
 --------------------------------------------------------------------------------
