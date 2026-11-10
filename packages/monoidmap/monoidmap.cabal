@@ -141,6 +141,7 @@ test-suite monoidmap-test
         Data.MonoidMap.IntersectionSpec
         Data.MonoidMap.MapSpec
         Data.MonoidMap.MembershipSpec
+        Data.MonoidMap.NFDataSpec
         Data.MonoidMap.PartitionSpec
         Data.MonoidMap.PrefixSpec
         Data.MonoidMap.SingletonSpec
