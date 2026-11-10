@@ -95,10 +95,8 @@ jobs:
     strategy:
       matrix:
         os:
+          - macos-latest
           - ubuntu-latest
-            # TODO: Switch back to `macOS-latest`.
-            # https://github.com/jonathanknowles/monoidmap/issues/308
-          - macOS-15
           - windows-latest
         cabal:
           - '3.16'
@@ -112,7 +110,7 @@ jobs:
           - '9.14'
         # Only run Windows and macOS as part of the nightly build.
         exclude:
-          - os: ${{ github.event_name != 'schedule' && 'macOS-15' || '' }}
+          - os: ${{ github.event_name != 'schedule' && 'macos-latest' || '' }}
           - os: ${{ github.event_name != 'schedule' && 'windows-latest' || '' }}
     steps:
       - name: Checkout
