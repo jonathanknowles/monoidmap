@@ -1,3 +1,7 @@
+# 0.1.4.0
+
+- Added `NFData1` and `NFData2` instances for `MonoidMap`.
+
 # 0.1.3.1
 
 - Revised the inlining of functions exported by `Data.MonoidMap`, so that GHC

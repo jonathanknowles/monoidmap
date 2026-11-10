@@ -651,10 +651,12 @@ instance (NFData k, NFData v) => NFData (MonoidMap k v) where
     rnf = foldlWithKey' (\() k v -> rnf k `seq` rnf v) ()
     {-# INLINE rnf #-}
 
+-- | @since 0.1.4.0
 instance NFData k => NFData1 (MonoidMap k) where
     liftRnf = \rnfV -> foldlWithKey' (\() k v -> rnf k `seq` rnfV v) ()
     {-# INLINE liftRnf #-}
 
+-- | @since 0.1.4.0
 instance NFData2 MonoidMap where
     liftRnf2 = \rnfK rnfV -> foldlWithKey' (\() k v -> rnfK k `seq` rnfV v) ()
     {-# INLINE liftRnf2 #-}
