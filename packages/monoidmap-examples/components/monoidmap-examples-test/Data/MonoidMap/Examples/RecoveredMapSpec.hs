@@ -53,7 +53,13 @@ import Test.QuickCheck
     , (===)
     )
 import Test.QuickCheck.Classes
-    ( eqLaws, functorLaws, monoidLaws, semigroupLaws, semigroupMonoidLaws )
+    ( eqLaws
+    , functorLaws
+    , monoidLaws
+    , ordLaws
+    , semigroupLaws
+    , semigroupMonoidLaws
+    )
 import Test.Hspec.QuickCheck.Classes
     ( testLaws )
 
@@ -81,6 +87,7 @@ specFor
         , Function v
         , Monoid v
         , Ord k
+        , Ord v
         , Show k
         , Show v
         , Typeable k
@@ -108,6 +115,7 @@ specFor keyType valueType = do
             testLaws @(RMap.Map k v)
                 [ eqLaws
                 , monoidLaws
+                , ordLaws
                 , semigroupLaws
                 , semigroupMonoidLaws
                 ]
@@ -156,6 +164,11 @@ specFor keyType valueType = do
         describe "Times" $ do
             it "prop_stimes_toList" $
                 prop_stimes_toList
+                    @k @v & property
+
+        describe "Compare" $ do
+            it "prop_compare" $
+                prop_compare
                     @k @v & property
 
         describe "Delete" $ do
@@ -368,6 +381,26 @@ prop_stimes_toList kvs (NonNegative n) =
     & cover 10
         (n >= 2)
         "n >= 2"
+
+--------------------------------------------------------------------------------
+-- Compare
+--------------------------------------------------------------------------------
+
+prop_compare
+    :: forall k v. (Ord k, Ord v)
+    => [(k, v)]
+    -> [(k, v)]
+    -> Property
+prop_compare kvs1 kvs2 =
+    (===)
+        (compare (RMap.fromList kvs1) (RMap.fromList kvs2))
+        (compare (OMap.fromList kvs1) (OMap.fromList kvs2))
+    & cover 10
+        (OMap.fromList kvs1 < OMap.fromList kvs2)
+        "OMap.fromList kvs1 < OMap.fromList kvs2"
+    & cover 10
+        (OMap.fromList kvs1 > OMap.fromList kvs2)
+        "OMap.fromList kvs1 > OMap.fromList kvs2"
 
 --------------------------------------------------------------------------------
 -- Delete

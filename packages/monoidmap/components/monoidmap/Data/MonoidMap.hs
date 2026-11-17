@@ -120,6 +120,7 @@ module Data.MonoidMap
     , power
 
     -- ** Comparison
+    , compare
     , isSubmapOf
     , isSubmapOfBy
     , disjoint
@@ -156,7 +157,8 @@ module Data.MonoidMap
     where
 
 import Prelude hiding
-    ( drop
+    ( compare
+    , drop
     , filter
     , foldl
     , foldl'
@@ -255,6 +257,7 @@ import qualified Data.Monoid.Null as C
 import qualified Data.MonoidMap.Internal.NonNull as NonNull
 import qualified Data.MonoidMap.Internal.NonNullMap as NonNullMap
 import qualified Data.MonoidMap.Internal.NonNullMap.Merge as Merge
+import qualified Data.Ord as C
 import qualified Data.Semigroup.Cancellative as C
 import qualified Data.Set as Set
 import qualified Data.Traversable as Traversable
@@ -673,6 +676,16 @@ instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
     wNoThunks ctx = wNoThunks ctx . toMap
     {-# INLINE wNoThunks #-}
 #endif
+
+--------------------------------------------------------------------------------
+-- Instances: Ord
+--------------------------------------------------------------------------------
+
+instance (Ord k, Ord v, Monoid v) =>
+    Ord (MonoidMap k v)
+  where
+    compare = compare
+    {-# INLINE compare #-}
 
 --------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
@@ -1937,6 +1950,111 @@ mapAccumRWithKey f s0 m =
 --------------------------------------------------------------------------------
 -- Comparison
 --------------------------------------------------------------------------------
+
+-- | Compares a pair of maps /lexicographically/, in ascending key order.
+--
+-- This function provides the definition of 'C.compare' for the 'MonoidMap'
+-- instance of 'Ord'.
+--
+-- The result of comparing maps __@m1@__ and __@m2@__ is determined by the
+-- /smallest/ key __@k@__ for which the values in __@m1@__ and __@m2@__ are
+-- /different/, and is equal to the result of comparing those two values. If
+-- there is no such key, then the result is 'EQ'.
+--
+-- Satisfies the following property:
+--
+-- @
+-- 'compare' m1 m2 '=='
+--     'foldMap'
+--         (\\k -> 'C.compare' ('get' k m1) ('get' k m2))
+--         ('nonNullKeys' m1 '<>' 'nonNullKeys' m2)
+-- @
+--
+-- Comparing a pair of 'singleton' maps for the same key __@k@__ is equivalent
+-- to comparing their values:
+--
+-- @
+-- 'compare' ('singleton' k v1) ('singleton' k v2) '==' 'C.compare' v1 v2
+-- @
+--
+-- For any key __@k@__, comparing a pair of maps is equivalent to first
+-- comparing their values for keys /less than/ __@k@__, and then comparing
+-- their values for all remaining keys:
+--
+-- @
+-- 'compare' m1 m2 '=='
+--     'compare' ('filterKeys' ('<'  k) m1) ('filterKeys' ('<'  k) m2) '<>'
+--     'compare' ('filterKeys' ('>=' k) m1) ('filterKeys' ('>=' k) m2)
+-- @
+--
+-- === __Examples__
+--
+-- With 'Sum' 'Natural' values:
+--
+-- Maps that have the same value for every key are equal:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1), ("b", 2), ("c", 3)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 2), ("c", 3)]
+-- >>> 'compare' m1 m2
+-- 'EQ'
+-- @
+--
+-- The smallest key with different values determines the result, regardless
+-- of the values for greater keys:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1), ("b", 2), ("c", 3)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 3), ("c", 2)]
+-- >>> 'compare' m1 m2
+-- 'LT'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1), ("b", 3), ("c", 2)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 2), ("c", 3)]
+-- >>> 'compare' m1 m2
+-- 'GT'
+-- @
+--
+-- A value of 'mempty' is compared in the same way as any other value:
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1),           ("c", 3)]
+-- >>> m2 = 'fromList' [("a", 1), ("b", 2), ("c", 3)]
+-- >>> 'compare' m1 m2
+-- 'LT'
+-- @
+--
+-- @
+-- >>> m1 = 'fromList' [("a", 1), ("b", 2), ("c", 3)]
+-- >>> m2 = 'fromList' [("a", 1),           ("c", 3)]
+-- >>> 'compare' m1 m2
+-- 'GT'
+-- @
+--
+compare
+    :: (Ord k, Ord v, Monoid v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Ordering
+compare m1 m2 = go (toList m1) (toList m2)
+  where
+    go    (         [])    (         []) = EQ
+    go    ((_, x) : ps)    (         []) = check (C.compare x z) ps []
+    go    (         [])    ((_, y) : qs) = check (C.compare z y) [] qs
+    go as@((a, x) : ps) bs@((b, y) : qs) = align (C.compare a b)
+      where
+        align EQ                         = check (C.compare x y) ps qs
+        align LT                         = check (C.compare x z) ps bs
+        align GT                         = check (C.compare z y) as qs
+
+    check EQ ps qs = go ps qs
+    check LT _  _  = LT
+    check GT _  _  = GT
+
+    z = mempty
+{-# INLINE compare #-}
 
 -- | Indicates whether or not the first map is a /submap/ of the second.
 --

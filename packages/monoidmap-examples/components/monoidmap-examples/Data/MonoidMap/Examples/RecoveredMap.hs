@@ -45,6 +45,8 @@ import Data.Monoid
     ( First (..) )
 import Data.MonoidMap
     ( MonoidMap )
+import Data.Ord
+    ( comparing )
 import Data.Semigroup
     ( Semigroup (stimes), stimesIdempotentMonoid )
 import Data.Set
@@ -57,6 +59,10 @@ newtype Map k v = Map
     --  'Data.Map.Strict.Map':
     {unMap :: MonoidMap k (First v)}
     deriving newtype (Eq, NFData, Monoid)
+
+instance (Ord k, Ord v) => Ord (Map k v) where
+    compare = comparing toList
+    {-# INLINE compare #-}
 
 instance Ord k => Semigroup (Map k v) where
     (<>) = coerce @(MonoidMap k (First v) -> _ -> _) (<>)

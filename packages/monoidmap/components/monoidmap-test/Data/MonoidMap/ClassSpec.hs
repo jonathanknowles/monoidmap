@@ -34,6 +34,7 @@ import Test.QuickCheck.Classes
     ( eqLaws
     , isListLaws
     , monoidLaws
+    , ordLaws
     , semigroupLaws
     , semigroupMonoidLaws
     , showReadLaws
@@ -98,6 +99,7 @@ specLawsFor keyType = do
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , rightCancellativeLaws
@@ -115,6 +117,7 @@ specLawsFor keyType = do
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
+            , ordLaws
             , reductiveLaws
             , rightReductiveLaws
             , semigroupLaws
@@ -135,6 +138,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
@@ -155,6 +159,7 @@ specLawsFor keyType = do
             , isListLaws
             , monoidLaws
             , monoidNullLaws
+            , ordLaws
             , semigroupLaws
             , semigroupMonoidLaws
             , showReadLaws
@@ -169,6 +174,7 @@ specLawsFor keyType = do
             , leftReductiveLaws
             , monoidLaws
             , monoidNullLaws
+            , ordLaws
             , reductiveLaws
             , rightCancellativeLaws
             , rightReductiveLaws
@@ -192,6 +198,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
@@ -217,6 +224,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
@@ -241,6 +249,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
@@ -265,6 +274,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
@@ -289,6 +299,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws
@@ -315,6 +326,7 @@ specLawsFor keyType = do
             , monoidLaws
             , monoidNullLaws
             , monusLaws
+            , ordLaws
             , overlappingGCDMonoidLaws
             , positiveMonoidLaws
             , reductiveLaws

@@ -67,6 +67,7 @@ spec = describe "Examples" $ do
 
     describe "Comparison" $ do
 
+        exampleSpec_compare_Sum_Natural
         exampleSpec_isSubmapOf_Sum_Natural
         exampleSpec_disjoint_Product_Natural
         exampleSpec_disjoint_Sum_Natural
@@ -196,6 +197,46 @@ exampleData_toList_String = unitTestData1
 --------------------------------------------------------------------------------
 -- Comparison
 --------------------------------------------------------------------------------
+
+exampleSpec_compare_Sum_Natural :: Spec
+exampleSpec_compare_Sum_Natural = unitTestSpec
+    "MonoidMap.compare (Sum Natural)"
+    "MonoidMap.compare"
+    (MonoidMap.compare)
+    (exampleData_compare_Sum_Natural)
+
+exampleData_compare_Sum_Natural :: UnitTestData2
+    (MonoidMap LatinChar (Sum Natural))
+    (MonoidMap LatinChar (Sum Natural))
+    (Ordering)
+exampleData_compare_Sum_Natural = unitTestData2
+    [ ( m [0, 0, 0]
+      , m [0, 0, 0]
+      , EQ
+      )
+    , ( m [1, 2, 3]
+      , m [1, 2, 3]
+      , EQ
+      )
+    , ( m [1, 2, 3]
+      , m [1, 3, 2]
+      , LT
+      )
+    , ( m [1, 3, 2]
+      , m [1, 2, 3]
+      , GT
+      )
+    , ( m [1, 0, 3]
+      , m [1, 2, 3]
+      , LT
+      )
+    , ( m [1, 2, 3]
+      , m [1, 0, 3]
+      , GT
+      )
+    ]
+  where
+    m = MonoidMap.fromList . zip [A ..]
 
 exampleSpec_isSubmapOf_Sum_Natural :: Spec
 exampleSpec_isSubmapOf_Sum_Natural = unitTestSpec

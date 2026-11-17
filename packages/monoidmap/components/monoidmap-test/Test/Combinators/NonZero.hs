@@ -26,7 +26,7 @@ import Test.QuickCheck
 
 -- | A combinator for non-zero values.
 newtype NonZero a = NonZero a
-    deriving newtype (Eq, Num, Read, Show)
+    deriving newtype (Eq, Num, Ord, Read, Show)
     deriving newtype (Semigroup, Commutative, Monoid, MonoidNull, Group)
 
 genNonZero :: (Eq a, Num a) => Gen a -> Gen (NonZero a)

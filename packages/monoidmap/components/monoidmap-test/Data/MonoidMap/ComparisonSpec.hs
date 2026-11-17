@@ -34,12 +34,24 @@ import Test.Common
     , property
     , testValueTypesGCDMonoid
     , testValueTypesAll
+    , testValueTypesOrd
+    , testValueTypesOrdLeftInvariant
+    , testValueTypesOrdRightInvariant
     , testValueTypesReductive
     )
 import Test.Hspec
     ( Spec, describe, it )
 import Test.QuickCheck
-    ( Fun (..), Property, applyFun2, cover, expectFailure, (.||.), (===) )
+    ( Fun (..)
+    , Property
+    , applyFun2
+    , conjoin
+    , cover
+    , expectFailure
+    , (.||.)
+    , (=/=)
+    , (===)
+    )
 
 import qualified Data.Monoid.GCD as GCDMonoid
     ( GCDMonoid (..) )
@@ -61,6 +73,18 @@ spec = describe "Comparison" $ do
 
     forM_ testValueTypesAll $
         \(TestValueType p) -> specMonoidNull
+            (Proxy @Key) p
+
+    forM_ testValueTypesOrd $
+        \(TestValueType p) -> specOrd
+            (Proxy @Key) p
+
+    forM_ testValueTypesOrdLeftInvariant $
+        \(TestValueType p) -> specOrdLeftInvariant
+            (Proxy @Key) p
+
+    forM_ testValueTypesOrdRightInvariant $
+        \(TestValueType p) -> specOrdRightInvariant
             (Proxy @Key) p
 
 specGCDMonoid
@@ -98,6 +122,228 @@ specMonoidNull = makeSpec $ do
     it "prop_isSubmapOfBy_get_total_failure" $
         prop_isSubmapOfBy_get_total_failure
             @k @v & property
+
+specOrd
+    :: forall k v. (Test k v, Ord v) => Proxy k -> Proxy v -> Spec
+specOrd = makeSpec $ do
+    it "prop_compare_filterKeys" $
+        prop_compare_filterKeys
+            @k @v & property
+    it "prop_compare_get" $
+        prop_compare_get
+            @k @v & property
+    it "prop_compare_singleton" $
+        prop_compare_singleton
+            @k @v & property
+    it "prop_compare_unionWith_max" $
+        prop_compare_unionWith_max
+            @k @v & property
+    it "prop_compare_unionWith_min" $
+        prop_compare_unionWith_min
+            @k @v & property
+
+specOrdLeftInvariant
+    :: forall k v. (Test k v, Ord v) => Proxy k -> Proxy v -> Spec
+specOrdLeftInvariant = makeSpec $ do
+    it "prop_compare_append_left" $
+        prop_compare_append_left
+            @k @v & property
+
+specOrdRightInvariant
+    :: forall k v. (Test k v, Ord v) => Proxy k -> Proxy v -> Spec
+specOrdRightInvariant = makeSpec $ do
+    it "prop_compare_append_right" $
+        prop_compare_append_right
+            @k @v & property
+
+prop_compare_append_left
+    :: (Test k v, Ord v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_compare_append_left m m1 m2 =
+    MonoidMap.compare (m <> m1) (m <> m2)
+        ===
+        result
+    & cover 8
+        (result == LT)
+        "result == LT"
+    & cover 2
+        (result == EQ)
+        "result == EQ"
+    & cover 8
+        (result == GT)
+        "result == GT"
+    & cover 8
+        (MonoidMap.nonNull m)
+        "MonoidMap.nonNull m"
+  where
+    result = MonoidMap.compare m1 m2
+
+prop_compare_append_right
+    :: (Test k v, Ord v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_compare_append_right m m1 m2 =
+    MonoidMap.compare (m1 <> m) (m2 <> m)
+        ===
+        result
+    & cover 8
+        (result == LT)
+        "result == LT"
+    & cover 2
+        (result == EQ)
+        "result == EQ"
+    & cover 8
+        (result == GT)
+        "result == GT"
+    & cover 8
+        (MonoidMap.nonNull m)
+        "MonoidMap.nonNull m"
+  where
+    result = MonoidMap.compare m1 m2
+
+prop_compare_filterKeys
+    :: (Test k v, Ord v)
+    => k
+    -> MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_compare_filterKeys k m1 m2 =
+    MonoidMap.compare m1 m2
+        ===
+        MonoidMap.compare m1LT m2LT <> MonoidMap.compare m1GE m2GE
+    & cover 8
+        (m1LT /= m2LT)
+        "m1LT /= m2LT"
+    & cover 8
+        (m1LT == m2LT && m1GE /= m2GE)
+        "m1LT == m2LT && m1GE /= m2GE"
+  where
+    m1LT = MonoidMap.filterKeys (<  k) m1
+    m1GE = MonoidMap.filterKeys (>= k) m1
+    m2LT = MonoidMap.filterKeys (<  k) m2
+    m2GE = MonoidMap.filterKeys (>= k) m2
+
+prop_compare_get
+    :: (Test k v, Ord v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_compare_get m1 m2 =
+    result
+        ===
+        foldMap
+            (\k -> compare (MonoidMap.get k m1) (MonoidMap.get k m2))
+            (MonoidMap.nonNullKeys m1 <> MonoidMap.nonNullKeys m2)
+    & cover 4
+        (result == LT)
+        "result == LT"
+    & cover 1
+        (result == EQ)
+        "result == EQ"
+    & cover 4
+        (result == GT)
+        "result == GT"
+    & cover 4
+        (decidingKeyNullInL && decidingKeyNonNullInR)
+        "decidingKeyNullInL && decidingKeyNonNullInR"
+    & cover 4
+        (decidingKeyNonNullInL && decidingKeyNullInR)
+        "decidingKeyNonNullInL && decidingKeyNullInR"
+    & cover 4
+        (decidingKeyNonNullInL && decidingKeyNonNullInR)
+        "decidingKeyNonNullInL && decidingKeyNonNullInR"
+  where
+    result = MonoidMap.compare m1 m2
+    -- The smallest key for which the two maps have different values:
+    decidingKey =
+        Set.lookupMin
+            $ Set.filter (\k -> MonoidMap.get k m1 /= MonoidMap.get k m2)
+            $ MonoidMap.nonNullKeys m1 <> MonoidMap.nonNullKeys m2
+    decidingKeyNullInL    = any (`MonoidMap.nullKey`    m1) decidingKey
+    decidingKeyNullInR    = any (`MonoidMap.nullKey`    m2) decidingKey
+    decidingKeyNonNullInL = any (`MonoidMap.nonNullKey` m1) decidingKey
+    decidingKeyNonNullInR = any (`MonoidMap.nonNullKey` m2) decidingKey
+
+prop_compare_singleton
+    :: (Test k v, Ord v)
+    => k
+    -> v
+    -> v
+    -> Property
+prop_compare_singleton k v1 v2 =
+    MonoidMap.compare (MonoidMap.singleton k v1) (MonoidMap.singleton k v2)
+        ===
+        compare v1 v2
+    & cover 1
+        (v1 == mempty && v2 /= mempty)
+        "v1 == mempty && v2 /= mempty"
+    & cover 1
+        (v1 /= mempty && v2 == mempty)
+        "v1 /= mempty && v2 == mempty"
+    & cover 1
+        (v1 /= mempty && v2 /= mempty)
+        "v1 /= mempty && v2 /= mempty"
+
+-- If every value in map 'a' is less than or equal to the matching value in
+-- map 'b', then 'a' must not be greater than 'b'.
+--
+-- Every such pair of maps (a, b) can be expressed as (m1, unionWith max m1 m2)
+-- for some pair of maps (m1, m2), so this property covers all such pairs.
+--
+prop_compare_unionWith_max
+    :: (Test k v, Ord v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_compare_unionWith_max m1 m2 =
+    conjoin
+        [ MonoidMap.compare m1 m =/= GT
+        , MonoidMap.compare m2 m =/= GT
+        ]
+    & cover 8
+        (m /= m1 && m /= m2)
+        "m /= m1 && m /= m2"
+    & cover 2
+        (m == m1 && m /= m2)
+        "m == m1 && m /= m2"
+    & cover 2
+        (m /= m1 && m == m2)
+        "m /= m1 && m == m2"
+  where
+    m = MonoidMap.unionWith max m1 m2
+
+-- If every value in map 'a' is less than or equal to the matching value in
+-- map 'b', then 'a' must not be greater than 'b'.
+--
+-- Every such pair of maps (a, b) can be expressed as (unionWith min m1 m2, m1)
+-- for some pair of maps (m1, m2), so this property covers all such pairs.
+--
+prop_compare_unionWith_min
+    :: (Test k v, Ord v)
+    => MonoidMap k v
+    -> MonoidMap k v
+    -> Property
+prop_compare_unionWith_min m1 m2 =
+    conjoin
+        [ MonoidMap.compare m m1 =/= GT
+        , MonoidMap.compare m m2 =/= GT
+        ]
+    & cover 8
+        (m /= m1 && m /= m2)
+        "m /= m1 && m /= m2"
+    & cover 2
+        (m == m1 && m /= m2)
+        "m == m1 && m /= m2"
+    & cover 2
+        (m /= m1 && m == m2)
+        "m /= m1 && m == m2"
+  where
+    m = MonoidMap.unionWith min m1 m2
 
 prop_disjoint_gcd
     :: (Test k v, GCDMonoid v)
