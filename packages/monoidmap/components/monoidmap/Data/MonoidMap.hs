@@ -681,6 +681,7 @@ instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
 -- Instances: Ord
 --------------------------------------------------------------------------------
 
+-- | @since 0.1.5.0
 instance (Ord k, Ord v, Monoid v) =>
     Ord (MonoidMap k v)
   where
@@ -2032,6 +2033,8 @@ mapAccumRWithKey f s0 m =
 -- >>> 'compare' m1 m2
 -- 'GT'
 -- @
+--
+-- @since 0.1.5.0
 --
 compare
     :: (Ord k, Ord v, Monoid v)
