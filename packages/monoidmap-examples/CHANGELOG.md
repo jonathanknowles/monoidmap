@@ -1,3 +1,7 @@
+# 0.1.1.0
+
+- Added `Ord` instances for `MultiSet`, `NestedMonoidMap`, and `RecoveredMap`.
+
 # 0.1.0.1
 
 - Revised the inlining of functions exported by `RecoveredMap`, so that GHC can
