@@ -103,6 +103,7 @@ newtype NestedMonoidMap k1 k2 v =
         , Monoid
         , MonoidNull
         , Monus
+        , Ord
         , OverlappingGCDMonoid
         , PositiveMonoid
         , Reductive
