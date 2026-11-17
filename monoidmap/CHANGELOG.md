@@ -1,3 +1,11 @@
+# 0.1.5.0
+
+- Added an `Ord` instance for `MonoidMap`, which compares maps
+  lexicographically, in ascending key order.
+
+- Added a `compare` function for `MonoidMap`, which provides the definition of
+  `compare` for the `Ord` instance.
+
 # 0.1.4.0
 
 - Added `NFData1` and `NFData2` instances for `MonoidMap`.
