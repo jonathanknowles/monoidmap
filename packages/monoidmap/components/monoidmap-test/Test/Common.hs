@@ -15,6 +15,9 @@ module Test.Common
     , TestKey
     , TestValueType (..)
     , testValueTypesAll
+    , testValueTypesOrd
+    , testValueTypesOrdLeftInvariant
+    , testValueTypesOrdRightInvariant
     , testValueTypesGroup
     , testValueTypesMonus
     , testValueTypesLeftReductive
@@ -198,6 +201,60 @@ testValueTypesAll =
     , TestValueType (Proxy @[Int])
     , TestValueType (Proxy @[Natural])
     , TestValueType (Proxy @(MonoidMap SmallKey (Sum Int)))
+    , TestValueType (Proxy @(MonoidMap SmallKey (Sum Natural)))
+    ]
+
+testValueTypesOrd :: [TestValueType Ord]
+testValueTypesOrd =
+    [ TestValueType (Proxy @(Dual Text))
+    , TestValueType (Proxy @(Dual [Int]))
+    , TestValueType (Proxy @(Dual [Natural]))
+    , TestValueType (Proxy @(Product Int))
+    , TestValueType (Proxy @(Product Natural))
+    , TestValueType (Proxy @(Set Int))
+    , TestValueType (Proxy @(Set Natural))
+    , TestValueType (Proxy @(Sum Int))
+    , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @[Int])
+    , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(MonoidMap SmallKey (Sum Int)))
+    , TestValueType (Proxy @(MonoidMap SmallKey (Sum Natural)))
+    ]
+
+-- Value types for which appending the same prefix @v@ to values @v1@ and @v2@
+-- preserves their ordering:
+--
+-- @
+-- ∀ v v1 v2. compare (v <> v1) (v <> v2) == compare v1 v2
+-- @
+--
+testValueTypesOrdLeftInvariant :: [TestValueType Ord]
+testValueTypesOrdLeftInvariant =
+    [ TestValueType (Proxy @(Text))
+    , TestValueType (Proxy @[Integer])
+    , TestValueType (Proxy @[Natural])
+    , TestValueType (Proxy @(Sum Integer))
+    , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap SmallKey (Sum Integer)))
+    , TestValueType (Proxy @(MonoidMap SmallKey (Sum Natural)))
+    ]
+
+-- Value types for which appending the same suffix @v@ to values @v1@ and @v2@
+-- preserves their ordering:
+--
+-- @
+-- ∀ v v1 v2. compare (v1 <> v) (v2 <> v) == compare v1 v2
+-- @
+--
+testValueTypesOrdRightInvariant :: [TestValueType Ord]
+testValueTypesOrdRightInvariant =
+    [ TestValueType (Proxy @(Dual Text))
+    , TestValueType (Proxy @(Dual [Integer]))
+    , TestValueType (Proxy @(Dual [Natural]))
+    , TestValueType (Proxy @(Sum Integer))
+    , TestValueType (Proxy @(Sum Natural))
+    , TestValueType (Proxy @(MonoidMap SmallKey (Sum Integer)))
     , TestValueType (Proxy @(MonoidMap SmallKey (Sum Natural)))
     ]
 
