@@ -91,10 +91,10 @@ import qualified Data.Set as Set
 
 newtype NestedMonoidMap k1 k2 v =
     NestedMonoidMap (MonoidMap k1 (MonoidMap k2 v))
-    deriving stock Eq
     deriving newtype
         ( Cancellative
         , Commutative
+        , Eq
         , GCDMonoid
         , LCMMonoid
         , LeftCancellative
