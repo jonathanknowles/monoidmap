@@ -678,6 +678,16 @@ instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
 #endif
 
 --------------------------------------------------------------------------------
+-- Instances: Ord
+--------------------------------------------------------------------------------
+
+instance (Ord k, Ord v, Monoid v) =>
+    Ord (MonoidMap k v)
+  where
+    compare = compare
+    {-# INLINE compare #-}
+
+--------------------------------------------------------------------------------
 -- Instances: Semigroup and subclasses
 --------------------------------------------------------------------------------
 
@@ -1942,6 +1952,9 @@ mapAccumRWithKey f s0 m =
 --------------------------------------------------------------------------------
 
 -- | Compares a pair of maps /lexicographically/, in ascending key order.
+--
+-- This function provides the definition of 'C.compare' for the 'MonoidMap'
+-- instance of 'Ord'.
 --
 -- The result of comparing maps __@m1@__ and __@m2@__ is determined by the
 -- /smallest/ key __@k@__ for which the values in __@m1@__ and __@m2@__ are
