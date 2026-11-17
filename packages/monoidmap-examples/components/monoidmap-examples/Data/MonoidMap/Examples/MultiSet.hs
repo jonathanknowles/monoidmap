@@ -75,6 +75,7 @@ newtype MultiSet a = MultiSet
     }
     deriving newtype
         ( Eq
+        , Ord
         , Semigroup
         , Commutative
         , Monoid
