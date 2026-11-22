@@ -40,6 +40,8 @@ import Data.Monoid.Null
     ( MonoidNull (null) )
 import Data.MonoidMap.Internal.NonNull
     ( NonNull )
+import Data.MonoidMap.Internal.NonNullMap.Adjust
+    ( adjust_alter )
 import Data.MonoidMap.Internal.NonNullMap.FromMap
     ( fromMap_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.FromMapWith
@@ -48,9 +50,6 @@ import Data.MonoidMap.Internal.NonNullMap.Get
     ( get_lookup )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
-
-import qualified Data.Map.Strict as Map
-import qualified Data.MonoidMap.Internal.NonNull as NonNull
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -101,12 +100,15 @@ get = get_lookup
 --   to 'mempty' if the key is not present), removing the key if the result is
 --   'null'.
 --
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.Adjust" is used by the public @adjust@
+-- function of the @monoidmap@ package.
+--
 adjust
     :: (Ord k, MonoidNull v)
     => (v -> v)
     -> k
     -> NonNullMap k v
     -> NonNullMap k v
-adjust f k (NonNullMap m) = NonNullMap $
-    Map.alter (NonNull.nonNull . maybe (f mempty) (NonNull.apply f)) k m
+adjust = adjust_alter
 {-# INLINE adjust #-}
