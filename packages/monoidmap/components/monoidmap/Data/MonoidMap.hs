@@ -1110,8 +1110,7 @@ adjust
     -> k
     -> MonoidMap k v
     -> MonoidMap k v
-adjust f k (MonoidMap m) = MonoidMap $
-    Map.alter (NonNull.nonNull . maybe (f mempty) (NonNull.apply f)) k m
+adjust f k = fromNonNullMap . NonNullMap.adjust f k . toNonNullMap
 {-# INLINE adjust #-}
 
 --------------------------------------------------------------------------------

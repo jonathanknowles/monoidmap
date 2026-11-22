@@ -25,6 +25,9 @@ module Data.MonoidMap.Internal.NonNullMap
 
     -- * Lookup
     , get
+
+    -- * Modification
+    , adjust
     )
     where
 
@@ -45,6 +48,9 @@ import Data.MonoidMap.Internal.NonNullMap.Get
     ( get_lookup )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
+
+import qualified Data.Map.Strict as Map
+import qualified Data.MonoidMap.Internal.NonNull as NonNull
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -86,3 +92,21 @@ fromMapWith = fromMapWith_mapMaybe
 get :: (Ord k, Monoid v) => k -> NonNullMap k v -> v
 get = get_lookup
 {-# INLINE get #-}
+
+--------------------------------------------------------------------------------
+-- Modification
+--------------------------------------------------------------------------------
+
+-- | Applies the given function to the value associated with the given key (or
+--   to 'mempty' if the key is not present), removing the key if the result is
+--   'null'.
+--
+adjust
+    :: (Ord k, MonoidNull v)
+    => (v -> v)
+    -> k
+    -> NonNullMap k v
+    -> NonNullMap k v
+adjust f k (NonNullMap m) = NonNullMap $
+    Map.alter (NonNull.nonNull . maybe (f mempty) (NonNull.apply f)) k m
+{-# INLINE adjust #-}
