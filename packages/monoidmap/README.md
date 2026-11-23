@@ -961,8 +961,8 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
     <td>✅</td>
     <td>✅</td>
     <td>✅</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -974,13 +974,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>MonoidMap</code>
       </a>
     </td>
-    <td>:x:</td>
+    <td>❌</td>
     <td>✅</td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
     <td>✅</td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -992,13 +992,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>MonoidalMap</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -1011,10 +1011,10 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
       </a>
     </td>
     <td>✅</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
     <td>✅</td>
   </tr>
@@ -1029,10 +1029,10 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
       </a>
     </td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
     <td>✅</td>
   </tr>
@@ -1046,11 +1046,11 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>Defaultable</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
     <td>✅</td>
   </tr>
@@ -1065,12 +1065,12 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
       </a>
     </td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -1082,13 +1082,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>MonoidMap</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
     <td>✅</td>
     <td>✅</td>
-    <td>:x:</td>
+    <td>❌</td>
   </tr>
 </tbody>
 </table>
