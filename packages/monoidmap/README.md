@@ -559,17 +559,17 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 
 ## Real-world examples from the Haskell ecosystem
 
-### Example: `SignedMultiSet` (a signed multiset type)
+### Example: `SignedMultiset` (a signed multiset type)
 
-> The [`signed-multiset`] library provides the [`SignedMultiSet`] type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
+> The [`signed-multiset`] library provides the [`SignedMultiset`] type, which is internally defined as a [`Map`] from elements to signed integer occurrence counts:
 >
 > ```hs
 > newtype SignedMultiset a = SMS {unSMS :: Map a Int}
 > ```
 >
-> All [`SignedMultiSet`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiSet`] functions to detect and eliminate values of `0`.
+> All [`SignedMultiset`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to `0` (zero). This requires [`SignedMultiset`] functions to detect and eliminate values of `0`.
 >
-> For example, the [`insertMany`][`SignedMultiSet.insertMany`] operation:
+> For example, the [`insertMany`][`SignedMultiset.insertMany`] operation:
 >
 > ```hs
 > insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
@@ -579,7 +579,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >     f (Just m) = let k = m + n in if k == 0 then Nothing else Just k
 > ```
 >
-> Let's redefine [`SignedMultiSet`] in terms of [`MonoidMap`]:
+> Let's redefine [`SignedMultiset`] in terms of [`MonoidMap`]:
 >
 > ```diff
 > - newtype SignedMultiset a = SMS {unSMS ::       Map a      Int }
@@ -588,7 +588,7 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Here we've used the [`Sum`] wrapper type, whose [`Monoid`] instance defines [`mempty`][`Monoid.mempty`] as `Sum 0`, and [`<>`] as ordinary addition.
 >
-> Now we can redefine [`insertMany`][`SignedMultiSet.insertMany`] (and similar operations) in a simpler way:
+> Now we can redefine [`insertMany`][`SignedMultiset.insertMany`] (and similar operations) in a simpler way:
 >
 > ```patch
 >   insertMany :: Ord a => a -> Int -> SignedMultiset a -> SignedMultiset a
@@ -1141,8 +1141,8 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`SetMultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey
 [`SetMultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
-[`SignedMultiSet.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
-[`SignedMultiSet`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
+[`SignedMultiset.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
+[`SignedMultiset`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
 [`String`]: https://hackage.haskell.org/package/base/docs/Data-String.html#t:String
 [`Sum`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:Sum
 [`TMap.trim`]: https://hackage.haskell.org/package/total-map/docs/Data-TotalMap.html#v:trim
