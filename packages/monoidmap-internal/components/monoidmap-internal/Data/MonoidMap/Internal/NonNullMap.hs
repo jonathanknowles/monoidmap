@@ -25,6 +25,9 @@ module Data.MonoidMap.Internal.NonNullMap
 
     -- * Lookup
     , get
+
+    -- * Modification
+    , adjust
     )
     where
 
@@ -37,6 +40,8 @@ import Data.Monoid.Null
     ( MonoidNull (null) )
 import Data.MonoidMap.Internal.NonNull
     ( NonNull )
+import Data.MonoidMap.Internal.NonNullMap.Adjust
+    ( adjust_alter )
 import Data.MonoidMap.Internal.NonNullMap.FromMap
     ( fromMap_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.FromMapWith
@@ -86,3 +91,24 @@ fromMapWith = fromMapWith_mapMaybe
 get :: (Ord k, Monoid v) => k -> NonNullMap k v -> v
 get = get_lookup
 {-# INLINE get #-}
+
+--------------------------------------------------------------------------------
+-- Modification
+--------------------------------------------------------------------------------
+
+-- | Applies the given function to the value associated with the given key (or
+--   to 'mempty' if the key is not present), removing the key if the result is
+--   'null'.
+--
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.Adjust" is used by the public @adjust@
+-- function of the @monoidmap@ package.
+--
+adjust
+    :: (Ord k, MonoidNull v)
+    => (v -> v)
+    -> k
+    -> NonNullMap k v
+    -> NonNullMap k v
+adjust = adjust_alter
+{-# INLINE adjust #-}

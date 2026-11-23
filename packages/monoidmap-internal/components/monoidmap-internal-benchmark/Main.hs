@@ -19,11 +19,11 @@ import Data.Bool
 import Data.Eq
     ( Eq ((==)) )
 import Data.Function
-    ( const, ($) )
+    ( const, flip, ($) )
 import Data.Int
     ( Int )
 import Data.List
-    ( filter, foldl' )
+    ( concat, filter, foldl', transpose )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
 import Data.Semigroup
@@ -31,7 +31,7 @@ import Data.Semigroup
 import Data.String
     ( String )
 import Prelude
-    ( even, odd, (^) )
+    ( Num ((+), (-)), even, odd, (^) )
 import System.IO
     ( IO )
 import Test.Tasty.Bench
@@ -39,6 +39,7 @@ import Test.Tasty.Bench
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.NonNullMap as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.Adjust as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMapWith as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.Get as MMap
@@ -80,6 +81,50 @@ main = do
         , keys_odd
         ]
 
+    -- Cases for 'adjust', which together cover every kind of transition that
+    -- a single call can make, from an old value v0 to a new value v1:
+    --
+    -- +----------+----------+-----------+-----------------------------+
+    -- | Old      | New      | Map       | Detectable?                 |
+    -- | value    | value    | changed?  |                             |
+    -- | v0       | v1       |           |                             |
+    -- +----------+----------+-----------+-----------------------------+
+    -- |     null |     null | unchanged | yes (with 'null')           |
+    -- |     null | non-null |   changed | yes (with 'null')           |
+    -- | non-null |     null |   changed | yes (with 'null')           |
+    -- | non-null | v1 is v0 | unchanged | yes (with pointer equality) |
+    -- | non-null | v1 == v0 | unchanged | no  (no `Eq` context)       |
+    -- | non-null | v1 /= v0 |   changed | no  (no `Eq` context)       |
+    -- +----------+----------+-----------+-----------------------------+
+    --
+    -- In each case, every key is paired with a 'Change', which determines the
+    -- transition.
+    --
+    let -- The input that produces each transition in the table above, for the
+        -- given keys, given:
+        --
+        -- m0: a map in which those keys are associated with 'Sum 0'; and
+        -- m1: a map in which those keys are associated with 'Sum 1':
+        --
+        transitions ks m0 m1 =
+            [ ("null to null",          (withChange ks Identity, m0))
+            , ("null to non-null",      (withChange ks (Add 1) , m0))
+            , ("non-null to null",      (withChange ks (Sub 1) , m1))
+            , ("non-null to identical", (withChange ks Identity, m1))
+            , ("non-null to equal",     (withChange ks (Add 0) , m1))
+            , ("non-null to unequal",   (withChange ks (Add 1) , m1))
+            ]
+
+    let adjustCases = concat $ transpose
+            [ withSuffix " (even)" adjustCasesEven
+            , withSuffix " (odd)"  adjustCasesOdd
+            ]
+          where
+            adjustCasesEven = transitions keys_even mm_keys_odd  mm_keys_even
+            adjustCasesOdd  = transitions keys_odd  mm_keys_even mm_keys_odd
+
+    evaluate $ rnf adjustCases
+
     let fromMapCases =
             [ ("no nulls",           om_null_none)
             , ("one null (min key)", om_null_min)
@@ -98,6 +143,15 @@ main = do
 
     defaultMain
         [ compareImplementations
+            ("adjust", adjustWith MMap.adjust) adjustCases
+            [ ( "adjust_alter"
+              , adjustWith MMap.adjust_alter
+              )
+            , ( "adjust_lookup"
+              , adjustWith MMap.adjust_lookup
+              )
+            ]
+        , compareImplementations
             ("fromMap", MMap.fromMap) fromMapCases
             [ ( "fromMap_filter"
               , MMap.fromMap_filter
@@ -135,8 +189,11 @@ main = do
     minNatural :: Int
     minNatural = 1
 
+    -- This value was chosen experimentally. It's high enough to generate maps
+    -- of a reasonable depth, but low enough for timings to be stable from one
+    -- run to the next.
     maxNatural :: Int
-    maxNatural = 2 ^ (16 :: Int)
+    maxNatural = 2 ^ (10 :: Int)
 
     -- A map from keys [minNatural .. maxNatural], with a null value for each
     -- key that satisfies the given predicate, and a non-null value otherwise.
@@ -168,6 +225,67 @@ main = do
         -> Sum Int
     getAll get (ks, m) = foldl' (\v k -> v <> get k m) mempty ks
     {-# NOINLINE getAll #-}
+
+    -- Pairs every one of the given keys with the given change.
+    withChange :: [Int] -> Change -> [(Int, Change)]
+    withChange ks c = [(k, c) | k <- ks]
+
+    -- Appends the given suffix to the label of every case.
+    withSuffix :: String -> [(String, i)] -> [(String, i)]
+    withSuffix s cases = [(label <> s, input) | (label, input) <- cases]
+
+    -- Makes the given change to a value.
+    change :: Change -> Sum Int -> Sum Int
+    change Identity v = v
+    change (Add n)  v = v + Sum n
+    change (Sub n)  v = v - Sum n
+
+    -- Adjusts the values associated with all of the given keys in turn, with
+    -- the given implementation of 'adjust', by making the change that
+    -- accompanies each key.
+    --
+    adjustWith
+        :: ((Sum Int -> Sum Int)
+            -> Int
+            -> MMap.NonNullMap Int (Sum Int)
+            -> MMap.NonNullMap Int (Sum Int))
+        -> ([(Int, Change)], MMap.NonNullMap Int (Sum Int))
+        -> MMap.NonNullMap Int (Sum Int)
+    adjustWith adjust = adjustAll (\(k, c) m -> adjust (change c) k m)
+    {-# INLINE adjustWith #-}
+
+    -- Applies the given function to each of the given keys in turn, together
+    -- with its change, threading the map through each call.
+    --
+    adjustAll
+        :: ((Int, Change)
+            -> MMap.NonNullMap Int (Sum Int)
+            -> MMap.NonNullMap Int (Sum Int))
+        -> ([(Int, Change)], MMap.NonNullMap Int (Sum Int))
+        -> MMap.NonNullMap Int (Sum Int)
+    adjustAll step (kcs, m) = foldl' (flip step) m kcs
+    {-# NOINLINE adjustAll #-}
+
+-- | A change to make to a value, with the function passed to 'adjust'.
+--
+-- The change is chosen for each key separately, and is only known at run time.
+-- So the function passed to 'adjust' captures a value that can differ from one
+-- call to the next, as in typical use (for example, with `(x :)`). And the
+-- compiler can't simplify 'Add 0' to 'Identity': 'Add' always builds a new
+-- value.
+--
+data Change
+    = Identity
+      -- ^ Returns the value itself.
+    | Add Int
+      -- ^ Adds to the value.
+    | Sub Int
+      -- ^ Subtracts from the value.
+
+instance NFData Change where
+    rnf Identity = ()
+    rnf (Add n)  = rnf n
+    rnf (Sub n)  = rnf n
 
 -- | Compares implementations of a public function with the public function
 --   itself, for each of the given cases.
