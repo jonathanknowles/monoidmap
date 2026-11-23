@@ -956,13 +956,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
       <br/>
       (this library)
     </td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:x:</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -974,13 +974,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>MonoidMap</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -992,13 +992,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>MonoidalMap</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -1010,13 +1010,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>TMap</code>
       </a>
     </td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
   </tr>
   <tr>
     <td>
@@ -1028,13 +1028,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>TotalSparseMap</code>
       </a>
     </td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
   </tr>
   <tr>
     <td>
@@ -1046,13 +1046,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>Defaultable</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
   </tr>
   <tr>
     <td>
@@ -1064,13 +1064,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>DefaultMap</code>
       </a>
     </td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
   </tr>
   <tr>
     <td>
@@ -1082,13 +1082,13 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
         <code>MonoidMap</code>
       </a>
     </td>
-    <td>:x:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:heavy_check_mark:</td>
-    <td>:x:</td>
+    <td>❌</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>❌</td>
+    <td>✅</td>
+    <td>✅</td>
+    <td>❌</td>
   </tr>
 </tbody>
 </table>
