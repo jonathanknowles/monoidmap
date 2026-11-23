@@ -189,8 +189,11 @@ main = do
     minNatural :: Int
     minNatural = 1
 
+    -- This value was chosen experimentally. It's high enough to generate maps
+    -- of a reasonable depth, but low enough for timings to be stable from one
+    -- run to the next.
     maxNatural :: Int
-    maxNatural = 2 ^ (16 :: Int)
+    maxNatural = 2 ^ (10 :: Int)
 
     -- A map from keys [minNatural .. maxNatural], with a null value for each
     -- key that satisfies the given predicate, and a non-null value otherwise.
