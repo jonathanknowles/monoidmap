@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet" type="text/css" href="style.css" /><script type="text/javascript" src="highlight.js"></script></head><body><pre><span class="hs-comment">{- HLINT ignore &quot;Use camelCase&quot; -}</span><span>
+</span><span id="line-2"></span><span>
+</span><span id="line-3"></span><span class="hs-comment">-- |</span><span>
+</span><span id="line-4"></span><span class="hs-comment">-- Copyright: &#169; 2022&#8211;2026 Jonathan Knowles</span><span>
+</span><span id="line-5"></span><span class="hs-comment">-- License: Apache-2.0</span><span>
+</span><span id="line-6"></span><span class="hs-comment">--</span><span>
+</span><span id="line-7"></span><span class="hs-comment">-- Provides alternative implementations of @adjust@.</span><span>
+</span><span id="line-8"></span><span class="hs-comment">--</span><span>
+</span><span id="line-9"></span><span class="hs-keyword">module</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html"><span class="hs-identifier">Data.MonoidMap.Internal.NonNullMap.Adjust</span></a></span><span>
+</span><span id="line-10"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_alter"><span class="hs-identifier">adjust_alter</span></a></span><span>
+</span><span id="line-11"></span><span>    </span><span class="hs-special">,</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_lookup"><span class="hs-identifier">adjust_lookup</span></a></span><span>
+</span><span id="line-12"></span><span>    </span><span class="hs-special">)</span><span>
+</span><span id="line-13"></span><span>    </span><span class="hs-keyword">where</span><span>
+</span><span id="line-14"></span><span>
+</span><span id="line-15"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Prelude</span></span><span>
+</span><span id="line-16"></span><span>
+</span><span id="line-17"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><span class="hs-identifier">Data.Monoid.Null</span></span><span>
+</span><span id="line-18"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><span class="hs-identifier">MonoidNull</span></span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-19"></span><span class="hs-keyword">import</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html"><span class="hs-identifier">Data.MonoidMap.Internal.NonNullMap.Unsafe</span></a></span><span>
+</span><span id="line-20"></span><span>    </span><span class="hs-special">(</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier">NonNullMap</span></a></span><span> </span><span class="hs-special">(</span><span class="hs-glyph">..</span><span class="hs-special">)</span><span> </span><span class="hs-special">)</span><span>
+</span><span id="line-21"></span><span>
+</span><span id="line-22"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><span class="hs-identifier">Data.Map.Strict</span></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">Map</span></span><span>
+</span><span id="line-23"></span><span class="hs-keyword">import</span><span> </span><span class="hs-keyword">qualified</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNull.html"><span class="hs-identifier">Data.MonoidMap.Internal.NonNull</span></a></span><span> </span><span class="hs-keyword">as</span><span> </span><span class="annot"><span class="hs-identifier">NonNull</span></span><span>
+</span><span id="line-24"></span><span>
+</span><span id="line-25"></span><span id="local-6989586621679063123"><span id="local-6989586621679063124"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_alter"><span class="hs-identifier hs-type">adjust_alter</span></a></span><span>
+</span><span id="line-26"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679063123"><span class="hs-identifier hs-type">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidNull</span></span><span> </span><span class="annot"><a href="#local-6989586621679063124"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-27"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679063124"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679063124"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-28"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679063123"><span class="hs-identifier hs-type">k</span></a></span><span>
+</span><span id="line-29"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063123"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063124"><span class="hs-identifier hs-type">v</span></a></span><span>
+</span><span id="line-30"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063123"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063124"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-31"></span><span id="adjust_alter"><span class="annot"><span class="annottext">adjust_alter :: forall k v.
+(Ord k, MonoidNull v) =&gt;
+(v -&gt; v) -&gt; k -&gt; NonNullMap k v -&gt; NonNullMap k v
+</span><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_alter"><span class="hs-identifier hs-var hs-var">adjust_alter</span></a></span></span><span> </span><span id="local-6989586621679063166"><span class="annot"><span class="annottext">v -&gt; v
+</span><a href="#local-6989586621679063166"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679063167"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063167"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span id="local-6989586621679063169"><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063169"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v) -&gt; NonNullMap k v
+forall k v. Map k (NonNull v) -&gt; NonNullMap k v
+</span><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-var">NonNullMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (NonNull v) -&gt; NonNullMap k v)
+-&gt; Map k (NonNull v) -&gt; NonNullMap k v
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-32"></span><span>    </span><span class="annot"><span class="annottext">(Maybe (NonNull v) -&gt; Maybe (NonNull v))
+-&gt; k -&gt; Map k (NonNull v) -&gt; Map k (NonNull v)
+forall k a.
+Ord k =&gt;
+(Maybe a -&gt; Maybe a) -&gt; k -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.alter</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">v -&gt; Maybe (NonNull v)
+forall v. MonoidNull v =&gt; v -&gt; Maybe (NonNull v)
+</span><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-identifier hs-var">NonNull.nonNull</span></a></span><span> </span><span class="annot"><span class="annottext">(v -&gt; Maybe (NonNull v))
+-&gt; (Maybe (NonNull v) -&gt; v)
+-&gt; Maybe (NonNull v)
+-&gt; Maybe (NonNull v)
+forall b c a. (b -&gt; c) -&gt; (a -&gt; b) -&gt; a -&gt; c
+</span><span class="hs-operator hs-var">.</span></span><span> </span><span class="annot"><span class="annottext">v -&gt; (NonNull v -&gt; v) -&gt; Maybe (NonNull v) -&gt; v
+forall b a. b -&gt; (a -&gt; b) -&gt; Maybe a -&gt; b
+</span><span class="hs-identifier hs-var">maybe</span></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">v -&gt; v
+</span><a href="#local-6989586621679063166"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">v
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span class="hs-special">)</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(v -&gt; v) -&gt; NonNull v -&gt; v
+forall v a. (v -&gt; a) -&gt; NonNull v -&gt; a
+</span><a href="Data.MonoidMap.Internal.NonNull.html#apply"><span class="hs-identifier hs-var">NonNull.apply</span></a></span><span> </span><span class="annot"><span class="annottext">v -&gt; v
+</span><a href="#local-6989586621679063166"><span class="hs-identifier hs-var">f</span></a></span><span class="hs-special">)</span><span class="hs-special">)</span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063167"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063169"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-33"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_alter"><span class="hs-pragma hs-type">adjust_alter</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-34"></span><span>
+</span><span id="line-35"></span><span id="local-6989586621679063175"><span id="local-6989586621679063176"><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_lookup"><span class="hs-identifier hs-type">adjust_lookup</span></a></span><span>
+</span><span id="line-36"></span><span>    </span><span class="hs-glyph">::</span><span> </span><span class="hs-special">(</span><span class="annot"><span class="hs-identifier hs-type">Ord</span></span><span> </span><span class="annot"><a href="#local-6989586621679063175"><span class="hs-identifier hs-type">k</span></a></span><span class="hs-special">,</span><span> </span><span class="annot"><span class="hs-identifier hs-type">MonoidNull</span></span><span> </span><span class="annot"><a href="#local-6989586621679063176"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-37"></span><span>    </span><span class="hs-glyph">=&gt;</span><span> </span><span class="hs-special">(</span><span class="annot"><a href="#local-6989586621679063176"><span class="hs-identifier hs-type">v</span></a></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679063176"><span class="hs-identifier hs-type">v</span></a></span><span class="hs-special">)</span><span>
+</span><span id="line-38"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="#local-6989586621679063175"><span class="hs-identifier hs-type">k</span></a></span><span>
+</span><span id="line-39"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063175"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063176"><span class="hs-identifier hs-type">v</span></a></span><span>
+</span><span id="line-40"></span><span>    </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063175"><span class="hs-identifier hs-type">k</span></a></span><span> </span><span class="annot"><a href="#local-6989586621679063176"><span class="hs-identifier hs-type">v</span></a></span></span></span><span>
+</span><span id="line-41"></span><span id="adjust_lookup"><span class="annot"><span class="annottext">adjust_lookup :: forall k v.
+(Ord k, MonoidNull v) =&gt;
+(v -&gt; v) -&gt; k -&gt; NonNullMap k v -&gt; NonNullMap k v
+</span><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_lookup"><span class="hs-identifier hs-var hs-var">adjust_lookup</span></a></span></span><span> </span><span id="local-6989586621679063187"><span class="annot"><span class="annottext">v -&gt; v
+</span><a href="#local-6989586621679063187"><span class="hs-identifier hs-var">f</span></a></span></span><span> </span><span id="local-6989586621679063188"><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063188"><span class="hs-identifier hs-var">k</span></a></span></span><span> </span><span class="hs-special">(</span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-type">NonNullMap</span></a></span><span> </span><span id="local-6989586621679063189"><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063189"><span class="hs-identifier hs-var">m</span></a></span></span><span class="hs-special">)</span><span> </span><span class="hs-glyph">=</span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v) -&gt; NonNullMap k v
+forall k v. Map k (NonNull v) -&gt; NonNullMap k v
+</span><a href="Data.MonoidMap.Internal.NonNullMap.Unsafe.html#NonNullMap"><span class="hs-identifier hs-var">NonNullMap</span></a></span><span> </span><span class="annot"><span class="annottext">(Map k (NonNull v) -&gt; NonNullMap k v)
+-&gt; Map k (NonNull v) -&gt; NonNullMap k v
+forall a b. (a -&gt; b) -&gt; a -&gt; b
+</span><span class="hs-operator hs-var">$</span></span><span>
+</span><span id="line-42"></span><span>    </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">k -&gt; Map k (NonNull v) -&gt; Maybe (NonNull v)
+forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Maybe a
+</span><span class="hs-identifier hs-var">Map.lookup</span></span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063188"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063189"><span class="hs-identifier hs-var">m</span></a></span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-43"></span><span>        </span><span class="annot"><span class="annottext">Maybe (NonNull v)
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-44"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">v -&gt; Maybe (NonNull v)
+forall v. MonoidNull v =&gt; v -&gt; Maybe (NonNull v)
+</span><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-identifier hs-var">NonNull.nonNull</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">v -&gt; v
+</span><a href="#local-6989586621679063187"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">v
+forall a. Monoid a =&gt; a
+</span><span class="hs-identifier hs-var">mempty</span></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-45"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679063191"><span class="annot"><span class="annottext">NonNull v
+</span><a href="#local-6989586621679063191"><span class="hs-identifier hs-var">v1</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">k -&gt; NonNull v -&gt; Map k (NonNull v) -&gt; Map k (NonNull v)
+forall k a. Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.insert</span></span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063188"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">NonNull v
+</span><a href="#local-6989586621679063191"><span class="hs-identifier hs-var">v1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063189"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-46"></span><span>                </span><span class="annot"><span class="annottext">Maybe (NonNull v)
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063189"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-47"></span><span>        </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679063193"><span class="annot"><span class="annottext">NonNull v
+</span><a href="#local-6989586621679063193"><span class="hs-identifier hs-var">v0</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span>
+</span><span id="line-48"></span><span>            </span><span class="hs-keyword">case</span><span> </span><span class="annot"><span class="annottext">v -&gt; Maybe (NonNull v)
+forall v. MonoidNull v =&gt; v -&gt; Maybe (NonNull v)
+</span><a href="Data.MonoidMap.Internal.NonNull.Unsafe.html#nonNull"><span class="hs-identifier hs-var">NonNull.nonNull</span></a></span><span> </span><span class="hs-special">(</span><span class="annot"><span class="annottext">(v -&gt; v) -&gt; NonNull v -&gt; v
+forall v a. (v -&gt; a) -&gt; NonNull v -&gt; a
+</span><a href="Data.MonoidMap.Internal.NonNull.html#apply"><span class="hs-identifier hs-var">NonNull.apply</span></a></span><span> </span><span class="annot"><span class="annottext">v -&gt; v
+</span><a href="#local-6989586621679063187"><span class="hs-identifier hs-var">f</span></a></span><span> </span><span class="annot"><span class="annottext">NonNull v
+</span><a href="#local-6989586621679063193"><span class="hs-identifier hs-var">v0</span></a></span><span class="hs-special">)</span><span> </span><span class="hs-keyword">of</span><span>
+</span><span id="line-49"></span><span>                </span><span class="annot"><span class="hs-identifier hs-type">Just</span></span><span> </span><span id="local-6989586621679063194"><span class="annot"><span class="annottext">NonNull v
+</span><a href="#local-6989586621679063194"><span class="hs-identifier hs-var">v1</span></a></span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">k -&gt; NonNull v -&gt; Map k (NonNull v) -&gt; Map k (NonNull v)
+forall k a. Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.insert</span></span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063188"><span class="hs-identifier hs-var">k</span></a></span><span> </span><span class="annot"><span class="annottext">NonNull v
+</span><a href="#local-6989586621679063194"><span class="hs-identifier hs-var">v1</span></a></span><span> </span><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063189"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-50"></span><span>                </span><span class="annot"><span class="annottext">Maybe (NonNull v)
+</span><span class="hs-identifier hs-var">Nothing</span></span><span> </span><span class="hs-glyph">-&gt;</span><span> </span><span class="annot"><span class="annottext">k -&gt; Map k (NonNull v) -&gt; Map k (NonNull v)
+forall k a. Ord k =&gt; k -&gt; Map k a -&gt; Map k a
+</span><span class="hs-identifier hs-var">Map.delete</span></span><span> </span><span class="annot"><span class="annottext">k
+</span><a href="#local-6989586621679063188"><span class="hs-identifier hs-var">k</span></a></span><span>    </span><span class="annot"><span class="annottext">Map k (NonNull v)
+</span><a href="#local-6989586621679063189"><span class="hs-identifier hs-var">m</span></a></span><span>
+</span><span id="line-51"></span><span class="hs-pragma">{-# INLINE</span><span> </span><span class="annot"><a href="Data.MonoidMap.Internal.NonNullMap.Adjust.html#adjust_lookup"><span class="hs-pragma hs-type">adjust_lookup</span></a></span><span> </span><span class="hs-pragma">#-}</span><span>
+</span><span id="line-52"></span></pre></body></html>
