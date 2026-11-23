@@ -648,20 +648,20 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Since the [`MonoidMap.set`] operation performs automatic minimisation, empty sets are automatically excluded from the internal data structure, and there is no need to handle them any differently from non-empty sets.
 
-### Example: `MultiMap` (a list-based multimap type)
+### Example: `Multimap` (a list-based multimap type)
 
-> The [`multi-containers`] library provides the [`MultiMap`] type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`] library provides the [`Multimap`] type, which is internally defined as a [`Map`] from keys to non-empty lists of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype Multimap k a = Multimap (Map k (NonEmpty a), Size)
 > type Size = Int
 > ```
 >
-> All [`MultiMap`] operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`] list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`MultiMap`] were defined in terms of ordinary lists.
+> All [`Multimap`] operations maintain the invariant that the internal [`Map`] **must not** contain any mappings to empty lists. This invariant is handled rather nicely by the use of the [`NonEmpty`] list type, which disallows empty lists _by construction_. As a result, it's arguably more difficult to make a mistake in the implementation than it would be if [`Multimap`] were defined in terms of ordinary lists.
 >
 > However, certain operations still need to differentiate between the empty and non-empty case, and it's still necessary to handle each case specially.
 >
-> For example, the [`alterWithKey`][`MultiMap.alterWithKey`] operation detects if the updated list is empty, and if so, performs a deletion instead of an insertion:
+> For example, the [`alterWithKey`][`Multimap.alterWithKey`] operation detects if the updated list is empty, and if so, performs a deletion instead of an insertion:
 >
 > ```hs
 > alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
@@ -673,17 +673,17 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 > fromMap m = Multimap (m, sum (fmap length m))
 > ```
 >
-> Let's redefine [`MultiMap`] in terms of [`MonoidMap`] and ordinary lists:
+> Let's redefine [`Multimap`] in terms of [`MonoidMap`] and ordinary lists:
 >
 > ```patch
 > - newtype Multimap k a = Multimap (      Map k (NonEmpty a), Size)
 > + newtype Multimap k a = Multimap (MonoidMap k          [a], Size)
 > ```
 >
-> Now we can provide a simpler definition for [`alterWithKey`][`MultiMap.alterWithKey`] (and other operations):
+> Now we can provide a simpler definition for [`alterWithKey`][`Multimap.alterWithKey`] (and other operations):
 > ```hs
 > alterWithKey :: Ord k => (k -> [a] -> [a]) -> k -> Multimap k a -> Multimap k a
-> alterWithKey f k (Multimap (m, size)) = MultiMap
+> alterWithKey f k (Multimap (m, size)) = Multimap
 >     (MonoidMap.set k new m, size - List.length old + List.length new)
 >   where
 >     old = MonoidMap.get k m
@@ -1128,8 +1128,8 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MultiAsset.PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
 [`MultiAsset.insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L831-L868
 [`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
-[`MultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey
-[`MultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
+[`Multimap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey
+[`Multimap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
 [`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/packages/monoidmap-examples/components/monoidmap-examples/Data/MonoidMap/Examples/NestedMonoidMap.hs
 [`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
