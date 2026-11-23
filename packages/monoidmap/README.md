@@ -601,18 +601,18 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >
 > Since the [`MonoidMap.adjust`] operation performs automatic minimisation, values of `Sum 0` are automatically excluded from the internal data structure, and there is no need to handle them differently from non-zero values.
 
-### Example: `SetMultiMap` (a set-based multimap type)
+### Example: `SetMultimap` (a set-based multimap type)
 
-> The [`multi-containers`] library provides the [`SetMultiMap`] type, which is internally defined as a [`Map`] from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
+> The [`multi-containers`] library provides the [`SetMultimap`] type, which is internally defined as a [`Map`] from keys to (possibly-empty) sets of values, together with a `Size` parameter that records the total number of elements in the map (counting duplicates):
 >
 > ```hs
 > newtype SetMultimap k a = SetMultimap (Map k (Set a), Size)
 > type Size = Int
 > ```
 >
-> All [`SetMultiMap`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultiMap`] functions to detect and eliminate values of [`Set.empty`] (indicated by the [`Set.null`] function).
+> All [`SetMultimap`] operations maintain an invariant that the internal [`Map`] **must not** contain any mappings to empty sets. This requires [`SetMultimap`] functions to detect and eliminate values of [`Set.empty`] (indicated by the [`Set.null`] function).
 >
-> For example, the [`alterWithKey`][`SetMultiMap.alterWithKey`] operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
+> For example, the [`alterWithKey`][`SetMultimap.alterWithKey`] operation detects if the updated set is empty, and if so, performs a deletion instead of an insertion:
 >
 > ```hs
 > alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
@@ -628,18 +628,18 @@ Using [`MonoidMap`] can simplify the implementation of such types, as special ha
 >     m' = Map.filter (not . Set.null) m
 > ```
 >
-> Let's redefine [`SetMultiMap`] in terms of [`MonoidMap`]:
+> Let's redefine [`SetMultimap`] in terms of [`MonoidMap`]:
 >
 > ```patch
 > - newtype SetMultimap k a = SetMultimap (      Map k (Set a), Size)
 > + newtype SetMultimap k a = SetMultimap (MonoidMap k (Set a), Size)
 > ```
 >
-> Now we can provide a simpler definition for [`alterWithKey`][`SetMultiMap.alterWithKey`] (and other operations):
+> Now we can provide a simpler definition for [`alterWithKey`][`SetMultimap.alterWithKey`] (and other operations):
 >
 > ```hs
 > alterWithKey :: Ord k => (k -> Set a -> Set a) -> k -> SetMultimap k a -> SetMultimap k a
-> alterWithKey f k (SetMultimap (m, size)) = SetMultiMap
+> alterWithKey f k (SetMultimap (m, size)) = SetMultimap
 >     (MonoidMap.set k new m, size - Set.size old + Set.size new)
 >   where
 >     old = MonoidMap.get k m
@@ -1138,8 +1138,8 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
 [`Set.null`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:null
 [`Set.union`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:union
-[`SetMultiMap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey
-[`SetMultiMap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap
+[`SetMultimap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#v:alterWithKey
+[`SetMultimap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap-Set.html#t:SetMultimap
 [`Set`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#t:Set
 [`SignedMultiset.insertMany`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#v:insertMany
 [`SignedMultiset`]: https://hackage.haskell.org/package/signed-multiset/docs/Data-SignedMultiset.html#t:SignedMultiset
