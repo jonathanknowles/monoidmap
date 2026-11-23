@@ -147,6 +147,9 @@ main = do
             [ ( "adjust_alter"
               , adjustWith MMap.adjust_alter
               )
+            , ( "adjust_lookup"
+              , adjustWith MMap.adjust_lookup
+              )
             ]
         , compareImplementations
             ("fromMap", MMap.fromMap) fromMapCases
