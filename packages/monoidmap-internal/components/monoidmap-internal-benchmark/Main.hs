@@ -147,6 +147,9 @@ main = do
             [ ( "adjust_alter"
               , adjustWith MMap.adjust_alter
               )
+            , ( "adjust_alterF"
+              , adjustWith MMap.adjust_alterF
+              )
             , ( "adjust_lookup"
               , adjustWith MMap.adjust_lookup
               )
