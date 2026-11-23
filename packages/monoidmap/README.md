@@ -1093,7 +1093,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 </tbody>
 </table>
 
-[`cardano-ledger`]: https://github.com/input-output-hk/cardano-ledger
+[`cardano-ledger`]: https://github.com/IntersectMBO/cardano-ledger
 [`containers`]: https://hackage.haskell.org/package/containers
 [`groups`]: https://hackage.haskell.org/package/groups
 [`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
@@ -1101,8 +1101,8 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`signed-multiset`]: https://hackage.haskell.org/package/signed-multiset
 
 [`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
-[`CanonicalMaps.canonicalInsert`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
-[`CanonicalMaps.canonicalMapUnion`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
+[`CanonicalMaps.canonicalInsert`]: https://github.com/IntersectMBO/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L69
+[`CanonicalMaps.canonicalMapUnion`]: https://github.com/IntersectMBO/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/libs/cardano-data/src/Data/CanonicalMaps.hs#L42
 [`Eq`]: https://hackage.haskell.org/package/base/docs/Data-Eq.html#t:Eq
 [`Functor`]: https://hackage.haskell.org/package/base/docs/Data-Functor.html#t:Functor
 [`Group`]: https://hackage.haskell.org/package/groups/docs/Data-Group.html#t:Group
@@ -1124,10 +1124,10 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`MonoidNull.null`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#v:null
 [`MonoidNull`]: https://hackage.haskell.org/package/monoid-subclasses/docs/Data-Monoid-Null.html#t:MonoidNull
 [`Monoid`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#t:Monoid
-[`MultiAsset.AssetName`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
-[`MultiAsset.PolicyID`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
-[`MultiAsset.insertMultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L831-L868
-[`MultiAsset`]: https://github.com/input-output-hk/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
+[`MultiAsset.AssetName`]: https://github.com/IntersectMBO/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L110
+[`MultiAsset.PolicyID`]: https://github.com/IntersectMBO/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L140
+[`MultiAsset.insertMultiAsset`]: https://github.com/IntersectMBO/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L831-L868
+[`MultiAsset`]: https://github.com/IntersectMBO/cardano-ledger/blob/b00e28698d9c7fbbeda1c9cfdd1238d3bc4569cf/eras/mary/impl/src/Cardano/Ledger/Mary/Value.hs#L157
 [`Multimap.alterWithKey`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#v:alterWithKey
 [`Multimap`]: https://hackage.haskell.org/package/multi-containers/docs/Data-Multimap.html#t:Multimap
 [`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/packages/monoidmap-examples/components/monoidmap-examples/Data/MonoidMap/Examples/NestedMonoidMap.hs
