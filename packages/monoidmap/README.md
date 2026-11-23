@@ -1043,7 +1043,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
       </a>
       <br/>
       <a href="https://hackage.haskell.org/package/defaultable-map/docs/Defaultable-Map.html#t:Defaultable">
-        <code>DefaultableMap</code>
+        <code>Defaultable</code>
       </a>
     </td>
     <td>:x:</td>
