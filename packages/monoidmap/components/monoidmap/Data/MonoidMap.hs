@@ -24,6 +24,9 @@ module Data.MonoidMap
     -- * Type
       MonoidMap
 
+    -- ** Additional instances
+    -- $_additional_instances
+
     -- * General operations
 
     -- ** Construction
@@ -522,6 +525,31 @@ import Numeric.Natural
 -- Defining monoidal operations in this way makes it possible to transform,
 -- combine, and compare maps in ways that are consistent with the algebraic
 -- properties of the underlying monoidal value type.
+
+--------------------------------------------------------------------------------
+-- Additional instances
+--------------------------------------------------------------------------------
+
+-- $_additional_instances
+-- #_additional_instances#
+--
+-- The following packages provide additional class instances:
+--
+-- +------------------------+--------------+---------------+
+-- | Package                | Classes from | Classes       |
+-- +========================+==============+===============+
+-- | @monoidmap-aeson@      | @aeson@      | @FromJSON@    |
+-- |                        |              +---------------+
+-- |                        |              | @ToJSON@      |
+-- +------------------------+--------------+---------------+
+-- | @monoidmap-hashable@   | @hashable@   | @Hashable@    |
+-- +------------------------+--------------+---------------+
+-- | @monoidmap-quickcheck@ | @QuickCheck@ | @Arbitrary@   |
+-- |                        |              +---------------+
+-- |                        |              | @CoArbitrary@ |
+-- |                        |              +---------------+
+-- |                        |              | @Function@    |
+-- +------------------------+--------------+---------------+
 
 --------------------------------------------------------------------------------
 -- Type
