@@ -256,23 +256,23 @@ Automatic exclusion of [`mempty`][`Monoid.mempty`] values makes it possible to p
 <tbody>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
 </tbody>
 </table>
