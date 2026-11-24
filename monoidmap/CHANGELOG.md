@@ -1,3 +1,18 @@
+# 0.1.5.1
+
+- Added a section to the documentation of `Data.MonoidMap` listing all the
+  packages that provide additional class instances for `MonoidMap`.
+
+- Revised `MonoidMap.adjust` to use the implementation provided by version
+  `0.5.2.0` of `monoidmap-internal`. The behaviour of `adjust` is unchanged.
+
+- Revised the `README`:
+
+  - Corrected several entries in the type comparison table.
+  - Revised the rendering of symbols and mathematical notation.
+  - Revised the names of external types to match their upstream names.
+  - Updated links to an external repository that has moved to a new location.
+
 # 0.1.5.0
 
 - Added an `Ord` instance for `MonoidMap`, which compares maps
