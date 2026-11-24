@@ -102,7 +102,7 @@ A [`MonoidMap`] only encodes mappings from keys to values that are **_not_** equ
 
 The total function $T$ modelled by a [`MonoidMap`] is encoded as a **support map** $S$, where $S$ is the finite subset of key-value mappings in $T$ for which values are **_not_** equal to [`mempty`][`Monoid.mempty`] (denoted by $\varnothing$):
 
-> $S = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
+> $S = \lbrace (k, v) \in T \mid v \ne \varnothing \rbrace$
 
 ## Automatic minimisation
 
