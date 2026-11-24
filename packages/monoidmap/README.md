@@ -978,7 +978,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
     <td>✅</td>
     <td>✅</td>
     <td>❌</td>
-    <td>✅</td>
+    <td>✅<sup>1</sup></td>
     <td>❌</td>
     <td>❌</td>
   </tr>
@@ -1093,11 +1093,14 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 </tbody>
 </table>
 
+<sup>1</sup> The `MonoidMap` type from `monoid-map` is an instance of the [`Group`][`Patch.Group`] class from [`patch`], rather than the [`Group`] class from [`groups`].
+
 [`cardano-ledger`]: https://github.com/IntersectMBO/cardano-ledger
 [`containers`]: https://hackage.haskell.org/package/containers
 [`groups`]: https://hackage.haskell.org/package/groups
 [`monoid-subclasses`]: https://hackage.haskell.org/package/monoid-subclasses
 [`multi-containers`]: https://hackage.haskell.org/package/multi-containers
+[`patch`]: https://hackage.haskell.org/package/patch
 [`signed-multiset`]: https://hackage.haskell.org/package/signed-multiset
 
 [`<>`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#v:-60--62-
@@ -1133,6 +1136,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
 [`NestedMonoidMap`]: https://github.com/jonathanknowles/monoidmap/blob/main/packages/monoidmap-examples/components/monoidmap-examples/Data/MonoidMap/Examples/NestedMonoidMap.hs
 [`NonEmpty`]: https://hackage.haskell.org/package/base/docs/Data-List-NonEmpty.html#t:NonEmpty
 [`Nothing`]: https://hackage.haskell.org/package/base/docs/Data-Maybe.html#v:Nothing
+[`Patch.Group`]: https://hackage.haskell.org/package/patch/docs/Data-Patch.html#t:Group
 [`Semigroup`]: https://hackage.haskell.org/package/base/docs/Data-Semigroup.html#t:Semigroup
 [`Set.empty`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:empty
 [`Set.intersection`]: https://hackage.haskell.org/package/containers/docs/Data-Set.html#v:intersection
