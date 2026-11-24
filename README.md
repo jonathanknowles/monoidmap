@@ -46,10 +46,10 @@ For an extended introduction to the [`MonoidMap`] type, see the [README][monoidm
 [monoidmap-quickcheck-hackage]: https://hackage.haskell.org/package/monoidmap-quickcheck
 [monoidmap-internal-hackage]: https://hackage.haskell.org/package/monoidmap-internal
 
-[monoidmap-badge]: https://img.shields.io/hackage/v/monoidmap?label=&color=b74040
-[monoidmap-examples-badge]: https://img.shields.io/hackage/v/monoidmap-examples?label=&color=905f33
-[monoidmap-aeson-badge]: https://img.shields.io/hackage/v/monoidmap-aeson?label=&color=766a2a
-[monoidmap-hashable-badge]: https://img.shields.io/hackage/v/monoidmap-hashable?label=&color=2a774a
-[monoidmap-nothunks-badge]: https://img.shields.io/hackage/v/monoidmap-nothunks?label=&color=318c88
-[monoidmap-quickcheck-badge]: https://img.shields.io/hackage/v/monoidmap-quickcheck?label=&color=386da1
-[monoidmap-internal-badge]: https://img.shields.io/hackage/v/monoidmap-internal?label=&color=8e48bf
+[monoidmap-badge]: https://img.shields.io/hackage/v/monoidmap?label=&color=de6565
+[monoidmap-examples-badge]: https://img.shields.io/hackage/v/monoidmap-examples?label=&color=d78d43
+[monoidmap-aeson-badge]: https://img.shields.io/hackage/v/monoidmap-aeson?label=&color=bcaf28
+[monoidmap-hashable-badge]: https://img.shields.io/hackage/v/monoidmap-hashable?label=&color=27b627
+[monoidmap-nothunks-badge]: https://img.shields.io/hackage/v/monoidmap-nothunks?label=&color=548cdb
+[monoidmap-quickcheck-badge]: https://img.shields.io/hackage/v/monoidmap-quickcheck?label=&color=7d6adf
+[monoidmap-internal-badge]: https://img.shields.io/hackage/v/monoidmap-internal?label=&color=b15bdc
