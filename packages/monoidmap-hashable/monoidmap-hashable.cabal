@@ -23,7 +23,7 @@ common dependency-containers
 common dependency-hashable
     build-depends:hashable                      >= 1.4.0.0    && < 1.6
 common dependency-monoidmap
-    build-depends:monoidmap                     >= 0.1.0.0    && < 0.2
+    build-depends:monoidmap                     >= 0.1.0.0    && < 0.3
 
 common extensions
     default-extensions:

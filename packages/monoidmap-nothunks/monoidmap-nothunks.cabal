@@ -21,7 +21,7 @@ common dependency-base
 common dependency-containers
     build-depends:containers                    >= 0.6.5.1    && < 0.9
 common dependency-monoidmap
-    build-depends:monoidmap                     >= 0.1.0.0    && < 0.2
+    build-depends:monoidmap                     >= 0.2.0.0    && < 0.3
 common dependency-nothunks
     build-depends:nothunks                      >= 0.1.3      && < 0.4
 
