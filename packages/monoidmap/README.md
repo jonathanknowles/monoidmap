@@ -102,7 +102,7 @@ A [`MonoidMap`] only encodes mappings from keys to values that are **_not_** equ
 
 The total function $T$ modelled by a [`MonoidMap`] is encoded as a **support map** $S$, where $S$ is the finite subset of key-value mappings in $T$ for which values are **_not_** equal to [`mempty`][`Monoid.mempty`] (denoted by $\varnothing$):
 
-> $S = \\{ \(k, v\) \in T \ \|\ v \ne \varnothing \\} $
+> $S = \lbrace (k, v) \in T \mid v \ne \varnothing \rbrace$
 
 ## Automatic minimisation
 
@@ -256,23 +256,23 @@ Automatic exclusion of [`mempty`][`Monoid.mempty`] values makes it possible to p
 <tbody>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:null" rel="nofollow"><code>null</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:nonNull" rel="nofollow"><code>nonNull</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:nonNullCount" rel="nofollow"><code>nonNullCount</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
   <tr>
     <td><a href="https://jonathanknowles.github.io/monoidmap/monoidmap/Data-MonoidMap.html#v:toMap" rel="nofollow"><code>toMap</code></a></td>
-    <td>$O(1)$</td>
-    <td>$O(n)$</td>
+    <td><i>O</i>&thinsp;(1)</td>
+    <td><i>O</i>&thinsp;(<i>n</i>)</td>
   </tr>
 </tbody>
 </table>
