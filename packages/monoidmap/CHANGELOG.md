@@ -1,3 +1,14 @@
+# 0.2.0.0
+
+- Moved the `NoThunks` instance for `MonoidMap` to a brand new package:
+  `monoidmap-nothunks`.
+
+  This is a breaking change. To continue using the instance, add a dependency
+  on `monoidmap-nothunks`, and import `Data.MonoidMap.NoThunks ()`.
+
+- Removed the manual `nothunks` flag, which existed only to make the `NoThunks`
+  instance optional.
+
 # 0.1.5.1
 
 - Added a section to the documentation of `Data.MonoidMap` listing all the

@@ -1,3 +1,7 @@
+# 0.1.1.1
+
+- Revised version bounds for dependencies.
+
 # 0.1.1.0
 
 - Added `Ord` instances for `MultiSet`, `NestedMonoidMap`, and `RecoveredMap`.
