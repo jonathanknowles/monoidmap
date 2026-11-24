@@ -1,3 +1,12 @@
+# 0.5.2.0
+
+- Moved the implementation of `MonoidMap.adjust` from the `monoidmap` package
+  into a new `adjust` function in `Data.MonoidMap.Internal.NonNullMap`. The
+  public `MonoidMap.adjust` function now delegates to this internal function.
+
+- Added the `Data.MonoidMap.Internal.NonNullMap.Adjust` module, which provides
+  alternative implementations of `adjust` for benchmarking.
+
 # 0.5.1.0
 
 - Added the `Data.MonoidMap.Internal.NonNullMap.Merge` module, which provides
