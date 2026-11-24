@@ -1086,7 +1086,7 @@ Here's a comparison between the [`MonoidMap`] type provided by this library and 
     <td>❌</td>
     <td>✅</td>
     <td>❌</td>
-    <td>✅</td>
+    <td>❌</td>
     <td>✅</td>
     <td>❌</td>
   </tr>
