@@ -539,6 +539,8 @@ import Numeric.Natural
 -- +------------------------+--------------+---------------+
 -- | @monoidmap-hashable@   | @hashable@   | @Hashable@    |
 -- +------------------------+--------------+---------------+
+-- | @monoidmap-nothunks@   | @nothunks@   | @NoThunks@    |
+-- +------------------------+--------------+---------------+
 -- | @monoidmap-quickcheck@ | @QuickCheck@ | @Arbitrary@   |
 -- |                        |              +---------------+
 -- |                        |              | @CoArbitrary@ |
