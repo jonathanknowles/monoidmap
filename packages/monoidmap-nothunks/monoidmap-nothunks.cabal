@@ -20,6 +20,8 @@ common dependency-base
     build-depends:base                          >= 4.14.3.0   && < 4.23
 common dependency-monoidmap
     build-depends:monoidmap                     >= 0.1.0.0    && < 0.2
+common dependency-nothunks
+    build-depends:nothunks                      >= 0.1.3      && < 0.4
 
 common extensions
     default-extensions:
@@ -50,6 +52,7 @@ library
     import:
       , dependency-base
       , dependency-monoidmap
+      , dependency-nothunks
       , extensions
     hs-source-dirs:
         components/monoidmap-nothunks

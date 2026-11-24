@@ -241,10 +241,6 @@ import Data.Set
     ( Set )
 import GHC.Exts
     ( IsList (Item) )
-#ifdef NOTHUNKS
-import NoThunks.Class
-    ( NoThunks (showTypeOf, wNoThunks) )
-#endif
 import Text.Read
     ( Read (..) )
 
@@ -691,19 +687,6 @@ instance NFData k => NFData1 (MonoidMap k) where
 instance NFData2 MonoidMap where
     liftRnf2 = \rnfK rnfV -> foldlWithKey' (\() k v -> rnfK k `seq` rnfV v) ()
     {-# INLINE liftRnf2 #-}
-
-#ifdef NOTHUNKS
---------------------------------------------------------------------------------
--- Instances: NoThunks
---------------------------------------------------------------------------------
-
--- | @since 0.0.0.0
-instance (NoThunks k, NoThunks v) => NoThunks (MonoidMap k v) where
-    showTypeOf _ = "MonoidMap"
-    {-# INLINE showTypeOf #-}
-    wNoThunks ctx = wNoThunks ctx . toMap
-    {-# INLINE wNoThunks #-}
-#endif
 
 --------------------------------------------------------------------------------
 -- Instances: Ord
