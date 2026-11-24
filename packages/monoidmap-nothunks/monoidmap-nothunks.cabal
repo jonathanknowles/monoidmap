@@ -1,0 +1,59 @@
+cabal-version:  3.0
+name:           monoidmap-nothunks
+version:        0.0.0.0
+homepage:       https://github.com/jonathanknowles/monoidmap/tree/HEAD/packages/monoidmap-nothunks
+bug-reports:    https://github.com/jonathanknowles/monoidmap/issues
+license:        Apache-2.0
+license-file:   LICENSE
+author:         Jonathan Knowles
+maintainer:     mail@jonathanknowles.net
+copyright:      2023–2026 Jonathan Knowles
+category:       Data Structures
+synopsis:       Thunk detection support for monoidmap.
+description:    Thunk detection support for the monoidmap package, compatible with the nothunks package.
+
+extra-doc-files:
+    CHANGELOG.md
+    README.md
+
+common dependency-base
+    build-depends:base                          >= 4.14.3.0   && < 4.23
+common dependency-monoidmap
+    build-depends:monoidmap                     >= 0.1.0.0    && < 0.2
+
+common extensions
+    default-extensions:
+        BangPatterns
+        ConstraintKinds
+        DerivingStrategies
+        DerivingVia
+        FlexibleContexts
+        FlexibleInstances
+        GeneralizedNewtypeDeriving
+        LambdaCase
+        MultiParamTypeClasses
+        NoImplicitPrelude
+        NumericUnderscores
+        ScopedTypeVariables
+        TupleSections
+        TypeApplications
+        TypeFamilies
+        TypeOperators
+        ViewPatterns
+
+source-repository head
+    type: git
+    location: https://github.com/jonathanknowles/monoidmap
+    subdir: packages/monoidmap-nothunks
+
+library
+    import:
+      , dependency-base
+      , dependency-monoidmap
+      , extensions
+    hs-source-dirs:
+        components/monoidmap-nothunks
+    exposed-modules:
+        Data.MonoidMap.NoThunks
+    default-language:
+        Haskell2010
