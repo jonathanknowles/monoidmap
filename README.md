@@ -18,6 +18,7 @@ For an extended introduction to the [`MonoidMap`] type, see the [README][monoidm
 | 📦 [`monoidmap-examples`][monoidmap-examples] | [![Latest Release][monoidmap-examples-badge]][monoidmap-examples-hackage] | Examples of using [`MonoidMap`]. |
 | 📦 [`monoidmap-aeson`][monoidmap-aeson] | [![Latest Release][monoidmap-aeson-badge]][monoidmap-aeson-hackage] | JSON encoding with [`aeson`]. |
 | 📦 [`monoidmap-hashable`][monoidmap-hashable] | [![Latest Release][monoidmap-hashable-badge]][monoidmap-hashable-hackage] | In-memory hashing with [`hashable`]. |
+| 📦 [`monoidmap-nothunks`][monoidmap-nothunks] | [![Latest Release][monoidmap-nothunks-badge]][monoidmap-nothunks-hackage] | Thunk detection with [`nothunks`]. |
 | 📦 [`monoidmap-quickcheck`][monoidmap-quickcheck] | [![Latest Release][monoidmap-quickcheck-badge]][monoidmap-quickcheck-hackage] | Property testing with [`QuickCheck`]. |
 | 📦 [`monoidmap-internal`][monoidmap-internal] | [![Latest Release][monoidmap-internal-badge]][monoidmap-internal-hackage] | Low-level internals. 🐉 |
 
@@ -26,12 +27,14 @@ For an extended introduction to the [`MonoidMap`] type, see the [README][monoidm
 [`Monoid.mempty`]: https://hackage.haskell.org/package/base/docs/Data-Monoid.html#v:mempty
 [`aeson`]: https://hackage.haskell.org/package/aeson
 [`hashable`]: https://hackage.haskell.org/package/hashable
+[`nothunks`]: https://hackage.haskell.org/package/nothunks
 [`QuickCheck`]: https://hackage.haskell.org/package/QuickCheck
 
 [monoidmap]: packages/monoidmap/README.md
 [monoidmap-examples]: packages/monoidmap-examples/README.md
 [monoidmap-aeson]: packages/monoidmap-aeson/README.md
 [monoidmap-hashable]: packages/monoidmap-hashable/README.md
+[monoidmap-nothunks]: packages/monoidmap-nothunks/README.md
 [monoidmap-quickcheck]: packages/monoidmap-quickcheck/README.md
 [monoidmap-internal]: packages/monoidmap-internal/README.md
 
@@ -39,6 +42,7 @@ For an extended introduction to the [`MonoidMap`] type, see the [README][monoidm
 [monoidmap-examples-hackage]: https://hackage.haskell.org/package/monoidmap-examples
 [monoidmap-aeson-hackage]: https://hackage.haskell.org/package/monoidmap-aeson
 [monoidmap-hashable-hackage]: https://hackage.haskell.org/package/monoidmap-hashable
+[monoidmap-nothunks-hackage]: https://hackage.haskell.org/package/monoidmap-nothunks
 [monoidmap-quickcheck-hackage]: https://hackage.haskell.org/package/monoidmap-quickcheck
 [monoidmap-internal-hackage]: https://hackage.haskell.org/package/monoidmap-internal
 
@@ -46,5 +50,6 @@ For an extended introduction to the [`MonoidMap`] type, see the [README][monoidm
 [monoidmap-examples-badge]: https://img.shields.io/hackage/v/monoidmap-examples?label=&color=905f33
 [monoidmap-aeson-badge]: https://img.shields.io/hackage/v/monoidmap-aeson?label=&color=766a2a
 [monoidmap-hashable-badge]: https://img.shields.io/hackage/v/monoidmap-hashable?label=&color=2a774a
+[monoidmap-nothunks-badge]: https://img.shields.io/hackage/v/monoidmap-nothunks?label=&color=318c88
 [monoidmap-quickcheck-badge]: https://img.shields.io/hackage/v/monoidmap-quickcheck?label=&color=386da1
 [monoidmap-internal-badge]: https://img.shields.io/hackage/v/monoidmap-internal?label=&color=8e48bf
