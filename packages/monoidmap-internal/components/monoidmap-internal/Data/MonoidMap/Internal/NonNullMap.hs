@@ -52,7 +52,7 @@ import Data.MonoidMap.Internal.NonNullMap.Get
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
 
-import qualified Data.Map.Strict as Map
+import qualified Data.MonoidMap.Internal.NonNullMap.FromList as FromList
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -62,8 +62,12 @@ import qualified Data.Map.Strict as Map
 --   values for each key with '(<>)' in the order that they appear, and
 --   removing all 'null' values.
 --
+-- This function selects which of the implementations in
+-- "Data.MonoidMap.Internal.NonNullMap.FromList" is used by the public
+-- @fromList@ function of the @monoidmap@ package.
+--
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> NonNullMap k v
-fromList = fromMap . Map.fromListWith (flip (<>))
+fromList = FromList.fromList
 {-# INLINE fromList #-}
 
 -- | Constructs a 'NonNullMap' from an ordinary 'Map', removing all

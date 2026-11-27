@@ -65,6 +65,7 @@ library
         Data.MonoidMap.Internal.NonNull
         Data.MonoidMap.Internal.NonNullMap
         Data.MonoidMap.Internal.NonNullMap.Adjust
+        Data.MonoidMap.Internal.NonNullMap.FromList
         Data.MonoidMap.Internal.NonNullMap.FromMap
         Data.MonoidMap.Internal.NonNullMap.FromMapWith
         Data.MonoidMap.Internal.NonNullMap.Get
