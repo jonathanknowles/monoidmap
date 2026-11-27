@@ -25,7 +25,16 @@ import Data.Functor
 import Data.Int
     ( Int )
 import Data.List
-    ( concat, filter, foldl', replicate, transpose, unwords )
+    ( concat
+    , cycle
+    , filter
+    , foldl'
+    , replicate
+    , sortOn
+    , transpose
+    , unwords
+    , zip, singleton
+    )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
 import Data.Monoid.Null
@@ -52,6 +61,10 @@ import qualified Data.MonoidMap.Internal.NonNullMap.FromList as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMapWith as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.Get as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromList as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromList as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromList as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromList as MMap
 
 main :: IO ()
 main = do
@@ -137,13 +150,22 @@ main = do
     let fromListCases =
             [ (caseTitle keyCount valuesPerKey, kvs)
             | (keyCount, valuesPerKey) <-
-                [ (16,   1)
-                , (16,   2)
-                , (16,   4)
-                , (16,   8)
-                , (16,  16)
-                , (16,  32)
-                , (16,  64)
+                [ (  16,   1)
+                , (  16,   2)
+                , (  16,   4)
+                , (  16,   8)
+                , (  16,  16)
+                , (  16,  32)
+                , (  16,  64)
+                , (  16, 128)
+                , (  16, 256)
+                , (1024,   1)
+                , (1024,   2)
+                , (1024,   4)
+                , (1024,   8)
+                , (1024,  16)
+                , (1024,  32)
+                , (1024,  64)
                 ]
             , let kvs = keyValuePairs keyCount (keyCount * valuesPerKey)
             ]
@@ -154,9 +176,9 @@ main = do
                 ]
 
     let fromListCasesWithLists =
-            withSuffix " (lists)" $ withValues (replicate 4) fromListCases
+            withSuffix " (lists)" $ withValues singleton fromListCases
         fromListCasesWithSums =
-            withSuffix " (sums)"  $ withValues Sum           fromListCases
+            withSuffix " (sums)"  $ withValues Sum       fromListCases
 
     evaluate $ rnf fromListCasesWithLists
     evaluate $ rnf fromListCasesWithSums
@@ -247,9 +269,16 @@ main = do
 
     -- A list of key-value pairs, in which the values [1 .. valueCount] are
     -- spread evenly across the given number of unique keys.
+    --
+    -- The keys are visited in the same order in every round, but that order
+    -- is scrambled, so that no implementation benefits from presorted input.
+    --
     keyValuePairs :: Int -> Int -> [(Int, Int)]
     keyValuePairs uniqueKeyCount valueCount =
-        [(v `mod` uniqueKeyCount, v) | v <- [1 .. valueCount]]
+        zip (cycle scrambledKeys) [1 .. valueCount]
+      where
+        scrambledKeys = sortOn scramble [0 .. uniqueKeyCount - 1]
+        scramble key = (key * 2654435761) `mod` (2 ^ (32 :: Int))
 
     -- Applies the given function to every value of every case.
     withValues
@@ -266,8 +295,32 @@ main = do
         :: (Ord k, MonoidNull v)
         => [(String, [(k, v)] -> MMap.NonNullMap k v)]
     fromListImplementations =
-        [ ( "fromList_flip_filter_if_any_null"
+        [ ( "fromList_cons_foldl1_flip_filter_if_any_null"
+          , MMap.fromList_cons_foldl1_flip_filter_if_any_null
+          )
+        , ( "fromList_cons_mconcat_reverse_filter_if_any_null"
+          , MMap.fromList_cons_mconcat_reverse_filter_if_any_null
+          )
+        , ( "fromList_endo_filter_if_any_null"
+          , MMap.fromList_endo_filter_if_any_null
+          )
+        , ( "fromList_flip_filter_if_any_null"
           , MMap.fromList_flip_filter_if_any_null
+          )
+        , ( "fromList_foldr_filter_if_any_null"
+          , MMap.fromList_foldr_filter_if_any_null
+          )
+        , ( "fromList_reverse_filter_if_any_null"
+          , MMap.fromList_reverse_filter_if_any_null
+          )
+        , ( "fromList_sort_group_sconcat_filter_if_any_null"
+          , MMap.fromList_sort_group_sconcat_filter_if_any_null
+          )
+        , ( "fromList_foldl_cons_foldl1_flip_filter_if_any_null"
+          , MMap.fromList_foldl_cons_foldl1_flip_filter_if_any_null
+          )
+        , ( "fromList_foldl_flip_filter_if_any_null"
+          , MMap.fromList_foldl_flip_filter_if_any_null
           )
         ]
     {-# INLINE fromListImplementations #-}
