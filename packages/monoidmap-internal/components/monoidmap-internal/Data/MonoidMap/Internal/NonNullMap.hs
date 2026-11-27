@@ -43,6 +43,8 @@ import Data.MonoidMap.Internal.NonNull
     ( NonNull )
 import Data.MonoidMap.Internal.NonNullMap.Adjust
     ( adjust_alter )
+import Data.MonoidMap.Internal.NonNullMap.FromList
+    ( fromList_flip_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.FromMap
     ( fromMap_filter_if_any_null )
 import Data.MonoidMap.Internal.NonNullMap.FromMapWith
@@ -51,8 +53,6 @@ import Data.MonoidMap.Internal.NonNullMap.Get
     ( get_lookup )
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
-
-import qualified Data.MonoidMap.Internal.NonNullMap.FromList as FromList
 
 --------------------------------------------------------------------------------
 -- Construction
@@ -67,7 +67,7 @@ import qualified Data.MonoidMap.Internal.NonNullMap.FromList as FromList
 -- @fromList@ function of the @monoidmap@ package.
 --
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> NonNullMap k v
-fromList = FromList.fromList
+fromList = fromList_flip_filter_if_any_null
 {-# INLINE fromList #-}
 
 -- | Constructs a 'NonNullMap' from an ordinary 'Map', removing all
