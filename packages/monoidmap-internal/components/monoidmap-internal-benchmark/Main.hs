@@ -275,8 +275,8 @@ main = do
         :: (Ord k, MonoidNull v)
         => [(String, [(k, v)] -> MMap.NonNullMap k v)]
     fromListImplementations =
-        [ ( "fromList_flip_filter_if_any_null"
-          , MMap.fromList_flip_filter_if_any_null
+        [ ( "fromList_foldl1_filter_if_any_null"
+          , MMap.fromList_foldl1_filter_if_any_null
           )
         ]
     {-# INLINE fromListImplementations #-}
