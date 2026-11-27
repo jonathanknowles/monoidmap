@@ -81,6 +81,7 @@ benchmark monoidmap-internal-benchmark
       , dependency-base
       , dependency-containers
       , dependency-deepseq
+      , dependency-monoid-subclasses
       , dependency-tasty-bench
       , extensions
     build-depends:
@@ -93,9 +94,20 @@ benchmark monoidmap-internal-benchmark
         components/monoidmap-internal-benchmark
     main-is:
         Main.hs
-    -- Report allocation and memory statistics for each benchmark:
+
+    -- Report statistics for each benchmark (-T):
+    --  - memory allocated
+    --  - memory copied during garbage collection
+    --  - memory usage at peak
+    --
+    -- Use a large allocation area (-A256m), so that the total run times of
+    -- allocation-heavy benchmarks are not dominated by the cost of garbage
+    -- collection. (Memory usage at peak then mostly reflects this allocation
+    -- area, rather than the benchmark itself.)
+    --
     ghc-options:
-        "-with-rtsopts=-T"
+        "-with-rtsopts=-T -A256m"
+
     -- Align functions to cache lines, so that results are not skewed by
     -- incidental changes in code alignment:
     ghc-options:

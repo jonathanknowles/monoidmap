@@ -20,26 +20,35 @@ import Data.Eq
     ( Eq ((==)) )
 import Data.Function
     ( const, flip, ($) )
+import Data.Functor
+    ( fmap, (<$>) )
 import Data.Int
     ( Int )
 import Data.List
-    ( concat, filter, foldl', transpose )
+    ( concat, filter, foldl', replicate, transpose, unwords )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
+import Data.Monoid.Null
+    ( MonoidNull )
+import Data.Ord
+    ( Ord )
 import Data.Semigroup
     ( Semigroup ((<>)) )
 import Data.String
     ( String )
 import Prelude
-    ( Num ((+), (-)), even, odd, (^) )
+    ( Integral (mod), Num ((*), (+), (-)), even, odd, (^) )
 import System.IO
     ( IO )
+import Text.Show
+    ( show )
 import Test.Tasty.Bench
     ( Benchmark, bcompare, bench, bgroup, defaultMain, nf )
 
 import qualified Data.Map.Strict as OMap
 import qualified Data.MonoidMap.Internal.NonNullMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.Adjust as MMap
+import qualified Data.MonoidMap.Internal.NonNullMap.FromList as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMap as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.FromMapWith as MMap
 import qualified Data.MonoidMap.Internal.NonNullMap.Get as MMap
@@ -125,6 +134,33 @@ main = do
 
     evaluate $ rnf adjustCases
 
+    let fromListCases =
+            [ (caseTitle keyCount valuesPerKey, kvs)
+            | (keyCount, valuesPerKey) <-
+                [ (16,   1)
+                , (16,   2)
+                , (16,   4)
+                , (16,   8)
+                , (16,  16)
+                , (16,  32)
+                , (16,  64)
+                ]
+            , let kvs = keyValuePairs keyCount (keyCount * valuesPerKey)
+            ]
+          where
+            caseTitle keyCount valuesPerKey = unwords
+                [ "(" <>           "keys: " <> show     keyCount <> ")"
+                , "(" <> "values per key: " <> show valuesPerKey <> ")"
+                ]
+
+    let fromListCasesWithLists =
+            withSuffix " (lists)" $ withValues (replicate 4) fromListCases
+        fromListCasesWithSums =
+            withSuffix " (sums)"  $ withValues Sum           fromListCases
+
+    evaluate $ rnf fromListCasesWithLists
+    evaluate $ rnf fromListCasesWithSums
+
     let fromMapCases =
             [ ("no nulls",           om_null_none)
             , ("one null (min key)", om_null_min)
@@ -151,6 +187,12 @@ main = do
               , adjustWith MMap.adjust_lookup
               )
             ]
+        , compareImplementations
+            ("fromList", MMap.fromList) fromListCasesWithLists
+            fromListImplementations
+        , compareImplementations
+            ("fromList", MMap.fromList) fromListCasesWithSums
+            fromListImplementations
         , compareImplementations
             ("fromMap", MMap.fromMap) fromMapCases
             [ ( "fromMap_filter"
@@ -202,6 +244,33 @@ main = do
         [ (k, if hasNullValue k then mempty else Sum 1)
         | k <- [minNatural .. maxNatural]
         ]
+
+    -- A list of key-value pairs, in which the values [1 .. valueCount] are
+    -- spread evenly across the given number of unique keys.
+    keyValuePairs :: Int -> Int -> [(Int, Int)]
+    keyValuePairs uniqueKeyCount valueCount =
+        [(v `mod` uniqueKeyCount, v) | v <- [1 .. valueCount]]
+
+    -- Applies the given function to every value of every case.
+    withValues
+        :: (v1 -> v2) -> [(String, [(k, v1)])] -> [(String, [(k, v2)])]
+    withValues f cases = [(label, fmap f <$> kvs) | (label, kvs) <- cases]
+
+    -- Implementations of 'fromList', shared between cases with different key
+    -- and value types.
+    --
+    -- This list is marked with `INLINE`, so that every implementation is
+    -- specialised to the key and value types of each group of cases.
+    --
+    fromListImplementations
+        :: (Ord k, MonoidNull v)
+        => [(String, [(k, v)] -> MMap.NonNullMap k v)]
+    fromListImplementations =
+        [ ( "fromList_flip_filter_if_any_null"
+          , MMap.fromList_flip_filter_if_any_null
+          )
+        ]
+    {-# INLINE fromListImplementations #-}
 
     -- A simple function that replaces every value with a new value, while:
     -- - preserving existing null values; and
