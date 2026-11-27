@@ -278,6 +278,9 @@ main = do
         [ ( "fromList_foldl1_filter_if_any_null"
           , MMap.fromList_foldl1_filter_if_any_null
           )
+        , ( "fromList_foldr1_filter_if_any_null"
+          , MMap.fromList_foldr1_filter_if_any_null
+          )
         ]
     {-# INLINE fromListImplementations #-}
 
