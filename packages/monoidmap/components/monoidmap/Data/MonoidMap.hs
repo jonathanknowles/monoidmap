@@ -916,7 +916,7 @@ empty = MonoidMap Map.empty
 -- @since 0.0.0.0
 --
 fromList :: (Ord k, MonoidNull v) => [(k, v)] -> MonoidMap k v
-fromList = fromMap . Map.fromListWith (flip (<>))
+fromList = fromNonNullMap . NonNullMap.fromList
 {-# INLINE fromList #-}
 
 -- | \(O(n \log n)\). Constructs a 'MonoidMap' from a list of key-value pairs,

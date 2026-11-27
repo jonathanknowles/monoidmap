@@ -17,6 +17,7 @@ module Data.MonoidMap.Internal.NonNullMap
       NonNullMap (..)
 
     -- * Construction
+    , fromList
     , fromMap
     , fromMapWith
 
@@ -51,9 +52,19 @@ import Data.MonoidMap.Internal.NonNullMap.Get
 import Data.MonoidMap.Internal.NonNullMap.Unsafe
     ( NonNullMap (..), toMap )
 
+import qualified Data.Map.Strict as Map
+
 --------------------------------------------------------------------------------
 -- Construction
 --------------------------------------------------------------------------------
+
+-- | Constructs a 'NonNullMap' from a list of key-value pairs, combining the
+--   values for each key with '(<>)' in the order that they appear, and
+--   removing all 'null' values.
+--
+fromList :: (Ord k, MonoidNull v) => [(k, v)] -> NonNullMap k v
+fromList = fromMap . Map.fromListWith (flip (<>))
+{-# INLINE fromList #-}
 
 -- | Constructs a 'NonNullMap' from an ordinary 'Map', removing all
 --   'null' values.
