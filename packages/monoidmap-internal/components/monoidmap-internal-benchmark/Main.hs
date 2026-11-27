@@ -137,13 +137,15 @@ main = do
     let fromListCases =
             [ (caseTitle keyCount valuesPerKey, kvs)
             | (keyCount, valuesPerKey) <-
-                [ (16,   1)
-                , (16,   2)
-                , (16,   4)
-                , (16,   8)
-                , (16,  16)
-                , (16,  32)
-                , (16,  64)
+                [ (  16,   1)
+                , (  16,   4)
+                , (  16,  16)
+                , (  16,  64)
+                , (  16, 256)
+                , (1024,   1)
+                , (1024,   4)
+                , (1024,  16)
+                , (1024,  64)
                 ]
             , let kvs = keyValuePairs keyCount (keyCount * valuesPerKey)
             ]
