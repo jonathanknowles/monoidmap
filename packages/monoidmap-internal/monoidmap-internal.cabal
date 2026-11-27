@@ -81,6 +81,7 @@ benchmark monoidmap-internal-benchmark
       , dependency-base
       , dependency-containers
       , dependency-deepseq
+      , dependency-monoid-subclasses
       , dependency-tasty-bench
       , extensions
     build-depends:
