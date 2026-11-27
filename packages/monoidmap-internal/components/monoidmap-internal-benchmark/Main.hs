@@ -25,7 +25,7 @@ import Data.Functor
 import Data.Int
     ( Int )
 import Data.List
-    ( concat, filter, foldl', replicate, transpose, unwords )
+    ( concat, filter, foldl', transpose, unwords )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
 import Data.Monoid.Null
@@ -154,9 +154,9 @@ main = do
                 ]
 
     let fromListCasesWithLists =
-            withSuffix " (lists)" $ withValues (replicate 4) fromListCases
+            withSuffix " (lists)" $ withValues (: []) fromListCases
         fromListCasesWithSums =
-            withSuffix " (sums)"  $ withValues Sum           fromListCases
+            withSuffix " (sums)"  $ withValues Sum    fromListCases
 
     evaluate $ rnf fromListCasesWithLists
     evaluate $ rnf fromListCasesWithSums
