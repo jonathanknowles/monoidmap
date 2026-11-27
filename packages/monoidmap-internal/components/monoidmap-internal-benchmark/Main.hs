@@ -25,7 +25,7 @@ import Data.Functor
 import Data.Int
     ( Int )
 import Data.List
-    ( concat, filter, foldl', transpose, unwords )
+    ( concat, cycle, filter, foldl', sortOn, transpose, unwords, zip )
 import Data.Monoid
     ( Monoid (mempty), Sum (Sum) )
 import Data.Monoid.Null
@@ -247,9 +247,17 @@ main = do
 
     -- A list of key-value pairs, in which the values [1 .. valueCount] are
     -- spread evenly across the given number of unique keys.
+    --
+    -- The keys repeat in a fixed order, which is a scrambled permutation of
+    -- [0 .. uniqueKeyCount - 1].
+    --
     keyValuePairs :: Int -> Int -> [(Int, Int)]
     keyValuePairs uniqueKeyCount valueCount =
-        [(v `mod` uniqueKeyCount, v) | v <- [1 .. valueCount]]
+        zip (cycle scrambledKeys) [1 .. valueCount]
+      where
+        scrambledKeys = sortOn scramble [0 .. uniqueKeyCount - 1]
+        scramble key = (key * knuthMultiplier) `mod` (2 ^ (32 :: Int))
+        knuthMultiplier = 2_654_435_761
 
     -- Applies the given function to every value of every case.
     withValues
