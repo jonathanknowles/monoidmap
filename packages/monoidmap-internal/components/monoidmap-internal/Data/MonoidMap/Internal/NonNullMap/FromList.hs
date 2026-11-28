@@ -17,6 +17,7 @@
 module Data.MonoidMap.Internal.NonNullMap.FromList
     ( fromList_foldl1_filter_if_any_null
     , fromList_foldr1_list_filter_if_any_null
+    , fromList_foldr1_seq_filter_if_any_null
     )
     where
 
@@ -31,6 +32,7 @@ import Data.MonoidMap.Internal.NonNullMap.Unsafe
 
 import qualified Data.List as List
 import qualified Data.Map.Strict as Map
+import qualified Data.Sequence as Seq
 
 fromList_foldl1_filter_if_any_null
     :: (Ord k, MonoidNull v) => [(k, v)] -> NonNullMap k v
@@ -45,3 +47,13 @@ fromList_foldr1_list_filter_if_any_null =
     . Map.map (List.foldl1' (flip (<>)))
     . List.foldl' (\m (k, v) -> Map.insertWith (++) k [v] m) Map.empty
 {-# INLINE fromList_foldr1_list_filter_if_any_null #-}
+
+fromList_foldr1_seq_filter_if_any_null
+    :: (Ord k, MonoidNull v) => [(k, v)] -> NonNullMap k v
+fromList_foldr1_seq_filter_if_any_null =
+      fromMap_filter_if_any_null
+    . Map.map (foldr1 (<>))
+    . List.foldl'
+        (\m (k, v) -> Map.insertWith (flip (Seq.><)) k (Seq.singleton v) m)
+        Map.empty
+{-# INLINE fromList_foldr1_seq_filter_if_any_null #-}

@@ -289,6 +289,9 @@ main = do
         , ( "fromList_foldr1_list_filter_if_any_null"
           , MMap.fromList_foldr1_list_filter_if_any_null
           )
+        , ( "fromList_foldr1_seq_filter_if_any_null"
+          , MMap.fromList_foldr1_seq_filter_if_any_null
+          )
         ]
     {-# INLINE fromListImplementations #-}
 
