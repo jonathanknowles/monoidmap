@@ -6,8 +6,16 @@
 --
 -- Provides alternative implementations of @fromList@.
 --
+-- Each implementation is named after:
+--
+-- - the fold that its combining of the values for each key is equivalent to
+--   (for example, @foldl1 (<>)@);
+-- - the structure in which it first collects the values for each key, if any
+--   (for example, @list@); and
+-- - the way that it removes null values.
+--
 module Data.MonoidMap.Internal.NonNullMap.FromList
-    ( fromList_flip_filter_if_any_null
+    ( fromList_foldl1_filter_if_any_null
     )
     where
 
@@ -22,8 +30,8 @@ import Data.MonoidMap.Internal.NonNullMap.Unsafe
 
 import qualified Data.Map.Strict as Map
 
-fromList_flip_filter_if_any_null
+fromList_foldl1_filter_if_any_null
     :: (Ord k, MonoidNull v) => [(k, v)] -> NonNullMap k v
-fromList_flip_filter_if_any_null =
+fromList_foldl1_filter_if_any_null =
     fromMap_filter_if_any_null . Map.fromListWith (flip (<>))
-{-# INLINE fromList_flip_filter_if_any_null #-}
+{-# INLINE fromList_foldl1_filter_if_any_null #-}
